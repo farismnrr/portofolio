@@ -118,19 +118,36 @@ export default async function Project({
           </Text>
         </Row>
       </Row>
+      {post.metadata.link && (
+        <Row horizontal="center" marginBottom="32">
+          <SmartLink href={post.metadata.link}>
+            <Row gap="8" vertical="center" onBackground="brand-strong">
+              <Text variant="label-strong-l">Visit Live Project</Text>
+              <Text variant="label-strong-l">
+                <span className="arrow">→</span>
+              </Text>
+            </Row>
+          </SmartLink>
+        </Row>
+      )}
       {post.metadata.images.length > 0 && (
         <Media priority aspectRatio="16 / 9" radius="m" alt="image" src={post.metadata.images[0]} />
       )}
       <Column style={{ margin: "auto" }} as="article" maxWidth="xs">
         <CustomMDX source={post.content} />
       </Column>
-      <Column fillWidth gap="40" horizontal="center" marginTop="40">
-        <Line maxWidth="40" />
-        <Heading as="h2" variant="heading-strong-xl" marginBottom="24">
-          Related projects
-        </Heading>
-        <Projects exclude={[post.slug]} range={[2]} />
-      </Column>
+      {post.metadata.repository && (
+        <Row horizontal="center" marginTop="40" marginBottom="40">
+          <SmartLink href={post.metadata.repository}>
+            <Row gap="8" vertical="center" onBackground="brand-strong">
+              <Text variant="label-strong-l">View Code on GitHub</Text>
+              <Text variant="label-strong-l">
+                <span className="arrow">→</span>
+              </Text>
+            </Row>
+          </SmartLink>
+        </Row>
+      )}
       <ScrollToHash />
     </Column>
   );

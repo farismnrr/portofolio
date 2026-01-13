@@ -1,30 +1,31 @@
-import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
-import React, { ReactNode } from "react";
+import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import type React from "react";
+import type { ReactNode } from "react";
 import { slugify as transliterate } from "transliteration";
 
 import {
-  Heading,
-  HeadingLink,
-  Text,
-  InlineCode,
-  CodeBlock,
-  TextProps,
-  MediaProps,
   Accordion,
   AccordionGroup,
-  Table,
-  Feedback,
   Button,
   Card,
-  Grid,
-  Row,
+  CodeBlock,
   Column,
+  Feedback,
+  Grid,
+  Heading,
+  HeadingLink,
   Icon,
-  Media,
-  SmartLink,
+  InlineCode,
+  Line,
   List,
   ListItem,
-  Line,
+  Media,
+  type MediaProps,
+  Row,
+  SmartLink,
+  Table,
+  Text,
+  type TextProps,
 } from "@once-ui-system/core";
 
 type CustomLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -121,13 +122,22 @@ function createInlineCode({ children }: { children: ReactNode }) {
   return <InlineCode>{children}</InlineCode>;
 }
 
-function createCodeBlock(props: any) {
+type PreProps = React.HTMLAttributes<HTMLPreElement> & {
+  children?: {
+    props?: {
+      className?: string;
+      children?: string;
+    };
+  };
+};
+
+function createCodeBlock(props: PreProps) {
   // For pre tags that contain code blocks
-  if (props.children && props.children.props && props.children.props.className) {
+  if (props.children?.props?.className) {
     const { className, children } = props.children.props;
 
     // Extract language from className (format: language-xxx)
-    const language = className.replace("language-", "");
+    const language = className?.replace("language-", "") || "";
     const label = language.charAt(0).toUpperCase() + language.slice(1);
 
     return (
@@ -136,7 +146,7 @@ function createCodeBlock(props: any) {
         marginBottom="16"
         codes={[
           {
-            code: children,
+            code: children || "",
             language,
             label,
           },
@@ -171,21 +181,21 @@ function createHR() {
 }
 
 const components = {
-  p: createParagraph as any,
-  h1: createHeading("h1") as any,
-  h2: createHeading("h2") as any,
-  h3: createHeading("h3") as any,
-  h4: createHeading("h4") as any,
-  h5: createHeading("h5") as any,
-  h6: createHeading("h6") as any,
-  img: createImage as any,
-  a: CustomLink as any,
-  code: createInlineCode as any,
-  pre: createCodeBlock as any,
-  ol: createList as any,
-  ul: createList as any,
-  li: createListItem as any,
-  hr: createHR as any,
+  p: createParagraph as React.ComponentType,
+  h1: createHeading("h1") as React.ComponentType,
+  h2: createHeading("h2") as React.ComponentType,
+  h3: createHeading("h3") as React.ComponentType,
+  h4: createHeading("h4") as React.ComponentType,
+  h5: createHeading("h5") as React.ComponentType,
+  h6: createHeading("h6") as React.ComponentType,
+  img: createImage as React.ComponentType,
+  a: CustomLink as React.ComponentType,
+  code: createInlineCode as React.ComponentType,
+  pre: createCodeBlock as React.ComponentType,
+  ol: createList as React.ComponentType,
+  ul: createList as React.ComponentType,
+  li: createListItem as React.ComponentType,
+  hr: createHR as React.ComponentType,
   Heading,
   Text,
   CodeBlock,

@@ -1,21 +1,21 @@
+import { Mailchimp } from "@/components";
+import { Posts } from "@/components/blog/Posts";
+import { Projects } from "@/components/work/Projects";
+import { about, baseURL, home, person, routes } from "@/resources";
+import { getPosts } from "@/utils/utils";
 import {
-  Heading,
-  Text,
-  Button,
   Avatar,
-  RevealFx,
-  Column,
   Badge,
+  Button,
+  Column,
+  Heading,
+  Line,
+  Meta,
+  RevealFx,
   Row,
   Schema,
-  Meta,
-  Line,
+  Text,
 } from "@once-ui-system/core";
-import { home, about, person, baseURL, routes } from "@/resources";
-import { getPosts } from "@/utils/utils";
-import { Mailchimp } from "@/components";
-import { Projects } from "@/components/work/Projects";
-import { Posts } from "@/components/blog/Posts";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -29,7 +29,8 @@ export async function generateMetadata() {
 
 export default function Home() {
   const latestProject = getPosts(["src", "app", "work", "projects"]).sort(
-    (a, b) => new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime()
+    (a, b) =>
+      new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime(),
   )[0];
 
   return (
@@ -67,7 +68,9 @@ export default function Home() {
                 href={`/work/${latestProject.slug}`}
               >
                 <Row gap="12" vertical="center" paddingY="2">
-                  <strong className="ml-4">{latestProject.metadata.projectName || latestProject.metadata.title}</strong>
+                  <strong className="ml-4">
+                    {latestProject.metadata.projectName || latestProject.metadata.title}
+                  </strong>
                   <Line background="brand-alpha-strong" vert height="20" />
                   <Text marginRight="4" onBackground="brand-medium">
                     Featured work

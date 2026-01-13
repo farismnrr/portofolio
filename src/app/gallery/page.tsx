@@ -1,8 +1,8 @@
-import { Flex, Meta, Schema } from "@once-ui-system/core";
+import fs from "node:fs";
+import path from "node:path";
 import GalleryView from "@/components/gallery/GalleryView";
 import { baseURL, gallery, person } from "@/resources";
-import fs from "fs";
-import path from "path";
+import { Flex, Meta, Schema } from "@once-ui-system/core";
 import sizeOf from "image-size";
 
 export async function generateMetadata() {
@@ -19,9 +19,7 @@ function getGalleryImages() {
   const galleryDir = path.join(process.cwd(), "public/images/gallery");
   if (!fs.existsSync(galleryDir)) return [];
 
-  const files = fs.readdirSync(galleryDir).filter((file) =>
-    /\.(jpg|jpeg|png|webp)$/i.test(file)
-  );
+  const files = fs.readdirSync(galleryDir).filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file));
 
   return files.map((file) => {
     const filePath = path.join(galleryDir, file);

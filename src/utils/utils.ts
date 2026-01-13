@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
 
 type Team = {
@@ -79,9 +79,7 @@ export function getPosts(customPath = ["", "", "", ""]) {
   return mdxFiles
     .filter((file) => !file.includes(".example.")) // Filter out .example.mdx files
     .map((file) => {
-      const { metadata, content } = readMDXFile(
-        path.join(postsDirectory, file)
-      );
+      const { metadata, content } = readMDXFile(path.join(postsDirectory, file));
       const slug = path.basename(file, path.extname(file));
 
       return {

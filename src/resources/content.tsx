@@ -1,10 +1,10 @@
-import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
+import type { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
 import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
   firstName: "Faris",
   lastName: "Munir Mahdi",
-  name: `Faris Munir Mahdi`,
+  name: "Faris Munir Mahdi",
   role: "Software Engineer",
   avatar: "/images/projects/avatar.jpg",
   email: "farismunir2@gmail.com",
@@ -48,7 +48,15 @@ const home: Home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Design. <Text as="span" onBackground="brand-medium">Code.</Text> Create.</>,
+  headline: (
+    <>
+      Design.{" "}
+      <Text as="span" onBackground="brand-medium">
+        Code.
+      </Text>{" "}
+      Create.
+    </>
+  ),
   featured: {
     display: true,
     title: (
@@ -64,7 +72,11 @@ const home: Home = {
   },
   subline: (
     <>
-      I'm Faris, a Software Engineer specializing in <Text as="span" size="xl" weight="strong">Backend, Cloud, & IoT</Text>.<br /> Building scalable systems and intelligent solutions.
+      I'm Faris, a Software Engineer specializing in{" "}
+      <Text as="span" size="xl" weight="strong">
+        Backend, Cloud, & IoT
+      </Text>
+      .<br /> Building scalable systems and intelligent solutions.
     </>
   ),
 };
@@ -90,7 +102,9 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        I am a Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems. I focus on engineering scalable, high-performance solutions that integrate intelligent hardware with robust software ecosystems.
+        I am a Software Engineer specializing in backend architecture, cloud infrastructure, and IoT
+        systems. I focus on engineering scalable, high-performance solutions that integrate
+        intelligent hardware with robust software ecosystems.
       </>
     ),
   },
@@ -103,15 +117,9 @@ const about: About = {
         timeframe: "Feb 2025 - Present",
         role: "Machine Learning Engineer",
         achievements: [
-          <>
-            Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.
-          </>,
-          <>
-            Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.
-          </>,
-          <>
-            Leveraged deep learning methodologies to solve real-world problems, ensuring scalable and accurate predictive analysis.
-          </>,
+          "Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.",
+          "Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.",
+          "Leveraged deep learning methodologies to solve real-world problems, ensuring scalable and accurate predictive analysis.",
         ],
         images: [],
       },
@@ -120,15 +128,9 @@ const about: About = {
         timeframe: "Sep 2024 - Dec 2024",
         role: "Full Stack Web Developer",
         achievements: [
-          <>
-            Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.
-          </>,
-          <>
-            Developed responsive, user-centric frontend interfaces using Vue.js, ensuring seamless cross-device compatibility and user experience.
-          </>,
-          <>
-            Achieved Alibaba Cloud Certification through the KodeBisat collaboration, verifying expertise in scalable cloud infrastructure.
-          </>,
+          "Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.",
+          "Developed responsive, user-centric frontend interfaces using Vue.js, ensuring seamless cross-device compatibility and user experience.",
+          "Achieved Alibaba Cloud Certification through the KodeBisat collaboration, verifying expertise in scalable cloud infrastructure.",
         ],
         images: [],
       },
@@ -137,15 +139,9 @@ const about: About = {
         timeframe: "Feb 2024 - Aug 2024",
         role: "Back End Developer",
         achievements: [
-          <>
-            Designed and implemented efficient RESTful APIs using Golang, prioritizing performance and concurrency.
-          </>,
-          <>
-            Integrated advanced machine learning models into backend services to power intelligent application features.
-          </>,
-          <>
-            Optimized PostgreSQL database schemas and queries to handle large-scale data transactions with minimal latency.
-          </>,
+          "Designed and implemented efficient RESTful APIs using Golang, prioritizing performance and concurrency.",
+          "Integrated advanced machine learning models into backend services to power intelligent application features.",
+          "Optimized PostgreSQL database schemas and queries to handle large-scale data transactions with minimal latency.",
         ],
         images: [],
       },
@@ -154,15 +150,9 @@ const about: About = {
         timeframe: "Jan 2024 - Apr 2024",
         role: "SEO Specialist",
         achievements: [
-          <>
-            Executed comprehensive keyword analysis and strategy to significantly improve organic search rankings and visibility.
-          </>,
-          <>
-            Optimized technical site structure and content for chentradeasia.lk and formic-acid.com, implementing targeted backlink strategies.
-          </>,
-          <>
-            Analyzed complex web analytics to identify growth opportunities, resulting in measurable improvements in organic traffic and engagement.
-          </>,
+          "Executed comprehensive keyword analysis and strategy to significantly improve organic search rankings and visibility.",
+          "Optimized technical site structure and content for chentradeasia.lk and formic-acid.com, implementing targeted backlink strategies.",
+          "Analyzed complex web analytics to identify growth opportunities, resulting in measurable improvements in organic traffic and engagement.",
         ],
         images: [],
       },
@@ -173,10 +163,14 @@ const about: About = {
     title: "Studies",
     institutions: [
       {
-        name: "UPN \"Veteran\" East Java",
+        name: 'UPN "Veteran" East Java',
         description: (
           <>
-            Achieved <Text as="strong">Cumlaude honors</Text> while actively shaping the technical direction of the <Text as="strong">IoTNet</Text> laboratory since the 5th semester. My role involved not just managing infrastructure, but also spearheading complex research initiatives and fostering a collaborative environment for exploring advanced IoT technologies.
+            Achieved <Text as="strong">Cumlaude honors</Text> while actively shaping the technical
+            direction of the <Text as="strong">IoTNet</Text> laboratory since the 5th semester. My
+            role involved not just managing infrastructure, but also spearheading complex research
+            initiatives and fostering a collaborative environment for exploring advanced IoT
+            technologies.
           </>
         ),
       },
@@ -193,7 +187,10 @@ const about: About = {
       {
         title: "Languages",
         description: (
-          <>Proficient in writing high-performance, memory-safe code for system-level applications and ensuring type safety across the entire stack.</>
+          <>
+            Proficient in writing high-performance, memory-safe code for system-level applications
+            and ensuring type safety across the entire stack.
+          </>
         ),
         tags: [
           {
@@ -222,7 +219,10 @@ const about: About = {
       {
         title: "Backend",
         description: (
-          <>Architecting scalable microservices and high-throughput RESTful/gRPC APIs, focusing on concurrency and low-latency performance.</>
+          <>
+            Architecting scalable microservices and high-throughput RESTful/gRPC APIs, focusing on
+            concurrency and low-latency performance.
+          </>
         ),
         tags: [
           {
@@ -247,7 +247,10 @@ const about: About = {
       {
         title: "Frontend",
         description: (
-          <>Developing modern, responsive web applications with a focus on component reusability, server-side rendering, and optimal user experience.</>
+          <>
+            Developing modern, responsive web applications with a focus on component reusability,
+            server-side rendering, and optimal user experience.
+          </>
         ),
         tags: [
           {
@@ -272,7 +275,10 @@ const about: About = {
       {
         title: "Database & Storage",
         description: (
-          <>Designing optimized database schemas for complex data relationships and implementing high-speed caching strategies for real-time access.</>
+          <>
+            Designing optimized database schemas for complex data relationships and implementing
+            high-speed caching strategies for real-time access.
+          </>
         ),
         tags: [
           {
@@ -301,7 +307,10 @@ const about: About = {
       {
         title: "DevOps & Infrastructure",
         description: (
-          <>Automating deployment workflows with CI/CD pipelines and managing containerized infrastructure on cloud platforms for high availability.</>
+          <>
+            Automating deployment workflows with CI/CD pipelines and managing containerized
+            infrastructure on cloud platforms for high availability.
+          </>
         ),
         tags: [
           {
@@ -330,7 +339,10 @@ const about: About = {
       {
         title: "IoT & Embedded",
         description: (
-          <>Engineering secure, real-time communication between hardware and cloud systems, including firmware development and Over-The-Air (OTA) updates.</>
+          <>
+            Engineering secure, real-time communication between hardware and cloud systems,
+            including firmware development and Over-The-Air (OTA) updates.
+          </>
         ),
         tags: [
           {

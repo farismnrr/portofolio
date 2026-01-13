@@ -1,6 +1,9 @@
 import { Flex, Meta, Schema } from "@once-ui-system/core";
 import GalleryView from "@/components/gallery/GalleryView";
 import { baseURL, gallery, person } from "@/resources";
+import fs from "fs";
+import path from "path";
+import sizeOf from "image-size";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -12,7 +15,38 @@ export async function generateMetadata() {
   });
 }
 
+function getGalleryImages() {
+  const galleryDir = path.join(process.cwd(), "public/images/gallery");
+  if (!fs.existsSync(galleryDir)) return [];
+
+  const files = fs.readdirSync(galleryDir).filter((file) =>
+    /\.(jpg|jpeg|png|webp)$/i.test(file)
+  );
+
+  return files.map((file) => {
+    const filePath = path.join(galleryDir, file);
+    let orientation: "horizontal" | "vertical" = "horizontal";
+    try {
+      const buffer = fs.readFileSync(filePath);
+      const dimensions = sizeOf(buffer);
+      if ((dimensions.width || 0) < (dimensions.height || 0)) {
+        orientation = "vertical";
+      }
+    } catch (error) {
+      console.error(`Error reading image dimensions for ${file}:`, error);
+    }
+
+    return {
+      src: `/images/gallery/${file}`,
+      orientation,
+      alt: file.replace(/\.(jpg|jpeg|png|webp)$/i, "").replace(/-/g, " "),
+    };
+  });
+}
+
 export default function Gallery() {
+  const images = getGalleryImages();
+
   return (
     <Flex maxWidth="l">
       <Schema
@@ -28,7 +62,7 @@ export default function Gallery() {
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <GalleryView />
+      <GalleryView images={images} />
     </Flex>
   );
 }

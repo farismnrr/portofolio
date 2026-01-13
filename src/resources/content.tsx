@@ -378,6 +378,13 @@ const work: Work = {
   // All projects will be listed on the /home and /work routes
 };
 
+const certifications = {
+  path: "/certifications",
+  label: "Certifications",
+  title: "Certifications & Achievements",
+  description: "Professional certifications and achievements",
+};
+
 const gallery: Gallery = {
   path: "/gallery",
   label: "Gallery",
@@ -429,4 +436,4 @@ const gallery: Gallery = {
   ],
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, blog, work, gallery, certifications };

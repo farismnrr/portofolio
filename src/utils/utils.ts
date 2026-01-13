@@ -73,6 +73,21 @@ function getMDXData(dir: string) {
 }
 
 export function getPosts(customPath = ["", "", "", ""]) {
-  const postsDir = path.join(process.cwd(), ...customPath);
-  return getMDXData(postsDir);
+  const postsDirectory = path.join(process.cwd(), ...customPath);
+  const mdxFiles = getMDXFiles(postsDirectory);
+
+  return mdxFiles
+    .filter((file) => !file.includes(".example.")) // Filter out .example.mdx files
+    .map((file) => {
+      const { metadata, content } = readMDXFile(
+        path.join(postsDirectory, file)
+      );
+      const slug = path.basename(file, path.extname(file));
+
+      return {
+        metadata,
+        slug,
+        content,
+      };
+    });
 }

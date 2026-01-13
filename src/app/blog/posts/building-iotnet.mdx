@@ -1,0 +1,148 @@
+---
+title: "Building IoTNet: Lessons from a Real-World IoT Dashboard"
+publishedAt: "2026-01-12"
+summary: "What I learned building a production IoT management platform, from choosing the right stack to handling real-time updates and multi-tenant architecture."
+image: "/images/projects/iotnet/mobile-hero.png"
+tag: "Engineering"
+---
+
+## Why I Built This
+
+I started IoTNet because I was frustrated with existing IoT platforms. They either forced you into their ecosystem with limited customization, or required weeks of setup just to get basic device control working. I wanted something in between—easy to start, but flexible enough to grow.
+
+## The Stack Decision
+
+Choosing the tech stack was harder than I expected. Here's what I learned:
+
+### Why Next.js Over Pure React
+
+I initially prototyped with Create React App. Big mistake. The moment I needed server-side rendering for better SEO and faster initial loads, I had to rewrite everything. **Lesson learned**: Start with Next.js even if you think you don't need SSR yet.
+
+### React Query Changed Everything
+
+Before React Query, my data fetching code was a mess:
+- Manual loading states everywhere
+- Cache invalidation bugs
+- Race conditions with multiple requests
+- Stale data issues
+
+React Query solved all of this with literally 5 lines of code per query. The `refetchInterval` option made real-time updates trivial.
+
+### Zustand vs Redux
+
+I tried Redux first (because that's what I knew). After fighting with boilerplate for a day, I switched to Zustand. The entire global state is now ~50 lines of code. Sometimes simpler is better.
+
+## Real-World Challenges
+
+### Challenge 1: Real-Time Updates Without WebSockets
+
+I wanted real-time device updates but didn't want to manage WebSocket connections. React Query's polling was the perfect middle ground:
+
+```typescript
+useQuery({
+  queryKey: ['devices'],
+  queryFn: fetchDevices,
+  refetchInterval: 5000, // Good enough for most use cases
+});
+```
+
+Is it as instant as WebSockets? No. But it's **way** simpler to implement and maintain.
+
+### Challenge 2: Multi-Tenant Architecture
+
+The hardest part wasn't the code—it was the architecture decisions:
+- Should tenants share a database or have separate ones?
+- How do we prevent tenant A from accessing tenant B's data?
+- What happens when a tenant exceeds their device limit?
+
+I ended up building a separate [authentication service](/work/multitenant-user-management) in Rust. Separating auth from the frontend was the best decision I made. Each service can scale independently.
+
+### Challenge 3: Mobile Responsiveness
+
+IoT dashboards are often used on-site, which means mobile devices. Tailwind CSS made responsive design painless:
+
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {/* Automatically adjusts to screen size */}
+</div>
+```
+
+But the real challenge was **touch interactions**. Buttons that work great with a mouse can be frustrating on mobile. I had to increase touch targets and add visual feedback for every interaction.
+
+## What I'd Do Differently
+
+### 1. Start with TypeScript
+
+I added TypeScript halfway through. Migrating was painful. The type errors caught so many bugs, but I wish I'd started with it from day one.
+
+### 2. Write Tests Earlier
+
+I wrote tests after the first production bug. Should've written them from the start. React Testing Library + Jest is now part of my workflow.
+
+### 3. Document API Contracts
+
+When the auth service and frontend got out of sync, debugging took hours. Now I use TypeScript interfaces shared between services. Game changer.
+
+## Performance Wins
+
+### Code Splitting
+
+Next.js automatic code splitting reduced initial bundle size by 60%. Users only download what they need for the current page.
+
+### Image Optimization
+
+Using Next.js `<Image>` component:
+- Automatic WebP conversion
+- Lazy loading
+- Responsive images
+
+Page load time dropped from 3.2s to 1.1s.
+
+### Optimistic Updates
+
+Instead of waiting for the server response, I update the UI immediately:
+
+```typescript
+const mutation = useMutation({
+  mutationFn: updateDevice,
+  onMutate: async (newDevice) => {
+    // Update UI immediately
+    queryClient.setQueryData(['devices'], (old) => 
+      old.map(d => d.id === newDevice.id ? newDevice : d)
+    );
+  },
+});
+```
+
+Feels instant to users, even on slow connections.
+
+## Deployment Journey
+
+### First Attempt: Self-Hosted
+
+I tried deploying on a VPS. Managing SSL certificates, PM2, and database backups was a nightmare. Not worth the $5/month savings.
+
+### Current Setup: Vercel
+
+Deployed to Vercel in 5 minutes. Automatic HTTPS, edge functions, and instant rollbacks. The developer experience is incredible.
+
+## What's Next
+
+I'm working on:
+- **Offline support**: PWA features for areas with poor connectivity
+- **Historical analytics**: Visualizing device data over time
+- **Voice control**: "Hey Google, turn on the lights"
+
+## Key Takeaways
+
+1. **Choose boring technology**: Next.js, React Query, and Zustand are proven. Don't experiment in production.
+2. **Separate concerns**: Auth service in Rust, frontend in Next.js. Each does one thing well.
+3. **Developer experience matters**: Good DX leads to faster iterations and fewer bugs.
+4. **Ship early**: I waited too long for "perfect". Ship and iterate based on real feedback.
+
+---
+
+**Live Demo**: [i-ot.net](https://i-ot.net/)  
+**Source Code**: [GitHub](https://github.com/farismnrr/iotnet)
+
+Want to discuss IoT architecture or Next.js best practices? [Connect with me on LinkedIn](https://www.linkedin.com/in/farismnrr).

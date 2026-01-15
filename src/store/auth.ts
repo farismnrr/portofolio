@@ -14,6 +14,7 @@ interface AuthState {
   isInitializing: boolean;
   setAccessToken: (token: string | null) => void;
   clearAuth: () => void;
+  logout: () => void;
   refresh: () => Promise<void>;
   fetchUser: () => Promise<void>;
   initialize: () => Promise<void>;
@@ -41,6 +42,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       user: null,
       isAuthenticated: false,
     });
+  },
+
+  logout: () => {
+    // Clear cookie
+    document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    // Clear state
+    get().clearAuth();
   },
 
   refresh: async () => {

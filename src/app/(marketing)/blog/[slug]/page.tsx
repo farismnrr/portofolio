@@ -23,7 +23,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const posts = getPosts(["src", "app", "blog", "posts"]);
+  const posts = getPosts(["app", "(marketing)", "blog", "posts"]);
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -39,7 +39,7 @@ export async function generateMetadata({
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const posts = getPosts(["src", "app", "blog", "posts"]);
+  const posts = getPosts(["app", "(marketing)", "blog", "posts"]);
   const post = posts.find((post) => post.slug === slugPath);
 
   if (!post) return {};
@@ -59,7 +59,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const post = getPosts(["src", "app", "blog", "posts"]).find((post) => post.slug === slugPath);
+  const post = getPosts(["app", "(marketing)", "blog", "posts"]).find((post) => post.slug === slugPath);
 
   if (!post) {
     notFound();

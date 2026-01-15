@@ -2,9 +2,7 @@ import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "@/resources/custom.css";
 
-import classNames from "classnames";
-
-import { Footer, Header, Providers, RouteGuard } from "@/components";
+import { Providers } from "@/components";
 import { baseURL, dataStyle, effects, fonts, home, person, style } from "@/resources";
 import {
   Background,
@@ -15,6 +13,7 @@ import {
   type SpacingToken,
   type opacity,
 } from "@once-ui-system/core";
+import classNames from "classnames";
 
 export async function generateMetadata() {
   const metadata = Meta.generate({
@@ -163,14 +162,7 @@ export default async function RootLayout({
               }}
             />
           </RevealFx>
-          <Flex fillWidth minHeight="16" s={{ hide: true }} />
-          <Header />
-          <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
-            <Flex horizontal="center" fillWidth minHeight="0">
-              <RouteGuard>{children}</RouteGuard>
-            </Flex>
-          </Flex>
-          <Footer />
+          {children}
         </Column>
       </Providers>
     </Flex>

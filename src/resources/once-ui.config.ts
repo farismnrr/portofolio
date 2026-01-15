@@ -23,6 +23,8 @@ const routes: RoutesConfig = {
   "/blog": true,
   "/certifications": true,
   "/gallery": true,
+  "/callback": true,
+  "/dashboard": true,
 };
 
 const display: DisplayConfig = {
@@ -36,8 +38,7 @@ const display: DisplayConfig = {
 const protectedRoutes: ProtectedRoutesConfig = {};
 
 // Import and set font for each variant
-import { Geist } from "next/font/google";
-import { Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 
 const heading = Geist({
   variable: "--font-heading",

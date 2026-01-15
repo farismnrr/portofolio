@@ -23,6 +23,8 @@ const nextConfig = {
     silenceDeprecations: ["legacy-js-api"],
   },
   output: "standalone",
+  allowedDevOrigins: ["app.farismunir.my.id", "localhost:3000"],
+  reactStrictMode: false,
 };
 
 export default withMDX(nextConfig);

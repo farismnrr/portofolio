@@ -46,7 +46,7 @@ const alibabaCerts = [
     id: 3,
     title: "[Exam] Operate and Manage a Cloud Server",
     image:
-      "/images/certifications/alibaba/[Exam]%20Operate%20and%20Manage%20a%20Cloud%20Server.jpg",
+      "/images/certifications/alibaba/Operate%20and%20Manage%20a%20Cloud%20Server.jpg",
   },
 ];
 

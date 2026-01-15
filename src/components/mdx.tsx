@@ -1,8 +1,3 @@
-import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
-import type React from "react";
-import type { ReactNode } from "react";
-import { slugify as transliterate } from "transliteration";
-
 import {
   Accordion,
   AccordionGroup,
@@ -27,6 +22,10 @@ import {
   Text,
   type TextProps,
 } from "@once-ui-system/core";
+import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import type React from "react";
+import type { ReactNode } from "react";
+import { slugify as transliterate } from "transliteration";
 
 type CustomLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
@@ -83,7 +82,7 @@ function slugify(str: string): string {
   return transliterate(strWithAnd, {
     lowercase: true,
     separator: "-", // Replace spaces with -
-  }).replace(/\-\-+/g, "-"); // Replace multiple - with single -
+  }).replace(/--+/g, "-"); // Replace multiple - with single -
 }
 
 function createHeading(as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {

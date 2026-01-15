@@ -72,8 +72,8 @@ function getMDXData(dir: string) {
   });
 }
 
-export function getPosts(customPath = ["", "", "", ""]) {
-  const postsDirectory = path.join(process.cwd(), ...customPath);
+export function getPosts(customPath: string[] = ["app", "work", "projects"]) {
+  const postsDirectory = path.join(process.cwd(), "src", ...customPath);
   const mdxFiles = getMDXFiles(postsDirectory);
 
   return mdxFiles

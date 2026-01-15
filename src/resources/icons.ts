@@ -1,5 +1,17 @@
 import type { IconType } from "react-icons";
-
+import {
+  FaDiscord,
+  FaFacebook,
+  FaGithub,
+  FaJava,
+  FaLinkedin,
+  FaPinterest,
+  FaReddit,
+  FaTelegram,
+  FaWhatsapp,
+  FaX,
+  FaXTwitter,
+} from "react-icons/fa6";
 import {
   HiArrowRight,
   HiArrowTopRightOnSquare,
@@ -13,7 +25,6 @@ import {
   HiOutlineLink,
   HiOutlineRocketLaunch,
 } from "react-icons/hi2";
-
 import {
   PiBookBookmarkDuotone,
   PiGridFourDuotone,
@@ -21,7 +32,6 @@ import {
   PiImageDuotone,
   PiUserCircleDuotone,
 } from "react-icons/pi";
-
 import {
   SiActix,
   SiAmazonwebservices,
@@ -58,20 +68,6 @@ import {
   SiTypescript,
   SiVuedotjs,
 } from "react-icons/si";
-
-import {
-  FaDiscord,
-  FaFacebook,
-  FaGithub,
-  FaJava,
-  FaLinkedin,
-  FaPinterest,
-  FaReddit,
-  FaTelegram,
-  FaWhatsapp,
-  FaX,
-  FaXTwitter,
-} from "react-icons/fa6";
 
 export const iconLibrary: Record<string, IconType> = {
   arrowUpRight: HiArrowUpRight,

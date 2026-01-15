@@ -15,7 +15,7 @@ help:
 	@echo "  make build-docker     - Build Docker image"
 	@echo "  make start-docker     - Run Docker image locally"
 	@echo "  make push             - Push Docker image to GHCR"
-	@echo "  make kill             - Kill process running on port 3000"
+	@echo "  make kill             - Kill processes running on ports 3000-3010"
 	@echo ""
 
 # Run development server
@@ -25,8 +25,13 @@ dev:
 
 # Run production server
 start:
-	@echo "🚀 Starting production server..."
-	npm run start
+	@echo "🚀 Starting production server (Standalone Mode)..."
+	@# Copy static assets required for standalone mode
+	@rm -rf .next/standalone/.next/static .next/standalone/public
+	@mkdir -p .next/standalone/.next/static
+	@cp -r public .next/standalone/public
+	@cp -r .next/static .next/standalone/.next/
+	@PORT=3000 node .next/standalone/server.js
 
 # Build application
 build:
@@ -94,13 +99,15 @@ push:
 	echo "📦 Triggering workflow with ref: $$REF..."; \
 	gh workflow run docker-publish.yml --ref $$REF || echo "⚠️  Workflow triggers might need configuration."
 
-# Kill process running on PORT (default 3000)
 kill:
-	@echo "🔪 Killing processes on port 3000..."
-	@pid=$$(lsof -ti:3000); \
-	if [ -n "$$pid" ]; then \
-		kill -9 $$pid; \
-		echo "✅ Killed process $$pid on port 3000"; \
-	else \
-		echo "✅ No process running on port 3000"; \
-	fi
+	@echo "🔪 Killing processes on ports 3000-3010..."
+	@for port in $$(seq 3000 3010); do \
+		pids=$$(lsof -ti:$$port 2>/dev/null); \
+		if [ -n "$$pids" ]; then \
+			echo "$$pids" | xargs -r kill -9 2>/dev/null || true; \
+			echo "✅ Killed processes on port $$port"; \
+		fi; \
+	done
+	@echo "🧹 Cleaning Next.js cache and lock files..."
+	@rm -rf .next/dev .next/cache .next/server .next/static .next/trace 2>/dev/null || true
+	@echo "✅ All processes killed and cache cleaned"

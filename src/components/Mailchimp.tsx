@@ -1,8 +1,8 @@
 "use client";
 
 import { mailchimp, newsletter } from "@/resources";
-import { Background, Button, Column, Heading, Input, Row, Text } from "@once-ui-system/core";
 import type { SpacingToken, opacity } from "@once-ui-system/core";
+import { Background, Button, Column, Heading, Input, Row, Text } from "@once-ui-system/core";
 import { useState } from "react";
 
 function debounce<A extends unknown[], R>(

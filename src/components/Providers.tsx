@@ -19,6 +19,7 @@ import {
 } from "@once-ui-system/core";
 import { dataStyle, style } from "../resources";
 import { iconLibrary } from "../resources/icons";
+import { AuthInitializer } from "./AuthInitializer";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -48,7 +49,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
           }}
         >
           <ToastProvider>
-            <IconProvider icons={iconLibrary}>{children}</IconProvider>
+            <AuthInitializer>
+              <IconProvider icons={iconLibrary}>{children}</IconProvider>
+            </AuthInitializer>
           </ToastProvider>
         </DataThemeProvider>
       </ThemeProvider>

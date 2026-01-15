@@ -28,7 +28,7 @@ export async function generateMetadata() {
 }
 
 export default function Home() {
-  const latestProject = getPosts(["src", "app", "work", "projects"]).sort(
+  const latestProject = getPosts(["app", "(marketing)", "work", "projects"]).sort(
     (a, b) =>
       new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime(),
   )[0];

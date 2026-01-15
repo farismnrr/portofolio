@@ -1,9 +1,8 @@
 "use client";
 
+import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 
 import { about, blog, certifications, display, gallery, person, routes, work } from "@/resources";
 import styles from "./Header.module.scss";
@@ -185,6 +184,15 @@ export const Header = () => {
                   </Row>
                 </>
               )}
+              {/* Login Button */}
+              <Line background="neutral-alpha-medium" vert maxHeight="24" />
+              <Row s={{ hide: true }}>
+                <ToggleButton prefixIcon="person" href="/login" label="Login" />
+              </Row>
+              <Row hide s={{ hide: false }}>
+                <ToggleButton prefixIcon="person" href="/login" />
+              </Row>
+
               {display.themeSwitcher && (
                 <>
                   <Line background="neutral-alpha-medium" vert maxHeight="24" />

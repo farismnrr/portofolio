@@ -1,3 +1,4 @@
+import { getSsoConfig } from "@/lib/config/env";
 import { create } from "zustand";
 
 interface User {
@@ -53,9 +54,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   refresh: async () => {
     try {
-      const SSO_URL = process.env.NEXT_PUBLIC_SSO_URL || "http://localhost:5500";
-      // Use dev API Key fallback if env var is missing
-      const API_KEY = process.env.NEXT_PUBLIC_IOTNET_API_KEY || "iotnet_dev_api_key_2024";
+      const { url: SSO_URL, apiKey: API_KEY } = getSsoConfig();
 
       // Direct call to Service (Cross-Origin)
       const response = await fetch(`${SSO_URL}/auth/refresh`, {

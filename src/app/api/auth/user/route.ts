@@ -1,3 +1,4 @@
+import { getSsoConfig } from "@/lib/config/env";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Determine backend URL
-    const ssoUrl = process.env.SSO_URL || "http://localhost:5500";
+    const { url: ssoUrl } = getSsoConfig();
     // Using /auth/verify which validates token and returns user data
     const userEndpoint = `${ssoUrl}/auth/verify`;
 

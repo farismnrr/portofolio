@@ -1,3 +1,4 @@
+import { getSsoConfig } from "@/lib/config/env";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Determine backend URL
-    const ssoUrl = process.env.SSO_URL || "http://localhost:5500";
+    const { url: ssoUrl } = getSsoConfig();
     const refreshEndpoint = `${ssoUrl}/api/auth/refresh`;
 
     // Forward the request to the backend

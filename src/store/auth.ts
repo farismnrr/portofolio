@@ -60,8 +60,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await fetch(`${SSO_URL}/auth/refresh`, {
         method: "GET", // Service endpoint is GET
         headers: {
-            "Accept": "application/json",
-            "X-API-Key": API_KEY
+          Accept: "application/json",
+          "X-API-Key": API_KEY,
         },
         credentials: "include", // Sends the SameSite=None cookie
       });
@@ -71,7 +71,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // Backend returns { data: { access_token: "..." } } structure
         // Need to parse correctly based on SuccessResponseDTO
         const token = data.data?.access_token || data.access_token;
-        
+
         if (token) {
           set({
             accessToken: token,
@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         get().clearAuth();
       }
     } catch (error) {
-      console.error("Failed to refresh token", error);
+
       get().clearAuth();
     }
   },
@@ -109,7 +109,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ user: userData.data || userData });
       }
     } catch (error) {
-      console.error("Fetch user failed:", error);
+
     }
   },
 

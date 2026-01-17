@@ -14,12 +14,13 @@ export async function GET(req: NextRequest) {
     // Using /auth/verify which validates token and returns user data
     const userEndpoint = `${ssoUrl}/auth/verify`;
 
-    // Forward the request to the backend
+    // Forward the request to the backend with API Key for tenant validation
     const backendResponse = await fetch(userEndpoint, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: authHeader,
+        "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "",
       },
     });
 
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
       // If 404, maybe try /api/users/me?
       // But for now return error
       const error = await backendResponse.text();
-      console.error("Backend user fetch failed:", error);
+
       return NextResponse.json(
         { message: "Failed to fetch user" },
         { status: backendResponse.status },
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
     const data = await backendResponse.json();
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("User proxy error:", error);
+
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

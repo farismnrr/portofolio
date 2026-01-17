@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { Flex } from "@once-ui-system/core";
+import { useEffect, useState } from "react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);

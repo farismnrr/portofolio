@@ -1,18 +1,18 @@
 "use client";
 
+import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  FiChevronLeft,
+  FiChevronRight,
   FiGrid,
   FiHome,
   FiLogOut,
   FiSettings,
   FiUser,
-  FiChevronLeft,
-  FiChevronRight,
 } from "react-icons/fi";
 import styles from "./Sidebar.module.scss";
-import { useAuthStore } from "@/store/auth";
 
 const menuItems = [
   { name: "Dashboard", icon: FiGrid, path: "/dashboard" },
@@ -40,6 +40,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.header}>
         <button
+          type="button"
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={styles.collapseBtn}
           title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -73,12 +74,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               <span className={styles.userName}>{user?.username || "Guest"}</span>
               <span className={styles.userRole}>{user?.role || "User"}</span>
             </div>
-            <button onClick={handleLogout} className={styles.logoutBtn} title="Sign Out">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={styles.logoutBtn}
+              title="Sign Out"
+            >
               <FiLogOut />
             </button>
           </div>
         ) : (
           <button
+            type="button"
             onClick={handleLogout}
             className={styles.logoutBtnCollapsed}
             title={`Sign Out (${user?.username || "User"})`}

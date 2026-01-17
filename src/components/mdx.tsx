@@ -58,7 +58,7 @@ function CustomLink({ href, children, ...props }: CustomLinkProps) {
 
 function createImage({ alt, src, ...props }: MediaProps & { src: string }) {
   if (!src) {
-    console.error("Media requires a valid 'src' property.");
+
     return null;
   }
 

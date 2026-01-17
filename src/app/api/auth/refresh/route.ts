@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     if (!backendResponse.ok) {
       const error = await backendResponse.text();
-      console.error("Backend refresh failed:", error);
+
       return NextResponse.json(
         { message: "Failed to refresh token" },
         { status: backendResponse.status },
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (error) {
-    console.error("Refresh proxy error:", error);
+
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

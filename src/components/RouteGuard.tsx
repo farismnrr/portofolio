@@ -3,7 +3,7 @@
 import NotFound from "@/app/not-found";
 import { protectedRoutes, routes } from "@/resources";
 import { Button, Column, Flex, Heading, PasswordInput, Spinner } from "@once-ui-system/core";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface RouteGuardProps {
@@ -12,12 +12,14 @@ interface RouteGuardProps {
 
 const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isRouteEnabled, setIsRouteEnabled] = useState(false);
   const [isPasswordRequired, setIsPasswordRequired] = useState(false);
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(true);
 
   useEffect(() => {
     const performChecks = async () => {
@@ -25,28 +27,49 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
       setIsRouteEnabled(false);
       setIsPasswordRequired(false);
       setIsAuthenticated(false);
+      setIsAuthorized(true);
 
+      // 1. Check if route is enabled (404 check)
       const checkRouteEnabled = () => {
         if (!pathname) return false;
 
+        // Check exact match in routes map
         if (pathname in routes) {
           return routes[pathname as keyof typeof routes];
         }
 
-        const dynamicRoutes = ["/blog", "/work"] as const;
+        // Check dynamic routes
+        const dynamicRoutes = ["/blog", "/work", "/dashboard"] as const;
         for (const route of dynamicRoutes) {
-          if (pathname?.startsWith(route) && routes[route]) {
-            return true;
+          if (pathname?.startsWith(route)) {
+            // Dashboard is special - it might not be in the public 'routes' map but is valid
+            if (route === "/dashboard") return true;
+            if (routes[route]) return true;
           }
         }
-
         return false;
       };
 
       const routeEnabled = checkRouteEnabled();
       setIsRouteEnabled(routeEnabled);
 
-      if (protectedRoutes[pathname as keyof typeof protectedRoutes]) {
+      // 2. RBAC Check for Dashboard
+      if (pathname?.startsWith("/dashboard")) {
+        // Dynamic import to avoid SSR issues if auth.ts relies on browser APIs
+        const { getUserRole } = await import("@/lib/auth");
+        const role = getUserRole();
+
+        if (role !== "admin") {
+          setIsAuthorized(false);
+          setLoading(false);
+          return;
+        }
+        // Admin is authorized, no password check needed for dashboard (SSO handled it)
+        setIsAuthenticated(true);
+      }
+
+      // 3. Password Check for other protected routes
+      else if (protectedRoutes[pathname as keyof typeof protectedRoutes]) {
         setIsPasswordRequired(true);
 
         const response = await fetch("/api/check-auth");
@@ -86,6 +109,24 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
 
   if (!isRouteEnabled) {
     return <NotFound />;
+  }
+
+  // RBAC Failure
+  if (!isAuthorized) {
+    // Redirect or show 403. For now, showing a simple forbidden message.
+    // In a real app, you might route.push('/')
+    return (
+      <Column fillWidth paddingY="128" gap="24" horizontal="center">
+        <Heading>403 - Forbidden</Heading>
+        <Button
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Go Home
+        </Button>
+      </Column>
+    );
   }
 
   if (isPasswordRequired && !isAuthenticated) {

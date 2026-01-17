@@ -90,10 +90,7 @@ export async function GET(request: Request) {
       url,
     });
   } catch (error) {
-    console.error(
-      "Error fetching metadata:",
-      error instanceof Error ? error.message : String(error),
-    );
+
 
     return NextResponse.json(
       {

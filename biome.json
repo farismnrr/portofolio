@@ -6,7 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "ignore": ["services/Multitenant-User-Management-Service/tests/e2e/**"]
   },
   "formatter": {
     "enabled": true,

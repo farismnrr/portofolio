@@ -31,7 +31,7 @@ function getGalleryImages() {
         orientation = "vertical";
       }
     } catch (error) {
-      console.error(`Error reading image dimensions for ${file}:`, error);
+
     }
 
     return {

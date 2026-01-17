@@ -32,3 +32,24 @@ export function clearAccessToken(): void {
 export function isAuthenticated(): boolean {
   return !!getAccessToken();
 }
+
+/**
+ * Get user role from access token
+ */
+import { jwtDecode } from "jwt-decode";
+
+interface JwtPayload {
+  role: string | null;
+}
+
+export function getUserRole(): string | null {
+  const token = getAccessToken();
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode<JwtPayload>(token);
+    return decoded.role || null;
+  } catch (error) {
+    return null;
+  }
+}

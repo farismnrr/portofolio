@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   const correctPassword = process.env.PAGE_ACCESS_PASSWORD;
 
   if (!correctPassword) {
-    console.error("PAGE_ACCESS_PASSWORD environment variable is not set");
+
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 

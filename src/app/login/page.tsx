@@ -17,21 +17,13 @@ export default function LoginPage() {
         const tenantId = config.tenantId;
         const redirectUri = encodeURIComponent(`${window.location.origin}/callback`);
 
-        // Debug logging
-        console.log("SSO Debug:", {
-          ssoUrl,
-          tenantId,
-          origin: window.location.origin,
-          redirectUri,
-          decodedRedirectUri: decodeURIComponent(redirectUri),
-          fullUrl: `${ssoUrl}/login?tenant_id=${tenantId}&redirect_uri=${redirectUri}&role=admin`,
-        });
+
 
         // SSO will generate state/nonce automatically
         setStatus("Redirecting to login...");
         window.location.href = `${ssoUrl}/login?tenant_id=${tenantId}&redirect_uri=${redirectUri}&role=admin`;
       } catch (error) {
-        console.error("Failed to load config:", error);
+
         setStatus("Error loading configuration");
       }
     };

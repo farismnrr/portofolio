@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Login cookie error:", error);
+
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

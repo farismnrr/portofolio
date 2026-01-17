@@ -59,7 +59,9 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const post = getPosts(["app", "(marketing)", "blog", "posts"]).find((post) => post.slug === slugPath);
+  const post = getPosts(["app", "(marketing)", "blog", "posts"]).find(
+    (post) => post.slug === slugPath,
+  );
 
   if (!post) {
     notFound();

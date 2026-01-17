@@ -88,7 +88,7 @@ export function ShareSection({ title, url }: ShareSectionProps) {
         message: "Link copied to clipboard",
       });
     } catch (err) {
-      console.error("Failed to copy: ", err);
+
       addToast({
         variant: "danger",
         message: "Failed to copy link",

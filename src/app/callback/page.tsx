@@ -17,32 +17,15 @@ export default function CallbackPage() {
       const params = new URLSearchParams(hash);
 
       const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
 
-      console.log("Callback: Parsed tokens", { accessToken: Boolean(accessToken), refreshToken: Boolean(refreshToken) });
+
 
       if (!accessToken) {
         throw new Error("No access token received");
       }
 
-      // If we have a refresh token, set it as a cookie on our domain
-      if (refreshToken) {
-        console.log("Callback: Attempting to set cookie...");
-        const loginRes = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ refreshToken }),
-        });
-
-        if (!loginRes.ok) {
-          const errText = await loginRes.text();
-          console.error("Callback: Failed to set session cookie", loginRes.status, errText);
-        } else {
-          console.log("Callback: Cookie set successfully");
-        }
-      } else {
-        console.warn("Callback: No refresh token found in URL hash!");
-      }
+      // Note: Refresh token cookie is set by the SSO service directly
+      // during the redirect process. No need to handle it in URL hash.
 
       // Store access token in Zustand store (memory)
       setAccessToken(accessToken);
@@ -56,7 +39,7 @@ export default function CallbackPage() {
 
       router.push(redirect);
     } catch (err) {
-      console.error("Callback error:", err);
+
       setError(err instanceof Error ? err.message : "Authentication failed");
     }
   }, [router, setAccessToken]);

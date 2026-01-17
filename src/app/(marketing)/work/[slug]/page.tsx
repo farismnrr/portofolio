@@ -62,7 +62,9 @@ export default async function Project({
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const post = getPosts(["app", "(marketing)", "work", "projects"]).find((post) => post.slug === slugPath);
+  const post = getPosts(["app", "(marketing)", "work", "projects"]).find(
+    (post) => post.slug === slugPath,
+  );
 
   if (!post) {
     notFound();

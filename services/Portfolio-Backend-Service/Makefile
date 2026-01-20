@@ -14,7 +14,7 @@ help: ## Show this help message
 
 run: ## Run the application locally
 	@echo "Starting server..."
-	@go run $(MAIN_PATH)/main.go
+	@go run $(MAIN_PATH)
 
 kill: ## Kill processes running on port 8080
 	@echo "Killing processes on port 8080..."
@@ -24,7 +24,7 @@ kill: ## Kill processes running on port 8080
 build: ## Build the application binary
 	@echo "Building $(APP_NAME)..."
 	@mkdir -p $(BUILD_DIR)
-	@go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_PATH)/main.go
+	@go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_PATH)
 	@echo "Build complete: $(BUILD_DIR)/$(APP_NAME)"
 
 test: ## Run tests
@@ -54,18 +54,18 @@ lint: ## Run linter (requires golangci-lint)
 
 docker-build: ## Build Docker image
 	@echo "Building Docker image..."
-	@docker build -t $(DOCKER_IMAGE) -f deployments/Dockerfile .
+	@docker build -t $(DOCKER_IMAGE) -f Dockerfile .
 
 docker-up: ## Start services with docker-compose
 	@echo "Starting services..."
-	@docker-compose -f deployments/docker-compose.yml up -d
+	@docker-compose -f docker-compose.yml up -d
 
 docker-down: ## Stop services with docker-compose
 	@echo "Stopping services..."
-	@docker-compose -f deployments/docker-compose.yml down
+	@docker-compose -f docker-compose.yml down
 
 docker-logs: ## Show docker-compose logs
-	@docker-compose -f deployments/docker-compose.yml logs -f
+	@docker-compose -f docker-compose.yml logs -f
 
 dev: ## Run in development mode with hot reload (requires air)
 	@air

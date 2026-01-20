@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	appConfig "github.com/farismnrr/portfolio-backend-service/internal/config"
-	ssoRepo "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/repository"
+	ssoUsecase "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/usecase"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/farismnrr/portfolio-backend-service/pkg/response"
 	"github.com/labstack/echo/v4"
@@ -19,15 +19,15 @@ const (
 
 // Handler handles authentication requests
 type Handler struct {
-	config    *appConfig.Config
-	ssoClient *ssoRepo.SSOClient
+	config  *appConfig.Config
+	usecase ssoUsecase.Usecase
 }
 
 // NewHandler creates a new auth handler
-func NewHandler(cfg *appConfig.Config) *Handler {
+func NewHandler(cfg *appConfig.Config, uc ssoUsecase.Usecase) *Handler {
 	return &Handler{
-		config:    cfg,
-		ssoClient: ssoRepo.NewSSOClient(cfg),
+		config:  cfg,
+		usecase: uc,
 	}
 }
 
@@ -83,7 +83,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 	}
 
 	// Call SSO service to refresh token
-	tokenResp, err := h.ssoClient.RefreshToken(c.Request().Context(), cookie.Value)
+	tokenResp, err := h.usecase.RefreshToken(c.Request().Context(), cookie.Value)
 	if err != nil {
 		logger.Error("Failed to refresh token", zap.Error(err))
 
@@ -134,7 +134,7 @@ func (h *Handler) GetUser(c echo.Context) error {
 	accessToken := parts[1]
 
 	// Verify user with SSO
-	userData, err := h.ssoClient.VerifyUser(c.Request().Context(), accessToken)
+	userData, err := h.usecase.VerifyUser(c.Request().Context(), accessToken)
 	if err != nil {
 		logger.Error("Failed to verify user", zap.Error(err))
 		return response.Error(c, http.StatusUnauthorized, "Failed to fetch user")
@@ -175,7 +175,7 @@ func (h *Handler) Logout(c echo.Context) error {
 		if len(parts) == 2 && parts[0] == "Bearer" {
 			accessToken := parts[1]
 			// Call SSO logout (best effort - don't fail if it errors)
-			_ = h.ssoClient.Logout(c.Request().Context(), accessToken)
+			_ = h.usecase.Logout(c.Request().Context(), accessToken)
 		}
 	}
 

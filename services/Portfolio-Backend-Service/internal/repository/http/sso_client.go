@@ -64,8 +64,9 @@ func (s *SSOClient) RefreshToken(ctx context.Context, refreshToken string) (*Tok
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	// Set refresh token cookie
+	// Set refresh token cookie and API Key
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-API-Key", s.config.SSO.APIKey)
 	req.Header.Set("Cookie", fmt.Sprintf("refresh_token=%s", refreshToken))
 
 	resp, err := s.httpClient.Do(req)

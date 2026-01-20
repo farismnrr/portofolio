@@ -12,8 +12,8 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
-  setAccessToken: (token: string | null) => Promise<void>;
-  clearAuth: () => void;
+  refresh: () => Promise<void>;
+  setInitializing: (status: boolean) => void;
   initialize: (forceRefresh?: boolean) => Promise<void>;
 }
 
@@ -38,7 +38,42 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
     });
   },
 
-  initialize: async (_forceRefresh = false) => {
-    set({ isInitializing: false });
+  setInitializing: (status: boolean) => {
+    set({ isInitializing: status });
+  },
+
+  refresh: async () => {
+    try {
+      const response = await fetch("/api/auth/refresh");
+      const resBody = await response.json();
+
+      if (response.ok && resBody.status && resBody.data?.access_token) {
+        set({
+          accessToken: resBody.data.access_token,
+          isAuthenticated: true,
+        });
+      } else {
+        set({
+          accessToken: null,
+          isAuthenticated: false,
+        });
+      }
+    } catch (_error) {
+      set({
+        accessToken: null,
+        isAuthenticated: false,
+      });
+    } finally {
+      set({ isInitializing: false });
+    }
+  },
+
+  initialize: async (forceRefresh = false) => {
+    if (forceRefresh) {
+      const get = _get as unknown as () => AuthState;
+      await get().refresh();
+    } else {
+      set({ isInitializing: false });
+    }
   },
 }));

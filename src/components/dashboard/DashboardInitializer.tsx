@@ -12,7 +12,7 @@ export function DashboardInitializer({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (isInitializing) {
-      initialize();
+      initialize(true);
     }
   }, [initialize, isInitializing]);
 

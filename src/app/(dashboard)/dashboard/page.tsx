@@ -1,17 +1,70 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth";
-import { Column, Heading, Text } from "@once-ui-system/core";
+import { Column, Heading, Text, Button, Row } from "@once-ui-system/core";
 
 export default function DashboardPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <Column gap="24">
-      <Heading variant="display-strong-m">Dashboard</Heading>
-      <Text variant="body-default-l" onBackground="neutral-weak">
-        Welcome to your dashboard. Select an option from the sidebar to get started.
-      </Text>
+      <Column fillWidth gap="m">
+        <Row fillWidth horizontal="between" vertical="center">
+          <Heading variant="display-strong-m">Dashboard</Heading>
+          <Button
+            variant="secondary"
+            size="m"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Row>
+      </Column>
+
+      {user && (
+        <Column
+          background="surface"
+          border="neutral-strong"
+          radius="m"
+          padding="m"
+          gap="s"
+          maxWidth={64}
+        >
+          <Heading variant="heading-strong-xs">User Information</Heading>
+          <Column gap="xs">
+            <Row gap="s">
+              <Text variant="label-default-s" onBackground="neutral-weak">
+                Username:
+              </Text>
+              <Text variant="body-default-s" onBackground="neutral-strong">
+                {user.username}
+              </Text>
+            </Row>
+            <Row gap="s">
+              <Text variant="label-default-s" onBackground="neutral-weak">
+                Email:
+              </Text>
+              <Text variant="body-default-s" onBackground="neutral-strong">
+                {user.email}
+              </Text>
+            </Row>
+            <Row gap="s">
+              <Text variant="label-default-s" onBackground="neutral-weak">
+                Role:
+              </Text>
+              <Text variant="body-default-s" onBackground="neutral-strong">
+                {user.role}
+              </Text>
+            </Row>
+          </Column>
+        </Column>
+      )}
 
       <Column
         background="surface"

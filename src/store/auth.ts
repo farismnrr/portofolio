@@ -55,7 +55,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
       });
       const resBody = await response.json();
 
-      if (response.ok && resBody.status && resBody.data?.access_token) {
+      if (response.ok && (resBody.success || resBody.status) && resBody.data?.access_token) {
         set({
           accessToken: resBody.data.access_token,
           isAuthenticated: true,

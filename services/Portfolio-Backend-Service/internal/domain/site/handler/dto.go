@@ -1,4 +1,4 @@
-package page_auth
+package handler
 
 // AuthenticateRequest represents the authentication request
 type AuthenticateRequest struct {

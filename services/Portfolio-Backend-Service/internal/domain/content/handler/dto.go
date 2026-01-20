@@ -1,4 +1,4 @@
-package og
+package handler
 
 // FetchMetadataResponse represents the OG metadata response
 type FetchMetadataResponse struct {

@@ -10,7 +10,7 @@ import (
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
 	"github.com/farismnrr/portfolio-backend-service/internal/config"
-	"github.com/farismnrr/portfolio-backend-service/internal/handler/middleware"
+	"github.com/farismnrr/portfolio-backend-service/internal/middleware"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"

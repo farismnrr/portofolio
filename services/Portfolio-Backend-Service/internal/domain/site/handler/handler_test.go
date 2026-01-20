@@ -1,4 +1,4 @@
-package page_auth
+package handler
 
 import (
 	"encoding/json"

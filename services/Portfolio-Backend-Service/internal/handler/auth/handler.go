@@ -88,33 +88,18 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 		logger.Error("Failed to refresh token", zap.Error(err))
 
 		// Clear invalid refresh token cookie
-		// Must match the original cookie settings for deletion to work
 		clearCookie := &http.Cookie{
 			Name:     refreshTokenCookie,
 			Value:    "",
 			Path:     "/",
 			MaxAge:   -1,
 			HttpOnly: true,
-			Secure:   true,                  // Always true for cross-domain cookies
-			SameSite: http.SameSiteNoneMode, // Must be None for cross-domain
+			Secure:   true,
+			SameSite: http.SameSiteNoneMode,
 		}
 		c.SetCookie(clearCookie)
 
 		return response.Error(c, http.StatusUnauthorized, "Failed to refresh token")
-	}
-
-	// Set new refresh token cookie if SSO rotated it
-	if tokenResp.RefreshToken != "" {
-		newCookie := &http.Cookie{
-			Name:     refreshTokenCookie,
-			Value:    tokenResp.RefreshToken,
-			Path:     "/",
-			HttpOnly: true,
-			Secure:   true,
-			SameSite: http.SameSiteNoneMode,
-			MaxAge:   cookieMaxAge,
-		}
-		c.SetCookie(newCookie)
 	}
 
 	data := RefreshResponse{

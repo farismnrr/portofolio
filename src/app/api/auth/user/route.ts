@@ -23,8 +23,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
 
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
-    console.error("User fetch error:", error);
+  } catch (_error) {
     return NextResponse.json({ success: false, message: "Failed to fetch user" }, { status: 500 });
   }
 }

@@ -22,8 +22,7 @@ export async function POST(request: NextRequest) {
       status: response.status,
       headers: response.headers,
     });
-  } catch (error) {
-    console.error("Logout error:", error);
+  } catch (_error) {
     return NextResponse.json({ success: false, message: "Logout failed" }, { status: 500 });
   }
 }

@@ -3,7 +3,15 @@
 import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FiChevronLeft, FiChevronRight, FiGrid, FiHome, FiLogOut, FiSettings, FiUser } from "react-icons/fi";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiGrid,
+  FiHome,
+  FiLogOut,
+  FiSettings,
+  FiUser,
+} from "react-icons/fi";
 import styles from "./Sidebar.module.scss";
 
 const menuItems = [
@@ -70,12 +78,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 <span className={styles.userName}>{user?.username || "Guest"}</span>
                 <span className={styles.userRole}>{user?.role || "User"}</span>
               </div>
-              <button
-                type="button"
-                className={styles.logoutBtn}
-                onClick={logout}
-                title="Logout"
-              >
+              <button type="button" className={styles.logoutBtn} onClick={logout} title="Logout">
                 <FiLogOut />
               </button>
             </div>

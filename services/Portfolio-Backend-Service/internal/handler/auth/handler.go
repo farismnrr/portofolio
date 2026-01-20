@@ -103,6 +103,20 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 		return response.Error(c, http.StatusUnauthorized, "Failed to refresh token")
 	}
 
+	// Set new refresh token cookie if SSO rotated it
+	if tokenResp.RefreshToken != "" {
+		newCookie := &http.Cookie{
+			Name:     refreshTokenCookie,
+			Value:    tokenResp.RefreshToken,
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteNoneMode,
+			MaxAge:   cookieMaxAge,
+		}
+		c.SetCookie(newCookie)
+	}
+
 	data := RefreshResponse{
 		AccessToken: tokenResp.AccessToken,
 		ExpiresIn:   tokenResp.ExpiresIn,

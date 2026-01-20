@@ -22,8 +22,9 @@ type SSOClient struct {
 
 // TokenResponse represents the token response from SSO
 type TokenResponse struct {
-	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"-"` // Extracted from Set-Cookie header, not from JSON
 }
 
 // UserData represents user data from SSO
@@ -97,6 +98,15 @@ func (s *SSOClient) RefreshToken(ctx context.Context, refreshToken string) (*Tok
 	var tokenResp TokenResponse
 	if err := json.Unmarshal(baseResp.Data, &tokenResp); err != nil {
 		return nil, fmt.Errorf("failed to decode token response: %w", err)
+	}
+
+	// Extract new refresh token from Set-Cookie header (rotation)
+	cookies := resp.Cookies()
+	for _, cookie := range cookies {
+		if cookie.Name == "refresh_token" {
+			tokenResp.RefreshToken = cookie.Value
+			break
+		}
 	}
 
 	return &tokenResp, nil

@@ -1,6 +1,6 @@
 "use client";
 
-import { getSsoConfig } from "@/lib/config/env";
+import { getAppConfig } from "@/lib/config/env";
 import { Column, Spinner, Text } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
 
@@ -11,8 +11,8 @@ export default function LoginPage() {
     const initAuth = async () => {
       try {
         setStatus("Loading configuration...");
-        const config = getSsoConfig();
-        const ssoUrl = config.url;
+        const config = getAppConfig();
+        const ssoUrl = config.ssoUrl;
         const tenantId = config.tenantId;
 
         const redirectUri = encodeURIComponent(`${window.location.origin}/callback`);

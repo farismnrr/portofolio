@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { getApiUrl } from "@/lib/config/backend";
 
 interface User {
   id: string;
@@ -43,8 +44,11 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
   },
 
   refresh: async () => {
+    set({ isInitializing: true });
     try {
-      const response = await fetch("/api/auth/refresh");
+      const response = await fetch(getApiUrl("/auth/refresh"), {
+        method: "POST",
+      });
       const resBody = await response.json();
 
       if (response.ok && resBody.status && resBody.data?.access_token) {

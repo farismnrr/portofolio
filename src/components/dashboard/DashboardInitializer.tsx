@@ -11,10 +11,8 @@ export function DashboardInitializer({ children }: { children: React.ReactNode }
   const isInitializing = useAuthStore((state) => state.isInitializing);
 
   useEffect(() => {
-    if (isInitializing) {
-      initialize(true);
-    }
-  }, [initialize, isInitializing]);
+    initialize(true);
+  }, [initialize]);
 
   return <>{children}</>;
 }

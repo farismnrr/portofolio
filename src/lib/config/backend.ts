@@ -2,18 +2,10 @@
  * Centralized backend API URL configuration
  */
 
+import { getAppConfig } from "./env";
+
 export function getBackendUrl(): string {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  if (!backendUrl) {
-    // Default to localhost in development
-    if (process.env.NODE_ENV === "development") {
-      return "http://localhost:8080";
-    }
-    throw new Error("NEXT_PUBLIC_BACKEND_URL must be configured in production");
-  }
-
-  return backendUrl;
+  return getAppConfig().backendUrl;
 }
 
 /**

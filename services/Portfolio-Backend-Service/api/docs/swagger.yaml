@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   auth.LoginRequest:
     properties:
@@ -89,19 +88,8 @@ definitions:
       success:
         type: boolean
     type: object
-host: localhost:8080
 info:
-  contact:
-    email: hello@farismnrr.com
-    name: Faris M.
-    url: https://farismnrr.com
-  description: Interactive API documentation for the Portfolio Backend Service.
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: http://swagger.io/terms/
-  title: Portfolio Backend API
-  version: "1.0"
+  contact: {}
 paths:
   /v1/auth/login:
     post:
@@ -128,6 +116,20 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: SSO Login Proxy
+      tags:
+      - Auth
+  /v1/auth/logout:
+    post:
+      description: Logout user by invalidating SSO session and clearing refresh token
+        cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logout successful
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Logout
       tags:
       - Auth
   /v1/auth/refresh:
@@ -171,6 +173,10 @@ paths:
               type: object
         "401":
           description: No authorization header or failed to fetch user
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: 'Access denied: admin role required'
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       security:
@@ -293,16 +299,4 @@ paths:
       summary: Check authentication status
       tags:
       - Page Auth
-schemes:
-- http
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: X-API-Key
-    type: apiKey
-  BearerAuth:
-    description: Type "Bearer" followed by a space and then your token.
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

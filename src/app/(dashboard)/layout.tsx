@@ -9,9 +9,9 @@ export default function DashboardLayout({
 }>) {
   return (
     <Flex fillWidth fillHeight>
-      <RouteGuard>
-        <DashboardInitializer>{children}</DashboardInitializer>
-      </RouteGuard>
+      <DashboardInitializer>
+        <RouteGuard>{children}</RouteGuard>
+      </DashboardInitializer>
     </Flex>
   );
 }

@@ -1,5 +1,5 @@
-import { create } from "zustand";
 import { getApiUrl } from "@/lib/config/backend";
+import { create } from "zustand";
 
 interface User {
   id: string;
@@ -13,6 +13,8 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
+  setAccessToken: (token: string | null) => Promise<void>;
+  clearAuth: () => void;
   refresh: () => Promise<void>;
   setInitializing: (status: boolean) => void;
   initialize: (forceRefresh?: boolean) => Promise<void>;
@@ -44,6 +46,8 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
   },
 
   refresh: async () => {
+    if (useAuthStore.getState().isInitializing && useAuthStore.getState().accessToken) return;
+
     set({ isInitializing: true });
     try {
       const response = await fetch(getApiUrl("/auth/refresh"), {

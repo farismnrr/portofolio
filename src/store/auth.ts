@@ -46,8 +46,6 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
   },
 
   refresh: async () => {
-    if (useAuthStore.getState().isInitializing) return;
-
     set({ isInitializing: true });
     try {
       const response = await fetch(getApiUrl("/auth/refresh"), {

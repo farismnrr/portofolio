@@ -10,7 +10,11 @@ import (
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
 	"github.com/farismnrr/portfolio-backend-service/internal/config"
-	"github.com/farismnrr/portfolio-backend-service/internal/middleware"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/content"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/site"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
@@ -65,8 +69,19 @@ func (s *Server) SetupRoutes() {
 	// API v1 routes
 	v1 := s.echo.Group("/v1")
 
-	// Register domain routes
-	RegisterRoutes(v1, s.config)
+	// Register Domain Modules
+	site.RegisterRoutes(v1, s.config)
+	content.RegisterRoutes(v1)
+	sso.RegisterRoutes(v1, s.config)
+	dashboard.RegisterRoutes(v1, s.config)
+
+	// Status endpoint
+	v1.GET("/status", func(c echo.Context) error {
+		return c.JSON(200, map[string]interface{}{
+			"status":  true,
+			"message": "API v1 is running",
+		})
+	})
 
 	// API Documentation (Swagger UI)
 	s.echo.Static("/api", "api")

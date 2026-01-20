@@ -3,7 +3,7 @@ package dashboard
 import (
 	"github.com/farismnrr/portfolio-backend-service/internal/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard/handler"
-	"github.com/farismnrr/portfolio-backend-service/internal/middleware"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/labstack/echo/v4"
 )
 

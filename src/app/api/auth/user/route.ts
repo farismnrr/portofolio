@@ -1,14 +1,14 @@
 import { getBackendUrl } from "@/lib/config/backend";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
-    
+
     if (!authHeader) {
       return NextResponse.json(
         { success: false, message: "No authorization header" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -25,9 +25,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
     console.error("User fetch error:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch user" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Failed to fetch user" }, { status: 500 });
   }
 }

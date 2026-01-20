@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
   fetchUser: async () => {
     const get = _get as unknown as () => AuthState;
     const token = get().accessToken;
-    
+
     if (!token) return;
 
     try {
@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
           accessToken: resBody.data.access_token,
           isAuthenticated: true,
         });
-        
+
         // Fetch user data after successful refresh
         const get = _get as unknown as () => AuthState;
         await get().fetchUser();
@@ -95,9 +95,9 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
           user: null,
           isAuthenticated: false,
         });
-        
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
         }
       }
     } catch (_error) {
@@ -107,9 +107,9 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
         user: null,
         isAuthenticated: false,
       });
-      
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
     } finally {
       set({ isInitializing: false });
@@ -120,7 +120,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
     try {
       const get = _get as unknown as () => AuthState;
       const token = get().accessToken;
-      
+
       if (token) {
         // Call backend logout to clear cookie and invalidate session
         await fetch(getApiUrl("/auth/logout"), {
@@ -139,10 +139,10 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
         user: null,
         isAuthenticated: false,
       });
-      
+
       // Redirect to login
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
     }
   },

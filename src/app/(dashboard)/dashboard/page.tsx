@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth";
-import { Column, Heading, Text, Button, Row } from "@once-ui-system/core";
+import { Button, Column, Heading, Row, Text } from "@once-ui-system/core";
 
 export default function DashboardPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -17,11 +17,7 @@ export default function DashboardPage() {
       <Column fillWidth gap="m">
         <Row fillWidth horizontal="between" vertical="center">
           <Heading variant="display-strong-m">Dashboard</Heading>
-          <Button
-            variant="secondary"
-            size="m"
-            onClick={handleLogout}
-          >
+          <Button variant="secondary" size="m" onClick={handleLogout}>
             Logout
           </Button>
         </Row>

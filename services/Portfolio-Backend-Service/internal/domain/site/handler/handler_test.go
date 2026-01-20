@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	appConfig "github.com/farismnrr/portfolio-backend-service/internal/config"
+	appConfig "github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )

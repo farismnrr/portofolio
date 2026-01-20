@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"time"
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/content"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard"

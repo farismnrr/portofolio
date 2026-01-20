@@ -3,8 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
-	"github.com/farismnrr/portfolio-backend-service/internal/server"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -57,7 +56,7 @@ func main() {
 	)
 
 	// Create server
-	srv := server.New(cfg)
+	srv := New(cfg)
 
 	// Setup routes
 	srv.SetupRoutes()

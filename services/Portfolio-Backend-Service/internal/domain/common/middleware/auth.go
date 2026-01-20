@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	ssoRepo "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/repository"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/farismnrr/portfolio-backend-service/pkg/response"

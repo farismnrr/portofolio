@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/pkg/httpclient"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"go.uber.org/zap"

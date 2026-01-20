@@ -1,7 +1,7 @@
 package site
 
 import (
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/site/handler"
 	"github.com/labstack/echo/v4"
 )

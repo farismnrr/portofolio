@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	appConfig "github.com/farismnrr/portfolio-backend-service/internal/config"
+	appConfig "github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/pkg/response"
 	"github.com/labstack/echo/v4"
 )

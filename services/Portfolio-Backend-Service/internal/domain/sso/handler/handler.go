@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	appConfig "github.com/farismnrr/portfolio-backend-service/internal/config"
+	appConfig "github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	ssoUsecase "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/usecase"
 	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
 	"github.com/farismnrr/portfolio-backend-service/pkg/response"

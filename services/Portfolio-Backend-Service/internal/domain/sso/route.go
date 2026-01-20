@@ -1,7 +1,7 @@
 package sso
 
 import (
-	"github.com/farismnrr/portfolio-backend-service/internal/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso/handler"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso/repository"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso/usecase"

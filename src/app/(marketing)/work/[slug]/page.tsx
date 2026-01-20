@@ -1,16 +1,11 @@
 import { CustomMDX, ScrollToHash } from "@/components";
-import { Projects } from "@/components/work/Projects";
 import { about, baseURL, person, work } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
 import { getPosts } from "@/utils/utils";
 import {
-  Avatar,
   AvatarGroup,
-  Button,
   Column,
-  Flex,
   Heading,
-  Line,
   Media,
   Meta,
   Row,

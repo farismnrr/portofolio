@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  portofolio:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+    # Add dependency on other services if needed, but for now independent startup is fine
+
+  user-management:
+    build:
+      context: ./services/Multitenant-User-Management-Service
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5500:5500"
+    volumes:
+      - ./services/Multitenant-User-Management-Service:/app
+      - /app/target
+      - /app/usr/local/cargo/registry
+    environment:
+      - RUST_LOG=info
+      - DATABASE_URL=sqlite:///app/user_auth_plugin.sqlite
+      - CORE_DB_TYPE=sqlite
+      - CORE_DB_NAME=user_auth_plugin.sqlite
+    # Ensure hot reload works by mounting source
+
+  backend:
+    build:
+      context: ./services/Portfolio-Backend-Service
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/Portfolio-Backend-Service:/app
+      - /app/tmp
+    environment:
+      - PORT=8080
+    command: air

@@ -1,7 +1,9 @@
 "use client";
 
 import NotFound from "@/app/not-found";
+import { getApiUrl } from "@/lib/config/backend";
 import { protectedRoutes, routes } from "@/resources";
+import { useAuthStore } from "@/store/auth";
 import { Button, Column, Flex, Heading, PasswordInput, Spinner } from "@once-ui-system/core";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,6 +15,10 @@ interface RouteGuardProps {
 const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
+
+  // Auth Store
+  const isInitializing = useAuthStore((state) => state.isInitializing);
+
   const [isRouteEnabled, setIsRouteEnabled] = useState(false);
   const [isPasswordRequired, setIsPasswordRequired] = useState(false);
   const [password, setPassword] = useState("");
@@ -23,6 +29,12 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
 
   useEffect(() => {
     const performChecks = async () => {
+      // If store is still refreshing/initializing, keep loading
+      if (isInitializing) {
+        setLoading(true);
+        return;
+      }
+
       setLoading(true);
       setIsRouteEnabled(false);
       setIsPasswordRequired(false);
@@ -53,28 +65,21 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
       const routeEnabled = checkRouteEnabled();
       setIsRouteEnabled(routeEnabled);
 
-      // 2. RBAC Check for Dashboard
+      // Dashboard routes - trust SSO authorization
+      // If SSO redirected them here, they're already authorized
       if (pathname?.startsWith("/dashboard")) {
-        // Dynamic import to avoid SSR issues if auth.ts relies on browser APIs
-        const { getUserRole } = await import("@/lib/auth");
-        const role = getUserRole();
-
-        if (role !== "admin") {
-          setIsAuthorized(false);
-          setLoading(false);
-          return;
-        }
-        // Admin is authorized, no password check needed for dashboard (SSO handled it)
         setIsAuthenticated(true);
       }
 
-      // 3. Password Check for other protected routes
+      // Password Check for other protected routes
       else if (protectedRoutes[pathname as keyof typeof protectedRoutes]) {
         setIsPasswordRequired(true);
 
-        const response = await fetch("/api/check-auth");
+        const response = await fetch(getApiUrl("/page-auth/check"));
         if (response.ok) {
-          setIsAuthenticated(true);
+          const resBody = await response.json();
+          const data = resBody.data;
+          setIsAuthenticated((resBody.success && data?.authenticated) || false);
         }
       }
 
@@ -82,10 +87,10 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
     };
 
     performChecks();
-  }, [pathname]);
+  }, [pathname, isInitializing]);
 
   const handlePasswordSubmit = async () => {
-    const response = await fetch("/api/authenticate", {
+    const response = await fetch(getApiUrl("/page-auth/authenticate"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),

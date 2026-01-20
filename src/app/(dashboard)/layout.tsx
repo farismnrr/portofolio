@@ -1,4 +1,5 @@
 import { RouteGuard } from "@/components";
+import { DashboardInitializer } from "@/components/dashboard/DashboardInitializer";
 import { Flex } from "@once-ui-system/core";
 
 export default function DashboardLayout({
@@ -8,7 +9,9 @@ export default function DashboardLayout({
 }>) {
   return (
     <Flex fillWidth fillHeight>
-      <RouteGuard>{children}</RouteGuard>
+      <RouteGuard>
+        <DashboardInitializer>{children}</DashboardInitializer>
+      </RouteGuard>
     </Flex>
   );
 }

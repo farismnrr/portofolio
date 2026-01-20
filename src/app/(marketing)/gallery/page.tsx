@@ -30,9 +30,7 @@ function getGalleryImages() {
       if ((dimensions.width || 0) < (dimensions.height || 0)) {
         orientation = "vertical";
       }
-    } catch (error) {
-
-    }
+    } catch (_error) {}
 
     return {
       src: `/images/gallery/${file}`,

@@ -9,7 +9,6 @@ import {
   Column,
   Heading,
   HeadingNav,
-  Icon,
   Line,
   Media,
   Meta,
@@ -20,7 +19,6 @@ import {
 } from "@once-ui-system/core";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import React from "react";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getPosts(["app", "(marketing)", "blog", "posts"]);
@@ -67,7 +65,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
     notFound();
   }
 
-  const avatars =
+  const _avatars =
     post.metadata.team?.map((person) => ({
       src: person.avatar,
     })) || [];

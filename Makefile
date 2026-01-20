@@ -14,7 +14,8 @@ help:
 	@echo "  make clean            - Clean build artifacts"
 	@echo "  make build-docker     - Build Docker image"
 	@echo "  make start-docker     - Run Docker image locally"
-	@echo "  make push             - Push Docker image to GHCR"
+	@echo "  make create-tenant    - Create a new tenant and update .env"
+	@echo "  make generate-invite  - Generate a new invitation code"
 	@echo "  make kill             - Kill processes running on ports 3000-3010"
 	@echo ""
 
@@ -110,4 +111,42 @@ kill:
 	done
 	@echo "🧹 Cleaning Next.js cache and lock files..."
 	@rm -rf .next/dev .next/cache .next/server .next/static .next/trace 2>/dev/null || true
-	@echo "✅ All processes killed and cache cleaned"
+
+# Run development environment with Docker Compose
+dev-docker:
+	@echo "🚀 Starting development environment in Docker..."
+	docker compose -f docker-compose.dev.yml down --remove-orphans
+	docker compose -f docker-compose.dev.yml up --build
+
+# Create tenant and update .env
+create-tenant:
+	@echo "🚀 Creating tenant..."
+	@output=$$(cd services/Multitenant-User-Management-Service && make create-tenant --no-print-directory); \
+	echo "$$output"; \
+	tenant_id=$$(echo "$$output" | jq -r '.data.tenant_id'); \
+	if [ -n "$$tenant_id" ] && [ "$$tenant_id" != "null" ]; then \
+		echo "✅ Tenant ID found: $$tenant_id"; \
+		if grep -q "NEXT_PUBLIC_TENANT_ID=" .env; then \
+			sed -i "s/^NEXT_PUBLIC_TENANT_ID=.*/NEXT_PUBLIC_TENANT_ID=$$tenant_id/" .env; \
+		else \
+			echo "NEXT_PUBLIC_TENANT_ID=$$tenant_id" >> .env; \
+		fi; \
+		echo "✨ Updated NEXT_PUBLIC_TENANT_ID in root .env"; \
+		if [ -f "services/Portfolio-Backend-Service/.env" ]; then \
+			if grep -q "TENANT_ID=" services/Portfolio-Backend-Service/.env; then \
+				sed -i "s/^TENANT_ID=.*/TENANT_ID=$$tenant_id/" services/Portfolio-Backend-Service/.env; \
+				echo "✨ Updated TENANT_ID in backend .env"; \
+			else \
+				echo "TENANT_ID=$$tenant_id" >> services/Portfolio-Backend-Service/.env; \
+				echo "✨ Added TENANT_ID to backend .env"; \
+			fi; \
+		fi; \
+	else \
+		echo "❌ Failed to parse tenant_id from output"; \
+		exit 1; \
+	fi
+
+# Generate invite code
+generate-invite:
+	@echo "🚀 Generating invitation code..."
+	@cd services/Multitenant-User-Management-Service && make generate-invite --no-print-directory

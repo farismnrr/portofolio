@@ -1,0 +1,478 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Interactive API documentation for the Portfolio Backend Service.",
+        "title": "Portfolio Backend API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Faris M.",
+            "url": "https://farismnrr.com",
+            "email": "hello@farismnrr.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/v1/auth/login": {
+            "post": {
+                "description": "Receive a refresh token from the frontend and store it in a secure HttpOnly cookie.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "SSO Login Proxy",
+                "parameters": [
+                    {
+                        "description": "Login request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/refresh": {
+            "post": {
+                "description": "Use the stored refresh token cookie to obtain a new access token from the SSO service.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh Access Token",
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/auth.RefreshResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "No refresh token found or failed to refresh",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Validate the Bearer token with the SSO service and return detailed user information.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get User Information",
+                "responses": {
+                    "200": {
+                        "description": "User data retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/auth.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "No authorization header or failed to fetch user",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/og/fetch": {
+            "get": {
+                "description": "Extract Open Graph metadata (title, description, image, etc.) from a given URL.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OG"
+                ],
+                "summary": "Fetch OG Metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target URL to fetch metadata from",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metadata fetched successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/og.FetchMetadataResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "URL parameter is required",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch or read metadata",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/og/proxy": {
+            "get": {
+                "description": "Proxy an external image URL to avoid CORS or fetch failures.",
+                "tags": [
+                    "OG"
+                ],
+                "summary": "Proxy Image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "External image URL to proxy",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image binary data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "URL parameter is required",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to proxy image",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/page-auth/authenticate": {
+            "post": {
+                "description": "Verify the password and set an authentication cookie for page access.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Page Auth"
+                ],
+                "summary": "Authenticate user",
+                "parameters": [
+                    {
+                        "description": "Authentication request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/page_auth.AuthenticateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/page_auth.AuthenticateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Incorrect password",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/page-auth/check": {
+            "get": {
+                "description": "Check if the user is authenticated via the authentication cookie.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Page Auth"
+                ],
+                "summary": "Check authentication status",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/page_auth.CheckAuthResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.LoginRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "auth.RefreshResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                },
+                "expires_in": {
+                    "type": "integer",
+                    "example": 3600
+                }
+            }
+        },
+        "auth.UserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "user"
+                },
+                "tenant_id": {
+                    "type": "string",
+                    "example": "770e8400-e29b-41d4-a716-446655440001"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "og.FetchMetadataResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "This is an example description of the page."
+                },
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/og-image.jpg"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Example Title"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://example.com"
+                }
+            }
+        },
+        "page_auth.AuthenticateRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "your-strong-password"
+                }
+            }
+        },
+        "page_auth.AuthenticateResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "page_auth.CheckAuthResponse": {
+            "type": "object",
+            "properties": {
+                "authenticated": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "For additional error data"
+                },
+                "details": {
+                    "description": "For validation errors"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "response.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and then your token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

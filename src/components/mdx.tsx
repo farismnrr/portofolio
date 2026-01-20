@@ -58,7 +58,6 @@ function CustomLink({ href, children, ...props }: CustomLinkProps) {
 
 function createImage({ alt, src, ...props }: MediaProps & { src: string }) {
   if (!src) {
-
     return null;
   }
 

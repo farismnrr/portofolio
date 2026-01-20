@@ -18,17 +18,11 @@ export default function CallbackPage() {
 
       const accessToken = params.get("access_token");
 
-
-
       if (!accessToken) {
         throw new Error("No access token received");
       }
 
-      // Note: Refresh token cookie is set by the SSO service directly
-      // during the redirect process. No need to handle it in URL hash.
-
-      // Store access token in Zustand store (memory)
-      setAccessToken(accessToken);
+      await setAccessToken(accessToken);
 
       // Clear URL hash for security
       window.history.replaceState(null, "", window.location.pathname);
@@ -39,7 +33,6 @@ export default function CallbackPage() {
 
       router.push(redirect);
     } catch (err) {
-
       setError(err instanceof Error ? err.message : "Authentication failed");
     }
   }, [router, setAccessToken]);

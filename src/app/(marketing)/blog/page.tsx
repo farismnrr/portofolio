@@ -1,6 +1,6 @@
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
-import { baseURL, blog, newsletter, person } from "@/resources";
+import { baseURL, blog, person } from "@/resources";
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 
 export async function generateMetadata() {

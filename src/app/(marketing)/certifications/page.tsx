@@ -1,5 +1,5 @@
 import { baseURL, certifications, person } from "@/resources";
-import { Column, Grid, Heading, Media, Meta, Row, Schema, Text } from "@once-ui-system/core";
+import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 import CertificationList from "./CertificationList";
 
 export async function generateMetadata() {

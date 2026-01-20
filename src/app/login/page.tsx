@@ -1,5 +1,6 @@
 "use client";
 
+import { getSsoConfig } from "@/lib/config/env";
 import { Column, Spinner, Text } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
 
@@ -10,20 +11,16 @@ export default function LoginPage() {
     const initAuth = async () => {
       try {
         setStatus("Loading configuration...");
-        const res = await fetch("/api/config");
-        const config = await res.json();
-
-        const ssoUrl = config.ssoUrl;
+        const config = getSsoConfig();
+        const ssoUrl = config.url;
         const tenantId = config.tenantId;
+
         const redirectUri = encodeURIComponent(`${window.location.origin}/callback`);
-
-
 
         // SSO will generate state/nonce automatically
         setStatus("Redirecting to login...");
         window.location.href = `${ssoUrl}/login?tenant_id=${tenantId}&redirect_uri=${redirectUri}&role=admin`;
-      } catch (error) {
-
+      } catch (_error) {
         setStatus("Error loading configuration");
       }
     };

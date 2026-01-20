@@ -49,7 +49,7 @@ export function getUserRole(): string | null {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
     return decoded.role || null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }

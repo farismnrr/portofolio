@@ -19,7 +19,7 @@ function debounce<A extends unknown[], R>(
 export const Mailchimp: React.FC<React.ComponentProps<typeof Column>> = ({ ...flex }) => {
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [touched, setTouched] = useState<boolean>(false);
+  const [_touched, setTouched] = useState<boolean>(false);
 
   const validateEmail = (email: string): boolean => {
     if (email === "") {

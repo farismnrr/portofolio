@@ -27,14 +27,14 @@ const socialPlatforms: Record<string, SocialPlatform> = {
     name: "linkedin",
     icon: "linkedin",
     label: "LinkedIn",
-    generateUrl: (title, url) =>
+    generateUrl: (_title, url) =>
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
   },
   facebook: {
     name: "facebook",
     icon: "facebook",
     label: "Facebook",
-    generateUrl: (title, url) =>
+    generateUrl: (_title, url) =>
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
   },
   pinterest: {
@@ -87,8 +87,7 @@ export function ShareSection({ title, url }: ShareSectionProps) {
         variant: "success",
         message: "Link copied to clipboard",
       });
-    } catch (err) {
-
+    } catch (_err) {
       addToast({
         variant: "danger",
         message: "Failed to copy link",
@@ -108,7 +107,7 @@ export function ShareSection({ title, url }: ShareSectionProps) {
         Share this post:
       </Text>
       <Row data-border="rounded" gap="16" horizontal="center" wrap>
-        {enabledPlatforms.map((platform, index) => (
+        {enabledPlatforms.map((platform, _index) => (
           <Button
             key={platform.name}
             variant="secondary"

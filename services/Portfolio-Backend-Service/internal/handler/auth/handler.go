@@ -139,6 +139,16 @@ func (h *Handler) GetUser(c echo.Context) error {
 		return response.Error(c, http.StatusUnauthorized, "Failed to fetch user")
 	}
 
+	// RBAC: Only allow admin role
+	if userData.Role != "admin" {
+		logger.Warn("Non-admin user attempted to access admin-only application",
+			zap.String("user_id", userData.ID),
+			zap.String("username", userData.Username),
+			zap.String("role", userData.Role),
+		)
+		return response.Error(c, http.StatusForbidden, "Access denied: admin role required")
+	}
+
 	data := UserResponse{
 		ID:       userData.ID,
 		Username: userData.Username,

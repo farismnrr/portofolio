@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
-	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )

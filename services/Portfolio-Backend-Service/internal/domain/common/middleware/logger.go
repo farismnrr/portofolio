@@ -3,7 +3,7 @@ package middleware
 import (
 	"time"
 
-	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )

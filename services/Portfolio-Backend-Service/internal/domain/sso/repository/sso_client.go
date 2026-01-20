@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
-	"github.com/farismnrr/portfolio-backend-service/pkg/httpclient"
-	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/httpclient"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"go.uber.org/zap"
 )
 

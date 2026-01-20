@@ -15,7 +15,7 @@ import (
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/site"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso"
-	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"

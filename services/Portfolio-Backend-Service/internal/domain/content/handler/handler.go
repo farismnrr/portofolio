@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/farismnrr/portfolio-backend-service/pkg/httpclient"
-	"github.com/farismnrr/portfolio-backend-service/pkg/logger"
-	"github.com/farismnrr/portfolio-backend-service/pkg/response"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/httpclient"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )

@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/farismnrr/portfolio-backend-service/internal/config"
-	authHandler "github.com/farismnrr/portfolio-backend-service/internal/handler/auth"
+	ssoHandler "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/handler"
 	dashboardHandler "github.com/farismnrr/portfolio-backend-service/internal/handler/dashboard"
 	"github.com/farismnrr/portfolio-backend-service/internal/handler/middleware"
 	ogHandler "github.com/farismnrr/portfolio-backend-service/internal/handler/og"
@@ -24,13 +24,13 @@ func RegisterRoutes(e *echo.Group, cfg *config.Config) {
 	ogGroup.GET("/fetch", ogH.FetchMetadata)
 	ogGroup.GET("/proxy", ogH.ProxyImage)
 
-	// Auth routes (SSO proxy)
-	authH := authHandler.NewHandler(cfg)
+	// Auth routes (SSO proxy) - Domain SSO
+	ssoH := ssoHandler.NewHandler(cfg)
 	authGroup := e.Group("/auth")
-	authGroup.POST("/login", authH.Login)
-	authGroup.POST("/refresh", authH.RefreshToken)
-	authGroup.GET("/user", authH.GetUser)
-	authGroup.POST("/logout", authH.Logout)
+	authGroup.POST("/login", ssoH.Login)
+	authGroup.POST("/refresh", ssoH.RefreshToken)
+	authGroup.GET("/user", ssoH.GetUser)
+	authGroup.POST("/logout", ssoH.Logout)
 
 	// Dashboard routes (protected, admin only)
 	dashboardH := dashboardHandler.NewHandler()

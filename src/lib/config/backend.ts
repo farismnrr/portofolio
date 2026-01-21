@@ -5,6 +5,9 @@
 import { getAppConfig } from "./env";
 
 export function getBackendUrl(): string {
+  if (process.env.BACKEND_INTERNAL_URL) {
+    return process.env.BACKEND_INTERNAL_URL;
+  }
   return getAppConfig().backendUrl;
 }
 

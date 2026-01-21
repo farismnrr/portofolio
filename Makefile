@@ -112,9 +112,15 @@ kill:
 	@echo "🧹 Cleaning Next.js cache and lock files..."
 	@rm -rf .next/dev .next/cache .next/server .next/static .next/trace 2>/dev/null || true
 
-# Run development environment with Docker Compose
+# Run development environment with Docker Compose (fast start, uses cache/existing images)
 dev-docker:
-	@echo "🚀 Starting development environment in Docker..."
+	@echo "🚀 Starting development environment in Docker (Fast Mode)..."
+	docker compose -f docker-compose.dev.yml down --remove-orphans
+	docker compose -f docker-compose.dev.yml up
+
+# Run development environment with forced rebuild
+dev-docker-build:
+	@echo "🚀 Starting development environment in Docker (Forced Rebuild)..."
 	docker compose -f docker-compose.dev.yml down --remove-orphans
 	docker compose -f docker-compose.dev.yml up --build
 

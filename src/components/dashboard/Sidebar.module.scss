@@ -71,9 +71,17 @@
   font-size: 0.95rem;
 
   /* Ensure child text inherits the intended color (higher specificity) */
+  &,
+  & *,
   & > span,
   & > * {
-    color: var(--neutral-on-background-medium);
+    color: var(--neutral-on-background-medium) !important;
+  }
+
+  /* Links inside may have library/global styles; be explicit for anchor text/icons */
+  &.navItem,
+  &.navItem * {
+    color: var(--neutral-on-background-medium) !important;
   }
 
   .collapsed & {
@@ -109,7 +117,7 @@
   & .icon,
   & > span,
   & > * {
-    color: var(--brand-on-background-strong);
+    color: var(--brand-on-background-strong) !important;
   }
 }
 

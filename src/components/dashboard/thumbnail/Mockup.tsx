@@ -5,10 +5,9 @@ type DeviceType = "website" | "mobile";
 interface MockupProps {
   deviceType: DeviceType;
   totalScreens: number;
-  rotation: number;
 }
 
-export const Mockup = ({ deviceType, totalScreens, rotation }: MockupProps) => {
+export const Mockup = ({ deviceType, totalScreens }: MockupProps) => {
   // Adjust scale based on device type
   const isMobile = deviceType === "mobile";
 
@@ -27,7 +26,7 @@ export const Mockup = ({ deviceType, totalScreens, rotation }: MockupProps) => {
     <div
       className={`${styles.mockup} ${styles[deviceType]}`}
       style={{
-        transform: `rotate(${rotation}deg) scale(${scale})`,
+        transform: `scale(${scale})`,
         // Grid handles positioning, scale handles size.
       }}
     >

@@ -15,14 +15,17 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
   return (
     <section className={styles.previewCard}>
       <div className={styles.previewHeader}>Live Preview</div>
-      <div ref={canvasRef} className={styles.previewCanvas}>
+      <div
+        ref={canvasRef}
+        className={styles.previewCanvas}
+        style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "center center" }}
+      >
         <div className={styles.mockupsContainer}>
           {Array.from({ length: screenCount }).map((_, index) => (
             <Mockup
               key={`mockup-${screenCount}-${deviceType}-${index}`}
               deviceType={deviceType}
               totalScreens={screenCount}
-              rotation={rotation}
             />
           ))}
         </div>

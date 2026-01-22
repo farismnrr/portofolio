@@ -59,11 +59,27 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
 
         // Use a fixed mockup scale so sizes don't change when rotating or changing count
         const mockupScale = deviceType === "website" ? 0.5 : 0.85;
-        const itemWScaled = itemW * mockupScale;
-        const itemHScaled = itemH * mockupScale;
+        // Determine if we should scale up to fill available width when screenCount < maxCols
+        const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
+
+        // Preliminary scaled sizes at base mockupScale
+        const baseItemWScaled = itemW * mockupScale;
+        const _baseItemHScaled = itemH * mockupScale;
+
+        // If fewer screens than maxCols, try to scale up to fill available width
+        let appliedScale = mockupScale;
+        if (screenCount < maxCols && screenCount > 0) {
+          const totalBaseW = screenCount * baseItemWScaled + (screenCount - 1) * gap;
+          if (totalBaseW > 0) {
+            const fillScale = Math.min(1, availableWidth / totalBaseW);
+            appliedScale = mockupScale * fillScale;
+          }
+        }
+
+        const itemWScaled = itemW * appliedScale;
+        const itemHScaled = itemH * appliedScale;
 
         // Use per-device maximum columns when forcing fixed columns, then fallback to fit calculation
-        const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
         const cols =
           screenCount >= maxCols
             ? maxCols
@@ -78,15 +94,18 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
 
         const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
 
-        // Center horizontally (allow overflow), vertically center relative to availableHeight
-        const leftEdge = (canvasRect.width - totalW) / 2;
+        // Compute vertical centering; horizontal centering will be handled per-item using center-based offsets
+        const _leftEdge = (canvasRect.width - totalW) / 2;
         const topStart = margin + (availableHeight - totalH) / 2;
 
         const newPositions: Array<{ top: number; left: number }> = [];
         for (let i = 0; i < screenCount; i++) {
           const r = Math.floor(i / cols);
           const c = i % cols;
-          const left = leftEdge + c * (itemWScaled + gap) + itemWScaled / 2;
+          // Position items symmetrically from the canvas center (grow outwards from center)
+          const centerX = canvasRect.width / 2;
+          const colOffset = c - (cols - 1) / 2;
+          const left = centerX + colOffset * (itemWScaled + gap);
           const top = topStart + r * (itemHScaled + verticalGap) + itemHScaled / 2;
           newPositions.push({ top, left });
         }

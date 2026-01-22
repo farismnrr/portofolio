@@ -1,9 +1,9 @@
 "use client";
 
 import { ControlsCard } from "@/components/dashboard/thumbnail/ControlsCard";
+import styles from "@/components/dashboard/thumbnail/Page.module.scss";
 import { PreviewCard } from "@/components/dashboard/thumbnail/PreviewCard";
 import { useRef, useState } from "react";
-import styles from "@/components/dashboard/thumbnail/Page.module.scss";
 
 type DeviceType = "website" | "mobile";
 

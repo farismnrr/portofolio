@@ -3,7 +3,7 @@
 import { ControlsCard } from "@/components/dashboard/thumbnail/ControlsCard";
 import { PreviewCard } from "@/components/dashboard/thumbnail/PreviewCard";
 import { useRef, useState } from "react";
-import styles from "./page.module.scss";
+import styles from "@/components/dashboard/thumbnail/Page.module.scss";
 
 type DeviceType = "website" | "mobile";
 

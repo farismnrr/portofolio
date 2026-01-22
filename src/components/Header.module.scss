@@ -19,38 +19,3 @@
         bottom: 0;
     }
 }
-
-/* Header ToggleButton tweaks to match marketing styles (neutral hover/active) */
-.position {
-  /* Scope button-like elements inside header */
-  /* Button elements */
-  button,
-  [role="button"] {
-    background: transparent;
-    border-radius: 8px;
-    transition: background 0.12s ease, color 0.12s ease;
-    color: var(--neutral-on-background-medium);
-  }
-
-  /* Hover: subtle neutral background (not transparent) */
-  button:hover,
-  [role="button"]:hover {
-    background: var(--neutral-background-weak);
-    color: var(--neutral-on-background-strong);
-  }
-
-  /* Active/selected: use neutral medium background and stronger text */
-  button[aria-pressed="true"],
-  [aria-current="page"],
-  [data-selected="true"],
-  .selected {
-    background: var(--neutral-background-medium);
-    color: var(--neutral-on-background-strong);
-  }
-
-  /* Ensure icons inside buttons follow color */
-  button svg,
-  [role="button"] svg {
-    color: inherit;
-  }
-}

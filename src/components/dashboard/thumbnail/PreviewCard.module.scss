@@ -1,0 +1,55 @@
+/* PREVIEW */
+.previewCard {
+    background: var(--neutral-background-weak);
+    border: 1px solid var(--neutral-border-weak);
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.previewHeader {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--neutral-on-background-medium);
+    margin-bottom: 1rem;
+}
+
+.previewCanvas {
+    background: var(--neutral-background-strong);
+    border-radius: 12px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Content outside will be clipped */
+    position: relative;
+}
+
+.mockupsContainer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    margin-left: 0;
+}
+
+@media (max-width: 768px) {
+    .previewCanvas {
+        padding: 1.5rem;
+        min-height: 400px;
+    }
+
+    .mockupsContainer {
+        min-width: 100%;
+        min-height: 300px;
+        transform: scale(0.5);
+    }
+}

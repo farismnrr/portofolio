@@ -4,21 +4,27 @@ import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  FiAward,
+  FiBriefcase,
   FiChevronLeft,
   FiChevronRight,
-  FiGrid,
+  FiFileText,
   FiHome,
+  FiImage,
+  FiInfo,
+  FiLayout,
   FiLogOut,
-  FiSettings,
-  FiUser,
 } from "react-icons/fi";
 import styles from "./Sidebar.module.scss";
 
 const menuItems = [
-  { name: "Dashboard", icon: FiGrid, path: "/dashboard" },
-  { name: "Projects", icon: FiHome, path: "/dashboard/projects" },
-  { name: "Profile", icon: FiUser, path: "/dashboard/profile" },
-  { name: "Settings", icon: FiSettings, path: "/dashboard/settings" },
+  { name: "Home", icon: FiHome, path: "/" },
+  { name: "About", icon: FiInfo, path: "/dashboard/about" },
+  { name: "Work", icon: FiBriefcase, path: "/dashboard/work" },
+  { name: "Blog", icon: FiFileText, path: "/dashboard/blog" },
+  { name: "Certification", icon: FiAward, path: "/dashboard/certifications" },
+  { name: "Gallery", icon: FiImage, path: "/dashboard/gallery" },
+  { name: "Thumbnail", icon: FiLayout, path: "/dashboard/thumbnail" },
 ];
 
 interface SidebarProps {

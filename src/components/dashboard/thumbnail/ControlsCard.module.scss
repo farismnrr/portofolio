@@ -1,0 +1,89 @@
+/* CONTROLS */
+.controlsCard {
+    background: var(--neutral-background-weak);
+    border: 1px solid var(--neutral-border-medium);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label,
+    legend {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--neutral-on-background-strong);
+
+        strong {
+            color: var(--brand-on-background-medium);
+        }
+    }
+
+    input[type="range"] {
+        width: 100%;
+        accent-color: var(--brand-background-medium);
+    }
+}
+
+/* DEVICE SWITCH */
+.segmented {
+    display: flex;
+    background: var(--neutral-background-medium);
+    border-radius: 10px;
+    overflow: hidden;
+
+    button {
+        flex: 1;
+        padding: 0.6rem;
+        font-size: 0.875rem;
+        background: transparent;
+        color: var(--neutral-on-background-medium);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            color: var(--neutral-on-background-strong);
+        }
+    }
+
+    .active {
+        background: var(--brand-background-medium);
+        color: var(--brand-on-background-medium);
+    }
+}
+
+/* EXPORT BUTTON */
+.exportBtn {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    border-radius: 12px;
+    background: var(--brand-background-medium);
+    color: var(--brand-on-background-medium);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+        background: var(--brand-background-strong);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    svg {
+        font-size: 1.125rem;
+    }
+}

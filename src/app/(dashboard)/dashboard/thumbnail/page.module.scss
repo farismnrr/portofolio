@@ -1,0 +1,48 @@
+/* PAGE LAYOUT STYLES */
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.header {
+    margin-bottom: 2rem;
+    padding-left: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+
+    h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--neutral-on-background-strong);
+        margin-bottom: 0.25rem;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        color: var(--neutral-on-background-medium);
+        max-width: 520px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+}
+
+/* MAIN LAYOUT */
+.layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 2rem;
+    min-height: 75vh;
+    align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}

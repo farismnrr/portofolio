@@ -16,6 +16,7 @@
     "classnames": "^2.5.1",
     "cookie": "^1.0.2",
     "gray-matter": "^4.0.3",
+    "html2canvas": "^1.4.1",
     "image-size": "^2.0.2",
     "jwt-decode": "^4.0.0",
     "lint-staged": "^16.1.5",

@@ -56,10 +56,22 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
             : Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
         const rows = Math.ceil(screenCount / cols);
 
+        // Compute horizontal total using the horizontal gap (unchanged)
         const totalW = cols * itemWScaled + (cols - 1) * gap;
-        const totalH = rows * itemHScaled + (rows - 1) * gap;
 
-        // Center the full layout over the canvas center so left/right can overflow and be clipped
+        // Compute vertical gap dynamically to target an approximate total height (e.g., 600px)
+        // without changing horizontal gap. This reduces vertical spacing only.
+        const desiredTotalH = 600;
+        let verticalGap = gap;
+        if (rows > 1) {
+          const candidate = (desiredTotalH - rows * itemHScaled) / (rows - 1);
+          // Clamp to reasonable range [8, gap]
+          verticalGap = Math.max(8, Math.min(gap, candidate));
+        }
+
+        const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
+
+        // Center horizontally (allow overflow), vertically center relative to availableHeight
         const leftEdge = (canvasRect.width - totalW) / 2;
         const topStart = margin + (availableHeight - totalH) / 2;
 
@@ -68,7 +80,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
           const r = Math.floor(i / cols);
           const c = i % cols;
           const left = leftEdge + c * (itemWScaled + gap) + itemWScaled / 2;
-          const top = topStart + r * (itemHScaled + gap) + itemHScaled / 2;
+          const top = topStart + r * (itemHScaled + verticalGap) + itemHScaled / 2;
           newPositions.push({ top, left });
         }
 

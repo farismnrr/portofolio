@@ -32,20 +32,20 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const canvasRect = canvas.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return;
 
-        const margin = 8; // safety margin in pixels to avoid touching edges
+        const margin = 12; // safety margin in pixels to avoid touching edges
         const availableWidth = canvasRect.width - margin * 2;
         const availableHeight = canvasRect.height - margin * 2;
         const _scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
 
-        // Compute fixed-spacing positions in pixel coordinates (tighter)
-        const gap = 12; // fixed gap in pixels
-        const itemW = deviceType === "website" ? 560 : 220;
+        // Compute fixed-spacing positions in pixel coordinates (more readable)
+        const gap = 20; // fixed gap in pixels
+        const itemW = deviceType === "website" ? 620 : 240;
         // approximate heights (unscaled)
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;
 
         // Use a fixed mockup scale so sizes don't change when rotating or changing count
-        const mockupScale = deviceType === "website" ? 0.3 : 0.75;
+        const mockupScale = deviceType === "website" ? 0.5 : 0.85;
         const itemWScaled = itemW * mockupScale;
         const itemHScaled = itemH * mockupScale;
 
@@ -148,7 +148,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
                   <Mockup
                     deviceType={deviceType}
                     totalScreens={screenCount}
-                    scaleOverride={deviceType === "website" ? 0.3 : 0.75}
+                    scaleOverride={deviceType === "website" ? 0.5 : 0.85}
                   />
                 </div>
               );

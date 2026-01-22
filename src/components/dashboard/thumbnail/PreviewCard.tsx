@@ -49,20 +49,26 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const itemWScaled = itemW * mockupScale;
         const itemHScaled = itemH * mockupScale;
 
-        const cols = Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
+        // Force 4 columns when possible and allow horizontal overflow by centering the full layout
+        const cols =
+          screenCount >= 4
+            ? 4
+            : Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
         const rows = Math.ceil(screenCount / cols);
 
         const totalW = cols * itemWScaled + (cols - 1) * gap;
         const totalH = rows * itemHScaled + (rows - 1) * gap;
 
+        // Center the full layout over the canvas center so left/right can overflow and be clipped
+        const leftEdge = (canvasRect.width - totalW) / 2;
+        const topStart = margin + (availableHeight - totalH) / 2;
+
         const newPositions: Array<{ top: number; left: number }> = [];
         for (let i = 0; i < screenCount; i++) {
           const r = Math.floor(i / cols);
           const c = i % cols;
-          const left =
-            margin + (availableWidth - totalW) / 2 + c * (itemWScaled + gap) + itemWScaled / 2;
-          const top =
-            margin + (availableHeight - totalH) / 2 + r * (itemHScaled + gap) + itemHScaled / 2;
+          const left = leftEdge + c * (itemWScaled + gap) + itemWScaled / 2;
+          const top = topStart + r * (itemHScaled + gap) + itemHScaled / 2;
           newPositions.push({ top, left });
         }
 

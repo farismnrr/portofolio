@@ -101,8 +101,8 @@
 }
 
 .navItem:hover {
-  /* Use neutral hover like marketing header */
-  background: var(--neutral-background-weak);
+  /* Use neutral-alpha hover like marketing header (non-transparent) */
+  background: var(--neutral-alpha-weak);
   color: var(--neutral-on-background-strong);
   transform: translateX(4px);
 
@@ -118,8 +118,8 @@
 }
 
 .navItemActive {
-  /* Use neutral active state (grey) to match marketing */
-  background: var(--neutral-background-medium);
+  /* Use neutral-alpha medium active state to match marketing */
+  background: var(--neutral-alpha-medium);
   color: var(--neutral-on-background-strong);
   border: 1px solid var(--neutral-border-medium);
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);

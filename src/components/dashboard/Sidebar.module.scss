@@ -62,9 +62,9 @@
   gap: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 12px;
-  color: #94a3b8;
+  color: var(--neutral-on-background-medium);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
   font-weight: 500;
   font-size: 0.95rem;
@@ -76,8 +76,8 @@
 }
 
 .navItem:hover {
-  background: var(--neutral-background-weak);
-  color: var(--neutral-on-background-strong);
+  background: var(--brand-background-weak);
+  color: var(--brand-on-background-strong);
   transform: translateX(4px);
 
   .collapsed & {
@@ -89,6 +89,7 @@
   background: var(--brand-background-medium);
   color: var(--brand-on-background-medium);
   border: 1px solid var(--brand-border-medium);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .icon {

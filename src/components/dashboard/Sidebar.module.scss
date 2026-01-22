@@ -62,12 +62,19 @@
   gap: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 12px;
+  /* Explicitly scope text color for children to avoid global link rules overriding it */
   color: var(--neutral-on-background-medium);
   text-decoration: none;
   transition: all 0.15s ease;
   cursor: pointer;
   font-weight: 500;
   font-size: 0.95rem;
+
+  /* Ensure child text inherits the intended color (higher specificity) */
+  & > span,
+  & > * {
+    color: var(--neutral-on-background-medium);
+  }
 
   .collapsed & {
     justify-content: center;
@@ -80,16 +87,30 @@
   color: var(--brand-on-background-strong);
   transform: translateX(4px);
 
+  /* Ensure child text/icon follow hover color */
+  & > span,
+  & .icon {
+    color: var(--brand-on-background-strong);
+  }
+
   .collapsed & {
     transform: translateX(0);
   }
 }
 
 .navItemActive {
-  background: var(--brand-background-medium);
-  color: var(--brand-on-background-medium);
+  /* Make active more like marketing selected: stronger brand background + clear on-brand text */
+  background: var(--brand-background-strong);
+  color: var(--brand-on-background-strong);
   border: 1px solid var(--brand-border-medium);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+
+  /* ensure children (icon/text) follow active color */
+  & .icon,
+  & > span,
+  & > * {
+    color: var(--brand-on-background-strong);
+  }
 }
 
 .icon {

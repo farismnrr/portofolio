@@ -30,15 +30,42 @@
 
 .mockupsContainer {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
+    /* change to relative positioning with absolute children to allow free placement */
+    display: block;
     width: 100%;
     height: 100%;
     margin-left: 0;
+}
+
+.mockupWrapper {
+    position: absolute;
+    /* ensure mockups don't overlap tightly; small padding to avoid touching edges */
+    padding: 0.08rem;
+    box-sizing: border-box;
+}
+
+/* Reduce spacing inside mockups to be tighter but not touching */
+.mockup {
+    margin: 0;
+}
+
+/* Slightly reduce website/mobile widths so multiple items fit better (mepet but not touching) */
+.mockup.website {
+    width: 620px;
+}
+
+.mockup.mobile {
+    width: 240px;
+}
+
+/* Inner wrapper that will rotate + be scaled to fit inside previewCanvas */
+.canvasInner {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    transition: transform 160ms ease;
+    will-change: transform;
 }
 
 @media (max-width: 768px) {

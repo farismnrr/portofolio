@@ -62,12 +62,37 @@
   gap: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 12px;
-  color: #94a3b8;
+  /* Explicitly scope text color for children to avoid global link rules overriding it */
+  color: var(--neutral-on-background-medium);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
   font-weight: 500;
   font-size: 0.95rem;
+
+  /* Ensure child text inherits the intended color (higher specificity) without using !important */
+  & > span,
+  & .icon,
+  & * {
+    color: var(--neutral-on-background-medium);
+  }
+
+  /* Extra specificity to override any library/global anchor color rules */
+  .sidebar & > .navItem > span,
+  .sidebar & > .navItem .icon {
+    color: var(--neutral-on-background-medium);
+  }
+
+  /* Direct children hover/active color */
+  .sidebar & > .navItem:hover > span,
+  .sidebar & > .navItem:hover .icon {
+    color: var(--neutral-on-background-strong);
+  }
+
+  .sidebar & > .navItemActive > span,
+  .sidebar & > .navItemActive .icon {
+    color: var(--neutral-on-background-strong);
+  }
 
   .collapsed & {
     justify-content: center;
@@ -76,9 +101,16 @@
 }
 
 .navItem:hover {
-  background: var(--neutral-background-weak);
+  /* Use neutral-alpha hover like marketing header (non-transparent) */
+  background: var(--neutral-alpha-weak);
   color: var(--neutral-on-background-strong);
   transform: translateX(4px);
+
+  /* Ensure child text/icon follow hover color */
+  & > span,
+  & .icon {
+    color: var(--neutral-on-background-strong);
+  }
 
   .collapsed & {
     transform: translateX(0);
@@ -86,14 +118,34 @@
 }
 
 .navItemActive {
-  background: var(--brand-background-medium);
-  color: var(--brand-on-background-medium);
-  border: 1px solid var(--brand-border-medium);
+  /* Use neutral-alpha medium active state to match marketing */
+  background: var(--neutral-alpha-medium);
+  color: var(--neutral-on-background-strong);
+  border: 1px solid var(--neutral-border-medium);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+
+  /* ensure children (icon/text) follow active color */
+  & .icon,
+  & > span,
+  & > * {
+    color: var(--neutral-on-background-strong);
+  }
 }
 
 .icon {
   font-size: 1.25rem;
   flex-shrink: 0;
+  /* Force neutral color for icons by default to match marketing subtlety */
+  color: var(--neutral-on-background-medium);
+}
+
+/* Make icons respond to hover/active like text */
+.navItem:hover .icon {
+  color: var(--brand-on-background-strong);
+}
+
+.navItemActive .icon {
+  color: var(--brand-on-background-medium);
 }
 
 .footer {
@@ -119,7 +171,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--brand-background-strong), var(--brand-background-medium));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,9 +287,33 @@
 
 .footerCollapsed {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+  padding-bottom: 0.5rem;
+}
+
+/* Make collapsed logout button compact and circular to match toggle */
+.logoutBtnCollapsed {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  width: 44px;
+  height: 44px;
+
+  &:hover {
+    background: #ef4444;
+    color: white;
+  }
 }
 
 .footerExpanded {

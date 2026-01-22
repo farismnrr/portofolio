@@ -287,9 +287,33 @@
 
 .footerCollapsed {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+  padding-bottom: 0.5rem;
+}
+
+/* Make collapsed logout button compact and circular to match toggle */
+.logoutBtnCollapsed {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  width: 44px;
+  height: 44px;
+
+  &:hover {
+    background: #ef4444;
+    color: white;
+  }
 }
 
 .footerExpanded {

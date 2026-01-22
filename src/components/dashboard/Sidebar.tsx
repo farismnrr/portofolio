@@ -85,10 +85,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </div>
           ) : (
             <div className={styles.footerExpanded}>
-              <div className={styles.userProfile}>
-                <div className={styles.avatar}>{user?.username?.[0]?.toUpperCase() || "U"}</div>
+              <div className={styles.userProfile} title={user?.username || "Guest"}>
+                <div className={styles.avatar} title={user?.username || "U"}>{user?.username?.[0]?.toUpperCase() || "U"}</div>
                 <div className={styles.userInfo}>
-                  <span className={styles.userName}>{user?.username || "Guest"}</span>
+                  <span className={styles.userName} title={user?.username || "Guest"}>{user?.username || "Guest"}</span>
                   <span className={styles.userRole}>{user?.role || "User"}</span>
                 </div>
                 <div className={styles.actions}>

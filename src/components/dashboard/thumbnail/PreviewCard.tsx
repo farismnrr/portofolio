@@ -2,6 +2,10 @@ import type React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Mockup } from "./Mockup";
 import styles from "./PreviewCard.module.scss";
+// Global layout settings (tweak these values to adjust spacing)
+const CANVAS_MARGIN = 12; // px (left/right/top/bottom)
+const GAP_HORIZONTAL = 120; // px (horizontal space between screens)
+const GAP_VERTICAL = 56; // px (vertical space between rows)
 
 type DeviceType = "website" | "mobile";
 
@@ -32,13 +36,13 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const canvasRect = canvas.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return;
 
-        const margin = 12; // safety margin in pixels to avoid touching edges
+        const margin = CANVAS_MARGIN; // safety margin in pixels to avoid touching edges
         const availableWidth = canvasRect.width - margin * 2;
         const availableHeight = canvasRect.height - margin * 2;
         const _scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
 
         // Compute fixed-spacing positions in pixel coordinates (more readable)
-        const gap = 120; // fixed gap in pixels
+        const gap = GAP_HORIZONTAL; // fixed gap in pixels (horizontal)
         const itemW = deviceType === "website" ? 620 : 240;
         // approximate heights (unscaled)
         const itemH =
@@ -60,7 +64,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const totalW = cols * itemWScaled + (cols - 1) * gap;
 
         // Use a fixed vertical gap so vertical spacing does not change when screenCount changes
-        const verticalGap = 90; // px
+        const verticalGap = GAP_VERTICAL; // px
 
         const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
 

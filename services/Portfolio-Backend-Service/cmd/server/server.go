@@ -10,12 +10,12 @@ import (
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/content"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/site"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso"
-	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"

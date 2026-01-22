@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
-	ssoRepo "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/repository"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
+	ssoRepo "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/repository"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )

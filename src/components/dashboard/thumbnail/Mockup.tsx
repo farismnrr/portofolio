@@ -14,7 +14,7 @@ export const Mockup = ({ deviceType, totalScreens, rotation }: MockupProps) => {
 
   // Adaptive scale: Hero mode for single screen, Grid mode for multiple.
   const isSingle = totalScreens === 1;
-  
+
   let scale: number;
   if (isMobile) {
     scale = isSingle ? 0.85 : 0.75;

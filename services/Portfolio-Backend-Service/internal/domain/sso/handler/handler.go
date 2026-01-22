@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	appConfig "github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
-	ssoUsecase "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/usecase"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
+	ssoUsecase "github.com/farismnrr/portfolio-backend-service/internal/domain/sso/usecase"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )

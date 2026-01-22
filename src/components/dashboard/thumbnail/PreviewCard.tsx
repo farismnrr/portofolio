@@ -38,7 +38,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const _scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
 
         // Compute fixed-spacing positions in pixel coordinates (more readable)
-        const gap = 30; // fixed gap in pixels
+        const gap = 120; // fixed gap in pixels
         const itemW = deviceType === "website" ? 620 : 240;
         // approximate heights (unscaled)
         const itemH =

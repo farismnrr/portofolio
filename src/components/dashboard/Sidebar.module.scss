@@ -95,6 +95,17 @@
 .icon {
   font-size: 1.25rem;
   flex-shrink: 0;
+  /* Force neutral color for icons by default to match marketing subtlety */
+  color: var(--neutral-on-background-medium);
+}
+
+/* Make icons respond to hover/active like text */
+.navItem:hover .icon {
+  color: var(--brand-on-background-strong);
+}
+
+.navItemActive .icon {
+  color: var(--brand-on-background-medium);
 }
 
 .footer {

@@ -23,9 +23,16 @@ interface PreviewCardProps {
   screenCount: number;
   deviceType: DeviceType;
   rotation: number;
+  screenImages?: Record<number, string>;
 }
 
-export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: PreviewCardProps) => {
+export const PreviewCard = ({
+  canvasRef,
+  screenCount,
+  deviceType,
+  rotation,
+  screenImages,
+}: PreviewCardProps) => {
   const innerRef = useRef<HTMLDivElement | null>(null);
   const [fitScale, setFitScale] = useState(1);
   const [positions, setPositions] = useState<Array<{ top: number; left: number }>>([]);
@@ -206,6 +213,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
                     deviceType={deviceType}
                     totalScreens={screenCount}
                     scaleOverride={deviceType === "website" ? 0.5 : 0.6}
+                    imageSrc={screenImages ? screenImages[index + 1] : undefined}
                   />
                 </div>
               );

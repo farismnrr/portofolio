@@ -7,9 +7,11 @@ interface MockupProps {
   totalScreens: number;
   /** Optional override to force a specific scale regardless of totalScreens */
   scaleOverride?: number;
+  /** Optional image to render inside the green screen */
+  imageSrc?: string;
 }
 
-export const Mockup = ({ deviceType, totalScreens, scaleOverride }: MockupProps) => {
+export const Mockup = ({ deviceType, totalScreens, scaleOverride, imageSrc }: MockupProps) => {
   // Adjust scale based on device type
   const isMobile = deviceType === "mobile";
 
@@ -44,12 +46,16 @@ export const Mockup = ({ deviceType, totalScreens, scaleOverride }: MockupProps)
             </div>
             <div className={styles.browserUrl}>portfolio-showcase.com</div>
           </div>
-          <div className={styles.greenScreen} />
+          <div className={`${styles.greenScreen} ${imageSrc ? styles.withImage : ""}`}>
+            {imageSrc ? <img src={imageSrc} alt="screenshot" /> : null}
+          </div>
         </div>
       ) : (
         <div className={styles.phoneFrame}>
           <div className={styles.phoneNotch} />
-          <div className={styles.greenScreen} />
+          <div className={`${styles.greenScreen} ${imageSrc ? styles.withImage : ""}`}>
+            {imageSrc ? <img src={imageSrc} alt="screenshot" /> : null}
+          </div>
           <div className={styles.phoneHomeIndicator} />
         </div>
       )}

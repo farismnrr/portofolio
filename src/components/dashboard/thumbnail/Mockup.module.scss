@@ -74,9 +74,22 @@
     font-size: 2rem;
     font-weight: 700;
     color: rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* ensure child images are clipped to the green screen shape */
 
     &::after {
         content: "GREEN SCREEN";
+    }
+
+    &.withImage::after {
+        content: none;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* make sure images respect parent's border radius */
     }
 }
 
@@ -91,6 +104,12 @@
         aspect-ratio: 9 / 19.5;
         border-radius: 28px;
         font-size: 1rem;
+        overflow: hidden;
+
+        img {
+            border-radius: 22px;
+            display: block;
+        }
     }
 }
 

@@ -4,15 +4,7 @@ import "@/resources/custom.css";
 
 import { Providers } from "@/components";
 import { baseURL, dataStyle, effects, fonts, home, person, style } from "@/resources";
-import {
-  Background,
-  Column,
-  Flex,
-  Meta,
-  RevealFx,
-  type SpacingToken,
-  type opacity,
-} from "@once-ui-system/core";
+import { Background, Meta, RevealFx, type SpacingToken, type opacity } from "@once-ui-system/core";
 import classNames from "classnames";
 
 export async function generateMetadata() {
@@ -38,16 +30,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Flex
+    <html
       suppressHydrationWarning
-      as="html"
       lang="en"
-      fillWidth
       className={classNames(
         fonts.heading.variable,
         fonts.body.variable,
         fonts.label.variable,
         fonts.code.variable,
+        "display-flex position-relative min-width-0 fill-width",
       )}
     >
       <head>
@@ -110,16 +101,17 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <Providers>
-        <Column
-          as="body"
-          background="page"
-          fillWidth
-          style={{ minHeight: "100vh" }}
-          margin="0"
-          padding="0"
-          horizontal="center"
-        >
+      <body
+        className="fill-height"
+        style={{
+          background: "var(--page-background)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Providers>
           <RevealFx fill position="absolute">
             <Background
               mask={{
@@ -163,8 +155,8 @@ export default async function RootLayout({
             />
           </RevealFx>
           {children}
-        </Column>
-      </Providers>
-    </Flex>
+        </Providers>
+      </body>
+    </html>
   );
 }

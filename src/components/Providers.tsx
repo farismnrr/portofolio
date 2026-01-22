@@ -1,5 +1,6 @@
 "use client";
 
+import { UIProvider } from "@/context/UIContext";
 import {
   type BorderStyle,
   type ChartMode,
@@ -49,9 +50,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
           }}
         >
           <ToastProvider>
-            <AuthInitializer>
-              <IconProvider icons={iconLibrary}>{children}</IconProvider>
-            </AuthInitializer>
+            <UIProvider>
+              <AuthInitializer>
+                <IconProvider icons={iconLibrary}>{children}</IconProvider>
+              </AuthInitializer>
+            </UIProvider>
           </ToastProvider>
         </DataThemeProvider>
       </ThemeProvider>

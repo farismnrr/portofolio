@@ -3,7 +3,7 @@
 import { ControlsCard } from "@/components/dashboard/thumbnail/ControlsCard";
 import styles from "@/components/dashboard/thumbnail/Page.module.scss";
 import { PreviewCard } from "@/components/dashboard/thumbnail/PreviewCard";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type DeviceType = "website" | "mobile";
 
@@ -12,6 +12,36 @@ export default function ThumbnailPage() {
   const [deviceType, setDeviceType] = useState<DeviceType>("website");
   const [rotation, setRotation] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  // Mapping from 1-based screen number -> image URL (created via URL.createObjectURL)
+  const [screenImages, setScreenImages] = useState<Record<number, string>>({});
+
+  // Keep a small ref to detect which URLs were removed/replaced so we can revoke they properly
+  const screenImagesRef = useRef<Record<number, string>>({});
+
+  useEffect(() => {
+    const prev = screenImagesRef.current;
+
+    // Revoke URLs that were removed or replaced
+    for (const [k, v] of Object.entries(prev)) {
+      const key = Number(k);
+      if (!screenImages[key] || screenImages[key] !== v) {
+        URL.revokeObjectURL(v);
+      }
+    }
+
+    // Update the ref to the latest mapping
+    screenImagesRef.current = screenImages;
+  }, [screenImages]);
+
+  // On unmount, revoke any remaining object URLs
+  useEffect(() => {
+    return () => {
+      for (const u of Object.values(screenImagesRef.current)) {
+        URL.revokeObjectURL(u);
+      }
+    };
+  }, []);
 
   // Load html2canvas from CDN when needed to avoid bundler resolving issues in certain environments
   type Html2CanvasType = (
@@ -60,6 +90,32 @@ export default function ThumbnailPage() {
 
   return (
     <div className={styles.container}>
+      {/* MOBILE WARNING */}
+      <div className={styles.mobileWarning}>
+        <div className={styles.icon}>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <title>Monitor Icon</title>
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg>
+        </div>
+        <h2>Desktop Only Interface</h2>
+        <p>
+          Thumbnail generator requires a larger screen to provide a precise live preview and export
+          quality. Please open this page on a tablet or desktop.
+        </p>
+      </div>
+
       {/* HEADER */}
       <header className={styles.header}>
         <div>
@@ -78,6 +134,8 @@ export default function ThumbnailPage() {
           rotation={rotation}
           setRotation={setRotation}
           onExport={handleExport}
+          screenImages={screenImages}
+          setScreenImages={setScreenImages}
         />
 
         {/* RIGHT – PREVIEW */}
@@ -86,6 +144,7 @@ export default function ThumbnailPage() {
           screenCount={screenCount}
           deviceType={deviceType}
           rotation={rotation}
+          screenImages={screenImages}
         />
       </div>
     </div>

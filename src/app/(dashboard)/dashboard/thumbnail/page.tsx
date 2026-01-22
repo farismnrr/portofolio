@@ -13,12 +13,37 @@ export default function ThumbnailPage() {
   const [rotation, setRotation] = useState(15);
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  // Load html2canvas from CDN when needed to avoid bundler resolving issues in certain environments
+  type Html2CanvasType = (
+    el: HTMLElement,
+    options?: { backgroundColor?: string; scale?: number },
+  ) => Promise<HTMLCanvasElement>;
+
+  const loadHtml2Canvas = async () => {
+    if (typeof window === "undefined")
+      throw new Error("html2canvas requires a browser environment");
+
+    const w = window as Window & { html2canvas?: Html2CanvasType };
+    if (w.html2canvas) return w.html2canvas;
+
+    await new Promise<void>((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js";
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("Failed to load html2canvas from CDN"));
+      document.body.appendChild(s);
+    });
+
+    if (!w.html2canvas) throw new Error("html2canvas not available after loading script");
+    return w.html2canvas;
+  };
+
   const handleExport = async () => {
     if (!canvasRef.current) return;
 
     try {
-      // Dynamic import to avoid SSR issues
-      const html2canvas = (await import("html2canvas")).default;
+      const html2canvas = await loadHtml2Canvas();
       const canvas = await html2canvas(canvasRef.current, {
         backgroundColor: "#f5f5f5",
         scale: 2,

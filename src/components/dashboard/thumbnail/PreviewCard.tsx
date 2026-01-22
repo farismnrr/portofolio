@@ -59,15 +59,8 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         // Compute horizontal total using the horizontal gap (unchanged)
         const totalW = cols * itemWScaled + (cols - 1) * gap;
 
-        // Compute vertical gap dynamically to target an approximate total height (e.g., 600px)
-        // without changing horizontal gap. This reduces vertical spacing only.
-        const desiredTotalH = 600;
-        let verticalGap = gap;
-        if (rows > 1) {
-          const candidate = (desiredTotalH - rows * itemHScaled) / (rows - 1);
-          // Clamp to reasonable range [8, gap]
-          verticalGap = Math.max(8, Math.min(gap, candidate));
-        }
+        // Use a fixed vertical gap so vertical spacing does not change when screenCount changes
+        const verticalGap = 56; // px
 
         const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
 

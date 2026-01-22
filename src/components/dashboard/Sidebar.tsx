@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +17,6 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import styles from "./Sidebar.module.scss";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 const menuItems = [
   { name: "Home", icon: FiHome, path: "/" },
@@ -68,29 +68,41 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       </nav>
 
       <div className={styles.footer}>
-        <div className={`${styles.themeToggle} ${isCollapsed ? styles.themeToggleCollapsed : ""}`}>
-          <ThemeToggle />
-        </div>
         {user ? (
           isCollapsed ? (
-            <button
-              type="button"
-              className={styles.logoutBtnCollapsed}
-              onClick={logout}
-              title="Logout"
-            >
-              <FiLogOut />
-            </button>
-          ) : (
-            <div className={styles.userProfile}>
-              <div className={styles.avatar}>{user?.username?.[0]?.toUpperCase() || "U"}</div>
-              <div className={styles.userInfo}>
-                <span className={styles.userName}>{user?.username || "Guest"}</span>
-                <span className={styles.userRole}>{user?.role || "User"}</span>
+            <div className={styles.footerCollapsed}>
+              <div className={styles.themeToggleCollapsedButton}>
+                <ThemeToggle className={styles.themeToggleCollapsedButtonInner} />
               </div>
-              <button type="button" className={styles.logoutBtn} onClick={logout} title="Logout">
+              <button
+                type="button"
+                className={styles.logoutBtnCollapsed}
+                onClick={logout}
+                title="Logout"
+              >
                 <FiLogOut />
               </button>
+            </div>
+          ) : (
+            <div className={styles.footerExpanded}>
+              <div className={styles.userProfile}>
+                <div className={styles.avatar}>{user?.username?.[0]?.toUpperCase() || "U"}</div>
+                <div className={styles.userInfo}>
+                  <span className={styles.userName}>{user?.username || "Guest"}</span>
+                  <span className={styles.userRole}>{user?.role || "User"}</span>
+                </div>
+                <div className={styles.actions}>
+                  <ThemeToggle className={styles.themeToggleButton} />
+                  <button
+                    type="button"
+                    className={styles.logoutBtn}
+                    onClick={logout}
+                    title="Logout"
+                  >
+                    <FiLogOut />
+                  </button>
+                </div>
+              </div>
             </div>
           )
         ) : null}

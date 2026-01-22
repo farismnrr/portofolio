@@ -70,18 +70,11 @@
   font-weight: 500;
   font-size: 0.95rem;
 
-  /* Ensure child text inherits the intended color (higher specificity) */
-  &,
-  & *,
+  /* Ensure child text inherits the intended color (higher specificity) without using !important */
   & > span,
-  & > * {
-    color: var(--neutral-on-background-medium) !important;
-  }
-
-  /* Links inside may have library/global styles; be explicit for anchor text/icons */
-  &.navItem,
-  &.navItem * {
-    color: var(--neutral-on-background-medium) !important;
+  & .icon,
+  & * {
+    color: var(--neutral-on-background-medium);
   }
 
   .collapsed & {
@@ -91,14 +84,15 @@
 }
 
 .navItem:hover {
-  background: var(--brand-background-weak);
-  color: var(--brand-on-background-strong);
+  /* Use neutral hover like marketing header */
+  background: var(--neutral-background-weak);
+  color: var(--neutral-on-background-strong);
   transform: translateX(4px);
 
   /* Ensure child text/icon follow hover color */
   & > span,
   & .icon {
-    color: var(--brand-on-background-strong);
+    color: var(--neutral-on-background-strong);
   }
 
   .collapsed & {
@@ -107,17 +101,17 @@
 }
 
 .navItemActive {
-  /* Make active more like marketing selected: stronger brand background + clear on-brand text */
-  background: var(--brand-background-strong);
-  color: var(--brand-on-background-strong);
-  border: 1px solid var(--brand-border-medium);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  /* Use neutral active state (grey) to match marketing */
+  background: var(--neutral-background-medium);
+  color: var(--neutral-on-background-strong);
+  border: 1px solid var(--neutral-border-medium);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 
   /* ensure children (icon/text) follow active color */
   & .icon,
   & > span,
   & > * {
-    color: var(--brand-on-background-strong) !important;
+    color: var(--neutral-on-background-strong);
   }
 }
 

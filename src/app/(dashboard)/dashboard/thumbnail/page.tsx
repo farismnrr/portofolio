@@ -1,6 +1,5 @@
 "use client";
 
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ControlsCard } from "@/components/dashboard/thumbnail/ControlsCard";
 import { PreviewCard } from "@/components/dashboard/thumbnail/PreviewCard";
 import { useRef, useState } from "react";
@@ -42,7 +41,6 @@ export default function ThumbnailPage() {
           <h1>Thumbnail Generator</h1>
           <p>Create clean, professional portfolio thumbnails in seconds.</p>
         </div>
-        <ThemeToggle />
       </header>
 
       <div className={styles.layout}>

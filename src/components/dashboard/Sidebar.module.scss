@@ -192,3 +192,14 @@
     color: white;
   }
 }
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.themeToggleCollapsed {
+  justify-content: center;
+}

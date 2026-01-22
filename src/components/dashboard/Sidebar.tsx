@@ -16,6 +16,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import styles from "./Sidebar.module.scss";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const menuItems = [
   { name: "Home", icon: FiHome, path: "/" },
@@ -67,6 +68,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       </nav>
 
       <div className={styles.footer}>
+        <div className={`${styles.themeToggle} ${isCollapsed ? styles.themeToggleCollapsed : ""}`}>
+          <ThemeToggle />
+        </div>
         {user ? (
           isCollapsed ? (
             <button

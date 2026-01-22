@@ -6,9 +6,9 @@ import styles from "./PreviewCard.module.scss";
 const CANVAS_MARGIN = 12; // px (left/right/top/bottom)
 // Per-device horizontal/vertical gaps
 const GAP_HORIZONTAL_WEB = 120;
-const GAP_HORIZONTAL_MOBILE = 120;
-const GAP_VERTICAL_WEB = 56;
-const GAP_VERTICAL_MOBILE = 56;
+const GAP_HORIZONTAL_MOBILE = 10;
+const GAP_VERTICAL_WEB = 80;
+const GAP_VERTICAL_MOBILE = -50;
 
 // Per-device screen base widths (used for layout math)
 const SCREEN_WIDTH_WEB = 620; // px

@@ -105,19 +105,19 @@
 .userProfile {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  border-radius: 12px;
-  transition: background 0.2s;
-}
+  gap: 0.5rem;
+  padding: 0.45rem;
+  border-radius: 10px;
+  transition: background 0.15s;
+} 
 
 .userProfile:hover {
   background: var(--neutral-background-weak);
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex;
@@ -125,9 +125,9 @@
   justify-content: center;
   font-weight: 600;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
-}
+} 
 
 .userInfo {
   display: flex;
@@ -140,9 +140,11 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--neutral-on-background-strong);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  word-break: break-word;
+  margin-right: 0.25rem;
 }
 
 .userRole {
@@ -191,4 +193,60 @@
     background: #ef4444;
     color: white;
   }
+}
+
+.themeToggleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--neutral-on-background-medium);
+  transition: all 0.15s ease;
+  font-size: 0.95rem;
+}
+
+.themeToggleButton:hover {
+  background: var(--neutral-background-weak);
+  color: var(--neutral-on-background-strong);
+}
+
+.themeToggleCollapsedButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: all 0.15s ease;
+  color: var(--neutral-on-background-medium);
+}
+
+.themeToggleCollapsedButtonInner {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footerCollapsed {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.footerExpanded {
+  display: block;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }

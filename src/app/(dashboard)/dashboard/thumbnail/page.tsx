@@ -10,7 +10,7 @@ type DeviceType = "website" | "mobile";
 export default function ThumbnailPage() {
   const [screenCount, setScreenCount] = useState(4);
   const [deviceType, setDeviceType] = useState<DeviceType>("website");
-  const [rotation, setRotation] = useState(15);
+  const [rotation, setRotation] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Load html2canvas from CDN when needed to avoid bundler resolving issues in certain environments

@@ -60,7 +60,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const totalW = cols * itemWScaled + (cols - 1) * gap;
 
         // Use a fixed vertical gap so vertical spacing does not change when screenCount changes
-        const verticalGap = 56; // px
+        const verticalGap = 90; // px
 
         const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
 
@@ -159,7 +159,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
                   <Mockup
                     deviceType={deviceType}
                     totalScreens={screenCount}
-                    scaleOverride={deviceType === "website" ? 0.5 : 0.85}
+                    scaleOverride={deviceType === "website" ? 0.5 : 0.6}
                   />
                 </div>
               );

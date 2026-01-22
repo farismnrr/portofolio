@@ -40,22 +40,34 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         // Compute fixed-spacing positions in pixel coordinates (tighter)
         const gap = 12; // fixed gap in pixels
         const itemW = deviceType === "website" ? 560 : 220;
-        // approximate heights
+        // approximate heights (unscaled)
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;
 
-        const cols = Math.max(1, Math.floor((availableWidth + gap) / (itemW + gap)));
+        // Account for the internal Mockup scale (Mockup component scales differently when multiple screens)
+        let mockupScale: number;
+        if (deviceType === "website") {
+          mockupScale = screenCount === 1 ? 0.55 : 0.3;
+        } else {
+          mockupScale = screenCount === 1 ? 0.85 : 0.75;
+        }
+        const itemWScaled = itemW * mockupScale;
+        const itemHScaled = itemH * mockupScale;
+
+        const cols = Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
         const rows = Math.ceil(screenCount / cols);
 
-        const totalW = cols * itemW + (cols - 1) * gap;
-        const totalH = rows * itemH + (rows - 1) * gap;
+        const totalW = cols * itemWScaled + (cols - 1) * gap;
+        const totalH = rows * itemHScaled + (rows - 1) * gap;
 
         const newPositions: Array<{ top: number; left: number }> = [];
         for (let i = 0; i < screenCount; i++) {
           const r = Math.floor(i / cols);
           const c = i % cols;
-          const left = margin + (availableWidth - totalW) / 2 + c * (itemW + gap) + itemW / 2;
-          const top = margin + (availableHeight - totalH) / 2 + r * (itemH + gap) + itemH / 2;
+          const left =
+            margin + (availableWidth - totalW) / 2 + c * (itemWScaled + gap) + itemWScaled / 2;
+          const top =
+            margin + (availableHeight - totalH) / 2 + r * (itemHScaled + gap) + itemHScaled / 2;
           newPositions.push({ top, left });
         }
 

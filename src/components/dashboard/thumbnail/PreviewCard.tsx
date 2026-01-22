@@ -10,6 +10,12 @@ const GAP_HORIZONTAL_MOBILE = 120;
 const GAP_VERTICAL_WEB = 56;
 const GAP_VERTICAL_MOBILE = 56;
 
+// Per-device screen base widths (used for layout math)
+const SCREEN_WIDTH_WEB = 620; // px
+const SCREEN_WIDTH_MOBILE = 240; // px
+// Per-device maximum columns to force before allowing overflow
+const MAX_COLS_WEB = 4;
+const MAX_COLS_MOBILE = 6;
 type DeviceType = "website" | "mobile";
 
 interface PreviewCardProps {
@@ -46,7 +52,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
 
         // Compute fixed-spacing positions in pixel coordinates (more readable)
         const gap = deviceType === "website" ? GAP_HORIZONTAL_WEB : GAP_HORIZONTAL_MOBILE; // horizontal gap per device
-        const itemW = deviceType === "website" ? 620 : 240;
+        const itemW = deviceType === "website" ? SCREEN_WIDTH_WEB : SCREEN_WIDTH_MOBILE;
         // approximate heights (unscaled)
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;
@@ -56,10 +62,11 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const itemWScaled = itemW * mockupScale;
         const itemHScaled = itemH * mockupScale;
 
-        // Force 4 columns when possible and allow horizontal overflow by centering the full layout
+        // Use per-device maximum columns when forcing fixed columns, then fallback to fit calculation
+        const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
         const cols =
-          screenCount >= 4
-            ? 4
+          screenCount >= maxCols
+            ? maxCols
             : Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
         const rows = Math.ceil(screenCount / cols);
 

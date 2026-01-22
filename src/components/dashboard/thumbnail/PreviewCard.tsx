@@ -52,7 +52,20 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
 
         // Compute fixed-spacing positions in pixel coordinates (more readable)
         const gap = deviceType === "website" ? GAP_HORIZONTAL_WEB : GAP_HORIZONTAL_MOBILE; // horizontal gap per device
-        const itemW = deviceType === "website" ? SCREEN_WIDTH_WEB : SCREEN_WIDTH_MOBILE;
+        const baseItemW = deviceType === "website" ? SCREEN_WIDTH_WEB : SCREEN_WIDTH_MOBILE;
+        // If count is less than maxCols, compute dynamic item width so items start large and shrink as count grows
+        let itemW: number;
+        if (
+          screenCount < (deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE) &&
+          screenCount > 0
+        ) {
+          const candidate = Math.floor((availableWidth - (screenCount - 1) * gap) / screenCount);
+          const minAllowed = Math.floor(baseItemW * 0.4);
+          const maxAllowed = Math.floor(baseItemW * 1.6);
+          itemW = Math.max(minAllowed, Math.min(candidate, maxAllowed));
+        } else {
+          itemW = baseItemW;
+        }
         // approximate heights (unscaled)
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;

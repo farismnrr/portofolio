@@ -35,7 +35,7 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const margin = 8; // safety margin in pixels to avoid touching edges
         const availableWidth = canvasRect.width - margin * 2;
         const availableHeight = canvasRect.height - margin * 2;
-        const scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
+        const _scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
 
         // Compute fixed-spacing positions in pixel coordinates (tighter)
         const gap = 12; // fixed gap in pixels
@@ -44,13 +44,8 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;
 
-        // Account for the internal Mockup scale (Mockup component scales differently when multiple screens)
-        let mockupScale: number;
-        if (deviceType === "website") {
-          mockupScale = screenCount === 1 ? 0.55 : 0.3;
-        } else {
-          mockupScale = screenCount === 1 ? 0.85 : 0.75;
-        }
+        // Use a fixed mockup scale so sizes don't change when rotating or changing count
+        const mockupScale = deviceType === "website" ? 0.3 : 0.75;
         const itemWScaled = itemW * mockupScale;
         const itemHScaled = itemH * mockupScale;
 
@@ -72,10 +67,11 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         }
 
         setPositions(newPositions);
-        setFitScale(scale);
+        // Keep scale fixed to 1 so size doesn't change on rotate/resize
+        setFitScale(1);
 
-        // Apply final transform (rotation + fitScale)
-        inner.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+        // Apply final transform (rotation only)
+        inner.style.transform = `rotate(${rotation}deg) scale(1)`;
       });
     };
 
@@ -149,7 +145,11 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  <Mockup deviceType={deviceType} totalScreens={screenCount} />
+                  <Mockup
+                    deviceType={deviceType}
+                    totalScreens={screenCount}
+                    scaleOverride={deviceType === "website" ? 0.3 : 0.75}
+                  />
                 </div>
               );
             })}

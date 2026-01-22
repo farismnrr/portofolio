@@ -5,9 +5,11 @@ type DeviceType = "website" | "mobile";
 interface MockupProps {
   deviceType: DeviceType;
   totalScreens: number;
+  /** Optional override to force a specific scale regardless of totalScreens */
+  scaleOverride?: number;
 }
 
-export const Mockup = ({ deviceType, totalScreens }: MockupProps) => {
+export const Mockup = ({ deviceType, totalScreens, scaleOverride }: MockupProps) => {
   // Adjust scale based on device type
   const isMobile = deviceType === "mobile";
 
@@ -15,7 +17,9 @@ export const Mockup = ({ deviceType, totalScreens }: MockupProps) => {
   const isSingle = totalScreens === 1;
 
   let scale: number;
-  if (isMobile) {
+  if (typeof scaleOverride === "number") {
+    scale = scaleOverride;
+  } else if (isMobile) {
     scale = isSingle ? 0.85 : 0.75;
   } else {
     // Web: 0.55 for hero detail, 0.3 to fit 4 in a row (soldiers).

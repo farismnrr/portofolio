@@ -62,28 +62,28 @@ export const PreviewCard = ({ canvasRef, screenCount, deviceType, rotation }: Pr
         // Determine if we should scale up to fill available width when screenCount < maxCols
         const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
 
-        // Preliminary scaled sizes at base mockupScale
-        const baseItemWScaled = itemW * mockupScale;
-        const _baseItemHScaled = itemH * mockupScale;
-
-        // If fewer screens than maxCols, try to scale up to fill available width
+        // If fewer screens than maxCols, compute a target scale to better fill the canvas width
         let appliedScale = mockupScale;
         if (screenCount < maxCols && screenCount > 0) {
-          const totalBaseW = screenCount * baseItemWScaled + (screenCount - 1) * gap;
-          if (totalBaseW > 0) {
-            const fillScale = Math.min(1, availableWidth / totalBaseW);
-            appliedScale = mockupScale * fillScale;
-          }
+          // targetScale uses unscaled itemW so we can grow up to full size (<= 1)
+          const targetScale = Math.max(
+            0.01,
+            (availableWidth - (screenCount - 1) * gap) / (screenCount * itemW),
+          );
+
+          // Blend between targetScale (for small counts) and mockupScale (at maxCols)
+          const t = maxCols <= 1 ? 0 : Math.min(1, (screenCount - 1) / (maxCols - 1));
+          const blended = (1 - t) * targetScale + t * mockupScale;
+
+          // Clamp so we don't exceed natural size and don't go below mockupScale
+          appliedScale = Math.max(mockupScale, Math.min(1, blended));
         }
 
         const itemWScaled = itemW * appliedScale;
         const itemHScaled = itemH * appliedScale;
 
-        // Use per-device maximum columns when forcing fixed columns, then fallback to fit calculation
-        const cols =
-          screenCount >= maxCols
-            ? maxCols
-            : Math.max(1, Math.floor((availableWidth + gap) / (itemWScaled + gap)));
+        // Use per-device maximum columns when forcing fixed columns; when screenCount < maxCols use screenCount columns
+        const cols = screenCount >= maxCols ? maxCols : Math.max(1, screenCount);
         const rows = Math.ceil(screenCount / cols);
 
         // Compute horizontal total using the horizontal gap (unchanged)

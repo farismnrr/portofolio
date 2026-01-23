@@ -12,11 +12,9 @@ help:
 	@echo "  make lint             - Run linting (npm run lint)"
 	@echo "  make install          - Install dependencies (npm install)"
 	@echo "  make clean            - Clean build artifacts"
-	@echo "  make build-docker     - Build Docker image"
-	@echo "  make start-docker     - Run Docker image locally"
-	@echo "  make create-tenant    - Create a new tenant and update .env"
-	@echo "  make generate-invite  - Generate a new invitation code"
-	@echo "  make kill             - Kill processes running on ports 3000-3010"
+	@echo "  make dev-docker       - Run development environment in Docker (Fast)"
+	@echo "  make dev-docker-build - Run development environment in Docker (Build)"
+	@echo "  make dev-docker-stop  - Stop development environment and clean volumes"
 	@echo ""
 
 # Run development server
@@ -115,14 +113,19 @@ kill:
 # Run development environment with Docker Compose (fast start, uses cache/existing images)
 dev-docker:
 	@echo "🚀 Starting development environment in Docker (Fast Mode)..."
-	docker compose -f docker-compose.dev.yml down --remove-orphans
-	docker compose -f docker-compose.dev.yml up
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up
 
 # Run development environment with forced rebuild
 dev-docker-build:
 	@echo "🚀 Starting development environment in Docker (Forced Rebuild)..."
-	docker compose -f docker-compose.dev.yml down --remove-orphans
-	docker compose -f docker-compose.dev.yml up --build
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up --build
+
+# Stop development environment and clean up
+dev-docker-stop:
+	@echo "🛑 Stopping development environment..."
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
 
 # Create tenant and update .env
 create-tenant:

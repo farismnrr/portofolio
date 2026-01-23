@@ -4,7 +4,9 @@ import (
 	"log"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/database"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
+
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
@@ -55,8 +57,15 @@ func main() {
 		zap.String("port", cfg.Server.Port),
 	)
 
+	// Initialize database
+	db, err := database.Initialize(&cfg.Database)
+	if err != nil {
+		logger.Fatal("Failed to initialize database", zap.Error(err))
+	}
+	logger.Info("Database initialized successfully", zap.String("type", cfg.Database.Type))
+
 	// Create server
-	srv := New(cfg)
+	srv := New(cfg, db)
 
 	// Setup routes
 	srv.SetupRoutes()

@@ -1,4 +1,5 @@
 # Binaries for programs and plugins
+portfolio_backend
 *.exe
 *.exe~
 *.dll
@@ -7,6 +8,7 @@
 bin/
 dist/
 tmp/
+
 
 # Test binary, built with `go test -c`
 *.test
@@ -37,6 +39,8 @@ go.work
 # OS
 .DS_Store
 Thumbs.db
+**.sqlite
+**.db
 
 # Logs
 *.log

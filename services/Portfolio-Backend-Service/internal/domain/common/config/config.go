@@ -13,6 +13,7 @@ type Config struct {
 	PageAuth PageAuthConfig
 	CORS     CORSConfig
 	Logging  LoggingConfig
+	Database DatabaseConfig
 }
 
 // ServerConfig holds server-specific configuration
@@ -44,6 +45,16 @@ type LoggingConfig struct {
 	Level string
 }
 
+// DatabaseConfig holds database configuration
+type DatabaseConfig struct {
+	Type     string
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Name     string
+}
+
 // Load loads configuration from environment variables
 func Load() (*Config, error) {
 	cfg := &Config{
@@ -65,6 +76,14 @@ func Load() (*Config, error) {
 		},
 		Logging: LoggingConfig{
 			Level: getEnv("LOG_LEVEL", "info"),
+		},
+		Database: DatabaseConfig{
+			Type:     getEnv("CORE_DB_TYPE", "sqlite"),
+			Host:     getEnv("CORE_DB_HOST", "localhost"),
+			Port:     getEnv("CORE_DB_PORT", "5432"),
+			User:     getEnv("CORE_DB_USER", "postgres"),
+			Password: getEnv("CORE_DB_PASS", "postgres"),
+			Name:     getEnv("CORE_DB_NAME", "user_auth_plugin.sqlite"),
 		},
 	}
 

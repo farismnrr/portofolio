@@ -19,16 +19,18 @@ import (
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 // Server represents the HTTP server
 type Server struct {
 	echo   *echo.Echo
 	config *config.Config
+	db     *gorm.DB
 }
 
 // New creates a new server instance
-func New(cfg *config.Config) *Server {
+func New(cfg *config.Config, db *gorm.DB) *Server {
 	e := echo.New()
 
 	// Hide Echo banner
@@ -54,6 +56,7 @@ func New(cfg *config.Config) *Server {
 	return &Server{
 		echo:   e,
 		config: cfg,
+		db:     db,
 	}
 }
 

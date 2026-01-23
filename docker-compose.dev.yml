@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     working_dir: /app
     ports:
       - "3000:3000"
@@ -21,6 +23,8 @@ services:
     build:
       context: ./services/Multitenant-User-Management-Service
       dockerfile: Dockerfile.dev
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     ports:
       - "5500:5500"
     volumes:
@@ -46,6 +50,8 @@ services:
     build:
       context: ./services/Portfolio-Backend-Service
       dockerfile: Dockerfile.dev
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     ports:
       - "8080:8080"
     volumes:

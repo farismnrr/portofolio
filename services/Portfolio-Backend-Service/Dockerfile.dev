@@ -1,16 +1,23 @@
+# syntax=docker/dockerfile:1
 FROM golang:1.25
 
 WORKDIR /app
 
-# Install air for hot reload
-RUN go install github.com/air-verse/air@latest
+# Install air for hot reload and migrate for database migrations with cache
+RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
+    --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
+    go install github.com/air-verse/air@latest && \
+    go install -tags 'postgres sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
-RUN go mod download
+
+# Download dependencies with cache mount
+RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
+    go mod download
 
 # Copy source code
 COPY . .
 
-# Command to run air
-CMD ["air"]
+# Run migrations then start air
+CMD ["sh", "-c", "migrate -path migrations/about -database \"${DATABASE_URL}\" up && air"]

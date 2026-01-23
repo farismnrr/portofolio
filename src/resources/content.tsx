@@ -164,6 +164,7 @@ const about: About = {
     institutions: [
       {
         name: 'UPN "Veteran" East Java',
+        period: "2020 - 2024",
         description: (
           <>
             Achieved <Text as="strong">Cumlaude honors</Text> while actively shaping the technical
@@ -176,6 +177,7 @@ const about: About = {
       },
       {
         name: "SMKN 26 Jakarta",
+        period: "2017 - 2020",
         description: <>Degree in Power Electronics and Communications</>,
       },
     ],

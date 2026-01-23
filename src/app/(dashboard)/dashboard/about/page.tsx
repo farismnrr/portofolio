@@ -1,3 +1,5 @@
+import AboutEditor from "@/components/dashboard/about/AboutEditor";
+
 export default function AboutPage() {
-  return <div>About Editor - Hello World</div>;
+  return <AboutEditor />;
 }

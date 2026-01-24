@@ -18,15 +18,13 @@ func NewAboutHandler(u usecase.AboutUsecase) *AboutHandler {
 	return &AboutHandler{usecase: u}
 }
 
-// GetAbout retrieves basic profile information
+// GET retrieves basic profile information
 // @Summary Get basic profile
 // @Description Fetch name, role, description, and avatar URL
 // @Tags About
 // @Accept json
 // @Produce json
-// @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=map[string]AboutResponse}
-// @Failure 401 {object} response.ErrorResponse
 // @Router /v1/about [get]
 func (h *AboutHandler) GetAbout(c echo.Context) error {
 	about, err := h.usecase.GetAbout(c.Request().Context())

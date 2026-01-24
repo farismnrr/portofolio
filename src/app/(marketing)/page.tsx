@@ -1,6 +1,7 @@
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
 import { Projects } from "@/components/work/Projects";
+import { fetchAbout } from "@/lib/about";
 import { about, baseURL, home, person, routes } from "@/resources";
 import { getPosts } from "@/utils/utils";
 import {
@@ -27,7 +28,14 @@ export async function generateMetadata() {
   });
 }
 
-export default function Home() {
+export default async function Home() {
+  const profile = await fetchAbout();
+  const personalInfo = {
+    name: profile?.name || person.name,
+    role: profile?.role || person.role,
+    avatar: profile?.avatar_url || person.avatar,
+  };
+
   const latestProject = getPosts(["app", "(marketing)", "work", "projects"]).sort(
     (a, b) =>
       new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime(),
@@ -43,9 +51,9 @@ export default function Home() {
         description={home.description}
         image={`/api/og/generate?title=${encodeURIComponent(home.title)}`}
         author={{
-          name: person.name,
+          name: personalInfo.name,
           url: `${baseURL}${about.path}`,
-          image: `${baseURL}${person.avatar}`,
+          image: `${baseURL}${personalInfo.avatar}`,
         }}
       />
       <Column fillWidth horizontal="center" gap="m">
@@ -104,7 +112,7 @@ export default function Home() {
                   <Avatar
                     marginRight="8"
                     style={{ marginLeft: "-0.75rem" }}
-                    src={person.avatar}
+                    src={personalInfo.avatar}
                     size="m"
                   />
                 )}

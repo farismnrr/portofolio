@@ -1,5 +1,6 @@
 import TableOfContents from "@/components/about/TableOfContents";
 import styles from "@/components/about/about.module.scss";
+import { fetchAbout } from "@/lib/about";
 import { about, baseURL, person, social } from "@/resources";
 import {
   Avatar,
@@ -27,7 +28,15 @@ export async function generateMetadata() {
   });
 }
 
-export default function About() {
+export default async function About() {
+  const profile = await fetchAbout();
+  const personalInfo = {
+    name: profile?.name || person.name,
+    role: profile?.role || person.role,
+    avatar: profile?.avatar_url || person.avatar,
+    description: profile?.description || about.intro.description,
+  };
+
   const structure = [
     {
       title: about.intro.title,
@@ -60,9 +69,9 @@ export default function About() {
         path={about.path}
         image={`/api/og/generate?title=${encodeURIComponent(about.title)}`}
         author={{
-          name: person.name,
+          name: personalInfo.name,
           url: `${baseURL}${about.path}`,
-          image: `${baseURL}${person.avatar}`,
+          image: `${baseURL}${personalInfo.avatar}`,
         }}
       />
       {about.tableOfContent.display && (
@@ -93,7 +102,7 @@ export default function About() {
             flex={3}
             horizontal="center"
           >
-            <Avatar src={person.avatar} size="xl" />
+            <Avatar src={personalInfo.avatar} size="xl" />
             <Row gap="8" vertical="center">
               <Icon onBackground="accent-weak" name="globe" />
               {person.location}
@@ -143,14 +152,14 @@ export default function About() {
               </Row>
             )}
             <Heading className={styles.textAlign} variant="display-strong-xl">
-              {person.name}
+              {personalInfo.name}
             </Heading>
             <Text
               className={styles.textAlign}
               variant="display-default-xs"
               onBackground="neutral-weak"
             >
-              {person.role}
+              {personalInfo.role}
             </Text>
             {social.length > 0 && (
               <Row
@@ -198,7 +207,7 @@ export default function About() {
 
           {about.intro.display && (
             <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl">
-              {about.intro.description}
+              {personalInfo.description}
             </Column>
           )}
 

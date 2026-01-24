@@ -182,7 +182,8 @@ func TestUpdateAbout(t *testing.T) {
 					Field string `json:"field"`
 				} `json:"details"`
 			}
-			json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.NoError(t, err)
 			assert.False(t, response.Status)
 			assert.NotEmpty(t, response.Details)
 			assert.Equal(t, "name", response.Details[0].Field)
@@ -203,8 +204,10 @@ func TestUpdateAvatar(t *testing.T) {
 		h_part := make(textproto.MIMEHeader)
 		h_part.Set("Content-Disposition", `form-data; name="avatar"; filename="test.jpg"`)
 		h_part.Set("Content-Type", "image/jpeg")
-		part, _ := writer.CreatePart(h_part)
-		part.Write([]byte("fake image data"))
+		part, err := writer.CreatePart(h_part)
+		assert.NoError(t, err)
+		_, err = part.Write([]byte("fake image data"))
+		assert.NoError(t, err)
 		writer.Close()
 
 		mockUC.On("UpdateAvatar", mock.Anything, mock.Anything, "test.jpg").Return("https://storage.com/new.jpg", nil)
@@ -224,7 +227,8 @@ func TestUpdateAvatar(t *testing.T) {
 					} `json:"about"`
 				} `json:"data"`
 			}
-			json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.NoError(t, err)
 			assert.True(t, response.Status)
 			assert.Equal(t, "https://storage.com/new.jpg", response.Data.About.AvatarURL)
 		}
@@ -240,8 +244,10 @@ func TestUpdateAvatar(t *testing.T) {
 		h_part := make(textproto.MIMEHeader)
 		h_part.Set("Content-Disposition", `form-data; name="avatar"; filename="test.pdf"`)
 		h_part.Set("Content-Type", "application/pdf")
-		part, _ := writer.CreatePart(h_part)
-		part.Write([]byte("pdf data"))
+		part, err := writer.CreatePart(h_part)
+		assert.NoError(t, err)
+		_, err = part.Write([]byte("pdf data"))
+		assert.NoError(t, err)
 		writer.Close()
 
 		req := httptest.NewRequest(http.MethodPatch, "/v1/about/avatar", body)
@@ -265,9 +271,11 @@ func TestUpdateAvatar(t *testing.T) {
 		h_part := make(textproto.MIMEHeader)
 		h_part.Set("Content-Disposition", `form-data; name="avatar"; filename="large.jpg"`)
 		h_part.Set("Content-Type", "image/jpeg")
-		part, _ := writer.CreatePart(h_part)
+		part, err := writer.CreatePart(h_part)
+		assert.NoError(t, err)
 		// 3MB
-		part.Write(make([]byte, 3*1024*1024))
+		_, err = part.Write(make([]byte, 3*1024*1024))
+		assert.NoError(t, err)
 		writer.Close()
 
 		req := httptest.NewRequest(http.MethodPatch, "/v1/about/avatar", body)

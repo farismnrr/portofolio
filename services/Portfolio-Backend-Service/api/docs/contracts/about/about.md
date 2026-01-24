@@ -17,7 +17,6 @@ Retrieves basic profile information such as name, role, description, and avatar 
 - **Method:** `GET`
 - **Headers:**
   - `Accept: application/json`
-  - `Authorization: Bearer <access_token>` (Required)
 
 ### User Scenarios
 

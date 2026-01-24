@@ -17,7 +17,7 @@ func TestRequireAuth(t *testing.T) {
 		token := r.Header.Get("Authorization")
 		if token == "Bearer valid-token" {
 			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(map[string]interface{}{
+			err := json.NewEncoder(w).Encode(map[string]interface{}{
 				"status": true,
 				"data": map[string]interface{}{
 					"id":        "user-123",
@@ -27,13 +27,19 @@ func TestRequireAuth(t *testing.T) {
 					"tenant_id": "tenant-abc",
 				},
 			})
+			if err != nil {
+				panic(err)
+			}
 			return
 		}
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		err := json.NewEncoder(w).Encode(map[string]interface{}{
 			"status":  false,
 			"message": "Invalid token",
 		})
+		if err != nil {
+			panic(err)
+		}
 	}))
 	defer ts.Close()
 

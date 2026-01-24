@@ -20,7 +20,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -84,9 +84,9 @@ services:
       - CORE_DB_SEED_DUMMY=true
     env_file:
       - .env.dev
-    # depends_on:
-    #   user-management:
-    #     condition: service_healthy
+    depends_on:
+      user-management:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 15s

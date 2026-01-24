@@ -2,9 +2,13 @@
 
 import {
   createEducation,
+  createSkillCategory,
   createSocialLink,
+  createWorkExperience,
   deleteEducation,
+  deleteSkillCategory,
   deleteSocialLink,
+  deleteWorkExperience,
   fetchAbout,
   fetchEducations,
   fetchSkills,
@@ -63,10 +67,10 @@ export default function AboutEditor() {
       links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.url })),
       workExperience: (workExps || []).map((w) => ({
         id: w.id,
-        role: w.role,
+        title: w.role,
         company: w.company,
-        timeframe: w.timeframe,
-        achievements: (w.achievements || []).map((a) => ({ id: a.id, content: a.content })),
+        period: w.timeframe,
+        description: (w.achievements || []).map((a) => a.content).join("\n"),
       })),
       studies: (educations || []).map((e) => ({
         id: e.id,
@@ -78,7 +82,8 @@ export default function AboutEditor() {
       technicalSkills: (skills || []).map((s) => ({
         id: s.id,
         title: s.title,
-        tags: (s.tags || []).map((t) => ({ id: t.id ?? "", name: t.name, icon: t.icon })),
+        description: s.description || "",
+        tags: (s.tags || []).map((t) => ({ name: t.name, icon: t.icon })),
       })),
     };
 
@@ -153,6 +158,60 @@ export default function AboutEditor() {
     }
   };
 
+  const syncWorkExperiences = async () => {
+    if (!accessToken || !originalData) return;
+
+    const currentWork = data.workExperience;
+    const oldWork = originalData.workExperience;
+
+    // Delete
+    const toDelete = oldWork.filter((o) => !currentWork.find((c) => c.id === o.id));
+    for (const work of toDelete) {
+      await deleteWorkExperience(accessToken, work.id);
+    }
+
+    // Add (Simplified: recreate from textarea lines)
+    const toAdd = currentWork.filter((c) => !oldWork.find((o) => o.id === c.id));
+    for (const work of toAdd) {
+      const achievements = work.description
+        .split("\n")
+        .filter((line) => line.trim())
+        .map((line, i) => ({ content: line, order_by: i }));
+
+      await createWorkExperience(accessToken, {
+        company: work.company,
+        role: work.title,
+        timeframe: work.period,
+        achievements: achievements as any,
+      });
+    }
+
+    // TODO: Update existing work (For now we only handle basic add/delete to keep it simple as per original UI)
+  };
+
+  const syncSkills = async () => {
+    if (!accessToken || !originalData) return;
+
+    const currentSkills = data.technicalSkills;
+    const oldSkills = originalData.technicalSkills;
+
+    // Delete
+    const toDelete = oldSkills.filter((o) => !currentSkills.find((c) => c.id === o.id));
+    for (const skill of toDelete) {
+      await deleteSkillCategory(accessToken, skill.id);
+    }
+
+    // Add
+    const toAdd = currentSkills.filter((c) => !oldSkills.find((o) => o.id === c.id));
+    for (const skill of toAdd) {
+      await createSkillCategory(accessToken, {
+        title: skill.title,
+        description: skill.description,
+        tags: skill.tags.map((t, i) => ({ name: t.name, icon: t.icon, order_by: i })) as any,
+      });
+    }
+  };
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && accessToken) {
@@ -183,7 +242,13 @@ export default function AboutEditor() {
       // 3. Sync Education
       await syncEducations();
 
-      alert("Profile, Social Links, and Education synchronized!");
+      // 4. Sync Work
+      await syncWorkExperiences();
+
+      // 5. Sync Skills
+      await syncSkills();
+
+      alert("Profile and all sections synchronized!");
 
       const refreshed = await fetchAllData();
       setOriginalData(refreshed);
@@ -207,19 +272,19 @@ export default function AboutEditor() {
       <header className={styles.header}>
         <h1>About Editor</h1>
         <p>Manage your profile information, experience, and skills.</p>
-        {isSyncing && <div className={styles.syncingOverlay}>Syncing...</div>}
+        {isSyncing && <div className={styles.syncingOverlay}>Saving...</div>}
       </header>
 
       <div className={styles.layout}>
         {/* LEFT COLUMN */}
-        <div className={styles.column}>
+        <div>
           <BasicInfoSection data={data} setData={setData} handlePhotoUpload={handlePhotoUpload} />
           <SocialLinksSection data={data} setData={setData} />
           <TechnicalSkillsSection data={data} setData={setData} />
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className={styles.column}>
+        <div>
           <WorkExperienceSection data={data} setData={setData} />
           <EducationSection data={data} setData={setData} />
         </div>
@@ -233,7 +298,7 @@ export default function AboutEditor() {
           onClick={handleCancel}
           disabled={isSyncing}
         >
-          Reset Changes
+          Cancel
         </button>
         <button type="button" className={styles.saveBtn} onClick={handleSave} disabled={isSyncing}>
           {isSyncing ? "Saving..." : "Save Changes"}

@@ -71,6 +71,7 @@ export interface SkillTag {
 export interface SkillCategory {
   id: string;
   title: string;
+  description: string;
   order_by: number;
   tags: SkillTag[];
 }

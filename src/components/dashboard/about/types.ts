@@ -4,18 +4,12 @@ export interface Link {
   url: string;
 }
 
-export interface WorkAchievement {
-  id: string;
-  content: string;
-  order_by?: number;
-}
-
 export interface WorkExperience {
   id: string;
-  role: string;
+  title: string;
   company: string;
-  timeframe: string;
-  achievements: WorkAchievement[];
+  period: string;
+  description: string;
 }
 
 export interface Study {
@@ -27,16 +21,14 @@ export interface Study {
 }
 
 export interface TechTag {
-  id?: string;
   name: string;
   icon?: string;
-  order_by?: number;
 }
 
 export interface TechnicalSkill {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   tags: TechTag[];
 }
 

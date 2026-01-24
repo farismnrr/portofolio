@@ -96,7 +96,11 @@ migrate-up: ## Run database migrations
 	else \
 		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
 	fi; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up; \
+	if [ "$$CORE_DB_SEED_DUMMY" = "true" ]; then \
+		echo "🌱 Seeding dummy data..."; \
+		go run cmd/seed/main.go; \
+	fi
 	@echo "✅ Migrations completed"
 
 migrate-down: ## Rollback last migration
@@ -129,6 +133,10 @@ migrate-fresh: ## Drop all tables and re-run migrations
 		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
 	fi; \
 	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" drop -f; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up; \
+	if [ "$$CORE_DB_SEED_DUMMY" = "true" ]; then \
+		echo "🌱 Seeding dummy data..."; \
+		go run cmd/seed/main.go; \
+	fi
 	@echo "✅ Fresh migrations completed"
 

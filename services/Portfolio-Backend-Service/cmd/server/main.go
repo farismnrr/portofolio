@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/seeder"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/database"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
@@ -63,6 +64,13 @@ func main() {
 		logger.Fatal("Failed to initialize database", zap.Error(err))
 	}
 	logger.Info("Database initialized successfully", zap.String("type", cfg.Database.Type))
+
+	// Conditional seeding
+	if cfg.Database.SeedDummy {
+		if err := seeder.SeedAboutData(db); err != nil {
+			logger.Error("Seeding failed", zap.Error(err))
+		}
+	}
 
 	// Create server
 	srv := New(cfg, db)

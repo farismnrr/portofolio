@@ -57,12 +57,13 @@ type LoggingConfig struct {
 
 // DatabaseConfig holds database configuration
 type DatabaseConfig struct {
-	Type     string
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Name     string
+	Type      string
+	Host      string
+	Port      string
+	User      string
+	Password  string
+	Name      string
+	SeedDummy bool
 }
 
 // Load loads configuration from environment variables
@@ -88,12 +89,13 @@ func Load() (*Config, error) {
 			Level: getEnv("LOG_LEVEL", "info"),
 		},
 		Database: DatabaseConfig{
-			Type:     getEnv("CORE_DB_TYPE", "sqlite"),
-			Host:     getEnv("CORE_DB_HOST", "localhost"),
-			Port:     getEnv("CORE_DB_PORT", "5432"),
-			User:     getEnv("CORE_DB_USER", "postgres"),
-			Password: getEnv("CORE_DB_PASS", "postgres"),
-			Name:     getEnv("CORE_DB_NAME", "user_auth_plugin.sqlite"),
+			Type:      getEnv("CORE_DB_TYPE", "sqlite"),
+			Host:      getEnv("CORE_DB_HOST", "localhost"),
+			Port:      getEnv("CORE_DB_PORT", "5432"),
+			User:      getEnv("CORE_DB_USER", "postgres"),
+			Password:  getEnv("CORE_DB_PASS", "postgres"),
+			Name:      getEnv("CORE_DB_NAME", "user_auth_plugin.sqlite"),
+			SeedDummy: strings.ToLower(getEnv("CORE_DB_SEED_DUMMY", "false")) == "true",
 		},
 		GCP: GCPConfig{
 			ProjectID:           getEnv("GCP_PROJECT_ID", ""),

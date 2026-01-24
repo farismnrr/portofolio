@@ -32,7 +32,7 @@ func (h *EducationHandler) GetEducations(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.Success(c, http.StatusOK, "Educations retrieved successfully", map[string]interface{}{"educations": edus})
+	return response.Success(c, http.StatusOK, "Education history retrieved successfully", map[string]interface{}{"educations": edus})
 }
 
 type CreateEducationRequest struct {
@@ -92,7 +92,7 @@ func (h *EducationHandler) CreateEducation(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusCreated, "Education created successfully", map[string]interface{}{"education": edu})
+	return response.Success(c, http.StatusCreated, "Education entry created successfully", map[string]interface{}{"education": edu})
 }
 
 // UpdateEducation updates an education record
@@ -116,7 +116,7 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 
 	existing, err := h.usecase.GetEducationByID(c.Request().Context(), id)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Education not found")
+		return response.Error(c, http.StatusNotFound, "Education entry not found")
 	}
 
 	var req CreateEducationRequest
@@ -144,7 +144,7 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "Education updated successfully", nil)
+	return response.Success(c, http.StatusOK, "Education entry updated successfully", nil)
 }
 
 // DeleteEducation removes an education record
@@ -166,11 +166,11 @@ func (h *EducationHandler) DeleteEducation(c echo.Context) error {
 
 	_, err := h.usecase.GetEducationByID(c.Request().Context(), id)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Education not found")
+		return response.Error(c, http.StatusNotFound, "Education entry not found")
 	}
 
 	if err := h.usecase.DeleteEducation(c.Request().Context(), id); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.SuccessNoData(c, http.StatusOK, "Education deleted successfully")
+	return response.SuccessNoData(c, http.StatusOK, "Education entry deleted successfully")
 }

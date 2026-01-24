@@ -32,7 +32,7 @@ func (h *SkillHandler) GetSkills(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.Success(c, http.StatusOK, "Skills retrieved successfully", map[string]interface{}{"skills": cats})
+	return response.Success(c, http.StatusOK, "Skills retrieved successfully", map[string]interface{}{"skill_categories": cats})
 }
 
 type TagRequest struct {
@@ -94,7 +94,7 @@ func (h *SkillHandler) CreateCategory(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusCreated, "Skill category created successfully", map[string]interface{}{"category": cat})
+	return response.Success(c, http.StatusCreated, "Skill category created successfully", map[string]interface{}{"skill_category": cat})
 }
 
 // UpdateCategory updates category details
@@ -118,7 +118,7 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 
 	existing, err := h.usecase.GetCategoryByID(c.Request().Context(), id)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Category not found")
+		return response.Error(c, http.StatusNotFound, "Skill category not found")
 	}
 
 	var req CreateCategoryRequest
@@ -140,7 +140,7 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "Category updated successfully", nil)
+	return response.Success(c, http.StatusOK, "Skill category updated successfully", nil)
 }
 
 // DeleteCategory deletes a category and all its tags
@@ -162,13 +162,13 @@ func (h *SkillHandler) DeleteCategory(c echo.Context) error {
 
 	_, err := h.usecase.GetCategoryByID(c.Request().Context(), id)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Category not found")
+		return response.Error(c, http.StatusNotFound, "Skill category not found")
 	}
 
 	if err := h.usecase.DeleteCategory(c.Request().Context(), id); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.SuccessNoData(c, http.StatusOK, "Category deleted successfully")
+	return response.SuccessNoData(c, http.StatusOK, "Skill category deleted successfully")
 }
 
 // AddTag adds a specific skill tag to a category
@@ -192,7 +192,7 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 
 	_, err := h.usecase.GetCategoryByID(c.Request().Context(), catID)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Category not found")
+		return response.Error(c, http.StatusNotFound, "Skill category not found")
 	}
 
 	var req TagRequest
@@ -214,7 +214,7 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 	if err := h.usecase.AddTag(c.Request().Context(), tag); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.Success(c, http.StatusCreated, "Tag added successfully", map[string]interface{}{"tag": tag})
+	return response.Success(c, http.StatusCreated, "Skill tag added successfully", map[string]interface{}{"skill_tag": tag})
 }
 
 // DeleteTag removes a specific tag
@@ -236,11 +236,11 @@ func (h *SkillHandler) DeleteTag(c echo.Context) error {
 
 	_, err := h.usecase.GetTagByID(c.Request().Context(), id)
 	if err != nil {
-		return response.Error(c, http.StatusNotFound, "Tag not found")
+		return response.Error(c, http.StatusNotFound, "Skill tag not found")
 	}
 
 	if err := h.usecase.DeleteTag(c.Request().Context(), id); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.SuccessNoData(c, http.StatusOK, "Tag deleted successfully")
+	return response.SuccessNoData(c, http.StatusOK, "Skill tag deleted successfully")
 }

@@ -63,7 +63,12 @@ func (r *skillRepository) UpdateCategory(ctx context.Context, category *entity.S
 }
 
 func (r *skillRepository) DeleteCategory(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&entity.SkillCategory{}).Error
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("skill_category_id = ?", id).Delete(&entity.SkillTag{}).Error; err != nil {
+			return err
+		}
+		return tx.Where("id = ?", id).Delete(&entity.SkillCategory{}).Error
+	})
 }
 
 func (r *skillRepository) AddTag(ctx context.Context, tag *entity.SkillTag) error {

@@ -66,8 +66,12 @@ func (r *workRepository) Update(ctx context.Context, work *entity.WorkExperience
 }
 
 func (r *workRepository) Delete(ctx context.Context, id string) error {
-	// Soft delete the work experience
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&entity.WorkExperience{}).Error
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("work_experience_id = ?", id).Delete(&entity.WorkAchievement{}).Error; err != nil {
+			return err
+		}
+		return tx.Where("id = ?", id).Delete(&entity.WorkExperience{}).Error
+	})
 }
 
 func (r *workRepository) AddAchievement(ctx context.Context, achievement *entity.WorkAchievement) error {

@@ -15,6 +15,7 @@ help:
 	@echo "  make dev-docker       - Run development environment in Docker (Fast)"
 	@echo "  make dev-docker-build - Run development environment in Docker (Build)"
 	@echo "  make dev-docker-stop  - Stop development environment and clean volumes"
+	@echo "  make dev-docker-rebuild-frontend - Rebuild frontend only (when env vars change)"
 	@echo ""
 
 # Run development server
@@ -118,6 +119,9 @@ dev-docker:
 
 # Run development environment with forced rebuild
 dev-docker-build:
+	@echo "🧹 Cleaning up old Docker resources..."
+	docker image prune -f
+	docker builder prune -f
 	@echo "🚀 Starting development environment in Docker (Forced Rebuild)..."
 	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
 	docker compose --env-file .env.dev -f docker-compose.dev.yml up --build
@@ -126,6 +130,23 @@ dev-docker-build:
 dev-docker-stop:
 	@echo "🛑 Stopping development environment..."
 	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
+	@echo "🧹 Pruning dangling resources..."
+	docker image prune -f
+	docker builder prune -f
+
+# Rebuild frontend only (useful when env vars change)
+dev-docker-rebuild-frontend:
+	@echo "🔨 Rebuilding frontend with latest environment variables..."
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build portofolio
+
+# Deep clean Docker (Dangerous: restores disk space by removing ALL unused items)
+docker-purge:
+	@echo "⚠️  Deep cleaning Docker (Pruning all unused images, containers, networks, and volumes)..."
+	docker system prune --all --volumes -f
+	@if [ -d "/mnt/docker-volumes" ]; then \
+		echo "🧹 Cleaning stuck volumes in /mnt/docker-volumes..."; \
+		sudo rm -rf /mnt/docker-volumes/* 2>/dev/null || true; \
+	fi
 
 # Create tenant and update .env
 create-tenant:

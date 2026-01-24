@@ -30,7 +30,8 @@ services:
     volumes:
       - ./services/Multitenant-User-Management-Service:/app
       - /app/target
-      - /app/usr/local/cargo/registry
+      - /usr/local/cargo/registry
+      - /usr/local/cargo/git
     environment:
       - RUST_LOG=${RUST_LOG}
       - DATABASE_URL=${DATABASE_URL}
@@ -43,8 +44,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:5500/health"]
       interval: 15s
       timeout: 10s
-      retries: 10
-      start_period: 60s
+      retries: 20
+      start_period: 300s
 
   backend:
     build:
@@ -76,5 +77,5 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 15s
       timeout: 10s
-      retries: 10
-      start_period: 60s
+      retries: 15
+      start_period: 120s

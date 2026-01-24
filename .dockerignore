@@ -1,40 +1,10 @@
-# Dependencies
 node_modules
-npm-debug.log
-
-# Next.js
 .next
 out
-
-# Testing
-coverage
-*.test.ts
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# IDE
+.git
 .idea
 .vscode
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Git
-.git
-.gitignore
-
-# Docker
-Dockerfile
-.dockerignore
-
-# Makefile
-Makefile
-
-# Architecture
-services
+*.log
+services/Multitenant-User-Management-Service/target
+services/Portfolio-Backend-Service/bin
+services/Portfolio-Backend-Service/tmp

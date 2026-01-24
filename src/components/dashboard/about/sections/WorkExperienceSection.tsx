@@ -1,8 +1,6 @@
-"use client";
-
 import { FiBriefcase, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
-import type { AboutData, WorkExperience } from "../types";
+import type { AboutData, WorkExperience, WorkAchievement } from "../types";
 
 interface WorkExperienceSectionProps {
   data: AboutData;
@@ -13,15 +11,15 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
   const addWorkExperience = () => {
     const newExp: WorkExperience = {
       id: Date.now().toString(),
-      title: "",
+      role: "",
       company: "",
-      period: "",
-      description: "",
+      timeframe: "",
+      achievements: [],
     };
     setData({ ...data, workExperience: [...data.workExperience, newExp] });
   };
 
-  const updateWorkExperience = (id: string, field: keyof WorkExperience, value: string) => {
+  const updateWorkExperience = (id: string, field: keyof WorkExperience, value: any) => {
     setData({
       ...data,
       workExperience: data.workExperience.map((exp) =>
@@ -37,6 +35,38 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
     });
   };
 
+  const addAchievement = (workId: string) => {
+    const work = data.workExperience.find((w) => w.id === workId);
+    if (work) {
+      const newAchievement: WorkAchievement = {
+        id: Date.now().toString(),
+        content: "",
+      };
+      updateWorkExperience(workId, "achievements", [...work.achievements, newAchievement]);
+    }
+  };
+
+  const updateAchievement = (workId: string, achievementId: string, content: string) => {
+    const work = data.workExperience.find((w) => w.id === workId);
+    if (work) {
+      const newAchievements = work.achievements.map((a) =>
+        a.id === achievementId ? { ...a, content } : a,
+      );
+      updateWorkExperience(workId, "achievements", newAchievements);
+    }
+  };
+
+  const deleteAchievement = (workId: string, achievementId: string) => {
+    const work = data.workExperience.find((w) => w.id === workId);
+    if (work) {
+      updateWorkExperience(
+        workId,
+        "achievements",
+        work.achievements.filter((a) => a.id !== achievementId),
+      );
+    }
+  };
+
   return (
     <section className={styles.section}>
       <h2>
@@ -48,7 +78,7 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
         {data.workExperience.map((exp) => (
           <div key={exp.id} className={styles.item}>
             <div className={styles.itemHeader}>
-              <h4>{exp.title || "New Position"}</h4>
+              <h4>{exp.role || "New Position"}</h4>
               <button
                 type="button"
                 className={styles.deleteBtn}
@@ -60,12 +90,12 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
             </div>
             <div className={styles.itemFields}>
               <div className={styles.formGroup}>
-                <label htmlFor={`exp-title-${exp.id}`}>Job Title</label>
+                <label htmlFor={`exp-role-${exp.id}`}>Job Title</label>
                 <input
-                  id={`exp-title-${exp.id}`}
+                  id={`exp-role-${exp.id}`}
                   type="text"
-                  value={exp.title}
-                  onChange={(e) => updateWorkExperience(exp.id, "title", e.target.value)}
+                  value={exp.role}
+                  onChange={(e) => updateWorkExperience(exp.id, "role", e.target.value)}
                   placeholder="e.g., Senior Developer"
                 />
               </div>
@@ -80,23 +110,44 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                 />
               </div>
               <div className={styles.formGroup}>
-                <label htmlFor={`exp-period-${exp.id}`}>Period</label>
+                <label htmlFor={`exp-timeframe-${exp.id}`}>Period</label>
                 <input
-                  id={`exp-period-${exp.id}`}
+                  id={`exp-timeframe-${exp.id}`}
                   type="text"
-                  value={exp.period}
-                  onChange={(e) => updateWorkExperience(exp.id, "period", e.target.value)}
+                  value={exp.timeframe}
+                  onChange={(e) => updateWorkExperience(exp.id, "timeframe", e.target.value)}
                   placeholder="e.g., 2020 - Present"
                 />
               </div>
+              
               <div className={styles.formGroup}>
-                <label htmlFor={`exp-description-${exp.id}`}>Description</label>
-                <textarea
-                  id={`exp-description-${exp.id}`}
-                  value={exp.description}
-                  onChange={(e) => updateWorkExperience(exp.id, "description", e.target.value)}
-                  placeholder="Describe your role and achievements"
-                />
+                <label>Achievements</label>
+                <div className={styles.achievementsList}>
+                  {exp.achievements.map((ach) => (
+                    <div key={ach.id} className={styles.achievementItem}>
+                      <input
+                        type="text"
+                        value={ach.content}
+                        onChange={(e) => updateAchievement(exp.id, ach.id, e.target.value)}
+                        placeholder="Key achievement or responsibility..."
+                      />
+                      <button
+                        type="button"
+                        onClick={() => deleteAchievement(exp.id, ach.id)}
+                        className={styles.miniDeleteBtn}
+                      >
+                        <FiTrash2 />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className={styles.addAchievementBtn}
+                    onClick={() => addAchievement(exp.id)}
+                  >
+                    <FiPlus /> Add Achievement
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -11,7 +11,6 @@ interface TechnicalSkillsSectionProps {
 }
 
 export default function TechnicalSkillsSection({ data, setData }: TechnicalSkillsSectionProps) {
-  // State to track new tag input for each skill category
   const [tagInputs, setTagInputs] = useState<Record<string, string>>({});
 
   const addSkill = () => {
@@ -19,12 +18,12 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
       ...data,
       technicalSkills: [
         ...data.technicalSkills,
-        { id: Date.now().toString(), title: "", description: "", tags: [] },
+        { id: Date.now().toString(), title: "", tags: [] },
       ],
     });
   };
 
-  const updateSkill = (id: string, field: keyof TechnicalSkill, value: string | TechTag[]) => {
+  const updateSkill = (id: string, field: keyof TechnicalSkill, value: any) => {
     const newSkills = data.technicalSkills.map((skill) =>
       skill.id === id ? { ...skill, [field]: value } : skill,
     );
@@ -40,8 +39,6 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
 
   const inferIconName = (name: string): string => {
     const lowerName = name.toLowerCase().replace(/\s+/g, "");
-
-    // Common mappings
     const mappings: Record<string, string> = {
       go: "golang",
       "c++": "cplusplus",
@@ -51,18 +48,8 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
       "next.js": "nextjs",
       "node.js": "nodedotjs",
       nodejs: "nodedotjs",
-      "vue.js": "vue",
-      vuejs: "vue",
-      "nuxt.js": "nuxt",
-      nuxtjs: "nuxt",
-      gcp: "googlecloud",
-      aws: "aws",
     };
-
-    if (mappings[lowerName]) return mappings[lowerName];
-
-    // Default: try removing dots and special chars
-    return lowerName.replace(/\./g, "").replace(/[^a-z0-9]/g, "");
+    return mappings[lowerName] || lowerName.replace(/\./g, "").replace(/[^a-z0-9]/g, "");
   };
 
   const addTag = (skillId: string) => {
@@ -73,19 +60,19 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
     if (skill) {
       updateSkill(skillId, "tags", [
         ...skill.tags,
-        { name: tagName, icon: inferIconName(tagName) },
+        { id: Date.now().toString(), name: tagName, icon: inferIconName(tagName) },
       ]);
       setTagInputs({ ...tagInputs, [skillId]: "" });
     }
   };
 
-  const deleteTag = (skillId: string, tagIndex: number) => {
+  const deleteTag = (skillId: string, tagId: string) => {
     const skill = data.technicalSkills.find((s) => s.id === skillId);
     if (skill) {
       updateSkill(
         skillId,
         "tags",
-        skill.tags.filter((_, i) => i !== tagIndex),
+        skill.tags.filter((t) => t.id !== tagId),
       );
     }
   };
@@ -101,57 +88,35 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
         {data.technicalSkills.map((skill) => (
           <div key={skill.id} className={styles.item}>
             <div className={styles.itemHeader}>
-              <h4>{skill.title || "New Skill Category"}</h4>
+              <h4>{skill.title || "New Category"}</h4>
               <button
                 type="button"
                 className={styles.deleteBtn}
                 onClick={() => deleteSkill(skill.id)}
-                title="Delete skill category"
               >
                 <FiTrash2 />
               </button>
             </div>
             <div className={styles.itemFields}>
               <div className={styles.formGroup}>
-                <label htmlFor={`skill-title-${skill.id}`}>Title</label>
+                <label>Category Title</label>
                 <input
-                  id={`skill-title-${skill.id}`}
                   type="text"
                   value={skill.title}
                   onChange={(e) => updateSkill(skill.id, "title", e.target.value)}
-                  placeholder="e.g., Languages, Backend, Frontend"
+                  placeholder="e.g., Languages"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label htmlFor={`skill-desc-${skill.id}`}>Description</label>
-                <textarea
-                  id={`skill-desc-${skill.id}`}
-                  value={skill.description}
-                  onChange={(e) => updateSkill(skill.id, "description", e.target.value)}
-                  placeholder="Describe your expertise in this area..."
-                  rows={3}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <div
-                  style={{
-                    fontWeight: 500,
-                    marginBottom: "0.5rem",
-                    fontSize: "0.875rem",
-                    color: "var(--neutral-on-background-weak)",
-                  }}
-                >
-                  Tech Stack Tags
-                </div>
+                <label>Tags</label>
                 <div className={styles.tagsContainer}>
-                  {skill.tags.map((tag, tagIndex) => (
-                    <div key={`tag-${skill.id}-${tagIndex}`} className={styles.tagChip}>
+                  {skill.tags.map((tag) => (
+                    <div key={tag.id} className={styles.tagChip}>
                       {tag.name}
                       <button
                         type="button"
                         className={styles.deleteTagBtn}
-                        onClick={() => deleteTag(skill.id, tagIndex)}
-                        title="Delete tag"
+                        onClick={() => deleteTag(skill.id, tag.id!)}
                       >
                         <FiTrash2 />
                       </button>
@@ -163,17 +128,11 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
                     type="text"
                     value={tagInputs[skill.id] || ""}
                     onChange={(e) => setTagInputs({ ...tagInputs, [skill.id]: e.target.value })}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addTag(skill.id);
-                      }
-                    }}
-                    placeholder="Add new tech skill..."
+                    onKeyDown={(e) => e.key === "Enter" && addTag(skill.id)}
+                    placeholder="Add tag..."
                   />
                   <button type="button" className={styles.addBtn} onClick={() => addTag(skill.id)}>
                     <FiPlus />
-                    Add
                   </button>
                 </div>
               </div>
@@ -181,8 +140,7 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
           </div>
         ))}
         <button type="button" className={styles.addBtn} onClick={addSkill}>
-          <FiPlus />
-          Add Skill Category
+          <FiPlus /> Add Category
         </button>
       </div>
     </section>

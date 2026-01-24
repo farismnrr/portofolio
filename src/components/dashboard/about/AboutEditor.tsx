@@ -1,13 +1,26 @@
 "use client";
 
-import { fetchAbout, updateAbout, updateAvatar } from "@/lib/about";
-import { about, person, social } from "@/resources";
+import {
+  fetchAbout,
+  fetchSocialLinks,
+  fetchWorkExperiences,
+  fetchEducations,
+  fetchSkills,
+  updateAbout,
+  updateAvatar,
+  createSocialLink,
+  updateSocialLink,
+  deleteSocialLink,
+  createEducation,
+  deleteEducation,
+} from "@/lib/about";
+import { person } from "@/resources";
 import { useAuthStore } from "@/store/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styles from "./AboutEditor.module.scss";
 
 // Types
-import type { AboutData, Link, Study, TechnicalSkill, WorkExperience } from "./types";
+import type { AboutData } from "./types";
 
 // Sections
 import BasicInfoSection from "./sections/BasicInfoSection";
@@ -19,124 +32,126 @@ import WorkExperienceSection from "./sections/WorkExperienceSection";
 export default function AboutEditor() {
   const { accessToken } = useAuthStore();
   const [isSyncing, setIsSyncing] = useState(false);
-
-  // Initial Data Conversion (Legacy Resources Mapping)
-  const initialLinks: Link[] = social
-    .filter((item) => item.link)
-    .map((item, index) => ({
-      id: (index + 1).toString(),
-      label: item.name,
-      url: item.link || "",
-    }));
-
-  const initialWorkExperience: WorkExperience[] = about.work.experiences.map((exp, index) => ({
-    id: (index + 1).toString(),
-    title: exp.role,
-    company: exp.company,
-    period: exp.timeframe,
-    description: exp.achievements.join("\n"),
-  }));
-
-  const initialStudies: Study[] = about.studies.institutions.map((inst, index) => {
-    let descriptionText = "";
-    if (typeof inst.description === "string") {
-      descriptionText = inst.description;
-    } else if (inst.description && typeof inst.description === "object") {
-      const desc = inst.description as unknown as {
-        props?: { children?: string | unknown[] };
-      };
-      if (desc.props?.children) {
-        if (typeof desc.props.children === "string") {
-          descriptionText = desc.props.children;
-        } else if (Array.isArray(desc.props.children)) {
-          descriptionText = desc.props.children
-            .map((child: unknown) => {
-              if (typeof child === "string") return child;
-              const childObj = child as { props?: { children?: string } };
-              if (childObj.props?.children) {
-                return typeof childObj.props.children === "string" ? childObj.props.children : "";
-              }
-              return "";
-            })
-            .join(" ");
-        }
-      }
-    }
-
-    return {
-      id: (index + 1).toString(),
-      degree: inst.name,
-      institution: inst.name,
-      period: (inst as { period?: string }).period || "",
-      description: descriptionText,
-    };
-  });
-
-  const initialSkills: TechnicalSkill[] = about.technical.skills.map((skill, index) => {
-    let descriptionText = "";
-    if (typeof skill.description === "string") {
-      descriptionText = skill.description;
-    } else if (skill.description && typeof skill.description === "object") {
-      const desc = skill.description as unknown as {
-        props?: { children?: string | unknown[] };
-      };
-      if (desc.props?.children) {
-        if (typeof desc.props.children === "string") {
-          descriptionText = desc.props.children;
-        } else if (Array.isArray(desc.props.children)) {
-          descriptionText = desc.props.children
-            .map((child: unknown) => {
-              if (typeof child === "string") return child;
-              const childObj = child as { props?: { children?: string } };
-              if (childObj.props?.children) {
-                return typeof childObj.props.children === "string" ? childObj.props.children : "";
-              }
-              return "";
-            })
-            .join(" ");
-        }
-      }
-    }
-
-    return {
-      id: (index + 1).toString(),
-      title: skill.title,
-      description: descriptionText,
-      tags: skill.tags || [],
-    };
-  });
+  const [originalData, setOriginalData] = useState<AboutData | null>(null);
 
   const [data, setData] = useState<AboutData>({
     photo: person.avatar,
     name: person.name,
     title: person.role,
-    description:
-      typeof about.intro.description === "string"
-        ? about.intro.description
-        : "Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems.",
-    links: initialLinks,
-    workExperience: initialWorkExperience,
-    studies: initialStudies,
-    technicalSkills: initialSkills,
+    description: "",
+    links: [],
+    workExperience: [],
+    studies: [],
+    technicalSkills: [],
   });
+
+  // Transform raw API data to AboutData for state
+  const fetchAllData = useCallback(async (): Promise<AboutData> => {
+    const [profile, socialLinks, workExps, educations, skills] = await Promise.all([
+      fetchAbout(),
+      fetchSocialLinks(),
+      fetchWorkExperiences(),
+      fetchEducations(),
+      fetchSkills(),
+    ]);
+
+    const mappedData: AboutData = {
+      name: profile?.name || person.name,
+      title: profile?.role || person.role,
+      description: profile?.description || "",
+      photo: profile?.avatar_url || person.avatar,
+      links: socialLinks.map((l) => ({ id: l.id, label: l.name, url: l.url })),
+      workExperience: workExps.map((w) => ({
+        id: w.id,
+        role: w.role,
+        company: w.company,
+        timeframe: w.timeframe,
+        achievements: w.achievements.map((a) => ({ id: a.id, content: a.content })),
+      })),
+      studies: educations.map((e) => ({
+        id: e.id,
+        degree: e.degree,
+        institution: e.institution,
+        period: e.period,
+        description: e.description,
+      })),
+      technicalSkills: skills.map((s) => ({
+        id: s.id,
+        title: s.title,
+        tags: s.tags.map((t) => ({ id: t.id ?? "", name: t.name, icon: t.icon })),
+      })),
+    };
+
+    return mappedData;
+  }, []);
 
   useEffect(() => {
     async function initData() {
       if (!accessToken) return;
-
-      const profile = await fetchAbout();
-      if (profile) {
-        setData((prev) => ({
-          ...prev,
-          name: profile.name,
-          title: profile.role,
-          description: profile.description,
-          photo: profile.avatar_url || prev.photo,
-        }));
+      setIsSyncing(true);
+      try {
+        const fetchedData = await fetchAllData();
+        setData(fetchedData);
+        setOriginalData(fetchedData);
+      } catch (error) {
+        console.error("Initialization failed:", error);
+      } finally {
+        setIsSyncing(false);
       }
     }
     initData();
-  }, [accessToken]);
+  }, [accessToken, fetchAllData]);
+
+  const syncSocialLinks = async () => {
+    if (!accessToken || !originalData) return;
+
+    const currentLinks = data.links;
+    const oldLinks = originalData.links;
+
+    // Detect Deletions
+    const toDelete = oldLinks.filter((ol) => !currentLinks.find((cl) => cl.id === ol.id));
+    for (const link of toDelete) {
+      await deleteSocialLink(accessToken, link.id);
+    }
+
+    // Detect Changes & Additions
+    for (let i = 0; i < currentLinks.length; i++) {
+       const cl = currentLinks[i];
+       const ol = oldLinks.find((o) => o.id === cl.id);
+       
+       if (!ol) {
+         // ADD (IDs like Date.now() are temporary)
+         await createSocialLink(accessToken, { name: cl.label, url: cl.url, order_by: i });
+       } else if (cl.label !== ol.label || cl.url !== ol.url) {
+         // UPDATE
+         await updateSocialLink(accessToken, cl.id, { name: cl.label, url: cl.url, order_by: i });
+       }
+    }
+  };
+
+  const syncEducations = async () => {
+    if (!accessToken || !originalData) return;
+
+    const currentEdu = data.studies;
+    const oldEdu = originalData.studies;
+
+    // Delete
+    const toDelete = oldEdu.filter((o) => !currentEdu.find((c) => c.id === o.id));
+    for (const edu of toDelete) {
+      await deleteEducation(accessToken, edu.id);
+    }
+
+    // Add
+    const toAdd = currentEdu.filter((c) => !oldEdu.find((o) => o.id === c.id));
+    for (const edu of toAdd) {
+      await createEducation(accessToken, {
+        institution: edu.institution,
+        degree: edu.degree,
+        period: edu.period,
+        description: edu.description,
+      });
+    }
+  };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -151,25 +166,40 @@ export default function AboutEditor() {
   };
 
   const handleSave = async () => {
-    if (!accessToken) return;
+    if (!accessToken || !originalData) return;
 
     setIsSyncing(true);
-    const success = await updateAbout(accessToken, {
-      name: data.name,
-      role: data.title,
-      description: data.description,
-    });
+    try {
+      // 1. Sync Basic Profile
+      await updateAbout(accessToken, {
+        name: data.name,
+        role: data.title,
+        description: data.description,
+      });
 
-    if (success) {
-      alert("Profile updated successfully!");
-    } else {
-      alert("Failed to update profile.");
+      // 2. Sync Social Links
+      await syncSocialLinks();
+
+      // 3. Sync Education
+      await syncEducations();
+
+      alert("Profile, Social Links, and Education synchronized!");
+      
+      const refreshed = await fetchAllData();
+      setOriginalData(refreshed);
+      setData(refreshed);
+    } catch (err) {
+      console.error("Sync failed:", err);
+      alert("Sync failed. Check console.");
+    } finally {
+      setIsSyncing(false);
     }
-    setIsSyncing(false);
   };
 
   const handleCancel = () => {
-    window.location.reload();
+    if (originalData) {
+      setData(JSON.parse(JSON.stringify(originalData)));
+    }
   };
 
   return (
@@ -177,23 +207,20 @@ export default function AboutEditor() {
       <header className={styles.header}>
         <h1>About Editor</h1>
         <p>Manage your profile information, experience, and skills.</p>
-        {isSyncing && <div className={styles.syncingOverlay}>Saving...</div>}
+        {isSyncing && <div className={styles.syncingOverlay}>Syncing...</div>}
       </header>
 
       <div className={styles.layout}>
         {/* LEFT COLUMN */}
-        <div>
+        <div className={styles.column}>
           <BasicInfoSection data={data} setData={setData} handlePhotoUpload={handlePhotoUpload} />
-
           <SocialLinksSection data={data} setData={setData} />
-
           <TechnicalSkillsSection data={data} setData={setData} />
         </div>
 
         {/* RIGHT COLUMN */}
-        <div>
+        <div className={styles.column}>
           <WorkExperienceSection data={data} setData={setData} />
-
           <EducationSection data={data} setData={setData} />
         </div>
       </div>
@@ -206,7 +233,7 @@ export default function AboutEditor() {
           onClick={handleCancel}
           disabled={isSyncing}
         >
-          Cancel
+          Reset Changes
         </button>
         <button type="button" className={styles.saveBtn} onClick={handleSave} disabled={isSyncing}>
           {isSyncing ? "Saving..." : "Save Changes"}

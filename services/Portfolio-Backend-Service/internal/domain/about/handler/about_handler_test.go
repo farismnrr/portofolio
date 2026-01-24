@@ -189,6 +189,7 @@ func TestUpdateAbout(t *testing.T) {
 			assert.Equal(t, "name", response.Details[0].Field)
 		}
 	})
+
 }
 
 func TestUpdateAvatar(t *testing.T) {

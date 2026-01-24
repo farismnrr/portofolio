@@ -20,4 +20,5 @@ RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
 COPY . .
 
 # Run migrations then start air
-CMD ["sh", "-c", "migrate -path migrations/about -database \"${DATABASE_URL}\" up && air"]
+CMD ["sh", "-c", "migrate -path migration/about -database \"${DATABASE_URL}\" up && air"]
+

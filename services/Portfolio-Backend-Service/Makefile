@@ -1,4 +1,4 @@
-.PHONY: help run build test clean docker-build docker-up docker-down tidy lint kill
+.PHONY: help run build test clean docker-build docker-up docker-down tidy lint kill migrate-up migrate-down migrate-fresh
 
 # Variables
 APP_NAME=portfolio-backend-service
@@ -74,4 +74,56 @@ install-tools: ## Install development tools
 	@echo "Installing development tools..."
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	@go install github.com/air-verse/air@latest
+	@go install -tags 'postgres sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	@echo "Tools installed"
+
+# Database migration commands
+migrate-up: ## Run database migrations
+	@echo "⬆️  Running About domain migrations..."
+	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
+	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
+		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
+		case "$$DB_NAME" in \
+			*.sqlite|*.db) ;; \
+			*) DB_NAME="$$DB_NAME.sqlite";; \
+		esac; \
+		DATABASE_URL="sqlite3://$$DB_NAME"; \
+	else \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+	fi; \
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up
+	@echo "✅ Migrations completed"
+
+migrate-down: ## Rollback last migration
+	@echo "⬇️  Rolling back About domain migrations..."
+	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
+	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
+		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
+		case "$$DB_NAME" in \
+			*.sqlite|*.db) ;; \
+			*) DB_NAME="$$DB_NAME.sqlite";; \
+		esac; \
+		DATABASE_URL="sqlite3://$$DB_NAME"; \
+	else \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+	fi; \
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" down 1
+	@echo "✅ Rollback completed"
+
+migrate-fresh: ## Drop all tables and re-run migrations
+	@echo "🔄 Running fresh migrations for About domain..."
+	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
+	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
+		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
+		case "$$DB_NAME" in \
+			*.sqlite|*.db) ;; \
+			*) DB_NAME="$$DB_NAME.sqlite";; \
+		esac; \
+		DATABASE_URL="sqlite3://$$DB_NAME"; \
+	else \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+	fi; \
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" drop -f; \
+	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up
+	@echo "✅ Fresh migrations completed"
+

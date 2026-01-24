@@ -67,9 +67,9 @@ services:
       - CORE_DB_USER=${CORE_DB_USER}
       - CORE_DB_PASS=${CORE_DB_PASS}
       - CORE_DB_NAME=${CORE_DB_NAME}
+      - DATABASE_URL=${BACKEND_DATABASE_URL}
     env_file:
       - .env.dev
-    command: air
     depends_on:
       user-management:
         condition: service_healthy

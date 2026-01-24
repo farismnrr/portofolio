@@ -9,6 +9,7 @@ import (
 	"time"
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/about"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
@@ -77,6 +78,7 @@ func (s *Server) SetupRoutes() {
 	content.RegisterRoutes(v1)
 	sso.RegisterRoutes(v1, s.config)
 	dashboard.RegisterRoutes(v1, s.config)
+	about.RegisterAboutRoutes(v1, s.db)
 
 	// Status endpoint
 	v1.GET("/status", func(c echo.Context) error {

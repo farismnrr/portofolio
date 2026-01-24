@@ -1,0 +1,34 @@
+package repository
+
+import (
+	"context"
+
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
+	"gorm.io/gorm"
+)
+
+type AboutRepository interface {
+	Get(ctx context.Context) (*entity.About, error)
+	Update(ctx context.Context, about *entity.About) error
+}
+
+type aboutRepository struct {
+	db *gorm.DB
+}
+
+func NewAboutRepository(db *gorm.DB) AboutRepository {
+	return &aboutRepository{db: db}
+}
+
+func (r *aboutRepository) Get(ctx context.Context) (*entity.About, error) {
+	var about entity.About
+	// Use FirstOrCreate to ensure there's always one About record
+	if err := r.db.WithContext(ctx).Where("deleted_at IS NULL").FirstOrCreate(&about).Error; err != nil {
+		return nil, err
+	}
+	return &about, nil
+}
+
+func (r *aboutRepository) Update(ctx context.Context, about *entity.About) error {
+	return r.db.WithContext(ctx).Save(about).Error
+}

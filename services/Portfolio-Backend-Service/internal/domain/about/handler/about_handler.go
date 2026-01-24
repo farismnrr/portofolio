@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
@@ -56,4 +57,29 @@ func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 	}
 
 	return response.Success(c, http.StatusOK, "About information updated successfully", nil)
+}
+
+func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
+	// Source
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		return response.Error(c, http.StatusBadRequest, "Avatar file is required")
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to open avatar file")
+	}
+	defer src.Close()
+
+	url, err := h.usecase.UpdateAvatar(c.Request().Context(), src, file.Filename)
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, fmt.Sprintf("Failed to update avatar: %s", err.Error()))
+	}
+
+	res := map[string]string{
+		"avatar_url": url,
+	}
+
+	return response.Success(c, http.StatusOK, "Avatar updated successfully", res)
 }

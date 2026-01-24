@@ -9,7 +9,6 @@ bin/
 dist/
 tmp/
 
-
 # Test binary, built with `go test -c`
 *.test
 
@@ -28,6 +27,8 @@ go.work
 .env
 .env.local
 .env.*.local
+secret/*
+!secret/.gitignore
 
 # IDE
 .idea/

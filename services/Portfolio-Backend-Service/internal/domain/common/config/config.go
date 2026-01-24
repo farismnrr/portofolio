@@ -14,6 +14,16 @@ type Config struct {
 	CORS     CORSConfig
 	Logging  LoggingConfig
 	Database DatabaseConfig
+	GCP      GCPConfig
+}
+
+// GCPConfig holds Google Cloud Platform configuration
+type GCPConfig struct {
+	ProjectID           string
+	CredentialsPath     string
+	BucketName          string
+	ServiceAccountEmail string
+	P12Password         string
 }
 
 // ServerConfig holds server-specific configuration
@@ -84,6 +94,13 @@ func Load() (*Config, error) {
 			User:     getEnv("CORE_DB_USER", "postgres"),
 			Password: getEnv("CORE_DB_PASS", "postgres"),
 			Name:     getEnv("CORE_DB_NAME", "user_auth_plugin.sqlite"),
+		},
+		GCP: GCPConfig{
+			ProjectID:           getEnv("GCP_PROJECT_ID", ""),
+			CredentialsPath:     getEnv("GCP_CREDENTIALS_PATH", ""),
+			BucketName:          getEnv("GCP_BUCKET_NAME", ""),
+			ServiceAccountEmail: getEnv("GCP_SERVICE_ACCOUNT_EMAIL", ""),
+			P12Password:         getEnv("GCP_P12_PASSWORD", ""),
 		},
 	}
 

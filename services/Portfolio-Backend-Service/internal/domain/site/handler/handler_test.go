@@ -37,12 +37,12 @@ func TestAuthenticate_Success(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 
 		var response struct {
-			Success bool   `json:"success"`
+			Status  bool   `json:"status"`
 			Message string `json:"message"`
 		}
 		err := json.Unmarshal(rec.Body.Bytes(), &response)
 		assert.NoError(t, err)
-		assert.True(t, response.Success)
+		assert.True(t, response.Status)
 		assert.Equal(t, "Authentication successful", response.Message)
 
 		// Check cookie is set
@@ -104,7 +104,7 @@ func TestCheckAuth_Authenticated(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 
 		var response struct {
-			Success bool   `json:"success"`
+			Status  bool   `json:"status"`
 			Message string `json:"message"`
 			Data    struct {
 				Authenticated bool `json:"authenticated"`
@@ -112,7 +112,7 @@ func TestCheckAuth_Authenticated(t *testing.T) {
 		}
 		err := json.Unmarshal(rec.Body.Bytes(), &response)
 		assert.NoError(t, err)
-		assert.True(t, response.Success)
+		assert.True(t, response.Status)
 		assert.True(t, response.Data.Authenticated)
 	}
 }

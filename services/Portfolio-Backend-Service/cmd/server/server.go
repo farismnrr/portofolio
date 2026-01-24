@@ -78,7 +78,7 @@ func (s *Server) SetupRoutes() {
 	content.RegisterRoutes(v1)
 	sso.RegisterRoutes(v1, s.config)
 	dashboard.RegisterRoutes(v1, s.config)
-	about.RegisterAboutRoutes(v1, s.db)
+	about.RegisterAboutRoutes(v1, s.db, s.config)
 
 	// Status endpoint
 	v1.GET("/status", func(c echo.Context) error {

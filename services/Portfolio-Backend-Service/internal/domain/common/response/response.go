@@ -6,14 +6,14 @@ import (
 
 // SuccessResponse represents a standardized success API response
 type SuccessResponse struct {
-	Success bool        `json:"success"`
+	Status  bool        `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
 // ErrorResponse represents a standardized error API response
 type ErrorResponse struct {
-	Success bool        `json:"success"`
+	Status  bool        `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`    // For additional error data
 	Details interface{} `json:"details,omitempty"` // For validation errors
@@ -22,7 +22,7 @@ type ErrorResponse struct {
 // Success sends a success response with data
 func Success(c echo.Context, code int, message string, data interface{}) error {
 	return c.JSON(code, SuccessResponse{
-		Success: true,
+		Status:  true,
 		Message: message,
 		Data:    data,
 	})
@@ -31,7 +31,7 @@ func Success(c echo.Context, code int, message string, data interface{}) error {
 // SuccessNoData sends a success response without data
 func SuccessNoData(c echo.Context, code int, message string) error {
 	return c.JSON(code, SuccessResponse{
-		Success: true,
+		Status:  true,
 		Message: message,
 	})
 }
@@ -39,7 +39,7 @@ func SuccessNoData(c echo.Context, code int, message string) error {
 // Error sends an error response
 func Error(c echo.Context, code int, message string) error {
 	return c.JSON(code, ErrorResponse{
-		Success: false,
+		Status:  false,
 		Message: message,
 	})
 }
@@ -47,7 +47,7 @@ func Error(c echo.Context, code int, message string) error {
 // ErrorWithData sends an error response with additional data
 func ErrorWithData(c echo.Context, code int, message string, data interface{}) error {
 	return c.JSON(code, ErrorResponse{
-		Success: false,
+		Status:  false,
 		Message: message,
 		Data:    data,
 	})
@@ -55,8 +55,8 @@ func ErrorWithData(c echo.Context, code int, message string, data interface{}) e
 
 // ValidationError sends an error response with validation details
 func ValidationError(c echo.Context, message string, details interface{}) error {
-	return c.JSON(400, ErrorResponse{
-		Success: false,
+	return c.JSON(422, ErrorResponse{
+		Status:  false,
 		Message: message,
 		Details: details,
 	})

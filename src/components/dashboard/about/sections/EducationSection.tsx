@@ -48,7 +48,7 @@ export default function EducationSection({ data, setData }: EducationSectionProp
         {data.studies.map((study) => (
           <div key={study.id} className={styles.item}>
             <div className={styles.itemHeader}>
-              <h4>{study.degree || "New Degree"}</h4>
+              <h4>{study.institution || "New Institution"}</h4>
               <button
                 type="button"
                 className={styles.deleteBtn}

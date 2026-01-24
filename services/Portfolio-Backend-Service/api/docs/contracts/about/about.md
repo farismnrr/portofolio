@@ -62,6 +62,16 @@ Retrieves basic profile information such as name, role, description, and avatar 
 }
 ```
 
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
+
 ---
 
 ## 2. Update About Profile
@@ -107,6 +117,16 @@ Updates text-based profile information (excluding avatar).
       "message": "Name cannot be empty"
     }
   ]
+}
+```
+
+#### Case 3: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
 }
 ```
 
@@ -158,5 +178,15 @@ Uploads a new avatar image to cloud storage and updates the profile.
 {
   "status": false,
   "message": "File size exceeds the 2MB limit"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
 }
 ```

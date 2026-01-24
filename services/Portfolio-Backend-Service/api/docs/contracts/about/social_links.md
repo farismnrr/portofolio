@@ -114,6 +114,24 @@ Adds a new social link to the profile.
     }
   ]
 }
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
 ```
 
 ---
@@ -172,8 +190,9 @@ Removes a social link.
 
 ### User Scenarios
 
-#### Case 1: Successfully Deleted
+#### Case 1: Successfully Deleted (Soft Delete)
 - **Status:** `200 OK`
+- **Description:** The record is not permanently removed from the database but marked as deleted via the `deleted_at` timestamp.
 - **Response Body:**
 ```json
 {
@@ -184,3 +203,30 @@ Removes a social link.
 
 #### Case 2: Not Found
 - **Status:** `404 Not Found`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Social link not found"
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```

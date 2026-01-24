@@ -70,7 +70,7 @@ func RequireRole(allowedRoles ...string) echo.MiddlewareFunc {
 					zap.String("user_role", userRole),
 					zap.Strings("allowed_roles", allowedRoles),
 				)
-				return response.Error(c, http.StatusForbidden, "Insufficient permissions")
+				return response.Error(c, http.StatusForbidden, "Forbidden: Insufficient permissions")
 			}
 
 			return next(c)

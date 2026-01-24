@@ -76,7 +76,60 @@ Adds a new category of skills.
 ```
 
 ### User Scenarios
+
+#### Case 1: Created
 - **Status:** `201 Created`
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Skill category created successfully",
+  "data": {
+    "skill_category": {
+      "id": "new-uuid",
+      "title": "Backend",
+      "order_by": 3,
+      "tags": [...]
+    }
+  }
+}
+```
+
+#### Case 2: Validation Failed
+- **Status:** `422 Unprocessable Entity`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Validation failed",
+  "details": [
+    {
+      "field": "title",
+      "message": "Title is required"
+    }
+  ]
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
 
 ---
 
@@ -129,7 +182,54 @@ Adds a specific skill tag to a category.
 ```
 
 ### User Scenarios
+
+#### Case 1: Successfully Created
 - **Status:** `201 Created`
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Skill tag added successfully",
+  "data": {
+    "skill_tag": {
+      "id": "new-uuid",
+      "name": "Docker",
+      "icon": "docker",
+      "order_by": 1
+    }
+  }
+}
+```
+
+#### Case 2: Skill Category Not Found
+- **Status:** `404 Not Found`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Skill category not found"
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
 
 ---
 
@@ -141,4 +241,44 @@ Removes a specific tag.
 - **Headers:** `Authorization: Bearer <access_token>`
 
 ### User Scenarios
+
+#### Case 1: Successfully Deleted (Soft Delete)
 - **Status:** `200 OK`
+- **Description:** The tag is marked as deleted via `deleted_at`.
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Skill tag deleted successfully"
+}
+```
+
+#### Case 2: Not Found
+- **Status:** `404 Not Found`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Skill tag not found"
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```

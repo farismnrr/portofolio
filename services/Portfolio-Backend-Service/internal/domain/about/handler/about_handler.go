@@ -25,6 +25,7 @@ func NewAboutHandler(u usecase.AboutUsecase) *AboutHandler {
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string]AboutResponse}
+// @Failure 401 {object} response.ErrorResponse
 // @Router /v1/about [get]
 func (h *AboutHandler) GetAbout(c echo.Context) error {
 	about, err := h.usecase.GetAbout(c.Request().Context())
@@ -57,6 +58,7 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 // @Param request body UpdateAboutRequest true "Profile Data"
 // @Success 200 {object} response.SuccessResponse
 // @Failure 401 {object} response.ErrorResponse
+// @Failure 403 {object} response.ErrorResponse
 // @Failure 422 {object} response.ErrorResponse
 // @Router /v1/about [patch]
 func (h *AboutHandler) UpdateAbout(c echo.Context) error {
@@ -105,6 +107,8 @@ func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 // @Param avatar formData file true "Avatar image file"
 // @Success 200 {object} response.SuccessResponse{data=map[string]map[string]string}
 // @Failure 400 {object} response.ErrorResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 403 {object} response.ErrorResponse
 // @Failure 413 {object} response.ErrorResponse
 // @Router /v1/about/avatar [patch]
 func (h *AboutHandler) UpdateAvatar(c echo.Context) error {

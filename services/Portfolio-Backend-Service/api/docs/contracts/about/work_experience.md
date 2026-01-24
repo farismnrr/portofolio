@@ -44,6 +44,16 @@ Retrieves user's work history including achievements.
 }
 ```
 
+#### Case 2: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
 ---
 
 ## 2. Create Work Experience
@@ -143,7 +153,53 @@ Adds a single achievement to a work experience.
 ```
 
 ### User Scenarios
+
+#### Case 1: Successfully Created
 - **Status:** `201 Created`
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Achievement added successfully",
+  "data": {
+    "achievement": {
+      "id": "new-uuid",
+      "content": "Delivered project X",
+      "order_by": 1
+    }
+  }
+}
+```
+
+#### Case 2: Work Experience Not Found
+- **Status:** `404 Not Found`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Work experience not found"
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
 
 ---
 
@@ -155,4 +211,44 @@ Removes a specific achievement.
 - **Headers:** `Authorization: Bearer <access_token>`
 
 ### User Scenarios
+
+#### Case 1: Successfully Deleted (Soft Delete)
 - **Status:** `200 OK`
+- **Description:** The achievement is marked as deleted via `deleted_at`.
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Achievement deleted successfully"
+}
+```
+
+#### Case 2: Not Found
+- **Status:** `404 Not Found`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Achievement not found"
+}
+```
+
+#### Case 3: Unauthorized (Missing or Invalid Token)
+- **Status:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 4: Forbidden (Insufficient Permissions)
+- **Status:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```

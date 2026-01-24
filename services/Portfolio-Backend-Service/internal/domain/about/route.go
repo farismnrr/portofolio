@@ -28,6 +28,6 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 
 	aboutGroup := e.Group("/about")
 	aboutGroup.GET("", h.GetAbout)
-	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg))
-	aboutGroup.PATCH("/avatar", h.UpdateAvatar, middleware.RequireAuth(cfg))
+	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/avatar", h.UpdateAvatar, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 }

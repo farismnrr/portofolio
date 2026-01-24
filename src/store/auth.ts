@@ -62,8 +62,8 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
 
       if (response.ok) {
         const resBody = await response.json();
-        if ((resBody.status || resBody.success) && resBody.data) {
-          set({ user: resBody.data });
+        if ((resBody.status || resBody.success) && resBody.data?.user) {
+          set({ user: resBody.data.user });
         }
       }
     } catch (_error) {

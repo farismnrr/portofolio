@@ -8,7 +8,11 @@ type LoginRequest struct {
 // RefreshResponse represents the refresh token response
 type RefreshResponse struct {
 	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
+}
+
+// UserDataWrapper wraps UserResponse
+type UserDataWrapper struct {
+	User UserResponse `json:"user"`
 }
 
 // UserResponse represents the user data response

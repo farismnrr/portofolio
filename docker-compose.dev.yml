@@ -40,10 +40,9 @@ services:
       - /usr/local/cargo/registry
       - /usr/local/cargo/git
     environment:
-      - RUST_LOG=${RUST_LOG}
-      - DATABASE_URL=${DATABASE_URL}
-      - CORE_DB_TYPE=${UM_DB_TYPE}
-      - CORE_DB_NAME=${UM_DB_NAME}
+      - RUST_LOG=${RUST_LOG:-info}
+      - CORE_DB_TYPE=${UM_DB_TYPE:-sqlite}
+      - CORE_DB_NAME=${UM_DB_NAME:-user_auth_plugin.sqlite}
     env_file:
       - .env.dev
     # Ensure hot reload works by mounting source
@@ -65,22 +64,8 @@ services:
     volumes:
       - ./services/Portfolio-Backend-Service:/app
       - ./services/Portfolio-Backend-Service/secret:/app/secret
-      - /app/tmp
     environment:
-      - PORT=${PORT}
-      - SSO_URL=${SSO_URL}
-      - CORE_DB_TYPE=${CORE_DB_TYPE}
-      - CORE_DB_HOST=${CORE_DB_HOST}
-      - CORE_DB_PORT=${CORE_DB_PORT}
-      - CORE_DB_USER=${CORE_DB_USER}
-      - CORE_DB_PASS=${CORE_DB_PASS}
-      - CORE_DB_NAME=${CORE_DB_NAME}
       - DATABASE_URL=${BACKEND_DATABASE_URL}
-      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
-      - GCP_BUCKET_NAME=${GCP_BUCKET_NAME}
-      - GCP_CREDENTIALS_PATH=${GCP_CREDENTIALS_PATH}
-      - GCP_SERVICE_ACCOUNT_EMAIL=${GCP_SERVICE_ACCOUNT_EMAIL}
-      - GCP_P12_PASSWORD=${GCP_P12_PASSWORD}
       - CORE_DB_SEED_DUMMY=true
     env_file:
       - .env.dev

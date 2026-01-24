@@ -104,7 +104,6 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 
 	data := RefreshResponse{
 		AccessToken: tokenResp.AccessToken,
-		ExpiresIn:   tokenResp.ExpiresIn,
 	}
 	return response.Success(c, http.StatusOK, "Token refreshed successfully", data)
 }
@@ -150,14 +149,16 @@ func (h *Handler) GetUser(c echo.Context) error {
 		return response.Error(c, http.StatusForbidden, "Access denied: admin role required")
 	}
 
-	data := UserResponse{
-		ID:       userData.ID,
-		Username: userData.Username,
-		Email:    userData.Email,
-		Role:     userData.Role,
-		TenantID: userData.TenantID,
+	userDataResp := UserDataWrapper{
+		User: UserResponse{
+			ID:       userData.ID,
+			Username: userData.Username,
+			Email:    userData.Email,
+			Role:     userData.Role,
+			TenantID: userData.TenantID,
+		},
 	}
-	return response.Success(c, http.StatusOK, "User data retrieved successfully", data)
+	return response.Success(c, http.StatusOK, "User retrieved successfully", userDataResp)
 }
 
 // Logout logs out the user by calling SSO and clearing cookies

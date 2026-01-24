@@ -23,7 +23,6 @@ type SSOClient struct {
 // TokenResponse represents the token response from SSO
 type TokenResponse struct {
 	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
 }
 
 // UserData represents user data from SSO
@@ -102,6 +101,11 @@ func (s *SSOClient) RefreshToken(ctx context.Context, refreshToken string) (*Tok
 	return &tokenResp, nil
 }
 
+// VerifyResponseWrapper wraps the user data from verify endpoint
+type VerifyResponseWrapper struct {
+	User UserData `json:"user"`
+}
+
 // VerifyUser verifies the access token and returns user data
 func (s *SSOClient) VerifyUser(ctx context.Context, accessToken string) (*UserData, error) {
 	url := fmt.Sprintf("%s/auth/verify", s.config.SSO.URL)
@@ -140,12 +144,12 @@ func (s *SSOClient) VerifyUser(ctx context.Context, accessToken string) (*UserDa
 		return nil, fmt.Errorf("SSO error: %s", baseResp.Message)
 	}
 
-	var userData UserData
-	if err := json.Unmarshal(baseResp.Data, &userData); err != nil {
-		return nil, fmt.Errorf("failed to decode user data: %w", err)
+	var wrapper VerifyResponseWrapper
+	if err := json.Unmarshal(baseResp.Data, &wrapper); err != nil {
+		return nil, fmt.Errorf("failed to decode user data wrapper: %w", err)
 	}
 
-	return &userData, nil
+	return &wrapper.User, nil
 }
 
 // Logout calls SSO logout endpoint to invalidate session

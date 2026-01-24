@@ -60,6 +60,7 @@ func TestGetEducations(t *testing.T) {
 
 		assert.NoError(t, h.GetEducations(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Education history retrieved successfully")
 		assert.Contains(t, rec.Body.String(), "MIT")
 	})
 }
@@ -82,6 +83,7 @@ func TestCreateEducation(t *testing.T) {
 
 		assert.NoError(t, h.CreateEducation(c))
 		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Education entry created successfully")
 	})
 
 	t.Run("ValidationFailed", func(t *testing.T) {
@@ -118,5 +120,6 @@ func TestDeleteEducation(t *testing.T) {
 
 		assert.NoError(t, h.DeleteEducation(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Education entry deleted successfully")
 	})
 }

@@ -75,6 +75,7 @@ func TestGetWorkExperiences(t *testing.T) {
 
 		assert.NoError(t, h.GetWorkExperiences(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Work experiences retrieved successfully")
 		assert.Contains(t, rec.Body.String(), "Google")
 	})
 }
@@ -133,6 +134,7 @@ func TestDeleteWorkExperience(t *testing.T) {
 
 		assert.NoError(t, h.DeleteWorkExperience(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Work experience deleted successfully")
 	})
 }
 
@@ -156,5 +158,6 @@ func TestAddAchievement(t *testing.T) {
 
 		assert.NoError(t, h.AddAchievement(c))
 		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Achievement added successfully")
 	})
 }

@@ -75,6 +75,8 @@ func TestGetSkills(t *testing.T) {
 
 		assert.NoError(t, h.GetSkills(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Skills retrieved successfully")
+		assert.Contains(t, rec.Body.String(), "skill_categories")
 		assert.Contains(t, rec.Body.String(), "Backend")
 	})
 }
@@ -97,6 +99,8 @@ func TestCreateCategory(t *testing.T) {
 
 		assert.NoError(t, h.CreateCategory(c))
 		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Skill category created successfully")
+		assert.Contains(t, rec.Body.String(), "skill_category")
 	})
 
 	t.Run("ValidationFailed", func(t *testing.T) {
@@ -136,6 +140,8 @@ func TestAddTag(t *testing.T) {
 
 		assert.NoError(t, h.AddTag(c))
 		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Skill tag added successfully")
+		assert.Contains(t, rec.Body.String(), "skill_tag")
 	})
 }
 
@@ -157,5 +163,6 @@ func TestDeleteTag(t *testing.T) {
 
 		assert.NoError(t, h.DeleteTag(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Skill tag deleted successfully")
 	})
 }

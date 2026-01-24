@@ -3,13 +3,12 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type SkillCategory struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
-	AboutID     uuid.UUID      `gorm:"type:uuid;not null;index" json:"about_id"`
+	ID          string         `gorm:"type:text;primaryKey" json:"id"`
+	AboutID     string         `gorm:"type:text;not null;index" json:"about_id"`
 	Title       string         `gorm:"size:255;not null" json:"title"`
 	Description string         `gorm:"type:text" json:"description"`
 	OrderBy     int            `gorm:"not null;default:0;index" json:"order_by"`

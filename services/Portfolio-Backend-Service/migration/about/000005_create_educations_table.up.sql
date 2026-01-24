@@ -1,15 +1,16 @@
 -- Create educations table
 CREATE TABLE IF NOT EXISTS educations (
-    id UUID PRIMARY KEY,
-    about_id UUID NOT NULL REFERENCES abouts(id) ON DELETE CASCADE,
+    id TEXT PRIMARY KEY,
+    about_id TEXT NOT NULL,
     institution VARCHAR(255) NOT NULL,
     degree VARCHAR(255) NOT NULL,
     period VARCHAR(100) NOT NULL,
     description TEXT,
     order_by INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP WITH TIME ZONE
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    FOREIGN KEY (about_id) REFERENCES abouts(id) ON DELETE CASCADE
 );
 
 -- Create indexes

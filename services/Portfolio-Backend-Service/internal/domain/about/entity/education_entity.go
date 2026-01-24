@@ -3,13 +3,12 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Education struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
-	AboutID     uuid.UUID      `gorm:"type:uuid;not null;index" json:"about_id"`
+	ID          string         `gorm:"type:text;primaryKey" json:"id"`
+	AboutID     string         `gorm:"type:text;not null;index" json:"about_id"`
 	Institution string         `gorm:"size:255;not null" json:"institution"`
 	Degree      string         `gorm:"size:255;not null" json:"degree"`
 	Period      string         `gorm:"size:100;not null" json:"period"`

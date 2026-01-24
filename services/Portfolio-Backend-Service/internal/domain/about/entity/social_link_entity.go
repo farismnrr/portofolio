@@ -3,13 +3,12 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type SocialLink struct {
-	ID        uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
-	AboutID   uuid.UUID      `gorm:"type:uuid;not null;index" json:"about_id"`
+	ID        string         `gorm:"type:text;primaryKey" json:"id"`
+	AboutID   string         `gorm:"type:text;not null;index" json:"about_id"`
 	Name      string         `gorm:"size:100;not null" json:"name"`
 	Link      string         `gorm:"type:text;not null" json:"link"`
 	Icon      string         `gorm:"size:100" json:"icon"`

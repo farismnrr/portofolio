@@ -3,13 +3,12 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 // About is the aggregate root for all about page content
 type About struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	ID          string         `gorm:"type:text;primaryKey" json:"id"`
 	Name        string         `gorm:"size:255;not null" json:"name"`
 	Role        string         `gorm:"size:255;not null" json:"role"`
 	Description string         `gorm:"type:text;not null" json:"description"`

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -22,11 +23,27 @@ func NewAboutRepository(db *gorm.DB) AboutRepository {
 
 func (r *aboutRepository) Get(ctx context.Context) (*entity.About, error) {
 	var about entity.About
-	// Use FirstOrCreate to ensure there's always one About record
-	if err := r.db.WithContext(ctx).Where("deleted_at IS NULL").FirstOrCreate(&about).Error; err != nil {
-		return nil, err
+	// Check if record exists
+	err := r.db.WithContext(ctx).Where("deleted_at IS NULL").First(&about).Error
+	if err == nil {
+		return &about, nil
 	}
-	return &about, nil
+
+	if err == gorm.ErrRecordNotFound {
+		// Create default record if not found
+		about = entity.About{
+			ID:          uuid.New().String(),
+			Name:        "New User",
+			Role:        "User",
+			Description: "Your description here",
+		}
+		if err := r.db.WithContext(ctx).Create(&about).Error; err != nil {
+			return nil, err
+		}
+		return &about, nil
+	}
+
+	return nil, err
 }
 
 func (r *aboutRepository) Update(ctx context.Context, about *entity.About) error {

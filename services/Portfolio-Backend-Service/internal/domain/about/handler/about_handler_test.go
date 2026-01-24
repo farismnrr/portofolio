@@ -27,7 +27,7 @@ func TestGetAbout(t *testing.T) {
 
 		id := uuid.New()
 		aboutData := &entity.About{
-			ID:          id,
+			ID:          id.String(),
 			Name:        "Faris Munir",
 			Role:        "Software Engineer",
 			Description: "Software Engineer specializing in backend architecture...",

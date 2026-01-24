@@ -37,7 +37,7 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 	}
 
 	res := AboutResponse{
-		ID:          about.ID.String(),
+		ID:          about.ID,
 		Name:        about.Name,
 		Role:        about.Role,
 		Description: about.Description,

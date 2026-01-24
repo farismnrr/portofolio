@@ -83,9 +83,9 @@ services:
       - GCP_P12_PASSWORD=${GCP_P12_PASSWORD}
     env_file:
       - .env.dev
-    depends_on:
-      user-management:
-        condition: service_healthy
+    # depends_on:
+    #   user-management:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 15s

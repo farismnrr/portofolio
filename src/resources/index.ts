@@ -9,7 +9,7 @@ export {
   person,
   social,
   work,
-} from "./content";
+} from "./content_DEPRECATED";
 
 export {
   baseURL,

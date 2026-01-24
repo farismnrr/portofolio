@@ -96,12 +96,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </div>
               <div className={styles.actions}>
                 <ThemeToggle className={styles.themeToggleButton} />
-                <button
-                  type="button"
-                  className={styles.logoutBtn}
-                  onClick={logout}
-                  title="Logout"
-                >
+                <button type="button" className={styles.logoutBtn} onClick={logout} title="Logout">
                   <FiLogOut />
                 </button>
               </div>

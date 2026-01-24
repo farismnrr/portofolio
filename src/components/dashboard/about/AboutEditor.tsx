@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type SkillTag,
   createEducation,
   createSkillCategory,
   createSocialLink,
@@ -70,7 +71,7 @@ export default function AboutEditor() {
         title: w.role,
         company: w.company,
         period: w.timeframe,
-        description: (w.achievements || []).map((a) => a.content).join("\n"),
+        description: w.description || "",
       })),
       studies: (educations || []).map((e) => ({
         id: e.id,
@@ -173,16 +174,11 @@ export default function AboutEditor() {
     // Add (Simplified: recreate from textarea lines)
     const toAdd = currentWork.filter((c) => !oldWork.find((o) => o.id === c.id));
     for (const work of toAdd) {
-      const achievements = work.description
-        .split("\n")
-        .filter((line) => line.trim())
-        .map((line, i) => ({ content: line, order_by: i }));
-
       await createWorkExperience(accessToken, {
         company: work.company,
         role: work.title,
         timeframe: work.period,
-        achievements: achievements as any,
+        description: work.description,
       });
     }
 
@@ -207,7 +203,11 @@ export default function AboutEditor() {
       await createSkillCategory(accessToken, {
         title: skill.title,
         description: skill.description,
-        tags: skill.tags.map((t, i) => ({ name: t.name, icon: t.icon, order_by: i })) as any,
+        tags: skill.tags.map((t, i) => ({
+          name: t.name,
+          icon: t.icon,
+          order_by: i,
+        })) as unknown as SkillTag[],
       });
     }
   };

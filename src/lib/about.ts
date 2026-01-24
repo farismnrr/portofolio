@@ -35,18 +35,12 @@ export interface SocialLink {
 
 // --- WORK EXPERIENCE ---
 
-export interface WorkAchievement {
-  id: string;
-  content: string;
-  order_by: number;
-}
-
 export interface WorkExperience {
   id: string;
   company: string;
   role: string;
   timeframe: string;
-  achievements: WorkAchievement[];
+  description: string;
 }
 
 // --- EDUCATION ---

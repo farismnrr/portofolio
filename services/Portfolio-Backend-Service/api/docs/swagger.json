@@ -1,700 +1,640 @@
 {
-    "schemes": [
-        "http"
-    ],
-    "swagger": "2.0",
-    "info": {
-        "description": "Interactive API documentation for the Portfolio Backend Service.",
-        "title": "Portfolio Backend API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Faris M.",
-            "url": "https://farismnrr.com",
-            "email": "hello@farismnrr.com"
-        },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
-        "version": "1.0"
+  "schemes": ["http"],
+  "swagger": "2.0",
+  "info": {
+    "description": "Interactive API documentation for the Portfolio Backend Service.",
+    "title": "Portfolio Backend API",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Faris M.",
+      "url": "https://farismnrr.com",
+      "email": "hello@farismnrr.com"
     },
-    "host": "localhost:8080",
-    "basePath": "/",
-    "paths": {
-        "/v1/about": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch name, role, description, and avatar URL",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "About"
-                ],
-                "summary": "Get basic profile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "$ref": "#/definitions/handler.AboutResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update name, role, and description",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "About"
-                ],
-                "summary": "Update profile",
-                "parameters": [
-                    {
-                        "description": "Profile Data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.UpdateAboutRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.SuccessResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/about/avatar": {
-            "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Upload image to GCS and update profile",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "About"
-                ],
-                "summary": "Update avatar",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Avatar image file",
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "type": "object",
-                                                "additionalProperties": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "413": {
-                        "description": "Request Entity Too Large",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/login": {
-            "post": {
-                "description": "Receive a refresh token from the frontend and store it in a secure HttpOnly cookie.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "SSO Login Proxy",
-                "parameters": [
-                    {
-                        "description": "Login request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Login successful",
-                        "schema": {
-                            "$ref": "#/definitions/response.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/logout": {
-            "post": {
-                "description": "Logout user by invalidating SSO session and clearing refresh token cookie",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout",
-                "responses": {
-                    "200": {
-                        "description": "Logout successful",
-                        "schema": {
-                            "$ref": "#/definitions/response.SuccessResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/refresh": {
-            "post": {
-                "description": "Use the stored refresh token cookie to obtain a new access token from the SSO service.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Refresh Access Token",
-                "responses": {
-                    "200": {
-                        "description": "Token refreshed successfully",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handler.RefreshResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "No refresh token found or failed to refresh",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/user": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Validate the Bearer token with the SSO service and return detailed user information.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Get User Information",
-                "responses": {
-                    "200": {
-                        "description": "User data retrieved successfully",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handler.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "No authorization header or failed to fetch user",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Access denied: admin role required",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/og/fetch": {
-            "get": {
-                "description": "Extract Open Graph metadata (title, description, image, etc.) from a given URL.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "OG"
-                ],
-                "summary": "Fetch OG Metadata",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Target URL to fetch metadata from",
-                        "name": "url",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Metadata fetched successfully",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handler.FetchMetadataResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "URL parameter is required",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to fetch or read metadata",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/og/proxy": {
-            "get": {
-                "description": "Proxy an external image URL to avoid CORS or fetch failures.",
-                "tags": [
-                    "OG"
-                ],
-                "summary": "Proxy Image",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "External image URL to proxy",
-                        "name": "url",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Image binary data",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "URL parameter is required",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to proxy image",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/page-auth/authenticate": {
-            "post": {
-                "description": "Verify the password and set an authentication cookie for page access.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Page Auth"
-                ],
-                "summary": "Authenticate user",
-                "parameters": [
-                    {
-                        "description": "Authentication request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.AuthenticateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Authentication successful",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handler.AuthenticateResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Incorrect password",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/page-auth/check": {
-            "get": {
-                "description": "Check if the user is authenticated via the authentication cookie.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Page Auth"
-                ],
-                "summary": "Check authentication status",
-                "responses": {
-                    "200": {
-                        "description": "Authenticated",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/handler.CheckAuthResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Not authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        }
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     },
-    "definitions": {
-        "handler.AboutResponse": {
-            "type": "object",
-            "properties": {
-                "avatar": {
-                    "type": "string"
+    "version": "1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "paths": {
+    "/v1/about": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Fetch name, role, description, and avatar URL",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["About"],
+        "summary": "Get basic profile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
                 },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/handler.AboutResponse"
+                      }
+                    }
+                  }
                 }
+              ]
             }
-        },
-        "handler.AuthenticateRequest": {
-            "type": "object",
-            "required": [
-                "password"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "example": "your-strong-password"
-                }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
             }
-        },
-        "handler.AuthenticateResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "handler.CheckAuthResponse": {
-            "type": "object",
-            "properties": {
-                "authenticated": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "handler.FetchMetadataResponse": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string",
-                    "example": "This is an example description of the page."
-                },
-                "image": {
-                    "type": "string",
-                    "example": "https://example.com/og-image.jpg"
-                },
-                "title": {
-                    "type": "string",
-                    "example": "Example Title"
-                },
-                "url": {
-                    "type": "string",
-                    "example": "https://example.com"
-                }
-            }
-        },
-        "handler.LoginRequest": {
-            "type": "object",
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.RefreshResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                }
-            }
-        },
-        "handler.UpdateAboutRequest": {
-            "type": "object",
-            "required": [
-                "description",
-                "name",
-                "role"
-            ],
-            "properties": {
-                "avatar": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.UserResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "tenant_id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "For additional error data"
-                },
-                "details": {
-                    "description": "For validation errors"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "response.SuccessResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean"
-                }
-            }
+          }
         }
+      },
+      "patch": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Update name, role, and description",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["About"],
+        "summary": "Update profile",
+        "parameters": [
+          {
+            "description": "Profile Data",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handler.UpdateAboutRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response.SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
     },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "X-API-Key",
-            "in": "header"
-        },
-        "BearerAuth": {
-            "description": "Type \"Bearer\" followed by a space and then your token.",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+    "/v1/about/avatar": {
+      "patch": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Upload image to GCS and update profile",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/json"],
+        "tags": ["About"],
+        "summary": "Update avatar",
+        "parameters": [
+          {
+            "type": "file",
+            "description": "Avatar image file",
+            "name": "avatar",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "413": {
+            "description": "Request Entity Too Large",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
         }
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "description": "Receive a refresh token from the frontend and store it in a secure HttpOnly cookie.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Auth"],
+        "summary": "SSO Login Proxy",
+        "parameters": [
+          {
+            "description": "Login request",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handler.LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "$ref": "#/definitions/response.SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "description": "Logout user by invalidating SSO session and clearing refresh token cookie",
+        "produces": ["application/json"],
+        "tags": ["Auth"],
+        "summary": "Logout",
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "schema": {
+              "$ref": "#/definitions/response.SuccessResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "description": "Use the stored refresh token cookie to obtain a new access token from the SSO service.",
+        "produces": ["application/json"],
+        "tags": ["Auth"],
+        "summary": "Refresh Access Token",
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/handler.RefreshResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "No refresh token found or failed to refresh",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/user": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Validate the Bearer token with the SSO service and return detailed user information.",
+        "produces": ["application/json"],
+        "tags": ["Auth"],
+        "summary": "Get User Information",
+        "responses": {
+          "200": {
+            "description": "User data retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/handler.UserResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "No authorization header or failed to fetch user",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Access denied: admin role required",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/og/fetch": {
+      "get": {
+        "description": "Extract Open Graph metadata (title, description, image, etc.) from a given URL.",
+        "produces": ["application/json"],
+        "tags": ["OG"],
+        "summary": "Fetch OG Metadata",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Target URL to fetch metadata from",
+            "name": "url",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata fetched successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/handler.FetchMetadataResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "URL parameter is required",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Failed to fetch or read metadata",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/og/proxy": {
+      "get": {
+        "description": "Proxy an external image URL to avoid CORS or fetch failures.",
+        "tags": ["OG"],
+        "summary": "Proxy Image",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "External image URL to proxy",
+            "name": "url",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image binary data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "URL parameter is required",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Failed to proxy image",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/page-auth/authenticate": {
+      "post": {
+        "description": "Verify the password and set an authentication cookie for page access.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Page Auth"],
+        "summary": "Authenticate user",
+        "parameters": [
+          {
+            "description": "Authentication request",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handler.AuthenticateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/handler.AuthenticateResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Incorrect password",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/page-auth/check": {
+      "get": {
+        "description": "Check if the user is authenticated via the authentication cookie.",
+        "produces": ["application/json"],
+        "tags": ["Page Auth"],
+        "summary": "Check authentication status",
+        "responses": {
+          "200": {
+            "description": "Authenticated",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/handler.CheckAuthResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "schema": {
+              "$ref": "#/definitions/response.ErrorResponse"
+            }
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "handler.AboutResponse": {
+      "type": "object",
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "handler.AuthenticateRequest": {
+      "type": "object",
+      "required": ["password"],
+      "properties": {
+        "password": {
+          "type": "string",
+          "example": "your-strong-password"
+        }
+      }
+    },
+    "handler.AuthenticateResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "handler.CheckAuthResponse": {
+      "type": "object",
+      "properties": {
+        "authenticated": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "handler.FetchMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "This is an example description of the page."
+        },
+        "image": {
+          "type": "string",
+          "example": "https://example.com/og-image.jpg"
+        },
+        "title": {
+          "type": "string",
+          "example": "Example Title"
+        },
+        "url": {
+          "type": "string",
+          "example": "https://example.com"
+        }
+      }
+    },
+    "handler.LoginRequest": {
+      "type": "object",
+      "properties": {
+        "refresh_token": {
+          "type": "string"
+        }
+      }
+    },
+    "handler.RefreshResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "expires_in": {
+          "type": "integer"
+        }
+      }
+    },
+    "handler.UpdateAboutRequest": {
+      "type": "object",
+      "required": ["description", "name", "role"],
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "handler.UserResponse": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "response.ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "For additional error data"
+        },
+        "details": {
+          "description": "For validation errors"
+        },
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "boolean"
+        }
+      }
+    },
+    "response.SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {},
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    },
+    "BearerAuth": {
+      "description": "Type \"Bearer\" followed by a space and then your token.",
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
 }

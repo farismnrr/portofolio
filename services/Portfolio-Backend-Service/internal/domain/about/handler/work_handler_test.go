@@ -44,21 +44,6 @@ func (m *MockWorkUsecase) DeleteWorkExperience(ctx context.Context, id string) e
 	args := m.Called(ctx, id)
 	return args.Error(0)
 }
-func (m *MockWorkUsecase) AddAchievement(ctx context.Context, achievement *entity.WorkAchievement) error {
-	args := m.Called(ctx, achievement)
-	return args.Error(0)
-}
-func (m *MockWorkUsecase) DeleteAchievement(ctx context.Context, id string) error {
-	args := m.Called(ctx, id)
-	return args.Error(0)
-}
-func (m *MockWorkUsecase) GetAchievementByID(ctx context.Context, id string) (*entity.WorkAchievement, error) {
-	args := m.Called(ctx, id)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*entity.WorkAchievement), args.Error(1)
-}
 
 func TestGetWorkExperiences(t *testing.T) {
 	e := echo.New()
@@ -86,7 +71,7 @@ func TestCreateWorkExperience(t *testing.T) {
 		mockUC := new(MockWorkUsecase)
 		h := NewWorkHandler(mockUC)
 
-		reqBody := `{"company":"Tech Corp","role":"Dev","timeframe":"2020-2021"}`
+		reqBody := `{"company":"Tech Corp","role":"Dev","timeframe":"2020-2021","description":"some desc"}`
 		mockUC.On("CreateWorkExperience", mock.Anything, mock.MatchedBy(func(w *entity.WorkExperience) bool {
 			return w.Company == "Tech Corp"
 		})).Return(nil)
@@ -135,29 +120,5 @@ func TestDeleteWorkExperience(t *testing.T) {
 		assert.NoError(t, h.DeleteWorkExperience(c))
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Contains(t, rec.Body.String(), "Work experience deleted successfully")
-	})
-}
-
-func TestAddAchievement(t *testing.T) {
-	e := echo.New()
-	t.Run("Success", func(t *testing.T) {
-		mockUC := new(MockWorkUsecase)
-		h := NewWorkHandler(mockUC)
-
-		mockUC.On("GetWorkExperienceByID", mock.Anything, "1").Return(&entity.WorkExperience{ID: "1"}, nil)
-		mockUC.On("AddAchievement", mock.Anything, mock.Anything).Return(nil)
-
-		reqBody := `{"content":"Shipped feature X","order_by":1}`
-		req := httptest.NewRequest(http.MethodPost, "/work-experiences/1/achievements", strings.NewReader(reqBody))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/work-experiences/:id/achievements")
-		c.SetParamNames("id")
-		c.SetParamValues("1")
-
-		assert.NoError(t, h.AddAchievement(c))
-		assert.Equal(t, http.StatusCreated, rec.Code)
-		assert.Contains(t, rec.Body.String(), "Achievement added successfully")
 	})
 }

@@ -46,35 +46,19 @@ func SeedAboutData(db *gorm.DB) error {
 	workExps := []entity.WorkExperience{
 		{
 			ID: "we-1", AboutID: aboutID, Company: "DBS Foundation", Role: "Machine Learning Engineer", Timeframe: "Feb 2025 - Present", OrderBy: 0,
-			Achievements: []entity.WorkAchievement{
-				{ID: "wa-1", Content: "Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.", OrderBy: 0},
-				{ID: "wa-2", Content: "Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.", OrderBy: 1},
-				{ID: "wa-3", Content: "Leveraged deep learning methodologies to solve real-world problems, ensuring scalable and accurate predictive analysis.", OrderBy: 2},
-			},
+			Description: "- Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.\n- Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.\n- Leveraged deep learning methodologies to solve real-world problems, ensuring scalable and accurate predictive analysis.",
 		},
 		{
 			ID: "we-2", AboutID: aboutID, Company: "Codepolitan", Role: "Full Stack Web Developer", Timeframe: "Sep 2024 - Dec 2024", OrderBy: 1,
-			Achievements: []entity.WorkAchievement{
-				{ID: "wa-4", Content: "Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.", OrderBy: 0},
-				{ID: "wa-5", Content: "Developed responsive, user-centric frontend interfaces using Vue.js, ensuring seamless cross-device compatibility and user experience.", OrderBy: 1},
-				{ID: "wa-6", Content: "Achieved Alibaba Cloud Certification through the KodeBisat collaboration, verifying expertise in scalable cloud infrastructure.", OrderBy: 2},
-			},
+			Description: "- Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.\n- Developed responsive, user-centric frontend interfaces using Vue.js, ensuring seamless cross-device compatibility and user experience.\n- Achieved Alibaba Cloud Certification through the KodeBisat collaboration, verifying expertise in scalable cloud infrastructure.",
 		},
 		{
 			ID: "we-3", AboutID: aboutID, Company: "Ruang Guru Academy", Role: "Back End Developer", Timeframe: "Feb 2024 - Aug 2024", OrderBy: 2,
-			Achievements: []entity.WorkAchievement{
-				{ID: "wa-7", Content: "Designed and implemented efficient RESTful APIs using Golang, prioritizing performance and concurrency.", OrderBy: 0},
-				{ID: "wa-8", Content: "Integrated advanced machine learning models into backend services to power intelligent application features.", OrderBy: 1},
-				{ID: "wa-9", Content: "Optimized PostgreSQL database schemas and queries to handle large-scale data transactions with minimal latency.", OrderBy: 2},
-			},
+			Description: "- Designed and implemented efficient RESTful APIs using Golang, prioritizing performance and concurrency.\n- Integrated advanced machine learning models into backend services to power intelligent application features.\n- Optimized PostgreSQL database schemas and queries to handle large-scale data transactions with minimal latency.",
 		},
 		{
 			ID: "we-4", AboutID: aboutID, Company: "PT Tradeasia International Indonesia", Role: "SEO Specialist", Timeframe: "Jan 2024 - Apr 2024", OrderBy: 3,
-			Achievements: []entity.WorkAchievement{
-				{ID: "wa-10", Content: "Executed comprehensive keyword analysis and strategy to significantly improve organic search rankings and visibility.", OrderBy: 0},
-				{ID: "wa-11", Content: "Optimized technical site structure and content for chentradeasia.lk and formic-acid.com, implementing targeted backlink strategies.", OrderBy: 1},
-				{ID: "wa-12", Content: "Analyzed complex web analytics to identify growth opportunities, resulting in measurable improvements in organic traffic and engagement.", OrderBy: 2},
-			},
+			Description: "- Executed comprehensive keyword analysis and strategy to significantly improve organic search rankings and visibility.\n- Optimized technical site structure and content for chentradeasia.lk and formic-acid.com, implementing targeted backlink strategies.\n- Analyzed complex web analytics to identify growth opportunities, resulting in measurable improvements in organic traffic and engagement.",
 		},
 	}
 	db.Create(&workExps)

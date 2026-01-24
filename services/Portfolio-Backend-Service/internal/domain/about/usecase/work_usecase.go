@@ -17,10 +17,6 @@ type WorkUsecase interface {
 	CreateWorkExperience(ctx context.Context, work *entity.WorkExperience) error
 	UpdateWorkExperience(ctx context.Context, work *entity.WorkExperience) error
 	DeleteWorkExperience(ctx context.Context, id string) error
-
-	AddAchievement(ctx context.Context, achievement *entity.WorkAchievement) error
-	DeleteAchievement(ctx context.Context, achievementID string) error
-	GetAchievementByID(ctx context.Context, id string) (*entity.WorkAchievement, error)
 }
 
 type workUsecase struct {
@@ -67,11 +63,6 @@ func (u *workUsecase) GetWorkExperienceByID(ctx context.Context, id string) (*en
 
 func (u *workUsecase) CreateWorkExperience(ctx context.Context, work *entity.WorkExperience) error {
 	work.ID = uuid.New().String()
-	// Process nested achievements if any (though usually added separately or during init)
-	for i := range work.Achievements {
-		work.Achievements[i].ID = uuid.New().String()
-		work.Achievements[i].WorkExperienceID = work.ID
-	}
 	if err := u.repo.Create(ctx, work); err != nil {
 		return err
 	}
@@ -93,25 +84,4 @@ func (u *workUsecase) DeleteWorkExperience(ctx context.Context, id string) error
 	}
 	_ = u.cache.Delete(ctx, "about_work_experiences")
 	return nil
-}
-
-func (u *workUsecase) AddAchievement(ctx context.Context, achievement *entity.WorkAchievement) error {
-	achievement.ID = uuid.New().String()
-	if err := u.repo.AddAchievement(ctx, achievement); err != nil {
-		return err
-	}
-	_ = u.cache.Delete(ctx, "about_work_experiences")
-	return nil
-}
-
-func (u *workUsecase) DeleteAchievement(ctx context.Context, achievementID string) error {
-	if err := u.repo.DeleteAchievement(ctx, achievementID); err != nil {
-		return err
-	}
-	_ = u.cache.Delete(ctx, "about_work_experiences")
-	return nil
-}
-
-func (u *workUsecase) GetAchievementByID(ctx context.Context, id string) (*entity.WorkAchievement, error) {
-	return u.repo.GetAchievementByID(ctx, id)
 }

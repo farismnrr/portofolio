@@ -65,7 +65,7 @@ export default function AboutEditor() {
       title: profile?.role || person.role,
       description: profile?.description || "",
       photo: profile?.avatar_url || person.avatar,
-      links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.url })),
+      links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.link })),
       workExperience: (workExps || []).map((w) => ({
         id: w.id,
         title: w.role,
@@ -127,10 +127,10 @@ export default function AboutEditor() {
 
       if (!ol) {
         // ADD (IDs like Date.now() are temporary)
-        await createSocialLink(accessToken, { name: cl.label, url: cl.url, order_by: i });
+        await createSocialLink(accessToken, { name: cl.label, link: cl.url, order_by: i });
       } else if (cl.label !== ol.label || cl.url !== ol.url) {
         // UPDATE
-        await updateSocialLink(accessToken, cl.id, { name: cl.label, url: cl.url, order_by: i });
+        await updateSocialLink(accessToken, cl.id, { name: cl.label, link: cl.url, order_by: i });
       }
     }
   };

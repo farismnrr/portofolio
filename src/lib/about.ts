@@ -29,7 +29,7 @@ export interface UpdateAboutRequest {
 export interface SocialLink {
   id: string;
   name: string;
-  url: string;
+  link: string;
   order_by: number;
 }
 
@@ -220,8 +220,8 @@ export async function fetchEducations(): Promise<Education[]> {
   try {
     const response = await fetch(getApiUrl("/about/education"));
     if (!response.ok) return [];
-    const body: ApiResponse<{ education: Education[] }> = await response.json();
-    return body.data.education || [];
+    const body: ApiResponse<{ educations: Education[] }> = await response.json();
+    return body.data.educations || [];
   } catch (_error) {
     return [];
   }

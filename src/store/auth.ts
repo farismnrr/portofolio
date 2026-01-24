@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
 
       if (response.ok) {
         const resBody = await response.json();
-        if (resBody.success && resBody.data) {
+        if ((resBody.status || resBody.success) && resBody.data) {
           set({ user: resBody.data });
         }
       }
@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
       });
       const resBody = await response.json();
 
-      if (response.ok && (resBody.success || resBody.status) && resBody.data?.access_token) {
+      if (response.ok && (resBody.status || resBody.success) && resBody.data?.access_token) {
         set({
           accessToken: resBody.data.access_token,
           isAuthenticated: true,

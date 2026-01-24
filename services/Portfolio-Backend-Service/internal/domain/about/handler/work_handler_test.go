@@ -124,10 +124,10 @@ func TestDeleteWorkExperience(t *testing.T) {
 		mockUC.On("GetWorkExperienceByID", mock.Anything, "1").Return(&entity.WorkExperience{ID: "1"}, nil)
 		mockUC.On("DeleteWorkExperience", mock.Anything, "1").Return(nil)
 
-		req := httptest.NewRequest(http.MethodDelete, "/1", nil)
+		req := httptest.NewRequest(http.MethodDelete, "/work-experiences/1", nil)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-		c.SetPath("/:id")
+		c.SetPath("/work-experiences/:id")
 		c.SetParamNames("id")
 		c.SetParamValues("1")
 
@@ -146,11 +146,11 @@ func TestAddAchievement(t *testing.T) {
 		mockUC.On("AddAchievement", mock.Anything, mock.Anything).Return(nil)
 
 		reqBody := `{"content":"Shipped feature X","order_by":1}`
-		req := httptest.NewRequest(http.MethodPost, "/1/achievements", strings.NewReader(reqBody))
+		req := httptest.NewRequest(http.MethodPost, "/work-experiences/1/achievements", strings.NewReader(reqBody))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-		c.SetPath("/:id/achievements")
+		c.SetPath("/work-experiences/:id/achievements")
 		c.SetParamNames("id")
 		c.SetParamValues("1")
 

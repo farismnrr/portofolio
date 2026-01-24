@@ -17,14 +17,14 @@ func NewSkillHandler(u usecase.SkillUsecase) *SkillHandler {
 	return &SkillHandler{usecase: u}
 }
 
-// GetSkills retrieves list of skill categories with tags
-// @Summary Get skills
-// @Description Fetch all skills grouped by category
+// GetSkills retrieves all skill categories and their associated tags
+// @Summary Get Skills
+// @Description Retrieves all skill categories and their associated tags.
 // @Tags About
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SkillCategory}
-// @Failure 500 {object} response.ErrorResponse
+// @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SkillCategory} "Successfully Retrieve"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Router /v1/about/skills [get]
 func (h *SkillHandler) GetSkills(c echo.Context) error {
 	cats, err := h.usecase.GetSkillCategories(c.Request().Context())
@@ -48,18 +48,18 @@ type CreateCategoryRequest struct {
 	Tags        []TagRequest `json:"tags"`
 }
 
-// CreateCategory creates a new skill category
-// @Summary Create skill category
-// @Description Add a new skill category
+// CreateCategory adds a new category of skills
+// @Summary Create Skill Category
+// @Description Adds a new category of skills.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param request body CreateCategoryRequest true "Category Data"
-// @Success 201 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
+// @Success 201 {object} response.SuccessResponse "Created"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
 // @Router /v1/about/skills [post]
 func (h *SkillHandler) CreateCategory(c echo.Context) error {
 	var req CreateCategoryRequest
@@ -95,20 +95,20 @@ func (h *SkillHandler) CreateCategory(c echo.Context) error {
 	return response.Success(c, http.StatusCreated, "Skill category created successfully", map[string]interface{}{"category": cat})
 }
 
-// UpdateCategory updates a skill category
-// @Summary Update skill category
-// @Description Update details of a skill category
+// UpdateCategory updates category details
+// @Summary Update Skill Category
+// @Description Updates category details.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Category ID"
 // @Param request body CreateCategoryRequest true "Category Data"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
+// @Success 200 {object} response.SuccessResponse "Successfully Updated"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
 // @Router /v1/about/skills/{id} [patch]
 func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 	id := c.Param("id")
@@ -140,18 +140,18 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 	return response.Success(c, http.StatusOK, "Category updated successfully", nil)
 }
 
-// DeleteCategory soft deletes a skill category
-// @Summary Delete skill category
-// @Description Soft delete a skill category
+// DeleteCategory deletes a category and all its tags
+// @Summary Delete Skill Category
+// @Description Deletes a category and all its tags.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Category ID"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
+// @Success 200 {object} response.SuccessResponse "Successfully Deleted (Soft Delete)"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
 // @Router /v1/about/skills/{id} [delete]
 func (h *SkillHandler) DeleteCategory(c echo.Context) error {
 	id := c.Param("id")
@@ -167,19 +167,20 @@ func (h *SkillHandler) DeleteCategory(c echo.Context) error {
 	return response.SuccessNoData(c, http.StatusOK, "Category deleted successfully")
 }
 
-// AddTag adds a tag to a category
-// @Summary Add skill tag
-// @Description Add a new skill tag to a category
+// AddTag adds a specific skill tag to a category
+// @Summary Add Skill Tag
+// @Description Adds a specific skill tag to a category.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Category ID"
 // @Param request body TagRequest true "Tag Data"
-// @Success 201 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
+// @Success 201 {object} response.SuccessResponse "Successfully Created"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Skill Category Not Found"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
 // @Router /v1/about/skills/{id}/tags [post]
 func (h *SkillHandler) AddTag(c echo.Context) error {
 	catID := c.Param("id")
@@ -211,18 +212,18 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 	return response.Success(c, http.StatusCreated, "Tag added successfully", map[string]interface{}{"tag": tag})
 }
 
-// DeleteTag deletes a skill tag
-// @Summary Delete skill tag
-// @Description Soft delete a skill tag
+// DeleteTag removes a specific tag
+// @Summary Delete Skill Tag
+// @Description Removes a specific tag.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param tag_id path string true "Tag ID"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
+// @Success 200 {object} response.SuccessResponse "Successfully Deleted (Soft Delete)"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Skill Tag Not Found"
 // @Router /v1/about/skills/tags/{tag_id} [delete]
 func (h *SkillHandler) DeleteTag(c echo.Context) error {
 	id := c.Param("tag_id")

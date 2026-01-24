@@ -17,15 +17,15 @@ func NewWorkHandler(u usecase.WorkUsecase) *WorkHandler {
 	return &WorkHandler{usecase: u}
 }
 
-// GetWorkExperiences retrieves list of work experiences
-// @Summary Get work experiences
-// @Description Fetch all work experiences and achievements
+// GetWorkExperiences retrieves user's work history including achievements
+// @Summary Get Work Experiences
+// @Description Retrieves user's work history including achievements.
 // @Tags About
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.SuccessResponse{data=map[string][]entity.WorkExperience}
-// @Failure 500 {object} response.ErrorResponse
-// @Router /v1/about/work-experience [get]
+// @Success 200 {object} response.SuccessResponse{data=map[string][]entity.WorkExperience} "Successfully Retrieve"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Router /v1/about/work-experiences [get]
 func (h *WorkHandler) GetWorkExperiences(c echo.Context) error {
 	works, err := h.usecase.GetWorkExperiences(c.Request().Context())
 	if err != nil {
@@ -63,19 +63,19 @@ type CreateWorkRequestFull struct {
 	Achievements []AchievementRequest `json:"achievements"`
 }
 
-// CreateWorkExperience creates a new work experience
-// @Summary Create work experience
-// @Description Add a new work experience entry
+// CreateWorkExperience adds a new job entry
+// @Summary Create Work Experience
+// @Description Adds a new job entry. Optionally includes initial achievements.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param request body CreateWorkRequestFull true "Work Data"
-// @Success 201 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
-// @Router /v1/about/work-experience [post]
+// @Success 201 {object} response.SuccessResponse "Created"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Router /v1/about/work-experiences [post]
 func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 	var req CreateWorkRequestFull
 	if err := c.Bind(&req); err != nil {
@@ -123,21 +123,21 @@ func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 	return response.Success(c, http.StatusCreated, "Work experience created successfully", map[string]interface{}{"work_experience": work})
 }
 
-// UpdateWorkExperience updates a work experience
-// @Summary Update work experience
-// @Description Update details of a work experience
+// UpdateWorkExperience updates work experience details
+// @Summary Update Work Experience
+// @Description Updates company, role, timeframe, or replaces achievements.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Work ID"
 // @Param request body CreateWorkRequestFull true "Work Data"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
-// @Router /v1/about/work-experience/{id} [patch]
+// @Success 200 {object} response.SuccessResponse "Successfully Updated"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Router /v1/about/work-experiences/{id} [patch]
 func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 	id := c.Param("id")
 
@@ -173,19 +173,19 @@ func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 	return response.Success(c, http.StatusOK, "Work experience updated successfully", nil)
 }
 
-// DeleteWorkExperience soft deletes a work experience
-// @Summary Delete work experience
-// @Description Soft delete a work experience
+// DeleteWorkExperience deletes a job entry
+// @Summary Delete Work Experience
+// @Description Deletes a job entry and its achievements.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Work ID"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
-// @Router /v1/about/work-experience/{id} [delete]
+// @Success 200 {object} response.SuccessResponse "Successfully Deleted"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Router /v1/about/work-experiences/{id} [delete]
 func (h *WorkHandler) DeleteWorkExperience(c echo.Context) error {
 	id := c.Param("id")
 
@@ -200,20 +200,21 @@ func (h *WorkHandler) DeleteWorkExperience(c echo.Context) error {
 	return response.SuccessNoData(c, http.StatusOK, "Work experience deleted successfully")
 }
 
-// AddAchievement adds an achievement to a work experience
-// @Summary Add achievement
-// @Description Add an achievement bullet point
+// AddAchievement adds a single achievement
+// @Summary Add Achievement
+// @Description Adds a single achievement to a work experience.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Work Experience ID"
 // @Param request body AchievementRequest true "Achievement Data"
-// @Success 201 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 422 {object} response.ErrorResponse
-// @Router /v1/about/work-experience/{id}/achievements [post]
+// @Success 201 {object} response.SuccessResponse "Successfully Created"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Work Experience Not Found"
+// @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Router /v1/about/work-experiences/{id}/achievements [post]
 func (h *WorkHandler) AddAchievement(c echo.Context) error {
 	workID := c.Param("id")
 
@@ -245,21 +246,21 @@ func (h *WorkHandler) AddAchievement(c echo.Context) error {
 	return response.Success(c, http.StatusCreated, "Achievement added successfully", map[string]interface{}{"achievement": achievement})
 }
 
-// DeleteAchievement deletes an achievement
-// @Summary Delete achievement
-// @Description Soft delete an achievement
+// DeleteAchievement removes a specific achievement
+// @Summary Delete Achievement
+// @Description Removes a specific achievement.
 // @Tags About
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param achieve_id path string true "Achievement ID"
-// @Success 200 {object} response.SuccessResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 403 {object} response.ErrorResponse
-// @Failure 404 {object} response.ErrorResponse
-// @Router /v1/about/work-experience/achievements/{achieve_id} [delete]
+// @Param achievement_id path string true "Achievement ID"
+// @Success 200 {object} response.SuccessResponse "Successfully Deleted (Soft Delete)"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
+// @Failure 404 {object} response.ErrorResponse "Achievement Not Found"
+// @Router /v1/about/work-experiences/achievements/{achievement_id} [delete]
 func (h *WorkHandler) DeleteAchievement(c echo.Context) error {
-	id := c.Param("achieve_id")
+	id := c.Param("achievement_id")
 
 	_, err := h.usecase.GetAchievementByID(c.Request().Context(), id)
 	if err != nil {

@@ -44,12 +44,12 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	workUC := usecase.NewWorkUsecase(workRepo)
 	workHandler := handler.NewWorkHandler(workUC)
 
-	aboutGroup.GET("/work-experience", workHandler.GetWorkExperiences)
-	aboutGroup.POST("/work-experience", workHandler.CreateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
-	aboutGroup.PATCH("/work-experience/:id", workHandler.UpdateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
-	aboutGroup.DELETE("/work-experience/:id", workHandler.DeleteWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
-	aboutGroup.POST("/work-experience/:id/achievements", workHandler.AddAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
-	aboutGroup.DELETE("/work-experience/achievements/:achieve_id", workHandler.DeleteAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.GET("/work-experiences", workHandler.GetWorkExperiences)
+	aboutGroup.POST("/work-experiences", workHandler.CreateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/work-experiences/:id", workHandler.UpdateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/work-experiences/:id", workHandler.DeleteWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.POST("/work-experiences/:id/achievements", workHandler.AddAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/work-experiences/achievements/:achievement_id", workHandler.DeleteAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 
 	// Education
 	eduRepo := repository.NewEducationRepository(db)

@@ -1,0 +1,172 @@
+package handler
+
+import (
+	"net/http"
+
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/usecase"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
+	"github.com/labstack/echo/v4"
+)
+
+type EducationHandler struct {
+	usecase usecase.EducationUsecase
+}
+
+func NewEducationHandler(u usecase.EducationUsecase) *EducationHandler {
+	return &EducationHandler{usecase: u}
+}
+
+// GetEducations retrieves list of educations
+// @Summary Get educations
+// @Description Fetch all education entries
+// @Tags About
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.SuccessResponse{data=map[string][]entity.Education}
+// @Failure 500 {object} response.ErrorResponse
+// @Router /v1/about/education [get]
+func (h *EducationHandler) GetEducations(c echo.Context) error {
+	edus, err := h.usecase.GetEducations(c.Request().Context())
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
+	}
+	return response.Success(c, http.StatusOK, "Educations retrieved successfully", map[string]interface{}{"educations": edus})
+}
+
+type CreateEducationRequest struct {
+	Institution string `json:"institution"`
+	Degree      string `json:"degree"`
+	Period      string `json:"period"`
+	Description string `json:"description"`
+	OrderBy     int    `json:"order_by"`
+	AboutID     string `json:"about_id"`
+}
+
+// CreateEducation creates a new education entry
+// @Summary Create education
+// @Description Add a new education entry
+// @Tags About
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body CreateEducationRequest true "Education Data"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 403 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Router /v1/about/education [post]
+func (h *EducationHandler) CreateEducation(c echo.Context) error {
+	var req CreateEducationRequest
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
+	}
+
+	var details []map[string]string
+	if req.Institution == "" {
+		details = append(details, map[string]string{"field": "institution", "message": "Institution is required"})
+	}
+	if req.Degree == "" {
+		details = append(details, map[string]string{"field": "degree", "message": "Degree is required"})
+	}
+	if req.Period == "" {
+		details = append(details, map[string]string{"field": "period", "message": "Period is required"})
+	}
+
+	if len(details) > 0 {
+		return response.ValidationError(c, "Validation failed", details)
+	}
+
+	edu := &entity.Education{
+		Institution: req.Institution,
+		Degree:      req.Degree,
+		Period:      req.Period,
+		Description: req.Description,
+		OrderBy:     req.OrderBy,
+		AboutID:     req.AboutID,
+	}
+
+	if err := h.usecase.CreateEducation(c.Request().Context(), edu); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
+	}
+
+	return response.Success(c, http.StatusCreated, "Education created successfully", map[string]interface{}{"education": edu})
+}
+
+// UpdateEducation updates an education entry
+// @Summary Update education
+// @Description Update details of an education entry
+// @Tags About
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Education ID"
+// @Param request body CreateEducationRequest true "Education Data"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 403 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Router /v1/about/education/{id} [patch]
+func (h *EducationHandler) UpdateEducation(c echo.Context) error {
+	id := c.Param("id")
+
+	existing, err := h.usecase.GetEducationByID(c.Request().Context(), id)
+	if err != nil {
+		return response.Error(c, http.StatusNotFound, "Education not found")
+	}
+
+	var req CreateEducationRequest
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
+	}
+
+	if req.Institution != "" {
+		existing.Institution = req.Institution
+	}
+	if req.Degree != "" {
+		existing.Degree = req.Degree
+	}
+	if req.Period != "" {
+		existing.Period = req.Period
+	}
+	if req.Description != "" {
+		existing.Description = req.Description
+	}
+	if req.OrderBy != 0 {
+		existing.OrderBy = req.OrderBy
+	}
+
+	if err := h.usecase.UpdateEducation(c.Request().Context(), existing); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
+	}
+
+	return response.Success(c, http.StatusOK, "Education updated successfully", nil)
+}
+
+// DeleteEducation soft deletes an education entry
+// @Summary Delete education
+// @Description Soft delete an education entry
+// @Tags About
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Education ID"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 403 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /v1/about/education/{id} [delete]
+func (h *EducationHandler) DeleteEducation(c echo.Context) error {
+	id := c.Param("id")
+
+	_, err := h.usecase.GetEducationByID(c.Request().Context(), id)
+	if err != nil {
+		return response.Error(c, http.StatusNotFound, "Education not found")
+	}
+
+	if err := h.usecase.DeleteEducation(c.Request().Context(), id); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
+	}
+	return response.SuccessNoData(c, http.StatusOK, "Education deleted successfully")
+}

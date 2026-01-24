@@ -39,5 +39,39 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	aboutGroup.PATCH("/social-links/:id", socialHandler.UpdateSocialLink, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 	aboutGroup.DELETE("/social-links/:id", socialHandler.DeleteSocialLink, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 
+	// Work Experience
+	workRepo := repository.NewWorkRepository(db)
+	workUC := usecase.NewWorkUsecase(workRepo)
+	workHandler := handler.NewWorkHandler(workUC)
+
+	aboutGroup.GET("/work-experience", workHandler.GetWorkExperiences)
+	aboutGroup.POST("/work-experience", workHandler.CreateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/work-experience/:id", workHandler.UpdateWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/work-experience/:id", workHandler.DeleteWorkExperience, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.POST("/work-experience/:id/achievements", workHandler.AddAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/work-experience/achievements/:achieve_id", workHandler.DeleteAchievement, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+
+	// Education
+	eduRepo := repository.NewEducationRepository(db)
+	eduUC := usecase.NewEducationUsecase(eduRepo)
+	eduHandler := handler.NewEducationHandler(eduUC)
+
+	aboutGroup.GET("/education", eduHandler.GetEducations)
+	aboutGroup.POST("/education", eduHandler.CreateEducation, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/education/:id", eduHandler.UpdateEducation, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/education/:id", eduHandler.DeleteEducation, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+
+	// Skills
+	skillRepo := repository.NewSkillRepository(db)
+	skillUC := usecase.NewSkillUsecase(skillRepo)
+	skillHandler := handler.NewSkillHandler(skillUC)
+
+	aboutGroup.GET("/skills", skillHandler.GetSkills)
+	aboutGroup.POST("/skills", skillHandler.CreateCategory, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/skills/:id", skillHandler.UpdateCategory, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/skills/:id", skillHandler.DeleteCategory, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.POST("/skills/:id/tags", skillHandler.AddTag, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/skills/tags/:tag_id", skillHandler.DeleteTag, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+
 	aboutGroup.PATCH("/avatar", h.UpdateAvatar, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 }

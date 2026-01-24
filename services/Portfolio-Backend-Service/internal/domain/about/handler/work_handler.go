@@ -25,6 +25,7 @@ func NewWorkHandler(u usecase.WorkUsecase) *WorkHandler {
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.WorkExperience} "Successfully Retrieve"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences [get]
 func (h *WorkHandler) GetWorkExperiences(c echo.Context) error {
 	works, err := h.usecase.GetWorkExperiences(c.Request().Context())
@@ -75,6 +76,7 @@ type CreateWorkRequestFull struct {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences [post]
 func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 	var req CreateWorkRequestFull
@@ -137,6 +139,7 @@ func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences/{id} [patch]
 func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 	id := c.Param("id")
@@ -185,6 +188,7 @@ func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences/{id} [delete]
 func (h *WorkHandler) DeleteWorkExperience(c echo.Context) error {
 	id := c.Param("id")
@@ -214,6 +218,7 @@ func (h *WorkHandler) DeleteWorkExperience(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Work Experience Not Found"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences/{id}/achievements [post]
 func (h *WorkHandler) AddAchievement(c echo.Context) error {
 	workID := c.Param("id")
@@ -258,6 +263,7 @@ func (h *WorkHandler) AddAchievement(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Achievement Not Found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/work-experiences/achievements/{achievement_id} [delete]
 func (h *WorkHandler) DeleteAchievement(c echo.Context) error {
 	id := c.Param("achievement_id")

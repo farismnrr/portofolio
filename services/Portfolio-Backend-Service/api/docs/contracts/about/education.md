@@ -48,6 +48,16 @@ Retrieves list of degrees and institutions.
 }
 ```
 
+#### Case 3: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
+}
+```
+
 ---
 
 ## 2. Create Education
@@ -234,5 +244,13 @@ Removes an education record.
 {
   "status": false,
   "message": "Forbidden: Insufficient permissions"
+}
+#### Case 5: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```

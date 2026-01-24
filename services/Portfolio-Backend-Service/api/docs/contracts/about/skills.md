@@ -50,6 +50,16 @@ Retrieves all skill categories and their associated tags.
 }
 ```
 
+#### Case 2: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
+}
+```
+
 ---
 
 ## 2. Create Skill Category
@@ -280,5 +290,13 @@ Removes a specific tag.
 {
   "status": false,
   "message": "Forbidden: Insufficient permissions"
+}
+#### Case 5: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```

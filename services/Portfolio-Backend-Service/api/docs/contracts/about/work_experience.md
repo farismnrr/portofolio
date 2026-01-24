@@ -54,6 +54,16 @@ Retrieves user's work history including achievements.
 }
 ```
 
+#### Case 3: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
+}
+```
+
 ---
 
 ## 2. Create Work Experience
@@ -98,6 +108,16 @@ Adds a new job entry. Optionally includes initial achievements.
       "achievements": [...]
     }
   }
+}
+```
+
+#### Case 2: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```
 
@@ -250,5 +270,13 @@ Removes a specific achievement.
 {
   "status": false,
   "message": "Forbidden: Insufficient permissions"
+}
+#### Case 5: Internal Server Error
+- **Status:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```

@@ -25,7 +25,7 @@ func NewSocialHandler(u usecase.SocialUsecase) *SocialHandler {
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SocialLink}
-// @Failure 500 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/social-links [get]
 func (h *SocialHandler) GetSocialLinks(c echo.Context) error {
 	links, err := h.usecase.GetSocialLinks(c.Request().Context())
@@ -56,6 +56,7 @@ type CreateSocialLinkRequest struct {
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
 // @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/social-links [post]
 func (h *SocialHandler) CreateSocialLink(c echo.Context) error {
 	var req CreateSocialLinkRequest
@@ -107,6 +108,7 @@ func (h *SocialHandler) CreateSocialLink(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/social-links/{id} [patch]
 func (h *SocialHandler) UpdateSocialLink(c echo.Context) error {
 	id := c.Param("id")
@@ -163,6 +165,7 @@ func (h *SocialHandler) UpdateSocialLink(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/social-links/{id} [delete]
 func (h *SocialHandler) DeleteSocialLink(c echo.Context) error {
 	id := c.Param("id")

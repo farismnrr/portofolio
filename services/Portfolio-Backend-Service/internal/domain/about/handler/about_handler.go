@@ -26,6 +26,7 @@ func NewAboutHandler(u usecase.AboutUsecase) *AboutHandler {
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string]AboutResponse}
 // @Failure 401 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about [get]
 func (h *AboutHandler) GetAbout(c echo.Context) error {
 	about, err := h.usecase.GetAbout(c.Request().Context())
@@ -60,6 +61,7 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
 // @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about [patch]
 func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 	var req UpdateAboutRequest
@@ -110,6 +112,7 @@ func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
 // @Failure 413 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/avatar [patch]
 func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 	// Source

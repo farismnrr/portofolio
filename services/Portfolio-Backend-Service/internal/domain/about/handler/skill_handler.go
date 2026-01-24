@@ -25,6 +25,7 @@ func NewSkillHandler(u usecase.SkillUsecase) *SkillHandler {
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SkillCategory} "Successfully Retrieve"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills [get]
 func (h *SkillHandler) GetSkills(c echo.Context) error {
 	cats, err := h.usecase.GetSkillCategories(c.Request().Context())
@@ -60,6 +61,7 @@ type CreateCategoryRequest struct {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills [post]
 func (h *SkillHandler) CreateCategory(c echo.Context) error {
 	var req CreateCategoryRequest
@@ -109,6 +111,7 @@ func (h *SkillHandler) CreateCategory(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills/{id} [patch]
 func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 	id := c.Param("id")
@@ -152,6 +155,7 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills/{id} [delete]
 func (h *SkillHandler) DeleteCategory(c echo.Context) error {
 	id := c.Param("id")
@@ -181,6 +185,7 @@ func (h *SkillHandler) DeleteCategory(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Skill Category Not Found"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills/{id}/tags [post]
 func (h *SkillHandler) AddTag(c echo.Context) error {
 	catID := c.Param("id")
@@ -224,6 +229,7 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Skill Tag Not Found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/skills/tags/{tag_id} [delete]
 func (h *SkillHandler) DeleteTag(c echo.Context) error {
 	id := c.Param("tag_id")

@@ -25,6 +25,7 @@ func NewEducationHandler(u usecase.EducationUsecase) *EducationHandler {
 // @Produce json
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.Education} "Successfully Retrieve"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/education [get]
 func (h *EducationHandler) GetEducations(c echo.Context) error {
 	edus, err := h.usecase.GetEducations(c.Request().Context())
@@ -55,6 +56,7 @@ type CreateEducationRequest struct {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/education [post]
 func (h *EducationHandler) CreateEducation(c echo.Context) error {
 	var req CreateEducationRequest
@@ -107,6 +109,7 @@ func (h *EducationHandler) CreateEducation(c echo.Context) error {
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
 // @Failure 422 {object} response.ErrorResponse "Validation Failed"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/education/{id} [patch]
 func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 	id := c.Param("id")
@@ -156,6 +159,7 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 403 {object} response.ErrorResponse "Forbidden (Insufficient Permissions)"
 // @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/education/{id} [delete]
 func (h *EducationHandler) DeleteEducation(c echo.Context) error {
 	id := c.Param("id")

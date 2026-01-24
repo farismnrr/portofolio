@@ -29,5 +29,15 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	aboutGroup := e.Group("/about")
 	aboutGroup.GET("", h.GetAbout)
 	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	// Social Links
+	socialRepo := repository.NewSocialRepository(db)
+	socialUC := usecase.NewSocialUsecase(socialRepo)
+	socialHandler := handler.NewSocialHandler(socialUC)
+
+	aboutGroup.GET("/social-links", socialHandler.GetSocialLinks)
+	aboutGroup.POST("/social-links", socialHandler.CreateSocialLink, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.PATCH("/social-links/:id", socialHandler.UpdateSocialLink, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+	aboutGroup.DELETE("/social-links/:id", socialHandler.DeleteSocialLink, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
+
 	aboutGroup.PATCH("/avatar", h.UpdateAvatar, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 }

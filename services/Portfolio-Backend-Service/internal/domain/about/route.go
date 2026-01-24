@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache cache.Cache) {
+func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cacheStore cache.Cache) {
 	// Initialize Cloud Storage
 	cloudStorage, _ := storage.NewGCPStorage(
 		context.Background(),
@@ -24,7 +24,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache c
 	)
 
 	repo := repository.NewAboutRepository(db)
-	uc := usecase.NewAboutUsecase(repo, cloudStorage, cfg.GCP.BucketName, cache)
+	uc := usecase.NewAboutUsecase(repo, cloudStorage, cfg.GCP.BucketName, cacheStore)
 	h := handler.NewAboutHandler(uc)
 
 	aboutGroup := e.Group("/about")
@@ -32,7 +32,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache c
 	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 	// Social Links
 	socialRepo := repository.NewSocialRepository(db)
-	socialUC := usecase.NewSocialUsecase(socialRepo, cache)
+	socialUC := usecase.NewSocialUsecase(socialRepo, cacheStore)
 	socialHandler := handler.NewSocialHandler(socialUC)
 
 	aboutGroup.GET("/social-links", socialHandler.GetSocialLinks)
@@ -42,7 +42,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache c
 
 	// Work Experience
 	workRepo := repository.NewWorkRepository(db)
-	workUC := usecase.NewWorkUsecase(workRepo, cache)
+	workUC := usecase.NewWorkUsecase(workRepo, cacheStore)
 	workHandler := handler.NewWorkHandler(workUC)
 
 	aboutGroup.GET("/work-experiences", workHandler.GetWorkExperiences)
@@ -54,7 +54,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache c
 
 	// Education
 	eduRepo := repository.NewEducationRepository(db)
-	eduUC := usecase.NewEducationUsecase(eduRepo, cache)
+	eduUC := usecase.NewEducationUsecase(eduRepo, cacheStore)
 	eduHandler := handler.NewEducationHandler(eduUC)
 
 	aboutGroup.GET("/education", eduHandler.GetEducations)
@@ -64,7 +64,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache c
 
 	// Skills
 	skillRepo := repository.NewSkillRepository(db)
-	skillUC := usecase.NewSkillUsecase(skillRepo, cache)
+	skillUC := usecase.NewSkillUsecase(skillRepo, cacheStore)
 	skillHandler := handler.NewSkillHandler(skillUC)
 
 	aboutGroup.GET("/skills", skillHandler.GetSkills)

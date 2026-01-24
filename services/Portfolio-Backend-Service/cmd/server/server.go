@@ -26,10 +26,10 @@ import (
 
 // Server represents the HTTP server
 type Server struct {
-	echo   *echo.Echo
-	config *config.Config
-	db     *gorm.DB
-	cache  cache.Cache
+	echo       *echo.Echo
+	config     *config.Config
+	db         *gorm.DB
+	cacheStore cache.Cache
 }
 
 // New creates a new server instance
@@ -63,10 +63,10 @@ func New(cfg *config.Config, db *gorm.DB) *Server {
 	}
 
 	return &Server{
-		echo:   e,
-		config: cfg,
-		db:     db,
-		cache:  badgerCache,
+		echo:       e,
+		config:     cfg,
+		db:         db,
+		cacheStore: badgerCache,
 	}
 }
 
@@ -87,7 +87,7 @@ func (s *Server) SetupRoutes() {
 	content.RegisterRoutes(v1)
 	sso.RegisterRoutes(v1, s.config)
 	dashboard.RegisterRoutes(v1, s.config)
-	about.RegisterAboutRoutes(v1, s.db, s.config, s.cache)
+	about.RegisterAboutRoutes(v1, s.db, s.config, s.cacheStore)
 
 	// Status endpoint
 	v1.GET("/status", func(c echo.Context) error {
@@ -145,8 +145,8 @@ func (s *Server) Start() error {
 	logger.Info("Server stopped gracefully")
 
 	// Close cache
-	if s.cache != nil {
-		if err := s.cache.Close(); err != nil {
+	if s.cacheStore != nil {
+		if err := s.cacheStore.Close(); err != nil {
 			logger.Error("Failed to close cache", zap.Error(err))
 		} else {
 			logger.Info("Cache closed successfully")

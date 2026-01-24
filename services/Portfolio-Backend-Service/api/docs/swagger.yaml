@@ -1,40 +1,39 @@
+basePath: /
 definitions:
-  auth.LoginRequest:
+  handler.AboutResponse:
     properties:
-      refreshToken:
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      avatar:
         type: string
-    required:
-    - refreshToken
-    type: object
-  auth.RefreshResponse:
-    properties:
-      access_token:
-        example: eyJhbGciOiJIUzI1NiIs...
-        type: string
-      expires_in:
-        example: 3600
-        type: integer
-    type: object
-  auth.UserResponse:
-    properties:
-      email:
-        example: john@example.com
+      description:
         type: string
       id:
-        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
         type: string
       role:
-        example: user
-        type: string
-      tenant_id:
-        example: 770e8400-e29b-41d4-a716-446655440001
-        type: string
-      username:
-        example: johndoe
         type: string
     type: object
-  og.FetchMetadataResponse:
+  handler.AuthenticateRequest:
+    properties:
+      password:
+        example: your-strong-password
+        type: string
+    required:
+    - password
+    type: object
+  handler.AuthenticateResponse:
+    properties:
+      success:
+        example: true
+        type: boolean
+    type: object
+  handler.CheckAuthResponse:
+    properties:
+      authenticated:
+        example: true
+        type: boolean
+    type: object
+  handler.FetchMetadataResponse:
     properties:
       description:
         example: This is an example description of the page.
@@ -49,25 +48,45 @@ definitions:
         example: https://example.com
         type: string
     type: object
-  page_auth.AuthenticateRequest:
+  handler.LoginRequest:
     properties:
-      password:
-        example: your-strong-password
+      refresh_token:
+        type: string
+    type: object
+  handler.RefreshResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+    type: object
+  handler.UpdateAboutRequest:
+    properties:
+      avatar:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      role:
         type: string
     required:
-    - password
+    - description
+    - name
+    - role
     type: object
-  page_auth.AuthenticateResponse:
+  handler.UserResponse:
     properties:
-      success:
-        example: true
-        type: boolean
-    type: object
-  page_auth.CheckAuthResponse:
-    properties:
-      authenticated:
-        example: true
-        type: boolean
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        type: string
+      tenant_id:
+        type: string
+      username:
+        type: string
     type: object
   response.ErrorResponse:
     properties:
@@ -77,7 +96,7 @@ definitions:
         description: For validation errors
       message:
         type: string
-      success:
+      status:
         type: boolean
     type: object
   response.SuccessResponse:
@@ -85,12 +104,122 @@ definitions:
       data: {}
       message:
         type: string
-      success:
+      status:
         type: boolean
     type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: hello@farismnrr.com
+    name: Faris M.
+    url: https://farismnrr.com
+  description: Interactive API documentation for the Portfolio Backend Service.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Portfolio Backend API
+  version: "1.0"
 paths:
+  /v1/about:
+    get:
+      consumes:
+      - application/json
+      description: Fetch name, role, description, and avatar URL
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    $ref: '#/definitions/handler.AboutResponse'
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get basic profile
+      tags:
+      - About
+    patch:
+      consumes:
+      - application/json
+      description: Update name, role, and description
+      parameters:
+      - description: Profile Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateAboutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update profile
+      tags:
+      - About
+  /v1/about/avatar:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Upload image to GCS and update profile
+      parameters:
+      - description: Avatar image file
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "413":
+          description: Request Entity Too Large
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update avatar
+      tags:
+      - About
   /v1/auth/login:
     post:
       consumes:
@@ -103,7 +232,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/auth.LoginRequest'
+          $ref: '#/definitions/handler.LoginRequest'
       produces:
       - application/json
       responses:
@@ -146,7 +275,7 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/auth.RefreshResponse'
+                  $ref: '#/definitions/handler.RefreshResponse'
               type: object
         "401":
           description: No refresh token found or failed to refresh
@@ -169,7 +298,7 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/auth.UserResponse'
+                  $ref: '#/definitions/handler.UserResponse'
               type: object
         "401":
           description: No authorization header or failed to fetch user
@@ -204,7 +333,7 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/og.FetchMetadataResponse'
+                  $ref: '#/definitions/handler.FetchMetadataResponse'
               type: object
         "400":
           description: URL parameter is required
@@ -253,7 +382,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/page_auth.AuthenticateRequest'
+          $ref: '#/definitions/handler.AuthenticateRequest'
       produces:
       - application/json
       responses:
@@ -264,7 +393,7 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/page_auth.AuthenticateResponse'
+                  $ref: '#/definitions/handler.AuthenticateResponse'
               type: object
         "400":
           description: Invalid request body
@@ -290,7 +419,7 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/page_auth.CheckAuthResponse'
+                  $ref: '#/definitions/handler.CheckAuthResponse'
               type: object
         "401":
           description: Not authenticated
@@ -299,4 +428,16 @@ paths:
       summary: Check authentication status
       tags:
       - Page Auth
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-API-Key
+    type: apiKey
+  BearerAuth:
+    description: Type "Bearer" followed by a space and then your token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

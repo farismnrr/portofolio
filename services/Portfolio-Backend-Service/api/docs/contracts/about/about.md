@@ -34,7 +34,7 @@ Retrieves basic profile information such as name, role, description, and avatar 
       "name": "Faris Munir",
       "role": "Software Engineer",
       "description": "Software Engineer specializing in backend architecture...",
-      "avatar_url": "https://storage.googleapis.com/portfolio-assets/avatars/faris.jpg"
+      "avatar_url": "https://storage.googleapis.com/farismnrr-storage/avatars/faris.jpg"
     }
   }
 }
@@ -106,10 +106,6 @@ Updates text-based profile information (excluding avatar).
     {
       "field": "name",
       "message": "Name cannot be empty"
-    },
-    {
-      "field": "role",
-      "message": "Role must be at least 3 characters long"
     }
   ]
 }
@@ -139,7 +135,9 @@ Uploads a new avatar image to cloud storage and updates the profile.
   "status": true,
   "message": "Avatar updated successfully",
   "data": {
-    "avatar_url": "https://storage.googleapis.com/portfolio-assets/avatars/new-avatar.jpg"
+    "about": {
+      "avatar_url": "https://storage.googleapis.com/farismnrr-storage/avatars/new-avatar.jpg"
+    }
   }
 }
 ```

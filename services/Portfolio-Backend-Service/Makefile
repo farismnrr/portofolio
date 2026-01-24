@@ -1,10 +1,15 @@
-.PHONY: help run build test clean docker-build docker-up docker-down tidy lint kill migrate-up migrate-down migrate-fresh
+.PHONY: help run build test clean docker-build docker-up docker-down tidy lint kill migrate-up migrate-down migrate-fresh swagger
 
 # Variables
 APP_NAME=portfolio-backend-service
 MAIN_PATH=./cmd/server
 BUILD_DIR=./bin
 DOCKER_IMAGE=$(APP_NAME):latest
+
+swagger: ## Generate swagger documentation
+	@echo "Generating swagger..."
+	@~/go/bin/swag init -g cmd/server/main.go -o api/docs
+	@echo "Swagger generated"
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'

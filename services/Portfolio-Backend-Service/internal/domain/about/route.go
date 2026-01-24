@@ -27,7 +27,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	h := handler.NewAboutHandler(uc)
 
 	aboutGroup := e.Group("/about")
-	aboutGroup.GET("", h.GetAbout)
+	aboutGroup.GET("", h.GetAbout, middleware.RequireAuth(cfg))
 	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg))
 	aboutGroup.PATCH("/avatar", h.UpdateAvatar, middleware.RequireAuth(cfg))
 }

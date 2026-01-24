@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/usecase"
@@ -18,14 +18,24 @@ func NewAboutHandler(u usecase.AboutUsecase) *AboutHandler {
 	return &AboutHandler{usecase: u}
 }
 
+// GetAbout retrieves basic profile information
+// @Summary Get basic profile
+// @Description Fetch name, role, description, and avatar URL
+// @Tags About
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} response.SuccessResponse{data=map[string]AboutResponse}
+// @Failure 401 {object} response.ErrorResponse
+// @Router /v1/about [get]
 func (h *AboutHandler) GetAbout(c echo.Context) error {
 	about, err := h.usecase.GetAbout(c.Request().Context())
 	if err != nil {
-		return response.ErrorWithData(c, http.StatusInternalServerError, "Failed to get about information", err.Error())
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
 	if about == nil {
-		return response.Success(c, http.StatusOK, "About information is empty", nil)
+		return response.Success(c, http.StatusOK, "About information is empty", map[string]interface{}{"about": nil})
 	}
 
 	res := AboutResponse{
@@ -36,13 +46,41 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 		Avatar:      about.Avatar,
 	}
 
-	return response.Success(c, http.StatusOK, "About information retrieved successfully", res)
+	return response.Success(c, http.StatusOK, "About information retrieved successfully", map[string]interface{}{"about": res})
 }
 
+// UpdateAbout updates text-based profile
+// @Summary Update profile
+// @Description Update name, role, and description
+// @Tags About
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body UpdateAboutRequest true "Profile Data"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Router /v1/about [patch]
 func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 	var req UpdateAboutRequest
 	if err := c.Bind(&req); err != nil {
-		return response.ErrorWithData(c, http.StatusBadRequest, "Invalid request payload", err.Error())
+		return response.Error(c, http.StatusBadRequest, "Invalid request payload format")
+	}
+
+	// Validation
+	var details []map[string]string
+	if req.Name == "" {
+		details = append(details, map[string]string{"field": "name", "message": "Name is required"})
+	}
+	if req.Role == "" {
+		details = append(details, map[string]string{"field": "role", "message": "Role is required"})
+	}
+	if req.Description == "" {
+		details = append(details, map[string]string{"field": "description", "message": "Description is required"})
+	}
+
+	if len(details) > 0 {
+		return response.ValidationError(c, "Validation failed", details)
 	}
 
 	about := &entity.About{
@@ -53,17 +91,40 @@ func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 	}
 
 	if err := h.usecase.UpdateAbout(c.Request().Context(), about); err != nil {
-		return response.ErrorWithData(c, http.StatusInternalServerError, "Failed to update about information", err.Error())
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "About information updated successfully", nil)
+	return response.SuccessNoData(c, http.StatusOK, "About profile updated successfully")
 }
 
+// UpdateAvatar uploads a new avatar
+// @Summary Update avatar
+// @Description Upload image to GCS and update profile
+// @Tags About
+// @Accept multipart/form-data
+// @Produce json
+// @Security BearerAuth
+// @Param avatar formData file true "Avatar image file"
+// @Success 200 {object} response.SuccessResponse{data=map[string]map[string]string}
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 413 {object} response.ErrorResponse
+// @Router /v1/about/avatar [patch]
 func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 	// Source
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		return response.Error(c, http.StatusBadRequest, "Avatar file is required")
+	}
+
+	// 1. Validation: File Size (max 2MB)
+	if file.Size > 2*1024*1024 {
+		return response.Error(c, http.StatusRequestEntityTooLarge, "File size exceeds the 2MB limit")
+	}
+
+	// 2. Validation: File Type (Only images)
+	contentType := file.Header.Get("Content-Type")
+	if !strings.HasPrefix(contentType, "image/") {
+		return response.Error(c, http.StatusBadRequest, "Invalid file type: Only images are allowed")
 	}
 
 	src, err := file.Open()
@@ -74,11 +135,13 @@ func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 
 	url, err := h.usecase.UpdateAvatar(c.Request().Context(), src, file.Filename)
 	if err != nil {
-		return response.Error(c, http.StatusInternalServerError, fmt.Sprintf("Failed to update avatar: %s", err.Error()))
+		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	res := map[string]string{
-		"avatar_url": url,
+	res := map[string]interface{}{
+		"about": map[string]string{
+			"avatar_url": url,
+		},
 	}
 
 	return response.Success(c, http.StatusOK, "Avatar updated successfully", res)

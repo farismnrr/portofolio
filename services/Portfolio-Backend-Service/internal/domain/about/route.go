@@ -8,20 +8,25 @@ import (
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/usecase"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/cache"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/storage"
 	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cacheStore cache.Cache) {
 	// Initialize Cloud Storage
-	cloudStorage, _ := storage.NewGCPStorage(
+	cloudStorage, err := storage.NewGCPStorage(
 		context.Background(),
 		cfg.GCP.CredentialsPath,
 		cfg.GCP.ServiceAccountEmail,
 		cfg.GCP.P12Password,
 	)
+	if err != nil {
+		logger.Fatal("Failed to initialize GCP storage", zap.Error(err))
+	}
 
 	repo := repository.NewAboutRepository(db)
 	uc := usecase.NewAboutUsecase(repo, cloudStorage, cfg.GCP.BucketName, cacheStore)

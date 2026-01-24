@@ -6,8 +6,10 @@ import (
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/usecase"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
 	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
 )
 
 type AboutHandler struct {
@@ -140,6 +142,7 @@ func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 
 	url, err := h.usecase.UpdateAvatar(c.Request().Context(), src, file.Filename)
 	if err != nil {
+		logger.Error("Failed to update avatar", zap.Error(err))
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 

@@ -81,6 +81,7 @@ services:
       - GCP_CREDENTIALS_PATH=${GCP_CREDENTIALS_PATH}
       - GCP_SERVICE_ACCOUNT_EMAIL=${GCP_SERVICE_ACCOUNT_EMAIL}
       - GCP_P12_PASSWORD=${GCP_P12_PASSWORD}
+      - CORE_DB_SEED_DUMMY=true
     env_file:
       - .env.dev
     # depends_on:

@@ -1,22 +1,22 @@
 "use client";
 
 import {
+  createEducation,
+  createSocialLink,
+  deleteEducation,
+  deleteSocialLink,
   fetchAbout,
-  fetchSocialLinks,
-  fetchWorkExperiences,
   fetchEducations,
   fetchSkills,
+  fetchSocialLinks,
+  fetchWorkExperiences,
   updateAbout,
   updateAvatar,
-  createSocialLink,
   updateSocialLink,
-  deleteSocialLink,
-  createEducation,
-  deleteEducation,
 } from "@/lib/about";
 import { person } from "@/resources";
 import { useAuthStore } from "@/store/auth";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./AboutEditor.module.scss";
 
 // Types
@@ -116,16 +116,16 @@ export default function AboutEditor() {
 
     // Detect Changes & Additions
     for (let i = 0; i < currentLinks.length; i++) {
-       const cl = currentLinks[i];
-       const ol = oldLinks.find((o) => o.id === cl.id);
-       
-       if (!ol) {
-         // ADD (IDs like Date.now() are temporary)
-         await createSocialLink(accessToken, { name: cl.label, url: cl.url, order_by: i });
-       } else if (cl.label !== ol.label || cl.url !== ol.url) {
-         // UPDATE
-         await updateSocialLink(accessToken, cl.id, { name: cl.label, url: cl.url, order_by: i });
-       }
+      const cl = currentLinks[i];
+      const ol = oldLinks.find((o) => o.id === cl.id);
+
+      if (!ol) {
+        // ADD (IDs like Date.now() are temporary)
+        await createSocialLink(accessToken, { name: cl.label, url: cl.url, order_by: i });
+      } else if (cl.label !== ol.label || cl.url !== ol.url) {
+        // UPDATE
+        await updateSocialLink(accessToken, cl.id, { name: cl.label, url: cl.url, order_by: i });
+      }
     }
   };
 
@@ -184,7 +184,7 @@ export default function AboutEditor() {
       await syncEducations();
 
       alert("Profile, Social Links, and Education synchronized!");
-      
+
       const refreshed = await fetchAllData();
       setOriginalData(refreshed);
       setData(refreshed);

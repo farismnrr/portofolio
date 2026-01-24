@@ -150,12 +150,16 @@ export async function createSocialLink(token: string, data: Partial<SocialLink>)
       body: JSON.stringify(data),
     });
     return response.ok;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
 
-export async function updateSocialLink(token: string, id: string, data: Partial<SocialLink>): Promise<boolean> {
+export async function updateSocialLink(
+  token: string,
+  id: string,
+  data: Partial<SocialLink>,
+): Promise<boolean> {
   try {
     const response = await fetch(getApiUrl(`/about/social-links/${id}`), {
       method: "PATCH",
@@ -163,7 +167,7 @@ export async function updateSocialLink(token: string, id: string, data: Partial<
       body: JSON.stringify(data),
     });
     return response.ok;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -175,7 +179,7 @@ export async function deleteSocialLink(token: string, id: string): Promise<boole
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -189,12 +193,15 @@ export async function fetchWorkExperiences(): Promise<WorkExperience[]> {
     if (!response.ok) return [];
     const body: ApiResponse<{ work_experiences: WorkExperience[] }> = await response.json();
     return body.data.work_experiences;
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
 
-export async function createWorkExperience(token: string, data: Partial<WorkExperience>): Promise<boolean> {
+export async function createWorkExperience(
+  token: string,
+  data: Partial<WorkExperience>,
+): Promise<boolean> {
   const response = await fetch(getApiUrl("/about/work-experiences"), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -220,7 +227,7 @@ export async function fetchEducations(): Promise<Education[]> {
     if (!response.ok) return [];
     const body: ApiResponse<{ education: Education[] }> = await response.json();
     return body.data.education;
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
@@ -251,12 +258,15 @@ export async function fetchSkills(): Promise<SkillCategory[]> {
     if (!response.ok) return [];
     const body: ApiResponse<{ skill_categories: SkillCategory[] }> = await response.json();
     return body.data.skill_categories;
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
 
-export async function createSkillCategory(token: string, data: Partial<SkillCategory>): Promise<boolean> {
+export async function createSkillCategory(
+  token: string,
+  data: Partial<SkillCategory>,
+): Promise<boolean> {
   const response = await fetch(getApiUrl("/about/skills"), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

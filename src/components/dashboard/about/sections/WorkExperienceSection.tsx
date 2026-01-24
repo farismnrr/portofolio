@@ -1,6 +1,6 @@
 import { FiBriefcase, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
-import type { AboutData, WorkExperience, WorkAchievement } from "../types";
+import type { AboutData, WorkAchievement, WorkExperience } from "../types";
 
 interface WorkExperienceSectionProps {
   data: AboutData;
@@ -19,7 +19,11 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
     setData({ ...data, workExperience: [...data.workExperience, newExp] });
   };
 
-  const updateWorkExperience = (id: string, field: keyof WorkExperience, value: any) => {
+  const updateWorkExperience = (
+    id: string,
+    field: keyof WorkExperience,
+    value: string | WorkAchievement[],
+  ) => {
     setData({
       ...data,
       workExperience: data.workExperience.map((exp) =>
@@ -119,10 +123,10 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                   placeholder="e.g., 2020 - Present"
                 />
               </div>
-              
+
               <div className={styles.formGroup}>
-                <label>Achievements</label>
-                <div className={styles.achievementsList}>
+                <label htmlFor={`achievements-${exp.id}`}>Achievements</label>
+                <div id={`achievements-${exp.id}`} className={styles.achievementsList}>
                   {exp.achievements.map((ach) => (
                     <div key={ach.id} className={styles.achievementItem}>
                       <input

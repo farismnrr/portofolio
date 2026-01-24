@@ -23,7 +23,7 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
     });
   };
 
-  const updateSkill = (id: string, field: keyof TechnicalSkill, value: any) => {
+  const updateSkill = (id: string, field: keyof TechnicalSkill, value: string | TechTag[]) => {
     const newSkills = data.technicalSkills.map((skill) =>
       skill.id === id ? { ...skill, [field]: value } : skill,
     );
@@ -99,8 +99,9 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
             </div>
             <div className={styles.itemFields}>
               <div className={styles.formGroup}>
-                <label>Category Title</label>
+                <label htmlFor={`skill-title-${skill.id}`}>Category Title</label>
                 <input
+                  id={`skill-title-${skill.id}`}
                   type="text"
                   value={skill.title}
                   onChange={(e) => updateSkill(skill.id, "title", e.target.value)}
@@ -108,15 +109,15 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
                 />
               </div>
               <div className={styles.formGroup}>
-                <label>Tags</label>
-                <div className={styles.tagsContainer}>
+                <label htmlFor={`skill-tags-${skill.id}`}>Tags</label>
+                <div id={`skill-tags-${skill.id}`} className={styles.tagsContainer}>
                   {skill.tags.map((tag) => (
                     <div key={tag.id} className={styles.tagChip}>
                       {tag.name}
                       <button
                         type="button"
                         className={styles.deleteTagBtn}
-                        onClick={() => deleteTag(skill.id, tag.id!)}
+                        onClick={() => tag.id && deleteTag(skill.id, tag.id)}
                       >
                         <FiTrash2 />
                       </button>

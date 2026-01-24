@@ -1,17 +1,14 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth";
-import { useEffect, useRef, useState } from "react";
-import Sidebar from "./Sidebar";
-import styles from "./Sidebar.module.scss";
+import { useEffect, useRef } from "react";
 
 /**
- * Client component that initializes auth store AND renders the dashboard shell (Sidebar + Main)
+ * Client component that initializes auth store when dashboard mounts
  */
 export function DashboardInitializer({ children }: { children: React.ReactNode }) {
   const initialize = useAuthStore((state) => state.initialize);
   const initialized = useRef(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     if (!initialized.current) {
@@ -20,10 +17,5 @@ export function DashboardInitializer({ children }: { children: React.ReactNode }
     }
   }, [initialize]);
 
-  return (
-    <div className={styles.container}>
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-      <main className={`${styles.main} ${isCollapsed ? styles.expanded : ""}`}>{children}</main>
-    </div>
-  );
+  return <>{children}</>;
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/handler"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/repository"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/usecase"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/cache"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/storage"
@@ -13,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
+func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config, cache cache.Cache) {
 	// Initialize Cloud Storage
 	cloudStorage, _ := storage.NewGCPStorage(
 		context.Background(),
@@ -23,7 +24,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	)
 
 	repo := repository.NewAboutRepository(db)
-	uc := usecase.NewAboutUsecase(repo, cloudStorage, cfg.GCP.BucketName)
+	uc := usecase.NewAboutUsecase(repo, cloudStorage, cfg.GCP.BucketName, cache)
 	h := handler.NewAboutHandler(uc)
 
 	aboutGroup := e.Group("/about")
@@ -31,7 +32,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 	aboutGroup.PATCH("", h.UpdateAbout, middleware.RequireAuth(cfg), middleware.RequireRole("admin"))
 	// Social Links
 	socialRepo := repository.NewSocialRepository(db)
-	socialUC := usecase.NewSocialUsecase(socialRepo)
+	socialUC := usecase.NewSocialUsecase(socialRepo, cache)
 	socialHandler := handler.NewSocialHandler(socialUC)
 
 	aboutGroup.GET("/social-links", socialHandler.GetSocialLinks)
@@ -41,7 +42,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 
 	// Work Experience
 	workRepo := repository.NewWorkRepository(db)
-	workUC := usecase.NewWorkUsecase(workRepo)
+	workUC := usecase.NewWorkUsecase(workRepo, cache)
 	workHandler := handler.NewWorkHandler(workUC)
 
 	aboutGroup.GET("/work-experiences", workHandler.GetWorkExperiences)
@@ -53,7 +54,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 
 	// Education
 	eduRepo := repository.NewEducationRepository(db)
-	eduUC := usecase.NewEducationUsecase(eduRepo)
+	eduUC := usecase.NewEducationUsecase(eduRepo, cache)
 	eduHandler := handler.NewEducationHandler(eduUC)
 
 	aboutGroup.GET("/education", eduHandler.GetEducations)
@@ -63,7 +64,7 @@ func RegisterAboutRoutes(e *echo.Group, db *gorm.DB, cfg *config.Config) {
 
 	// Skills
 	skillRepo := repository.NewSkillRepository(db)
-	skillUC := usecase.NewSkillUsecase(skillRepo)
+	skillUC := usecase.NewSkillUsecase(skillRepo, cache)
 	skillHandler := handler.NewSkillHandler(skillUC)
 
 	aboutGroup.GET("/skills", skillHandler.GetSkills)

@@ -2,12 +2,15 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"path/filepath"
+	"time"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/entity"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/repository"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/cache"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/storage"
 	"github.com/google/uuid"
 )
@@ -22,22 +25,50 @@ type aboutUsecase struct {
 	repo         repository.AboutRepository
 	cloudStorage storage.CloudStorage
 	bucketName   string
+	cache        cache.Cache
 }
 
-func NewAboutUsecase(repo repository.AboutRepository, cloudStorage storage.CloudStorage, bucketName string) AboutUsecase {
+func NewAboutUsecase(repo repository.AboutRepository, cloudStorage storage.CloudStorage, bucketName string, cache cache.Cache) AboutUsecase {
 	return &aboutUsecase{
 		repo:         repo,
 		cloudStorage: cloudStorage,
 		bucketName:   bucketName,
+		cache:        cache,
 	}
 }
 
 func (u *aboutUsecase) GetAbout(ctx context.Context) (*entity.About, error) {
-	return u.repo.Get(ctx)
+	const cacheKey = "about_profile"
+
+	// Try cache
+	data, err := u.cache.Get(ctx, cacheKey)
+	if err == nil && data != nil {
+		var about entity.About
+		if err := json.Unmarshal(data, &about); err == nil {
+			return &about, nil
+		}
+	}
+
+	// Cache miss
+	about, err := u.repo.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Save to cache (TTL: 1 hour)
+	if data, err := json.Marshal(about); err == nil {
+		_ = u.cache.Set(ctx, cacheKey, data, 1*time.Hour)
+	}
+
+	return about, nil
 }
 
 func (u *aboutUsecase) UpdateAbout(ctx context.Context, about *entity.About) error {
-	return u.repo.Update(ctx, about)
+	if err := u.repo.Update(ctx, about); err != nil {
+		return err
+	}
+	_ = u.cache.Delete(ctx, "about_profile")
+	return nil
 }
 
 func (u *aboutUsecase) UpdateAvatar(ctx context.Context, file io.Reader, filename string) (string, error) {
@@ -61,6 +92,8 @@ func (u *aboutUsecase) UpdateAvatar(ctx context.Context, file io.Reader, filenam
 	if err := u.repo.Update(ctx, about); err != nil {
 		return "", err
 	}
+
+	_ = u.cache.Delete(ctx, "about_profile")
 
 	return url, nil
 }

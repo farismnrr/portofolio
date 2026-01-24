@@ -10,6 +10,7 @@ import (
 
 	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/cache"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
@@ -28,6 +29,7 @@ type Server struct {
 	echo   *echo.Echo
 	config *config.Config
 	db     *gorm.DB
+	cache  cache.Cache
 }
 
 // New creates a new server instance
@@ -54,10 +56,17 @@ func New(cfg *config.Config, db *gorm.DB) *Server {
 		ContentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' unpkg.com; style-src 'self' 'unsafe-inline' unpkg.com; img-src 'self' data:; connect-src 'self';",
 	}))
 
+	// Initialize Cache
+	badgerCache, err := cache.NewBadgerCache("tmp/badger")
+	if err != nil {
+		logger.Fatal("Failed to initialize cache", zap.Error(err))
+	}
+
 	return &Server{
 		echo:   e,
 		config: cfg,
 		db:     db,
+		cache:  badgerCache,
 	}
 }
 
@@ -78,7 +87,7 @@ func (s *Server) SetupRoutes() {
 	content.RegisterRoutes(v1)
 	sso.RegisterRoutes(v1, s.config)
 	dashboard.RegisterRoutes(v1, s.config)
-	about.RegisterAboutRoutes(v1, s.db, s.config)
+	about.RegisterAboutRoutes(v1, s.db, s.config, s.cache)
 
 	// Status endpoint
 	v1.GET("/status", func(c echo.Context) error {
@@ -134,6 +143,16 @@ func (s *Server) Start() error {
 	}
 
 	logger.Info("Server stopped gracefully")
+
+	// Close cache
+	if s.cache != nil {
+		if err := s.cache.Close(); err != nil {
+			logger.Error("Failed to close cache", zap.Error(err))
+		} else {
+			logger.Info("Cache closed successfully")
+		}
+	}
+
 	return nil
 }
 

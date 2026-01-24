@@ -60,25 +60,25 @@ export default function AboutEditor() {
       title: profile?.role || person.role,
       description: profile?.description || "",
       photo: profile?.avatar_url || person.avatar,
-      links: socialLinks.map((l) => ({ id: l.id, label: l.name, url: l.url })),
-      workExperience: workExps.map((w) => ({
+      links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.url })),
+      workExperience: (workExps || []).map((w) => ({
         id: w.id,
         role: w.role,
         company: w.company,
         timeframe: w.timeframe,
-        achievements: w.achievements.map((a) => ({ id: a.id, content: a.content })),
+        achievements: (w.achievements || []).map((a) => ({ id: a.id, content: a.content })),
       })),
-      studies: educations.map((e) => ({
+      studies: (educations || []).map((e) => ({
         id: e.id,
         degree: e.degree,
         institution: e.institution,
         period: e.period,
         description: e.description,
       })),
-      technicalSkills: skills.map((s) => ({
+      technicalSkills: (skills || []).map((s) => ({
         id: s.id,
         title: s.title,
-        tags: s.tags.map((t) => ({ id: t.id ?? "", name: t.name, icon: t.icon })),
+        tags: (s.tags || []).map((t) => ({ id: t.id ?? "", name: t.name, icon: t.icon })),
       })),
     };
 

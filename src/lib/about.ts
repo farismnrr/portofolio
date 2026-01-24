@@ -135,7 +135,7 @@ export async function fetchSocialLinks(): Promise<SocialLink[]> {
     const response = await fetch(getApiUrl("/about/social-links"));
     if (!response.ok) return [];
     const body: ApiResponse<{ social_links: SocialLink[] }> = await response.json();
-    return body.data.social_links;
+    return body.data.social_links || [];
   } catch (error) {
     console.error("Failed to fetch social links:", error);
     return [];
@@ -192,7 +192,7 @@ export async function fetchWorkExperiences(): Promise<WorkExperience[]> {
     const response = await fetch(getApiUrl("/about/work-experiences"));
     if (!response.ok) return [];
     const body: ApiResponse<{ work_experiences: WorkExperience[] }> = await response.json();
-    return body.data.work_experiences;
+    return body.data.work_experiences || [];
   } catch (_error) {
     return [];
   }
@@ -226,7 +226,7 @@ export async function fetchEducations(): Promise<Education[]> {
     const response = await fetch(getApiUrl("/about/education"));
     if (!response.ok) return [];
     const body: ApiResponse<{ education: Education[] }> = await response.json();
-    return body.data.education;
+    return body.data.education || [];
   } catch (_error) {
     return [];
   }
@@ -257,7 +257,7 @@ export async function fetchSkills(): Promise<SkillCategory[]> {
     const response = await fetch(getApiUrl("/about/skills"));
     if (!response.ok) return [];
     const body: ApiResponse<{ skill_categories: SkillCategory[] }> = await response.json();
-    return body.data.skill_categories;
+    return body.data.skill_categories || [];
   } catch (_error) {
     return [];
   }

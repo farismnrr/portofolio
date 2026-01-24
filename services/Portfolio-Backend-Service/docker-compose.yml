@@ -17,6 +17,7 @@ services:
       - PAGE_ACCESS_PASSWORD=${PAGE_ACCESS_PASSWORD}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      - CORE_DB_SEED_DUMMY=true
     restart: unless-stopped
     networks:
       - portfolio-network

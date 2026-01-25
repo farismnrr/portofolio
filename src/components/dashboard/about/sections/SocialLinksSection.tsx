@@ -53,7 +53,9 @@ export default function SocialLinksSection({ data, setData, errors }: SocialLink
                 onChange={(e) => updateLink(link.id, "label", e.target.value)}
                 placeholder="e.g., GitHub"
               />
-              {errors?.name && <span className={styles.fieldError}>{errors.name}</span>}
+              {errors?.[`link_${link.id}_name`] && (
+                <span className={styles.fieldError}>{errors[`link_${link.id}_name`]}</span>
+              )}
             </div>
             <div className={styles.formGroup}>
               <label htmlFor={`link-url-${link.id}`}>URL</label>
@@ -64,7 +66,9 @@ export default function SocialLinksSection({ data, setData, errors }: SocialLink
                 onChange={(e) => updateLink(link.id, "url", e.target.value)}
                 placeholder="https://..."
               />
-              {errors?.link && <span className={styles.fieldError}>{errors.link}</span>}
+              {errors?.[`link_${link.id}_link`] && (
+                <span className={styles.fieldError}>{errors[`link_${link.id}_link`]}</span>
+              )}
             </div>
             <button
               type="button"

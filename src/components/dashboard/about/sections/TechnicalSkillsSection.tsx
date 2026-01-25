@@ -126,7 +126,9 @@ export default function TechnicalSkillsSection({
                   onChange={(e) => updateSkill(skill.id, "title", e.target.value)}
                   placeholder="e.g., Languages, Backend, Frontend"
                 />
-                {errors?.title && <span className={styles.fieldError}>{errors.title}</span>}
+                {errors?.[`skill_${skill.id}_title`] && (
+                  <span className={styles.fieldError}>{errors[`skill_${skill.id}_title`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`skill-desc-${skill.id}`}>Description</label>
@@ -137,8 +139,10 @@ export default function TechnicalSkillsSection({
                   placeholder="Describe your expertise in this area..."
                   rows={3}
                 />
-                {errors?.description && (
-                  <span className={styles.fieldError}>{errors.description}</span>
+                {errors?.[`skill_${skill.id}_description`] && (
+                  <span className={styles.fieldError}>
+                    {errors[`skill_${skill.id}_description`]}
+                  </span>
                 )}
               </div>
               <div className={styles.formGroup}>

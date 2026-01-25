@@ -69,7 +69,9 @@ export default function EducationSection({ data, setData, errors }: EducationSec
                   onChange={(e) => updateStudy(study.id, "degree", e.target.value)}
                   placeholder="e.g., Computer Science"
                 />
-                {errors?.degree && <span className={styles.fieldError}>{errors.degree}</span>}
+                {errors?.[`edu_${study.id}_degree`] && (
+                  <span className={styles.fieldError}>{errors[`edu_${study.id}_degree`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`study-institution-${study.id}`}>Institution</label>
@@ -80,8 +82,8 @@ export default function EducationSection({ data, setData, errors }: EducationSec
                   onChange={(e) => updateStudy(study.id, "institution", e.target.value)}
                   placeholder="e.g., University of Technology"
                 />
-                {errors?.institution && (
-                  <span className={styles.fieldError}>{errors.institution}</span>
+                {errors?.[`edu_${study.id}_institution`] && (
+                  <span className={styles.fieldError}>{errors[`edu_${study.id}_institution`]}</span>
                 )}
               </div>
               <div className={styles.formGroup}>
@@ -93,7 +95,9 @@ export default function EducationSection({ data, setData, errors }: EducationSec
                   onChange={(e) => updateStudy(study.id, "period", e.target.value)}
                   placeholder="e.g., 2016 - 2020"
                 />
-                {errors?.period && <span className={styles.fieldError}>{errors.period}</span>}
+                {errors?.[`edu_${study.id}_period`] && (
+                  <span className={styles.fieldError}>{errors[`edu_${study.id}_period`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`study-description-${study.id}`}>Description</label>
@@ -103,8 +107,8 @@ export default function EducationSection({ data, setData, errors }: EducationSec
                   onChange={(e) => updateStudy(study.id, "description", e.target.value)}
                   placeholder="Additional details about your education"
                 />
-                {errors?.description && (
-                  <span className={styles.fieldError}>{errors.description}</span>
+                {errors?.[`edu_${study.id}_description`] && (
+                  <span className={styles.fieldError}>{errors[`edu_${study.id}_description`]}</span>
                 )}
               </div>
             </div>

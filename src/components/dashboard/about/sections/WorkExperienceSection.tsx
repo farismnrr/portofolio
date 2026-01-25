@@ -73,7 +73,9 @@ export default function WorkExperienceSection({
                   onChange={(e) => updateWorkExperience(exp.id, "title", e.target.value)}
                   placeholder="e.g., Senior Developer"
                 />
-                {errors?.role && <span className={styles.fieldError}>{errors.role}</span>}
+                {errors?.[`work_${exp.id}_role`] && (
+                  <span className={styles.fieldError}>{errors[`work_${exp.id}_role`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-company-${exp.id}`}>Company</label>
@@ -84,7 +86,9 @@ export default function WorkExperienceSection({
                   onChange={(e) => updateWorkExperience(exp.id, "company", e.target.value)}
                   placeholder="e.g., Tech Corp"
                 />
-                {errors?.company && <span className={styles.fieldError}>{errors.company}</span>}
+                {errors?.[`work_${exp.id}_company`] && (
+                  <span className={styles.fieldError}>{errors[`work_${exp.id}_company`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-period-${exp.id}`}>Period</label>
@@ -95,7 +99,9 @@ export default function WorkExperienceSection({
                   onChange={(e) => updateWorkExperience(exp.id, "period", e.target.value)}
                   placeholder="e.g., 2020 - Present"
                 />
-                {errors?.timeframe && <span className={styles.fieldError}>{errors.timeframe}</span>}
+                {errors?.[`work_${exp.id}_timeframe`] && (
+                  <span className={styles.fieldError}>{errors[`work_${exp.id}_timeframe`]}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-description-${exp.id}`}>Description</label>
@@ -105,8 +111,8 @@ export default function WorkExperienceSection({
                   onChange={(e) => updateWorkExperience(exp.id, "description", e.target.value)}
                   placeholder="Describe your role and achievements"
                 />
-                {errors?.description && (
-                  <span className={styles.fieldError}>{errors.description}</span>
+                {errors?.[`work_${exp.id}_description`] && (
+                  <span className={styles.fieldError}>{errors[`work_${exp.id}_description`]}</span>
                 )}
               </div>
             </div>

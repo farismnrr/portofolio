@@ -143,18 +143,19 @@ export default function AboutEditor() {
 
       if (!res.success && res.errors) {
         for (const e of res.errors) {
-          errors[e.field] = e.message;
+          errors[`link_${cl.id}_${e.field}`] = e.message;
         }
       }
     }
     return errors;
   };
 
-  const syncEducations = async () => {
-    if (!accessToken || !originalData) return;
+  const syncEducations = async (): Promise<Record<string, string>> => {
+    if (!accessToken || !originalData) return {};
 
     const currentEdu = data.studies;
     const oldEdu = originalData.studies;
+    const errors: Record<string, string> = {};
 
     // Delete
     const toDelete = oldEdu.filter((o) => !currentEdu.find((c) => c.id === o.id));
@@ -165,20 +166,28 @@ export default function AboutEditor() {
     // Add
     const toAdd = currentEdu.filter((c) => !oldEdu.find((o) => o.id === c.id));
     for (const edu of toAdd) {
-      await createEducation(accessToken, {
+      const res = await createEducation(accessToken, {
         institution: edu.institution,
         degree: edu.degree,
         period: edu.period,
         description: edu.description,
       });
+
+      if (!res.success && res.errors) {
+        for (const e of res.errors) {
+          errors[`edu_${edu.id}_${e.field}`] = e.message;
+        }
+      }
     }
+    return errors;
   };
 
-  const syncWorkExperiences = async () => {
-    if (!accessToken || !originalData) return;
+  const syncWorkExperiences = async (): Promise<Record<string, string>> => {
+    if (!accessToken || !originalData) return {};
 
     const currentWork = data.workExperience;
     const oldWork = originalData.workExperience;
+    const errors: Record<string, string> = {};
 
     // Delete
     const toDelete = oldWork.filter((o) => !currentWork.find((c) => c.id === o.id));
@@ -189,22 +198,28 @@ export default function AboutEditor() {
     // Add (Simplified: recreate from textarea lines)
     const toAdd = currentWork.filter((c) => !oldWork.find((o) => o.id === c.id));
     for (const work of toAdd) {
-      await createWorkExperience(accessToken, {
+      const res = await createWorkExperience(accessToken, {
         company: work.company,
         role: work.title,
         timeframe: work.period,
         description: work.description,
       });
-    }
 
-    // TODO: Update existing work (For now we only handle basic add/delete to keep it simple as per original UI)
+      if (!res.success && res.errors) {
+        for (const e of res.errors) {
+          errors[`work_${work.id}_${e.field}`] = e.message;
+        }
+      }
+    }
+    return errors;
   };
 
-  const syncSkills = async () => {
-    if (!accessToken || !originalData) return;
+  const syncSkills = async (): Promise<Record<string, string>> => {
+    if (!accessToken || !originalData) return {};
 
     const currentSkills = data.technicalSkills;
     const oldSkills = originalData.technicalSkills;
+    const errors: Record<string, string> = {};
 
     // Delete
     const toDelete = oldSkills.filter((o) => !currentSkills.find((c) => c.id === o.id));
@@ -215,7 +230,7 @@ export default function AboutEditor() {
     // Add
     const toAdd = currentSkills.filter((c) => !oldSkills.find((o) => o.id === c.id));
     for (const skill of toAdd) {
-      await createSkillCategory(accessToken, {
+      const res = await createSkillCategory(accessToken, {
         title: skill.title,
         description: skill.description,
         tags: skill.tags.map((t, i) => ({
@@ -224,7 +239,14 @@ export default function AboutEditor() {
           order_by: i,
         })) as unknown as SkillTag[],
       });
+
+      if (!res.success && res.errors) {
+        for (const e of res.errors) {
+          errors[`skill_${skill.id}_${e.field}`] = e.message;
+        }
+      }
     }
+    return errors;
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,13 +289,16 @@ export default function AboutEditor() {
       Object.assign(allErrors, linkErrors);
 
       // 3. Sync Education
-      await syncEducations(); // simplified error handling for these
+      const eduErrors = await syncEducations();
+      Object.assign(allErrors, eduErrors);
 
       // 4. Sync Work
-      await syncWorkExperiences();
+      const workErrors = await syncWorkExperiences();
+      Object.assign(allErrors, workErrors);
 
       // 5. Sync Skills
-      await syncSkills();
+      const skillErrors = await syncSkills();
+      Object.assign(allErrors, skillErrors);
 
       if (Object.keys(allErrors).length > 0) {
         setValidationErrors(allErrors);

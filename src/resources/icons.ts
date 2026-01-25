@@ -43,8 +43,10 @@ import {
   SiFigma,
   SiGithubactions,
   SiGo,
+  SiGoogle,
   SiGooglecloud,
   SiGrafana,
+  SiInstagram,
   SiJavascript,
   SiKubernetes,
   SiLinux,
@@ -67,6 +69,7 @@ import {
   SiSupabase,
   SiTypescript,
   SiVuedotjs,
+  SiYoutube,
 } from "react-icons/si";
 
 export const iconLibrary: Record<string, IconType> = {
@@ -119,6 +122,8 @@ export const iconLibrary: Record<string, IconType> = {
   nginx: SiNginx,
   kubernetes: SiKubernetes,
   googlecloud: SiGooglecloud,
+  google: SiGoogle,
+  instagram: SiInstagram,
   java: FaJava,
   typescript: SiTypescript,
   hapi: SiNodedotjs,
@@ -133,6 +138,7 @@ export const iconLibrary: Record<string, IconType> = {
   nodered: SiNodered,
   aws: SiAmazonwebservices,
   actix: SiActix,
+  youtube: SiYoutube,
 };
 
 export type IconLibrary = typeof iconLibrary;

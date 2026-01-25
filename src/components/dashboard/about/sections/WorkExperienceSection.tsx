@@ -7,9 +7,14 @@ import type { AboutData, WorkExperience } from "../types";
 interface WorkExperienceSectionProps {
   data: AboutData;
   setData: (data: AboutData) => void;
+  errors?: Record<string, string>;
 }
 
-export default function WorkExperienceSection({ data, setData }: WorkExperienceSectionProps) {
+export default function WorkExperienceSection({
+  data,
+  setData,
+  errors,
+}: WorkExperienceSectionProps) {
   const addWorkExperience = () => {
     const newExp: WorkExperience = {
       id: Date.now().toString(),
@@ -68,6 +73,7 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                   onChange={(e) => updateWorkExperience(exp.id, "title", e.target.value)}
                   placeholder="e.g., Senior Developer"
                 />
+                {errors?.role && <span className={styles.fieldError}>{errors.role}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-company-${exp.id}`}>Company</label>
@@ -78,6 +84,7 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                   onChange={(e) => updateWorkExperience(exp.id, "company", e.target.value)}
                   placeholder="e.g., Tech Corp"
                 />
+                {errors?.company && <span className={styles.fieldError}>{errors.company}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-period-${exp.id}`}>Period</label>
@@ -88,6 +95,7 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                   onChange={(e) => updateWorkExperience(exp.id, "period", e.target.value)}
                   placeholder="e.g., 2020 - Present"
                 />
+                {errors?.timeframe && <span className={styles.fieldError}>{errors.timeframe}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`exp-description-${exp.id}`}>Description</label>
@@ -97,6 +105,9 @@ export default function WorkExperienceSection({ data, setData }: WorkExperienceS
                   onChange={(e) => updateWorkExperience(exp.id, "description", e.target.value)}
                   placeholder="Describe your role and achievements"
                 />
+                {errors?.description && (
+                  <span className={styles.fieldError}>{errors.description}</span>
+                )}
               </div>
             </div>
           </div>

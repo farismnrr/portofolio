@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type MutationResult,
   type SkillTag,
   createEducation,
   createSkillCategory,
@@ -38,6 +39,7 @@ export default function AboutEditor() {
   const { accessToken } = useAuthStore();
   const [isSyncing, setIsSyncing] = useState(false);
   const [originalData, setOriginalData] = useState<AboutData | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const [data, setData] = useState<AboutData>({
     photo: person.avatar,
@@ -64,7 +66,7 @@ export default function AboutEditor() {
       name: profile?.name || person.name,
       title: profile?.role || person.role,
       description: profile?.description || "",
-      photo: profile?.avatar_url || person.avatar,
+      photo: profile?.avatar || person.avatar,
       links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.link })),
       workExperience: (workExps || []).map((w) => ({
         id: w.id,
@@ -108,11 +110,12 @@ export default function AboutEditor() {
     initData();
   }, [accessToken, fetchAllData]);
 
-  const syncSocialLinks = async () => {
-    if (!accessToken || !originalData) return;
+  const syncSocialLinks = async (): Promise<Record<string, string>> => {
+    if (!accessToken || !originalData) return {};
 
     const currentLinks = data.links;
     const oldLinks = originalData.links;
+    const errors: Record<string, string> = {};
 
     // Detect Deletions
     const toDelete = oldLinks.filter((ol) => !currentLinks.find((cl) => cl.id === ol.id));
@@ -125,14 +128,26 @@ export default function AboutEditor() {
       const cl = currentLinks[i];
       const ol = oldLinks.find((o) => o.id === cl.id);
 
+      let res: MutationResult;
       if (!ol) {
-        // ADD (IDs like Date.now() are temporary)
-        await createSocialLink(accessToken, { name: cl.label, link: cl.url, order_by: i });
+        res = await createSocialLink(accessToken, { name: cl.label, link: cl.url, order_by: i });
       } else if (cl.label !== ol.label || cl.url !== ol.url) {
-        // UPDATE
-        await updateSocialLink(accessToken, cl.id, { name: cl.label, link: cl.url, order_by: i });
+        res = await updateSocialLink(accessToken, cl.id, {
+          name: cl.label,
+          link: cl.url,
+          order_by: i,
+        });
+      } else {
+        continue;
+      }
+
+      if (!res.success && res.errors) {
+        for (const e of res.errors) {
+          errors[e.field] = e.message;
+        }
       }
     }
+    return errors;
   };
 
   const syncEducations = async () => {
@@ -228,19 +243,31 @@ export default function AboutEditor() {
     if (!accessToken || !originalData) return;
 
     setIsSyncing(true);
+    setValidationErrors({});
+
     try {
+      const allErrors: Record<string, string> = {};
+
       // 1. Sync Basic Profile
-      await updateAbout(accessToken, {
+      const aboutRes = await updateAbout(accessToken, {
         name: data.name,
         role: data.title,
         description: data.description,
+        avatar: data.photo,
       });
 
+      if (!aboutRes.success && aboutRes.errors) {
+        for (const e of aboutRes.errors) {
+          allErrors[e.field] = e.message;
+        }
+      }
+
       // 2. Sync Social Links
-      await syncSocialLinks();
+      const linkErrors = await syncSocialLinks();
+      Object.assign(allErrors, linkErrors);
 
       // 3. Sync Education
-      await syncEducations();
+      await syncEducations(); // simplified error handling for these
 
       // 4. Sync Work
       await syncWorkExperiences();
@@ -248,11 +275,15 @@ export default function AboutEditor() {
       // 5. Sync Skills
       await syncSkills();
 
-      alert("Profile and all sections synchronized!");
-
-      const refreshed = await fetchAllData();
-      setOriginalData(refreshed);
-      setData(refreshed);
+      if (Object.keys(allErrors).length > 0) {
+        setValidationErrors(allErrors);
+        alert("Some updates failed validation. Please check the form.");
+      } else {
+        alert("Profile and all sections synchronized!");
+        const refreshed = await fetchAllData();
+        setOriginalData(refreshed);
+        setData(refreshed);
+      }
     } catch (err) {
       console.error("Sync failed:", err);
       alert("Sync failed. Check console.");
@@ -278,15 +309,20 @@ export default function AboutEditor() {
       <div className={styles.layout}>
         {/* LEFT COLUMN */}
         <div>
-          <BasicInfoSection data={data} setData={setData} handlePhotoUpload={handlePhotoUpload} />
-          <SocialLinksSection data={data} setData={setData} />
-          <TechnicalSkillsSection data={data} setData={setData} />
+          <BasicInfoSection
+            data={data}
+            setData={setData}
+            handlePhotoUpload={handlePhotoUpload}
+            errors={validationErrors}
+          />
+          <SocialLinksSection data={data} setData={setData} errors={validationErrors} />
+          <TechnicalSkillsSection data={data} setData={setData} errors={validationErrors} />
         </div>
 
         {/* RIGHT COLUMN */}
         <div>
-          <WorkExperienceSection data={data} setData={setData} />
-          <EducationSection data={data} setData={setData} />
+          <WorkExperienceSection data={data} setData={setData} errors={validationErrors} />
+          <EducationSection data={data} setData={setData} errors={validationErrors} />
         </div>
       </div>
 

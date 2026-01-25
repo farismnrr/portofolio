@@ -45,7 +45,7 @@ export default async function About() {
   const personalInfo = {
     name: profile?.name || person.name,
     role: profile?.role || person.role,
-    avatar: profile?.avatar_url || person.avatar,
+    avatar: profile?.avatar || person.avatar,
     description: profile?.description || about.intro.description,
     location: person.location,
     languages: person.languages,

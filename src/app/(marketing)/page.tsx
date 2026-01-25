@@ -33,7 +33,7 @@ export default async function Home() {
   const personalInfo = {
     name: profile?.name || person.name,
     role: profile?.role || person.role,
-    avatar: profile?.avatar_url || person.avatar,
+    avatar: profile?.avatar || person.avatar,
   };
 
   const latestProject = getPosts(["app", "(marketing)", "work", "projects"]).sort(

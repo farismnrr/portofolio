@@ -8,9 +8,14 @@ import type { AboutData, TechTag, TechnicalSkill } from "../types";
 interface TechnicalSkillsSectionProps {
   data: AboutData;
   setData: (data: AboutData) => void;
+  errors?: Record<string, string>;
 }
 
-export default function TechnicalSkillsSection({ data, setData }: TechnicalSkillsSectionProps) {
+export default function TechnicalSkillsSection({
+  data,
+  setData,
+  errors,
+}: TechnicalSkillsSectionProps) {
   // State to track new tag input for each skill category
   const [tagInputs, setTagInputs] = useState<Record<string, string>>({});
 
@@ -121,6 +126,7 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
                   onChange={(e) => updateSkill(skill.id, "title", e.target.value)}
                   placeholder="e.g., Languages, Backend, Frontend"
                 />
+                {errors?.title && <span className={styles.fieldError}>{errors.title}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`skill-desc-${skill.id}`}>Description</label>
@@ -131,6 +137,9 @@ export default function TechnicalSkillsSection({ data, setData }: TechnicalSkill
                   placeholder="Describe your expertise in this area..."
                   rows={3}
                 />
+                {errors?.description && (
+                  <span className={styles.fieldError}>{errors.description}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <div

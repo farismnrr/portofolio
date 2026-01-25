@@ -15,7 +15,7 @@ interface AuthState {
   isInitializing: boolean;
   setAccessToken: (token: string | null) => Promise<void>;
   clearAuth: () => void;
-  refresh: () => Promise<void>;
+  refresh: () => Promise<boolean>;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
   setInitializing: (status: boolean) => void;
@@ -88,18 +88,19 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
         // Fetch user data after successful refresh
         const get = _get as unknown as () => AuthState;
         await get().fetchUser();
-      } else {
-        // Refresh failed - clear auth and redirect to login
-        set({
-          accessToken: null,
-          user: null,
-          isAuthenticated: false,
-        });
-
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
+        return true;
       }
+      // Refresh failed - clear auth and redirect to login
+      set({
+        accessToken: null,
+        user: null,
+        isAuthenticated: false,
+      });
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+      return false;
     } catch (_error) {
       // Network error or other failure - clear auth and redirect
       set({
@@ -111,6 +112,7 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
+      return false;
     } finally {
       set({ isInitializing: false });
     }

@@ -10,6 +10,8 @@ import (
 	"os"
 
 	"cloud.google.com/go/storage"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/logger"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/pkcs12"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
@@ -32,6 +34,7 @@ type gcpStorage struct {
 
 // NewGCPStorage creates a new GCP implementation of CloudStorage using P12 credentials
 func NewGCPStorage(ctx context.Context, credentialsPath string, serviceAccountEmail string, p12Password string) (CloudStorage, error) {
+
 	if credentialsPath == "" || serviceAccountEmail == "" {
 		return nil, fmt.Errorf("GCP_CREDENTIALS_PATH and GCP_SERVICE_ACCOUNT_EMAIL are required")
 	}
@@ -39,18 +42,21 @@ func NewGCPStorage(ctx context.Context, credentialsPath string, serviceAccountEm
 	// Read the P12 file
 	p12Data, err := os.ReadFile(credentialsPath)
 	if err != nil {
+		logger.Error("Failed to read P12 file", zap.Error(err))
 		return nil, fmt.Errorf("failed to read p12 file: %w", err)
 	}
 
 	// Decode the P12 file
 	pvKey, _, err := pkcs12.Decode(p12Data, p12Password)
 	if err != nil {
+		logger.Error("Failed to decode P12 file", zap.Error(err))
 		return nil, fmt.Errorf("failed to decode p12 file: %w", err)
 	}
 
 	// Assert to RSA Private Key
 	rsaKey, ok := pvKey.(*rsa.PrivateKey)
 	if !ok {
+		logger.Error("P12 file does not contain an RSA private key")
 		return nil, fmt.Errorf("p12 file does not contain an RSA private key")
 	}
 
@@ -73,6 +79,7 @@ func NewGCPStorage(ctx context.Context, credentialsPath string, serviceAccountEm
 	httpClient := conf.Client(ctx)
 	client, err := storage.NewClient(ctx, option.WithHTTPClient(httpClient))
 	if err != nil {
+		logger.Error("Failed to create GCP storage client", zap.Error(err))
 		return nil, fmt.Errorf("failed to create gcp storage client: %w", err)
 	}
 

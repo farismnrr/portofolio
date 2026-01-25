@@ -8,12 +8,14 @@ interface BasicInfoSectionProps {
   data: AboutData;
   setData: (data: AboutData) => void;
   handlePhotoUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  errors?: Record<string, string>;
 }
 
 export default function BasicInfoSection({
   data,
   setData,
   handlePhotoUpload,
+  errors,
 }: BasicInfoSectionProps) {
   return (
     <section className={styles.section}>
@@ -46,6 +48,7 @@ export default function BasicInfoSection({
           onChange={(e) => setData({ ...data, name: e.target.value })}
           placeholder="Your full name"
         />
+        {errors?.name && <span className={styles.fieldError}>{errors.name}</span>}
       </div>
 
       <div className={styles.formGroup}>
@@ -57,6 +60,7 @@ export default function BasicInfoSection({
           onChange={(e) => setData({ ...data, title: e.target.value })}
           placeholder="Your professional title"
         />
+        {errors?.role && <span className={styles.fieldError}>{errors.role}</span>}
       </div>
 
       <div className={styles.formGroup}>
@@ -67,6 +71,7 @@ export default function BasicInfoSection({
           onChange={(e) => setData({ ...data, description: e.target.value })}
           placeholder="Tell us about yourself"
         />
+        {errors?.description && <span className={styles.fieldError}>{errors.description}</span>}
       </div>
     </section>
   );

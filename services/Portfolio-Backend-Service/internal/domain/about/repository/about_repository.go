@@ -47,5 +47,6 @@ func (r *aboutRepository) Get(ctx context.Context) (*entity.About, error) {
 }
 
 func (r *aboutRepository) Update(ctx context.Context, about *entity.About) error {
-	return r.db.WithContext(ctx).Save(about).Error
+	// Using explicit Where condition to avoid GORM's "Global Update" protection
+	return r.db.WithContext(ctx).Model(&entity.About{}).Where("id = ?", about.ID).Updates(about).Error
 }

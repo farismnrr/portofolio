@@ -64,7 +64,19 @@ func (u *aboutUsecase) GetAbout(ctx context.Context) (*entity.About, error) {
 }
 
 func (u *aboutUsecase) UpdateAbout(ctx context.Context, about *entity.About) error {
-	if err := u.repo.Update(ctx, about); err != nil {
+	// For singleton record, we must fetch the existing one first to get its ID
+	existingAbout, err := u.repo.Get(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to fetch existing profile: %w", err)
+	}
+
+	// Update fields
+	existingAbout.Name = about.Name
+	existingAbout.Role = about.Role
+	existingAbout.Description = about.Description
+	existingAbout.Avatar = about.Avatar
+
+	if err := u.repo.Update(ctx, existingAbout); err != nil {
 		return err
 	}
 	_ = u.cache.Delete(ctx, "about_profile")

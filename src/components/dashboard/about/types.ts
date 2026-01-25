@@ -42,3 +42,14 @@ export interface AboutData {
   studies: Study[];
   technicalSkills: TechnicalSkill[];
 }
+
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export interface ValidationResponse {
+  status: boolean;
+  message: string;
+  details: ValidationError[];
+}

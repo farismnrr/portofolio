@@ -1,4 +1,4 @@
-import { getApiUrl } from "./config/backend";
+import { apiClient } from "./api";
 
 // --- COMMON TYPES ---
 
@@ -8,6 +8,12 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface MutationResult {
+  success: boolean;
+  message?: string;
+  errors?: { field: string; message: string }[];
+}
+
 // --- PROFILE ---
 
 export interface AboutProfile {
@@ -15,13 +21,14 @@ export interface AboutProfile {
   name: string;
   role: string;
   description: string;
-  avatar_url: string;
+  avatar: string;
 }
 
 export interface UpdateAboutRequest {
   name: string;
   role: string;
   description: string;
+  avatar: string;
 }
 
 // --- SOCIAL LINKS ---
@@ -77,7 +84,7 @@ export interface SkillCategory {
  */
 export async function fetchAbout(): Promise<AboutProfile | null> {
   try {
-    const response = await fetch(getApiUrl("/about"));
+    const response = await apiClient("/about");
     if (!response.ok) return null;
     const body: ApiResponse<{ about: AboutProfile }> = await response.json();
     return body.data.about;
@@ -87,35 +94,44 @@ export async function fetchAbout(): Promise<AboutProfile | null> {
   }
 }
 
-export async function updateAbout(token: string, data: UpdateAboutRequest): Promise<boolean> {
+export async function updateAbout(
+  _token: string,
+  data: UpdateAboutRequest,
+): Promise<MutationResult> {
   try {
-    const response = await fetch(getApiUrl("/about"), {
+    const response = await apiClient("/about", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
-    return response.ok;
+
+    if (response.ok) return { success: true };
+
+    const body = await response.json();
+    return {
+      success: false,
+      message: body.message,
+      errors: body.details,
+    };
   } catch (error) {
     console.error("Failed to update about:", error);
-    return false;
+    return { success: false, message: "Network error" };
   }
 }
 
-export async function updateAvatar(token: string, file: File): Promise<string | null> {
+export async function updateAvatar(_token: string, file: File): Promise<string | null> {
   try {
     const formData = new FormData();
     formData.append("avatar", file);
-    const response = await fetch(getApiUrl("/about/avatar"), {
+    const response = await apiClient("/about/avatar", {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
     if (!response.ok) return null;
-    const body: ApiResponse<{ about: { avatar_url: string } }> = await response.json();
-    return body.data.about.avatar_url;
+    const body: ApiResponse<{ about: { avatar: string } }> = await response.json();
+    return body.data.about.avatar;
   } catch (error) {
     console.error("Failed to upload avatar:", error);
     return null;
@@ -127,7 +143,7 @@ export async function updateAvatar(token: string, file: File): Promise<string | 
  */
 export async function fetchSocialLinks(): Promise<SocialLink[]> {
   try {
-    const response = await fetch(getApiUrl("/about/social-links"));
+    const response = await apiClient("/about/social-links");
     if (!response.ok) return [];
     const body: ApiResponse<{ social_links: SocialLink[] }> = await response.json();
     return body.data.social_links || [];
@@ -137,41 +153,51 @@ export async function fetchSocialLinks(): Promise<SocialLink[]> {
   }
 }
 
-export async function createSocialLink(token: string, data: Partial<SocialLink>): Promise<boolean> {
+export async function createSocialLink(
+  _token: string,
+  data: Partial<SocialLink>,
+): Promise<MutationResult> {
   try {
-    const response = await fetch(getApiUrl("/about/social-links"), {
+    const response = await apiClient("/about/social-links", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    return response.ok;
+
+    if (response.ok) return { success: true };
+
+    const body = await response.json();
+    return { success: false, message: body.message, errors: body.details };
   } catch (_error) {
-    return false;
+    return { success: false, message: "Network error" };
   }
 }
 
 export async function updateSocialLink(
-  token: string,
+  _token: string,
   id: string,
   data: Partial<SocialLink>,
-): Promise<boolean> {
+): Promise<MutationResult> {
   try {
-    const response = await fetch(getApiUrl(`/about/social-links/${id}`), {
+    const response = await apiClient(`/about/social-links/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    return response.ok;
+
+    if (response.ok) return { success: true };
+
+    const body = await response.json();
+    return { success: false, message: body.message, errors: body.details };
   } catch (_error) {
-    return false;
+    return { success: false, message: "Network error" };
   }
 }
 
-export async function deleteSocialLink(token: string, id: string): Promise<boolean> {
+export async function deleteSocialLink(_token: string, id: string): Promise<boolean> {
   try {
-    const response = await fetch(getApiUrl(`/about/social-links/${id}`), {
+    const response = await apiClient(`/about/social-links/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch (_error) {
@@ -184,7 +210,7 @@ export async function deleteSocialLink(token: string, id: string): Promise<boole
  */
 export async function fetchWorkExperiences(): Promise<WorkExperience[]> {
   try {
-    const response = await fetch(getApiUrl("/about/work-experiences"));
+    const response = await apiClient("/about/work-experiences");
     if (!response.ok) return [];
     const body: ApiResponse<{ work_experiences: WorkExperience[] }> = await response.json();
     return body.data.work_experiences || [];
@@ -194,21 +220,24 @@ export async function fetchWorkExperiences(): Promise<WorkExperience[]> {
 }
 
 export async function createWorkExperience(
-  token: string,
+  _token: string,
   data: Partial<WorkExperience>,
-): Promise<boolean> {
-  const response = await fetch(getApiUrl("/about/work-experiences"), {
+): Promise<MutationResult> {
+  const response = await apiClient("/about/work-experiences", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return response.ok;
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
 }
 
-export async function deleteWorkExperience(token: string, id: string): Promise<boolean> {
-  const response = await fetch(getApiUrl(`/about/work-experiences/${id}`), {
+export async function deleteWorkExperience(_token: string, id: string): Promise<boolean> {
+  const response = await apiClient(`/about/work-experiences/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
   });
   return response.ok;
 }
@@ -218,7 +247,7 @@ export async function deleteWorkExperience(token: string, id: string): Promise<b
  */
 export async function fetchEducations(): Promise<Education[]> {
   try {
-    const response = await fetch(getApiUrl("/about/education"));
+    const response = await apiClient("/about/education");
     if (!response.ok) return [];
     const body: ApiResponse<{ educations: Education[] }> = await response.json();
     return body.data.educations || [];
@@ -227,19 +256,25 @@ export async function fetchEducations(): Promise<Education[]> {
   }
 }
 
-export async function createEducation(token: string, data: Partial<Education>): Promise<boolean> {
-  const response = await fetch(getApiUrl("/about/education"), {
+export async function createEducation(
+  _token: string,
+  data: Partial<Education>,
+): Promise<MutationResult> {
+  const response = await apiClient("/about/education", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return response.ok;
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
 }
 
-export async function deleteEducation(token: string, id: string): Promise<boolean> {
-  const response = await fetch(getApiUrl(`/about/education/${id}`), {
+export async function deleteEducation(_token: string, id: string): Promise<boolean> {
+  const response = await apiClient(`/about/education/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
   });
   return response.ok;
 }
@@ -249,7 +284,7 @@ export async function deleteEducation(token: string, id: string): Promise<boolea
  */
 export async function fetchSkills(): Promise<SkillCategory[]> {
   try {
-    const response = await fetch(getApiUrl("/about/skills"));
+    const response = await apiClient("/about/skills");
     if (!response.ok) return [];
     const body: ApiResponse<{ skill_categories: SkillCategory[] }> = await response.json();
     return body.data.skill_categories || [];
@@ -259,21 +294,24 @@ export async function fetchSkills(): Promise<SkillCategory[]> {
 }
 
 export async function createSkillCategory(
-  token: string,
+  _token: string,
   data: Partial<SkillCategory>,
-): Promise<boolean> {
-  const response = await fetch(getApiUrl("/about/skills"), {
+): Promise<MutationResult> {
+  const response = await apiClient("/about/skills", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return response.ok;
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
 }
 
-export async function deleteSkillCategory(token: string, id: string): Promise<boolean> {
-  const response = await fetch(getApiUrl(`/about/skills/${id}`), {
+export async function deleteSkillCategory(_token: string, id: string): Promise<boolean> {
+  const response = await apiClient(`/about/skills/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
   });
   return response.ok;
 }

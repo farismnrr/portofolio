@@ -7,9 +7,10 @@ import type { AboutData, Study } from "../types";
 interface EducationSectionProps {
   data: AboutData;
   setData: (data: AboutData) => void;
+  errors?: Record<string, string>;
 }
 
-export default function EducationSection({ data, setData }: EducationSectionProps) {
+export default function EducationSection({ data, setData, errors }: EducationSectionProps) {
   const addStudy = () => {
     const newStudy: Study = {
       id: Date.now().toString(),
@@ -68,6 +69,7 @@ export default function EducationSection({ data, setData }: EducationSectionProp
                   onChange={(e) => updateStudy(study.id, "degree", e.target.value)}
                   placeholder="e.g., Computer Science"
                 />
+                {errors?.degree && <span className={styles.fieldError}>{errors.degree}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`study-institution-${study.id}`}>Institution</label>
@@ -78,6 +80,9 @@ export default function EducationSection({ data, setData }: EducationSectionProp
                   onChange={(e) => updateStudy(study.id, "institution", e.target.value)}
                   placeholder="e.g., University of Technology"
                 />
+                {errors?.institution && (
+                  <span className={styles.fieldError}>{errors.institution}</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`study-period-${study.id}`}>Period</label>
@@ -88,6 +93,7 @@ export default function EducationSection({ data, setData }: EducationSectionProp
                   onChange={(e) => updateStudy(study.id, "period", e.target.value)}
                   placeholder="e.g., 2016 - 2020"
                 />
+                {errors?.period && <span className={styles.fieldError}>{errors.period}</span>}
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`study-description-${study.id}`}>Description</label>
@@ -97,6 +103,9 @@ export default function EducationSection({ data, setData }: EducationSectionProp
                   onChange={(e) => updateStudy(study.id, "description", e.target.value)}
                   placeholder="Additional details about your education"
                 />
+                {errors?.description && (
+                  <span className={styles.fieldError}>{errors.description}</span>
+                )}
               </div>
             </div>
           </div>

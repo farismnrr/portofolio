@@ -148,7 +148,7 @@ func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 
 	res := map[string]interface{}{
 		"about": map[string]string{
-			"avatar_url": url,
+			"avatar": url,
 		},
 	}
 

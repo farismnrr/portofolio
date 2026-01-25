@@ -1,5 +1,6 @@
 "use client";
 
+import { inferIconName } from "@/lib/utils/icons";
 import { useState } from "react";
 import { FiCode, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
@@ -41,33 +42,6 @@ export default function TechnicalSkillsSection({
       ...data,
       technicalSkills: data.technicalSkills.filter((skill) => skill.id !== id),
     });
-  };
-
-  const inferIconName = (name: string): string => {
-    const lowerName = name.toLowerCase().replace(/\s+/g, "");
-
-    // Common mappings
-    const mappings: Record<string, string> = {
-      go: "golang",
-      "c++": "cplusplus",
-      cpp: "cplusplus",
-      "c#": "csharp",
-      csharp: "csharp",
-      "next.js": "nextjs",
-      "node.js": "nodedotjs",
-      nodejs: "nodedotjs",
-      "vue.js": "vue",
-      vuejs: "vue",
-      "nuxt.js": "nuxt",
-      nuxtjs: "nuxt",
-      gcp: "googlecloud",
-      aws: "aws",
-    };
-
-    if (mappings[lowerName]) return mappings[lowerName];
-
-    // Default: try removing dots and special chars
-    return lowerName.replace(/\./g, "").replace(/[^a-z0-9]/g, "");
   };
 
   const addTag = (skillId: string) => {

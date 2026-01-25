@@ -37,6 +37,7 @@ export interface SocialLink {
   id: string;
   name: string;
   link: string;
+  icon: string;
   order_by: number;
 }
 

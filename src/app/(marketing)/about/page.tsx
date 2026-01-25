@@ -231,7 +231,7 @@ export default async function About() {
                         <Button
                           key={item.id}
                           href={item.link}
-                          prefixIcon={item.name.toLowerCase()} // Assuming icon name matches service name
+                          prefixIcon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
                           label={item.name}
                           size="s"
                           weight="default"
@@ -243,7 +243,7 @@ export default async function About() {
                           size="l"
                           key={`${item.id}-icon`}
                           href={item.link}
-                          icon={item.name.toLowerCase()} // Assuming icon name matches service name
+                          icon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
                           variant="secondary"
                         />
                       </Row>

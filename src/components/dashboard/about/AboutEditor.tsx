@@ -20,6 +20,7 @@ import {
   updateAvatar,
   updateSocialLink,
 } from "@/lib/about";
+import { inferIconName } from "@/lib/utils/icons";
 import { person } from "@/resources";
 import { useAuthStore } from "@/store/auth";
 import { useCallback, useEffect, useState } from "react";
@@ -67,7 +68,12 @@ export default function AboutEditor() {
       title: profile?.role || person.role,
       description: profile?.description || "",
       photo: profile?.avatar || person.avatar,
-      links: (socialLinks || []).map((l) => ({ id: l.id, label: l.name, url: l.link })),
+      links: (socialLinks || []).map((l) => ({
+        id: l.id,
+        label: l.name,
+        url: l.link,
+        icon: l.icon,
+      })),
       workExperience: (workExps || []).map((w) => ({
         id: w.id,
         title: w.role,
@@ -130,11 +136,17 @@ export default function AboutEditor() {
 
       let res: MutationResult;
       if (!ol) {
-        res = await createSocialLink(accessToken, { name: cl.label, link: cl.url, order_by: i });
+        res = await createSocialLink(accessToken, {
+          name: cl.label,
+          link: cl.url,
+          icon: inferIconName(cl.label),
+          order_by: i,
+        });
       } else if (cl.label !== ol.label || cl.url !== ol.url) {
         res = await updateSocialLink(accessToken, cl.id, {
           name: cl.label,
           link: cl.url,
+          icon: inferIconName(cl.label),
           order_by: i,
         });
       } else {

@@ -16,6 +16,7 @@ export default function SocialLinksSection({ data, setData, errors }: SocialLink
       id: Date.now().toString(),
       label: "",
       url: "",
+      icon: "",
     };
     setData({ ...data, links: [...data.links, newLink] });
   };

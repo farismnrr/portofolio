@@ -236,6 +236,23 @@ export async function createWorkExperience(
   return { success: false, message: body.message, errors: body.details };
 }
 
+export async function updateWorkExperience(
+  _token: string,
+  id: string,
+  data: Partial<WorkExperience>,
+): Promise<MutationResult> {
+  const response = await apiClient(`/about/work-experiences/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
+}
+
 export async function deleteWorkExperience(_token: string, id: string): Promise<boolean> {
   const response = await apiClient(`/about/work-experiences/${id}`, {
     method: "DELETE",
@@ -273,6 +290,23 @@ export async function createEducation(
   return { success: false, message: body.message, errors: body.details };
 }
 
+export async function updateEducation(
+  _token: string,
+  id: string,
+  data: Partial<Education>,
+): Promise<MutationResult> {
+  const response = await apiClient(`/about/education/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
+}
+
 export async function deleteEducation(_token: string, id: string): Promise<boolean> {
   const response = await apiClient(`/about/education/${id}`, {
     method: "DELETE",
@@ -300,6 +334,23 @@ export async function createSkillCategory(
 ): Promise<MutationResult> {
   const response = await apiClient("/about/skills", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) return { success: true };
+
+  const body = await response.json();
+  return { success: false, message: body.message, errors: body.details };
+}
+
+export async function updateSkillCategory(
+  _token: string,
+  id: string,
+  data: Partial<SkillCategory>,
+): Promise<MutationResult> {
+  const response = await apiClient(`/about/skills/${id}`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });

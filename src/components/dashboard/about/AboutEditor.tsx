@@ -18,7 +18,10 @@ import {
   fetchWorkExperiences,
   updateAbout,
   updateAvatar,
+  updateEducation,
+  updateSkillCategory,
   updateSocialLink,
+  updateWorkExperience,
 } from "@/lib/about";
 import { inferIconName } from "@/lib/utils/icons";
 import { person } from "@/resources";
@@ -175,15 +178,33 @@ export default function AboutEditor() {
       await deleteEducation(accessToken, edu.id);
     }
 
-    // Add
-    const toAdd = currentEdu.filter((c) => !oldEdu.find((o) => o.id === c.id));
-    for (const edu of toAdd) {
-      const res = await createEducation(accessToken, {
-        institution: edu.institution,
-        degree: edu.degree,
-        period: edu.period,
-        description: edu.description,
-      });
+    // Detect Changes & Additions
+    for (const edu of currentEdu) {
+      const old = oldEdu.find((o) => o.id === edu.id);
+      let res: MutationResult;
+
+      if (!old) {
+        res = await createEducation(accessToken, {
+          institution: edu.institution,
+          degree: edu.degree,
+          period: edu.period,
+          description: edu.description,
+        });
+      } else if (
+        edu.institution !== old.institution ||
+        edu.degree !== old.degree ||
+        edu.period !== old.period ||
+        edu.description !== old.description
+      ) {
+        res = await updateEducation(accessToken, edu.id, {
+          institution: edu.institution,
+          degree: edu.degree,
+          period: edu.period,
+          description: edu.description,
+        });
+      } else {
+        continue;
+      }
 
       if (!res.success && res.errors) {
         for (const e of res.errors) {
@@ -207,15 +228,33 @@ export default function AboutEditor() {
       await deleteWorkExperience(accessToken, work.id);
     }
 
-    // Add (Simplified: recreate from textarea lines)
-    const toAdd = currentWork.filter((c) => !oldWork.find((o) => o.id === c.id));
-    for (const work of toAdd) {
-      const res = await createWorkExperience(accessToken, {
-        company: work.company,
-        role: work.title,
-        timeframe: work.period,
-        description: work.description,
-      });
+    // Detect Changes & Additions
+    for (const work of currentWork) {
+      const old = oldWork.find((o) => o.id === work.id);
+      let res: MutationResult;
+
+      if (!old) {
+        res = await createWorkExperience(accessToken, {
+          company: work.company,
+          role: work.title,
+          timeframe: work.period,
+          description: work.description,
+        });
+      } else if (
+        work.company !== old.company ||
+        work.title !== old.title ||
+        work.period !== old.period ||
+        work.description !== old.description
+      ) {
+        res = await updateWorkExperience(accessToken, work.id, {
+          company: work.company,
+          role: work.title,
+          timeframe: work.period,
+          description: work.description,
+        });
+      } else {
+        continue;
+      }
 
       if (!res.success && res.errors) {
         for (const e of res.errors) {
@@ -239,18 +278,36 @@ export default function AboutEditor() {
       await deleteSkillCategory(accessToken, skill.id);
     }
 
-    // Add
-    const toAdd = currentSkills.filter((c) => !oldSkills.find((o) => o.id === c.id));
-    for (const skill of toAdd) {
-      const res = await createSkillCategory(accessToken, {
-        title: skill.title,
-        description: skill.description,
-        tags: skill.tags.map((t, i) => ({
-          name: t.name,
-          icon: t.icon,
-          order_by: i,
-        })) as unknown as SkillTag[],
-      });
+    // Detect Changes & Additions
+    for (const skill of currentSkills) {
+      const old = oldSkills.find((o) => o.id === skill.id);
+      let res: MutationResult;
+
+      const tagsPayload = skill.tags.map((t, i) => ({
+        name: t.name,
+        icon: t.icon,
+        order_by: i,
+      })) as unknown as SkillTag[];
+
+      if (!old) {
+        res = await createSkillCategory(accessToken, {
+          title: skill.title,
+          description: skill.description,
+          tags: tagsPayload,
+        });
+      } else if (
+        skill.title !== old.title ||
+        skill.description !== old.description ||
+        JSON.stringify(skill.tags) !== JSON.stringify(old.tags)
+      ) {
+        res = await updateSkillCategory(accessToken, skill.id, {
+          title: skill.title,
+          description: skill.description,
+          tags: tagsPayload,
+        });
+      } else {
+        continue;
+      }
 
       if (!res.success && res.errors) {
         for (const e of res.errors) {

@@ -406,23 +406,16 @@ export default function AboutEditor() {
       </header>
 
       <div className={styles.layout}>
-        {/* LEFT COLUMN */}
-        <div>
-          <BasicInfoSection
-            data={data}
-            setData={setData}
-            handlePhotoUpload={handlePhotoUpload}
-            errors={validationErrors}
-          />
-          <SocialLinksSection data={data} setData={setData} errors={validationErrors} />
-          <TechnicalSkillsSection data={data} setData={setData} errors={validationErrors} />
-        </div>
-
-        {/* RIGHT COLUMN */}
-        <div>
-          <WorkExperienceSection data={data} setData={setData} errors={validationErrors} />
-          <EducationSection data={data} setData={setData} errors={validationErrors} />
-        </div>
+        <BasicInfoSection
+          data={data}
+          setData={setData}
+          handlePhotoUpload={handlePhotoUpload}
+          errors={validationErrors}
+        />
+        <SocialLinksSection data={data} setData={setData} errors={validationErrors} />
+        <TechnicalSkillsSection data={data} setData={setData} errors={validationErrors} />
+        <WorkExperienceSection data={data} setData={setData} errors={validationErrors} />
+        <EducationSection data={data} setData={setData} errors={validationErrors} />
       </div>
 
       {/* ACTIONS */}

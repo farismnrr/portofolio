@@ -1,640 +1,2394 @@
 {
-  "schemes": ["http"],
-  "swagger": "2.0",
-  "info": {
-    "description": "Interactive API documentation for the Portfolio Backend Service.",
-    "title": "Portfolio Backend API",
-    "termsOfService": "http://swagger.io/terms/",
-    "contact": {
-      "name": "Faris M.",
-      "url": "https://farismnrr.com",
-      "email": "hello@farismnrr.com"
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Interactive API documentation for the Portfolio Backend Service.",
+        "title": "Portfolio Backend API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Faris M.",
+            "url": "https://farismnrr.com",
+            "email": "hello@farismnrr.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
     },
-    "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    },
-    "version": "1.0"
-  },
-  "host": "localhost:8080",
-  "basePath": "/",
-  "paths": {
-    "/v1/about": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Fetch name, role, description, and avatar URL",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["About"],
-        "summary": "Get basic profile",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "$ref": "#/definitions/handler.AboutResponse"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      },
-      "patch": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Update name, role, and description",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["About"],
-        "summary": "Update profile",
-        "parameters": [
-          {
-            "description": "Profile Data",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/handler.UpdateAboutRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/response.SuccessResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/about/avatar": {
-      "patch": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Upload image to GCS and update profile",
-        "consumes": ["multipart/form-data"],
-        "produces": ["application/json"],
-        "tags": ["About"],
-        "summary": "Update avatar",
-        "parameters": [
-          {
-            "type": "file",
-            "description": "Avatar image file",
-            "name": "avatar",
-            "in": "formData",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string"
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/v1/about": {
+            "get": {
+                "description": "Fetch name, role, description, and avatar URL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Get basic profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "$ref": "#/definitions/handler.AboutResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
-                      }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
                     }
-                  }
                 }
-              ]
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update name, role, and description",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update profile",
+                "parameters": [
+                    {
+                        "description": "Profile Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateAboutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+        },
+        "/v1/about/avatar": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload image to GCS and update profile",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update avatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Avatar image file",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "413": {
+                        "description": "Request Entity Too Large",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
             }
-          },
-          "413": {
-            "description": "Request Entity Too Large",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+        },
+        "/v1/about/education": {
+            "get": {
+                "description": "Retrieves list of degrees and institutions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Get Educations",
+                "responses": {
+                    "200": {
+                        "description": "Successfully Retrieve",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/definitions/entity.Education"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adds a new education entry.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Create Education",
+                "parameters": [
+                    {
+                        "description": "Education Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateEducationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
             }
-          }
+        },
+        "/v1/about/education/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Removes an education record (Soft Delete).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Delete Education",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Education ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Deleted",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates an education record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update Education",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Education ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Education Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateEducationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Updated",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/skills": {
+            "get": {
+                "description": "Retrieves all skill categories and their associated tags.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Get Skills",
+                "responses": {
+                    "200": {
+                        "description": "Successfully Retrieve",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/definitions/entity.SkillCategory"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adds a new category of skills.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Create Skill Category",
+                "parameters": [
+                    {
+                        "description": "Category Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/skills/tags/{tag_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Removes a specific tag.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Delete Skill Tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tag ID",
+                        "name": "tag_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Deleted (Soft Delete)",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Skill Tag Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/skills/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a category and all its tags.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Delete Skill Category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Deleted (Soft Delete)",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates category details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update Skill Category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Category Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Updated",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/skills/{id}/tags": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adds a specific skill tag to a category.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Add Skill Tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tag Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.TagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Skill Category Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/social-links": {
+            "get": {
+                "description": "Fetch all active social links sorted by order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Get social links",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/definitions/entity.SocialLink"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add a new social media link",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Create social link",
+                "parameters": [
+                    {
+                        "description": "Social Link Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateSocialLinkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/social-links/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Soft delete a social link",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Delete social link",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Social Link ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update social media link details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update social link",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Social Link ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Social Link Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateSocialLinkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/work-experiences": {
+            "get": {
+                "description": "Retrieves user's work history including achievements.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Get Work Experiences",
+                "responses": {
+                    "200": {
+                        "description": "Successfully Retrieve",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/definitions/entity.WorkExperience"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adds a new job entry.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Create Work Experience",
+                "parameters": [
+                    {
+                        "description": "Work Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateWorkRequestFull"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/about/work-experiences/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a job entry.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Delete Work Experience",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Work ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Deleted",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates company, role, timeframe, or description.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "About"
+                ],
+                "summary": "Update Work Experience",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Work ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Work Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateWorkRequestFull"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully Updated",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Missing or Invalid Token)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Insufficient Permissions)",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/login": {
+            "post": {
+                "description": "Receive a refresh token from the frontend and store it in a secure HttpOnly cookie.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "SSO Login Proxy",
+                "parameters": [
+                    {
+                        "description": "Login request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/logout": {
+            "post": {
+                "description": "Logout user by invalidating SSO session and clearing refresh token cookie",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/refresh": {
+            "post": {
+                "description": "Use the stored refresh token cookie to obtain a new access token from the SSO service.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh Access Token",
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.RefreshResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "No refresh token found or failed to refresh",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Validate the Bearer token with the SSO service and return detailed user information.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get User Information",
+                "responses": {
+                    "200": {
+                        "description": "User data retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "No authorization header or failed to fetch user",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied: admin role required",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/interactions/{type}/{slug}": {
+            "get": {
+                "description": "Fetch views, likes, and comments for a specific work or blog post.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interaction"
+                ],
+                "summary": "Get post interactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post Type (work or blog)",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.InteractionResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/interactions/{type}/{slug}/comment": {
+            "post": {
+                "description": "Add a user comment to a specific work or blog post.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interaction"
+                ],
+                "summary": "Add post comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post Type (work or blog)",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.AddCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/interactions/{type}/{slug}/like": {
+            "post": {
+                "description": "Increment or decrement the like count for a specific work or blog post.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interaction"
+                ],
+                "summary": "Toggle post like",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post Type (work or blog)",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Toggle Like Data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ToggleLikeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/interactions/{type}/{slug}/view": {
+            "post": {
+                "description": "Increment the view count for a specific work or blog post.",
+                "tags": [
+                    "Interaction"
+                ],
+                "summary": "Record post view",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post Type (work or blog)",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/og/fetch": {
+            "get": {
+                "description": "Extract Open Graph metadata (title, description, image, etc.) from a given URL.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OG"
+                ],
+                "summary": "Fetch OG Metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target URL to fetch metadata from",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metadata fetched successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.FetchMetadataResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "URL parameter is required",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch or read metadata",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/og/proxy": {
+            "get": {
+                "description": "Proxy an external image URL to avoid CORS or fetch failures.",
+                "tags": [
+                    "OG"
+                ],
+                "summary": "Proxy Image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "External image URL to proxy",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image binary data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "URL parameter is required",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to proxy image",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/page-auth/authenticate": {
+            "post": {
+                "description": "Verify the password and set an authentication cookie for page access.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Page Auth"
+                ],
+                "summary": "Authenticate user",
+                "parameters": [
+                    {
+                        "description": "Authentication request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.AuthenticateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.AuthenticateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Incorrect password",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/page-auth/check": {
+            "get": {
+                "description": "Check if the user is authenticated via the authentication cookie.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Page Auth"
+                ],
+                "summary": "Check authentication status",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.CheckAuthResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
-      }
     },
-    "/v1/auth/login": {
-      "post": {
-        "description": "Receive a refresh token from the frontend and store it in a secure HttpOnly cookie.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "SSO Login Proxy",
-        "parameters": [
-          {
-            "description": "Login request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/handler.LoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Login successful",
-            "schema": {
-              "$ref": "#/definitions/response.SuccessResponse"
-            }
-          },
-          "400": {
-            "description": "Invalid request body",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/logout": {
-      "post": {
-        "description": "Logout user by invalidating SSO session and clearing refresh token cookie",
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Logout",
-        "responses": {
-          "200": {
-            "description": "Logout successful",
-            "schema": {
-              "$ref": "#/definitions/response.SuccessResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/refresh": {
-      "post": {
-        "description": "Use the stored refresh token cookie to obtain a new access token from the SSO service.",
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Refresh Access Token",
-        "responses": {
-          "200": {
-            "description": "Token refreshed successfully",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
+    "definitions": {
+        "entity.Education": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/handler.RefreshResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "401": {
-            "description": "No refresh token found or failed to refresh",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/user": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Validate the Bearer token with the SSO service and return detailed user information.",
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Get User Information",
-        "responses": {
-          "200": {
-            "description": "User data retrieved successfully",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
+                "created_at": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/handler.UserResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "401": {
-            "description": "No authorization header or failed to fetch user",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          },
-          "403": {
-            "description": "Access denied: admin role required",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/og/fetch": {
-      "get": {
-        "description": "Extract Open Graph metadata (title, description, image, etc.) from a given URL.",
-        "produces": ["application/json"],
-        "tags": ["OG"],
-        "summary": "Fetch OG Metadata",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Target URL to fetch metadata from",
-            "name": "url",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Metadata fetched successfully",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
+                "degree": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/handler.FetchMetadataResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "URL parameter is required",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          },
-          "500": {
-            "description": "Failed to fetch or read metadata",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/og/proxy": {
-      "get": {
-        "description": "Proxy an external image URL to avoid CORS or fetch failures.",
-        "tags": ["OG"],
-        "summary": "Proxy Image",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "External image URL to proxy",
-            "name": "url",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Image binary data",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "400": {
-            "description": "URL parameter is required",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          },
-          "500": {
-            "description": "Failed to proxy image",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/page-auth/authenticate": {
-      "post": {
-        "description": "Verify the password and set an authentication cookie for page access.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Page Auth"],
-        "summary": "Authenticate user",
-        "parameters": [
-          {
-            "description": "Authentication request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/handler.AuthenticateRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Authentication successful",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
+                "description": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/handler.AuthenticateResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Invalid request body",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          },
-          "401": {
-            "description": "Incorrect password",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v1/page-auth/check": {
-      "get": {
-        "description": "Check if the user is authenticated via the authentication cookie.",
-        "produces": ["application/json"],
-        "tags": ["Page Auth"],
-        "summary": "Check authentication status",
-        "responses": {
-          "200": {
-            "description": "Authenticated",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/response.SuccessResponse"
+                "id": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/handler.CheckAuthResponse"
-                    }
-                  }
+                "institution": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
-              ]
             }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+        },
+        "entity.SkillCategory": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "description": "Relationships",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SkillTag"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
             }
-          }
+        },
+        "entity.SkillTag": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "skill_category_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SocialLink": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.WorkExperience": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "timeframe": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.AboutResponse": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.AddCommentRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "user_name"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.AuthenticateRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "your-strong-password"
+                }
+            }
+        },
+        "handler.AuthenticateResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "handler.CheckAuthResponse": {
+            "type": "object",
+            "properties": {
+                "authenticated": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "handler.CommentResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.TagRequest"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateEducationRequest": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "period": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateSocialLinkRequest": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "description": "Assuming we link it to an about profile",
+                    "type": "string"
+                },
+                "icon": {
+                    "description": "Make sure entity has this",
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.CreateWorkRequestFull": {
+            "type": "object",
+            "properties": {
+                "about_id": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "timeframe": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.FetchMetadataResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "This is an example description of the page."
+                },
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/og-image.jpg"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Example Title"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://example.com"
+                }
+            }
+        },
+        "handler.InteractionResponse": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.CommentResponse"
+                    }
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "views": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.RefreshResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.TagRequest": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_by": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.ToggleLikeRequest": {
+            "type": "object",
+            "properties": {
+                "is_like": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "handler.UpdateAboutRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "name",
+                "role"
+            ],
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "For additional error data"
+                },
+                "details": {
+                    "description": "For validation errors"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "response.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
         }
-      }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and then your token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
-  },
-  "definitions": {
-    "handler.AboutResponse": {
-      "type": "object",
-      "properties": {
-        "avatar": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "handler.AuthenticateRequest": {
-      "type": "object",
-      "required": ["password"],
-      "properties": {
-        "password": {
-          "type": "string",
-          "example": "your-strong-password"
-        }
-      }
-    },
-    "handler.AuthenticateResponse": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean",
-          "example": true
-        }
-      }
-    },
-    "handler.CheckAuthResponse": {
-      "type": "object",
-      "properties": {
-        "authenticated": {
-          "type": "boolean",
-          "example": true
-        }
-      }
-    },
-    "handler.FetchMetadataResponse": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string",
-          "example": "This is an example description of the page."
-        },
-        "image": {
-          "type": "string",
-          "example": "https://example.com/og-image.jpg"
-        },
-        "title": {
-          "type": "string",
-          "example": "Example Title"
-        },
-        "url": {
-          "type": "string",
-          "example": "https://example.com"
-        }
-      }
-    },
-    "handler.LoginRequest": {
-      "type": "object",
-      "properties": {
-        "refresh_token": {
-          "type": "string"
-        }
-      }
-    },
-    "handler.RefreshResponse": {
-      "type": "object",
-      "properties": {
-        "access_token": {
-          "type": "string"
-        },
-        "expires_in": {
-          "type": "integer"
-        }
-      }
-    },
-    "handler.UpdateAboutRequest": {
-      "type": "object",
-      "required": ["description", "name", "role"],
-      "properties": {
-        "avatar": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "handler.UserResponse": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "tenant_id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "response.ErrorResponse": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "description": "For additional error data"
-        },
-        "details": {
-          "description": "For validation errors"
-        },
-        "message": {
-          "type": "string"
-        },
-        "status": {
-          "type": "boolean"
-        }
-      }
-    },
-    "response.SuccessResponse": {
-      "type": "object",
-      "properties": {
-        "data": {},
-        "message": {
-          "type": "string"
-        },
-        "status": {
-          "type": "boolean"
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "ApiKeyAuth": {
-      "type": "apiKey",
-      "name": "X-API-Key",
-      "in": "header"
-    },
-    "BearerAuth": {
-      "description": "Type \"Bearer\" followed by a space and then your token.",
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  }
 }

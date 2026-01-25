@@ -2,7 +2,8 @@
 
 This document defines the API contract for managing educational records (stored in the `educations` table).
 
-## Authentication: SSO Integration
+## Authentication
+Every endpoint in this domain requires a valid JWT Access Token.
 - **Header:** `Authorization: Bearer <access_token>`
 
 ---
@@ -12,7 +13,9 @@ Retrieves list of degrees and institutions.
 
 - **URL:** `/v1/about/education`
 - **Method:** `GET`
-- **Headers:** `Accept: application/json`
+- **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
+  - `Accept: application/json`
 
 ### User Scenarios
 
@@ -39,7 +42,7 @@ Retrieves list of degrees and institutions.
 ```
 
 #### Case 2: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
@@ -49,7 +52,7 @@ Retrieves list of degrees and institutions.
 ```
 
 #### Case 3: Internal Server Error
-- **Status:** `500 Internal Server Error`
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
@@ -65,16 +68,18 @@ Adds a new education entry.
 
 - **URL:** `/v1/about/education`
 - **Method:** `POST`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
 ```json
 {
-  "institution": "string (required)",
-  "degree": "string (required)",
-  "period": "string (required)",
-  "description": "string (optional)",
-  "order_by": "integer"
+  "institution": "string (required) - Name of university/school",
+  "degree": "string (required) - Earned degree or certification",
+  "period": "string (required) - Timeframe (e.g., '2016-2020')",
+  "description": "string (optional) - Additional details",
+  "order_by": "integer (optional) - Display order"
 }
 ```
 
@@ -88,18 +93,33 @@ Adds a new education entry.
   "status": true,
   "message": "Education entry created successfully",
   "data": {
-    "education": {
-      "id": "new-uuid",
-      "institution": "Institute of Tech",
-      "degree": "M.Sc. Data Science",
-      "order_by": 2
-    }
+    "education_id": "new-uuid"
   }
 }
 ```
 
-#### Case 2: Validation Failed
-- **Status:** `422 Unprocessable Entity`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 3: Forbidden
+- **Status Code:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
+
+#### Case 4: Validation Failed
+- **Status Code:** `422 Unprocessable Entity`
 - **Response Body:**
 ```json
 {
@@ -114,23 +134,13 @@ Adds a new education entry.
 }
 ```
 
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+#### Case 5: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Unauthorized"
-}
-```
-
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Internal server error"
 }
 ```
 
@@ -141,15 +151,18 @@ Updates an education record.
 
 - **URL:** `/v1/about/education/:id`
 - **Method:** `PATCH`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
 ```json
 {
-  "institution": "string",
-  "degree": "string",
-  "period": "string",
-  "description": "string"
+  "institution": "string (optional)",
+  "degree": "string (optional)",
+  "period": "string (optional)",
+  "description": "string (optional)",
+  "order_by": "integer (optional)"
 }
 ```
 
@@ -161,22 +174,15 @@ Updates an education record.
 ```json
 {
   "status": true,
-  "message": "Education entry updated successfully"
+  "message": "Education entry updated successfully",
+  "data": {
+    "education_id": "uuid"
+  }
 }
 ```
 
-#### Case 2: Not Found
-- **Status:** `404 Not Found`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Education entry not found"
-}
-```
-
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
@@ -185,13 +191,43 @@ Updates an education record.
 }
 ```
 
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 3: Forbidden
+- **Status Code:** `403 Forbidden`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Forbidden"
+}
+```
+
+#### Case 4: Not Found
+- **Status Code:** `404 NOT FOUND`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Education entry not found"
+}
+```
+
+#### Case 5: Validation Failed
+- **Status Code:** `422 Unprocessable Entity`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Validation failed"
+}
+```
+
+#### Case 6: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```
 
@@ -202,13 +238,13 @@ Removes an education record.
 
 - **URL:** `/v1/about/education/:id`
 - **Method:** `DELETE`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### User Scenarios
 
-#### Case 1: Successfully Deleted (Soft Delete)
+#### Case 1: Successfully Deleted
 - **Status:** `200 OK`
-- **Description:** The record is marked as deleted via `deleted_at`.
 - **Response Body:**
 ```json
 {
@@ -217,18 +253,8 @@ Removes an education record.
 }
 ```
 
-#### Case 2: Not Found
-- **Status:** `404 Not Found`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Education entry not found"
-}
-```
-
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
@@ -237,16 +263,28 @@ Removes an education record.
 }
 ```
 
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 3: Forbidden
+- **Status Code:** `403 Forbidden`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Forbidden"
 }
+```
+
+#### Case 4: Not Found
+- **Status Code:** `404 NOT FOUND`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Education entry not found"
+}
+```
+
 #### Case 5: Internal Server Error
-- **Status:** `500 Internal Server Error`
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {

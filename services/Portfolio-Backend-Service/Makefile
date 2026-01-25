@@ -84,7 +84,7 @@ install-tools: ## Install development tools
 
 # Database migration commands
 migrate-up: ## Run database migrations
-	@echo "⬆️  Running About domain migrations..."
+	@echo "⬆️  Running migrations..."
 	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
 	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
 		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
@@ -92,11 +92,14 @@ migrate-up: ## Run database migrations
 			*.sqlite|*.db) ;; \
 			*) DB_NAME="$$DB_NAME.sqlite";; \
 		esac; \
-		DATABASE_URL="sqlite3://$$DB_NAME"; \
+		DATABASE_URL="sqlite3://$$DB_NAME?x-migrations-table="; \
 	else \
-		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable&x-migrations-table="; \
 	fi; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up; \
+	echo "Migrating About domain..."; \
+	$$HOME/go/bin/migrate -path migration/about -database "$${DATABASE_URL}about_schema_migrations" up; \
+	echo "Migrating Interaction domain..."; \
+	$$HOME/go/bin/migrate -path migration/interaction -database "$${DATABASE_URL}interaction_schema_migrations" up; \
 	if [ "$$CORE_DB_SEED_DUMMY" = "true" ]; then \
 		echo "🌱 Seeding dummy data..."; \
 		go run cmd/seed/main.go; \
@@ -104,7 +107,7 @@ migrate-up: ## Run database migrations
 	@echo "✅ Migrations completed"
 
 migrate-down: ## Rollback last migration
-	@echo "⬇️  Rolling back About domain migrations..."
+	@echo "⬇️  Rolling back migrations..."
 	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
 	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
 		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
@@ -112,15 +115,18 @@ migrate-down: ## Rollback last migration
 			*.sqlite|*.db) ;; \
 			*) DB_NAME="$$DB_NAME.sqlite";; \
 		esac; \
-		DATABASE_URL="sqlite3://$$DB_NAME"; \
+		DATABASE_URL="sqlite3://$$DB_NAME?x-migrations-table="; \
 	else \
-		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable&x-migrations-table="; \
 	fi; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" down 1
+	echo "Rolling back Interaction domain..."; \
+	$$HOME/go/bin/migrate -path migration/interaction -database "$${DATABASE_URL}interaction_schema_migrations" down 1; \
+	echo "Rolling back About domain..."; \
+	$$HOME/go/bin/migrate -path migration/about -database "$${DATABASE_URL}about_schema_migrations" down 1; \
 	@echo "✅ Rollback completed"
 
 migrate-fresh: ## Drop all tables and re-run migrations
-	@echo "🔄 Running fresh migrations for About domain..."
+	@echo "🔄 Running fresh migrations..."
 	@export $$(grep -v '^#' .env | grep -v '^$$' | xargs); \
 	if [ "$$CORE_DB_TYPE" = "sqlite" ]; then \
 		DB_NAME=$${CORE_DB_NAME:-portfolio.sqlite}; \
@@ -128,12 +134,17 @@ migrate-fresh: ## Drop all tables and re-run migrations
 			*.sqlite|*.db) ;; \
 			*) DB_NAME="$$DB_NAME.sqlite";; \
 		esac; \
-		DATABASE_URL="sqlite3://$$DB_NAME"; \
+		DATABASE_URL="sqlite3://$$DB_NAME?x-migrations-table="; \
 	else \
-		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable"; \
+		DATABASE_URL="postgres://$$CORE_DB_USER:$$CORE_DB_PASS@$$CORE_DB_HOST:$$CORE_DB_PORT/$$CORE_DB_NAME?sslmode=disable&x-migrations-table="; \
 	fi; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" drop -f; \
-	$$HOME/go/bin/migrate -path migration/about -database "$$DATABASE_URL" up; \
+	echo "Dropping all tables..."; \
+	$$HOME/go/bin/migrate -path migration/interaction -database "$${DATABASE_URL}interaction_schema_migrations" drop -f; \
+	$$HOME/go/bin/migrate -path migration/about -database "$${DATABASE_URL}about_schema_migrations" drop -f; \
+	echo "Migrating About domain..."; \
+	$$HOME/go/bin/migrate -path migration/about -database "$${DATABASE_URL}about_schema_migrations" up; \
+	echo "Migrating Interaction domain..."; \
+	$$HOME/go/bin/migrate -path migration/interaction -database "$${DATABASE_URL}interaction_schema_migrations" up; \
 	if [ "$$CORE_DB_SEED_DUMMY" = "true" ]; then \
 		echo "🌱 Seeding dummy data..."; \
 		go run cmd/seed/main.go; \

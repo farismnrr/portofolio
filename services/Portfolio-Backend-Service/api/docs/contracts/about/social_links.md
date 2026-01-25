@@ -2,11 +2,9 @@
 
 This document defines the API contract for managing social media links (stored in the `social_links` table).
 
-## Authentication: SSO Integration
-This API integrates with the SSO Service for authentication. Most operations require a valid JWT Access Token.
-
+## Authentication
+Every endpoint in this domain requires a valid JWT Access Token.
 - **Header:** `Authorization: Bearer <access_token>`
-- **Validation:** The backend verifies the token and retrieves user metadata (ID, Role, Tenant) via the SSO `VerifyUser` endpoint.
 
 ---
 
@@ -16,6 +14,7 @@ Retrieves a list of social links associated with the current user's profile.
 - **URL:** `/v1/about/social-links`
 - **Method:** `GET`
 - **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
   - `Accept: application/json`
 
 ### User Scenarios
@@ -35,13 +34,6 @@ Retrieves a list of social links associated with the current user's profile.
         "link": "https://github.com/username",
         "icon": "github",
         "order_by": 1
-      },
-      {
-        "id": "uuid-v4-string",
-        "name": "LinkedIn",
-        "link": "https://linkedin.com/in/username",
-        "icon": "linkedin",
-        "order_by": 2
       }
     ]
   }
@@ -49,12 +41,22 @@ Retrieves a list of social links associated with the current user's profile.
 ```
 
 #### Case 2: Unauthorized
-- **Status:** `401 Unauthorized`
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
   "status": false,
   "message": "Unauthorized"
+}
+```
+
+#### Case 3: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```
 
@@ -72,10 +74,10 @@ Adds a new social link to the profile.
 ### Request Body
 ```json
 {
-  "name": "string (required, max 100 chars)",
-  "link": "string (required, valid URL)",
-  "icon": "string (optional)",
-  "order_by": "integer (optional, default 0)"
+  "name": "string (required) - Service name (e.g. GitHub)",
+  "link": "string (required) - Full profile URL",
+  "icon": "string (optional) - Icon identifier",
+  "order_by": "integer (optional) - Display order"
 }
 ```
 
@@ -89,19 +91,23 @@ Adds a new social link to the profile.
   "status": true,
   "message": "Social link created successfully",
   "data": {
-    "social_link": {
-      "id": "new-uuid-v4",
-      "name": "Twitter",
-      "link": "https://twitter.com/username",
-      "icon": "twitter",
-      "order_by": 3
-    }
+    "social_link_id": "new-uuid"
   }
 }
 ```
 
-#### Case 2: Validation Failed
-- **Status:** `422 Unprocessable Entity`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 3: Validation Failed
+- **Status Code:** `422 Unprocessable Entity`
 - **Response Body:**
 ```json
 {
@@ -114,23 +120,15 @@ Adds a new social link to the profile.
     }
   ]
 }
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Unauthorized"
-}
 ```
 
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 4: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Internal server error"
 }
 ```
 
@@ -146,13 +144,12 @@ Updates an existing social link.
   - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
-Fields are optional; only provided fields will be updated.
 ```json
 {
-  "name": "string",
-  "link": "string (valid URL)",
-  "icon": "string",
-  "order_by": "integer"
+  "name": "string (optional)",
+  "link": "string (optional) - valid URL",
+  "icon": "string (optional)",
+  "order_by": "integer (optional)"
 }
 ```
 
@@ -164,12 +161,15 @@ Fields are optional; only provided fields will be updated.
 ```json
 {
   "status": true,
-  "message": "Social link updated successfully"
+  "message": "Social link updated successfully",
+  "data": {
+    "social_link_id": "uuid"
+  }
 }
 ```
 
-#### Case 2: Not Found
-- **Status:** `404 Not Found`
+#### Case 2: ID Not Found
+- **Status Code:** `404 NOT FOUND`
 - **Response Body:**
 ```json
 {
@@ -190,9 +190,8 @@ Removes a social link.
 
 ### User Scenarios
 
-#### Case 1: Successfully Deleted (Soft Delete)
+#### Case 1: Successfully Deleted
 - **Status:** `200 OK`
-- **Description:** The record is not permanently removed from the database but marked as deleted via the `deleted_at` timestamp.
 - **Response Body:**
 ```json
 {
@@ -201,32 +200,12 @@ Removes a social link.
 }
 ```
 
-#### Case 2: Not Found
-- **Status:** `404 Not Found`
-- **Response Body:**
+#### Case 2: ID Not Found
+- **Status Code:** `404 NOT FOUND`
+- // Response Body:
 ```json
 {
   "status": false,
   "message": "Social link not found"
-}
-```
-
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Unauthorized"
-}
-```
-
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Forbidden: Insufficient permissions"
 }
 ```

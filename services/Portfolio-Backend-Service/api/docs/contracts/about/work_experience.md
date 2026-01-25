@@ -2,7 +2,8 @@
 
 This document defines the API contract for managing work history and achievements (stored in `work_experiences` and `work_achievements`).
 
-## Authentication: SSO Integration
+## Authentication
+Every endpoint in this domain requires a valid JWT Access Token.
 - **Header:** `Authorization: Bearer <access_token>`
 
 ---
@@ -12,7 +13,9 @@ Retrieves user's work history including achievements.
 
 - **URL:** `/v1/about/work-experiences`
 - **Method:** `GET`
-- **Headers:** `Accept: application/json`
+- **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
+  - `Accept: application/json`
 
 ### User Scenarios
 
@@ -44,8 +47,8 @@ Retrieves user's work history including achievements.
 }
 ```
 
-#### Case 2: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
@@ -55,7 +58,7 @@ Retrieves user's work history including achievements.
 ```
 
 #### Case 3: Internal Server Error
-- **Status:** `500 Internal Server Error`
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
@@ -73,18 +76,18 @@ Adds a new job entry. Optionally includes initial achievements.
 - **Method:** `POST`
 - **Headers:**
   - `Content-Type: application/json`
-  - `Authorization: Bearer <access_token>`
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
 ```json
 {
-  "company": "string (required)",
-  "role": "string (required)",
-  "timeframe": "string (required, e.g., '2020-2023')",
-  "order_by": "integer",
+  "company": "string (required) - Company name",
+  "role": "string (required) - Job title",
+  "timeframe": "string (required) - e.g., '2020 - Present'",
+  "order_by": "integer (optional)",
   "achievements": [
     {
-      "content": "string (achievement description)",
+      "content": "string (required) - Achievement description",
       "order_by": "integer"
     }
   ]
@@ -101,18 +104,33 @@ Adds a new job entry. Optionally includes initial achievements.
   "status": true,
   "message": "Work experience created successfully",
   "data": {
-    "work_experience": {
-      "id": "new-uuid",
-      "company": "StartUp Inc",
-      "role": "CTO",
-      "achievements": [...]
-    }
+    "experience_id": "new-uuid"
   }
 }
 ```
 
-#### Case 2: Internal Server Error
-- **Status:** `500 Internal Server Error`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 3: Validation Failed
+- **Status Code:** `422 Unprocessable Entity`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Validation failed"
+}
+```
+
+#### Case 4: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
@@ -128,20 +146,43 @@ Updates company, role, timeframe, or replaces achievements.
 
 - **URL:** `/v1/about/work-experiences/:id`
 - **Method:** `PATCH`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
 ```json
 {
-  "company": "string",
-  "role": "string",
-  "timeframe": "string"
+  "company": "string (optional)",
+  "role": "string (optional)",
+  "timeframe": "string (optional)"
 }
 ```
-*Note: To update achievements, use specific achievement endpoints or sending a full list strategy (TBD based on implementation).*
 
 ### User Scenarios
+
+#### Case 1: Successfully Updated
 - **Status:** `200 OK`
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Work experience updated successfully",
+  "data": {
+    "experience_id": "uuid"
+  }
+}
+```
+
+#### Case 2: ID Not Found
+- **Status Code:** `404 NOT FOUND`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Work experience not found"
+}
+```
 
 ---
 
@@ -150,10 +191,30 @@ Deletes a job entry and its achievements.
 
 - **URL:** `/v1/about/work-experiences/:id`
 - **Method:** `DELETE`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### User Scenarios
+
+#### Case 1: Successfully Deleted
 - **Status:** `200 OK`
+- **Response Body:**
+```json
+{
+  "status": true,
+  "message": "Work experience deleted successfully"
+}
+```
+
+#### Case 2: ID Not Found
+- **Status Code:** `404 NOT FOUND`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Work experience not found"
+}
+```
 
 ---
 
@@ -162,13 +223,15 @@ Adds a single achievement to a work experience.
 
 - **URL:** `/v1/about/work-experiences/:id/achievements`
 - **Method:** `POST`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body
 ```json
 {
-  "content": "string (required)",
-  "order_by": "integer"
+  "content": "string (required) - Achievement description",
+  "order_by": "integer (optional)"
 }
 ```
 
@@ -182,42 +245,18 @@ Adds a single achievement to a work experience.
   "status": true,
   "message": "Achievement added successfully",
   "data": {
-    "achievement": {
-      "id": "new-uuid",
-      "content": "Delivered project X",
-      "order_by": 1
-    }
+    "achievement_id": "new-uuid"
   }
 }
 ```
 
-#### Case 2: Work Experience Not Found
-- **Status:** `404 Not Found`
+#### Case 2: Experience Not Found
+- **Status Code:** `404 NOT FOUND`
 - **Response Body:**
 ```json
 {
   "status": false,
   "message": "Work experience not found"
-}
-```
-
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Unauthorized"
-}
-```
-
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Forbidden: Insufficient permissions"
 }
 ```
 
@@ -228,13 +267,13 @@ Removes a specific achievement.
 
 - **URL:** `/v1/about/work-experiences/achievements/:achievement_id`
 - **Method:** `DELETE`
-- **Headers:** `Authorization: Bearer <access_token>`
+- **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
 
 ### User Scenarios
 
-#### Case 1: Successfully Deleted (Soft Delete)
+#### Case 1: Successfully Deleted
 - **Status:** `200 OK`
-- **Description:** The achievement is marked as deleted via `deleted_at`.
 - **Response Body:**
 ```json
 {
@@ -243,40 +282,12 @@ Removes a specific achievement.
 }
 ```
 
-#### Case 2: Not Found
-- **Status:** `404 Not Found`
+#### Case 2: ID Not Found
+- **Status Code:** `404 NOT FOUND`
 - **Response Body:**
 ```json
 {
   "status": false,
   "message": "Achievement not found"
-}
-```
-
-#### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Unauthorized"
-}
-```
-
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Forbidden: Insufficient permissions"
-}
-#### Case 5: Internal Server Error
-- **Status:** `500 Internal Server Error`
-- **Response Body:**
-```json
-{
-  "status": false,
-  "message": "Internal server error"
 }
 ```

@@ -1,5 +1,105 @@
 basePath: /
 definitions:
+  entity.Education:
+    properties:
+      about_id:
+        type: string
+      created_at:
+        type: string
+      degree:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      institution:
+        type: string
+      order_by:
+        type: integer
+      period:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.SkillCategory:
+    properties:
+      about_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      order_by:
+        type: integer
+      tags:
+        description: Relationships
+        items:
+          $ref: '#/definitions/entity.SkillTag'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.SkillTag:
+    properties:
+      created_at:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      order_by:
+        type: integer
+      skill_category_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.SocialLink:
+    properties:
+      about_id:
+        type: string
+      created_at:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      order_by:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.WorkExperience:
+    properties:
+      about_id:
+        type: string
+      company:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      order_by:
+        type: integer
+      role:
+        type: string
+      timeframe:
+        type: string
+      updated_at:
+        type: string
+    type: object
   handler.AboutResponse:
     properties:
       avatar:
@@ -12,6 +112,16 @@ definitions:
         type: string
       role:
         type: string
+    type: object
+  handler.AddCommentRequest:
+    properties:
+      content:
+        type: string
+      user_name:
+        type: string
+    required:
+    - content
+    - user_name
     type: object
   handler.AuthenticateRequest:
     properties:
@@ -33,6 +143,77 @@ definitions:
         example: true
         type: boolean
     type: object
+  handler.CommentResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      user_name:
+        type: string
+    type: object
+  handler.CreateCategoryRequest:
+    properties:
+      about_id:
+        type: string
+      description:
+        type: string
+      order_by:
+        type: integer
+      tags:
+        items:
+          $ref: '#/definitions/handler.TagRequest'
+        type: array
+      title:
+        type: string
+    type: object
+  handler.CreateEducationRequest:
+    properties:
+      about_id:
+        type: string
+      degree:
+        type: string
+      description:
+        type: string
+      institution:
+        type: string
+      order_by:
+        type: integer
+      period:
+        type: string
+    type: object
+  handler.CreateSocialLinkRequest:
+    properties:
+      about_id:
+        description: Assuming we link it to an about profile
+        type: string
+      icon:
+        description: Make sure entity has this
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      order_by:
+        type: integer
+    type: object
+  handler.CreateWorkRequestFull:
+    properties:
+      about_id:
+        type: string
+      company:
+        type: string
+      description:
+        type: string
+      order_by:
+        type: integer
+      role:
+        type: string
+      timeframe:
+        type: string
+    type: object
   handler.FetchMetadataResponse:
     properties:
       description:
@@ -48,6 +229,17 @@ definitions:
         example: https://example.com
         type: string
     type: object
+  handler.InteractionResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/handler.CommentResponse'
+        type: array
+      likes:
+        type: integer
+      views:
+        type: integer
+    type: object
   handler.LoginRequest:
     properties:
       refresh_token:
@@ -57,8 +249,20 @@ definitions:
     properties:
       access_token:
         type: string
-      expires_in:
+    type: object
+  handler.TagRequest:
+    properties:
+      icon:
+        type: string
+      name:
+        type: string
+      order_by:
         type: integer
+    type: object
+  handler.ToggleLikeRequest:
+    properties:
+      is_like:
+        type: boolean
     type: object
   handler.UpdateAboutRequest:
     properties:
@@ -144,8 +348,10 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - BearerAuth: []
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get basic profile
       tags:
       - About
@@ -171,8 +377,16 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
         "422":
           description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       security:
@@ -211,13 +425,741 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
         "413":
           description: Request Entity Too Large
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Update avatar
+      tags:
+      - About
+  /v1/about/education:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves list of degrees and institutions.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Retrieve
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    items:
+                      $ref: '#/definitions/entity.Education'
+                    type: array
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Educations
+      tags:
+      - About
+    post:
+      consumes:
+      - application/json
+      description: Adds a new education entry.
+      parameters:
+      - description: Education Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateEducationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Education
+      tags:
+      - About
+  /v1/about/education/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes an education record (Soft Delete).
+      parameters:
+      - description: Education ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Deleted
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Education
+      tags:
+      - About
+    patch:
+      consumes:
+      - application/json
+      description: Updates an education record.
+      parameters:
+      - description: Education ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Education Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateEducationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Updated
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Education
+      tags:
+      - About
+  /v1/about/skills:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all skill categories and their associated tags.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Retrieve
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    items:
+                      $ref: '#/definitions/entity.SkillCategory'
+                    type: array
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Skills
+      tags:
+      - About
+    post:
+      consumes:
+      - application/json
+      description: Adds a new category of skills.
+      parameters:
+      - description: Category Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Skill Category
+      tags:
+      - About
+  /v1/about/skills/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a category and all its tags.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Deleted (Soft Delete)
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Skill Category
+      tags:
+      - About
+    patch:
+      consumes:
+      - application/json
+      description: Updates category details.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Updated
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Skill Category
+      tags:
+      - About
+  /v1/about/skills/{id}/tags:
+    post:
+      consumes:
+      - application/json
+      description: Adds a specific skill tag to a category.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Tag Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.TagRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Skill Category Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add Skill Tag
+      tags:
+      - About
+  /v1/about/skills/tags/{tag_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes a specific tag.
+      parameters:
+      - description: Tag ID
+        in: path
+        name: tag_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Deleted (Soft Delete)
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Skill Tag Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Skill Tag
+      tags:
+      - About
+  /v1/about/social-links:
+    get:
+      consumes:
+      - application/json
+      description: Fetch all active social links sorted by order
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    items:
+                      $ref: '#/definitions/entity.SocialLink'
+                    type: array
+                  type: object
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get social links
+      tags:
+      - About
+    post:
+      consumes:
+      - application/json
+      description: Add a new social media link
+      parameters:
+      - description: Social Link Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateSocialLinkRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create social link
+      tags:
+      - About
+  /v1/about/social-links/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a social link
+      parameters:
+      - description: Social Link ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete social link
+      tags:
+      - About
+    patch:
+      consumes:
+      - application/json
+      description: Update social media link details
+      parameters:
+      - description: Social Link ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Social Link Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateSocialLinkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update social link
+      tags:
+      - About
+  /v1/about/work-experiences:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves user's work history including achievements.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Retrieve
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    items:
+                      $ref: '#/definitions/entity.WorkExperience'
+                    type: array
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Work Experiences
+      tags:
+      - About
+    post:
+      consumes:
+      - application/json
+      description: Adds a new job entry.
+      parameters:
+      - description: Work Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateWorkRequestFull'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Work Experience
+      tags:
+      - About
+  /v1/about/work-experiences/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a job entry.
+      parameters:
+      - description: Work ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Deleted
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Work Experience
+      tags:
+      - About
+    patch:
+      consumes:
+      - application/json
+      description: Updates company, role, timeframe, or description.
+      parameters:
+      - description: Work ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Work Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateWorkRequestFull'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully Updated
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "401":
+          description: Unauthorized (Missing or Invalid Token)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden (Insufficient Permissions)
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Validation Failed
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Work Experience
       tags:
       - About
   /v1/auth/login:
@@ -313,6 +1255,154 @@ paths:
       summary: Get User Information
       tags:
       - Auth
+  /v1/interactions/{type}/{slug}:
+    get:
+      description: Fetch views, likes, and comments for a specific work or blog post.
+      parameters:
+      - description: Post Type (work or blog)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Post Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.InteractionResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get post interactions
+      tags:
+      - Interaction
+  /v1/interactions/{type}/{slug}/comment:
+    post:
+      consumes:
+      - application/json
+      description: Add a user comment to a specific work or blog post.
+      parameters:
+      - description: Post Type (work or blog)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Post Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Comment Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AddCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Add post comment
+      tags:
+      - Interaction
+  /v1/interactions/{type}/{slug}/like:
+    post:
+      consumes:
+      - application/json
+      description: Increment or decrement the like count for a specific work or blog
+        post.
+      parameters:
+      - description: Post Type (work or blog)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Post Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Toggle Like Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ToggleLikeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Toggle post like
+      tags:
+      - Interaction
+  /v1/interactions/{type}/{slug}/view:
+    post:
+      description: Increment the view count for a specific work or blog post.
+      parameters:
+      - description: Post Type (work or blog)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Post Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Record post view
+      tags:
+      - Interaction
   /v1/og/fetch:
     get:
       description: Extract Open Graph metadata (title, description, image, etc.) from

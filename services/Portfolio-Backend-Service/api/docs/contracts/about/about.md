@@ -3,10 +3,8 @@
 This document defines the API contract for managing basic profile data (stored in the `abouts` table).
 
 ## Authentication: SSO Integration
-This API integrates with the SSO Service for authentication. Most operations require a valid JWT Access Token.
-
+Every endpoint in this domain requires a valid JWT Access Token.
 - **Header:** `Authorization: Bearer <access_token>`
-- **Validation:** The backend verifies the token and retrieves user metadata (ID, Role, Tenant) via the SSO `VerifyUser` endpoint.
 
 ---
 
@@ -16,6 +14,7 @@ Retrieves basic profile information such as name, role, description, and avatar 
 - **URL:** `/v1/about`
 - **Method:** `GET`
 - **Headers:**
+  - `Authorization: Bearer <access_token>` (Required)
   - `Accept: application/json`
 
 ### User Scenarios
@@ -53,7 +52,7 @@ Retrieves basic profile information such as name, role, description, and avatar 
 ```
 
 #### Case 3: Unauthorized (Missing or Invalid Token)
-- **Status:** `401 Unauthorized`
+- **Status Code:** `401 Unauthorized`
 - **Response Body:**
 ```json
 {
@@ -62,13 +61,13 @@ Retrieves basic profile information such as name, role, description, and avatar 
 }
 ```
 
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 4: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Internal server error"
 }
 ```
 
@@ -86,9 +85,9 @@ Updates text-based profile information (excluding avatar).
 ### Request Body
 ```json
 {
-  "name": "string (required)",
-  "role": "string (required)",
-  "description": "string (required)"
+  "name": "string (required) - Full name",
+  "role": "string (required) - Professional role",
+  "description": "string (required) - Detailed bio"
 }
 ```
 
@@ -100,12 +99,35 @@ Updates text-based profile information (excluding avatar).
 ```json
 {
   "status": true,
-  "message": "About profile updated successfully"
+  "message": "About profile updated successfully",
+  "data": {
+    "about_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
 }
 ```
 
-#### Case 2: Validation Failed
-- **Status:** `422 Unprocessable Entity`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 3: Forbidden (Insufficient Permissions)
+- **Status Code:** `403 Forbidden`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Forbidden: Insufficient permissions"
+}
+```
+
+#### Case 4: Validation Failed
+- **Status Code:** `422 Unprocessable Entity`
 - **Response Body:**
 ```json
 {
@@ -120,13 +142,13 @@ Updates text-based profile information (excluding avatar).
 }
 ```
 
-#### Case 3: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 5: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
 - **Response Body:**
 ```json
 {
   "status": false,
-  "message": "Forbidden: Insufficient permissions"
+  "message": "Internal server error"
 }
 ```
 
@@ -142,7 +164,7 @@ Uploads a new avatar image to cloud storage and updates the profile.
   - `Authorization: Bearer <access_token>` (Required)
 
 ### Request Body (Form Data)
-- `avatar`: File (Required, Image only)
+- `avatar`: File (Required, Image only, Max 2MB)
 
 ### User Scenarios
 
@@ -154,15 +176,23 @@ Uploads a new avatar image to cloud storage and updates the profile.
   "status": true,
   "message": "Avatar updated successfully",
   "data": {
-    "about": {
-      "avatar_url": "https://storage.googleapis.com/farismnrr-storage/avatars/new-avatar.jpg"
-    }
+    "about_id": "550e8400-e29b-41d4-a716-446655440000"
   }
 }
 ```
 
-#### Case 2: Invalid File Type
-- **Status:** `400 Bad Request`
+#### Case 2: Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Unauthorized"
+}
+```
+
+#### Case 3: Invalid File Type
+- **Status Code:** `400 Bad Request`
 - **Response Body:**
 ```json
 {
@@ -171,9 +201,9 @@ Uploads a new avatar image to cloud storage and updates the profile.
 }
 ```
 
-#### Case 3: File Too Large
-- **Status:** `413 Payload Too Large`
-- **Response Body:**
+#### Case 4: File Too Large
+- **Status Code:** `413 Payload Too Large`
+- // Response Body:
 ```json
 {
   "status": false,
@@ -181,12 +211,22 @@ Uploads a new avatar image to cloud storage and updates the profile.
 }
 ```
 
-#### Case 4: Forbidden (Insufficient Permissions)
-- **Status:** `403 Forbidden`
+#### Case 5: Forbidden (Insufficient Permissions)
+- **Status Code:** `403 Forbidden`
 - **Response Body:**
 ```json
 {
   "status": false,
   "message": "Forbidden: Insufficient permissions"
+}
+```
+
+#### Case 6: Internal Server Error
+- **Status Code:** `500 Internal Server Error`
+- **Response Body:**
+```json
+{
+  "status": false,
+  "message": "Internal server error"
 }
 ```

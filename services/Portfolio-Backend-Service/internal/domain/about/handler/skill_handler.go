@@ -38,13 +38,13 @@ func (h *SkillHandler) GetSkills(c echo.Context) error {
 type TagRequest struct {
 	Name    string `json:"name"`
 	Icon    string `json:"icon"`
-	OrderBy int    `json:"order_by"`
+	OrderBy *int   `json:"order_by"`
 }
 
 type CreateCategoryRequest struct {
 	Title       string       `json:"title"`
 	Description string       `json:"description"`
-	OrderBy     int          `json:"order_by"`
+	OrderBy     *int         `json:"order_by"`
 	AboutID     string       `json:"about_id"`
 	Tags        []TagRequest `json:"tags"`
 }
@@ -73,21 +73,25 @@ func (h *SkillHandler) CreateCategory(c echo.Context) error {
 		return response.ValidationError(c, "Validation failed", []map[string]string{{"field": "title", "message": "Title is required"}})
 	}
 
-	tags := make([]entity.SkillTag, len(req.Tags))
-	for i, t := range req.Tags {
-		tags[i] = entity.SkillTag{
-			Name:    t.Name,
-			Icon:    t.Icon,
-			OrderBy: t.OrderBy,
-		}
-	}
-
 	cat := &entity.SkillCategory{
 		Title:       req.Title,
 		Description: req.Description,
-		OrderBy:     req.OrderBy,
 		AboutID:     req.AboutID,
-		Tags:        tags,
+	}
+
+	if req.OrderBy != nil {
+		cat.OrderBy = *req.OrderBy
+	}
+
+	for _, t := range req.Tags {
+		tag := entity.SkillTag{
+			Name: t.Name,
+			Icon: t.Icon,
+		}
+		if t.OrderBy != nil {
+			tag.OrderBy = *t.OrderBy
+		}
+		cat.Tags = append(cat.Tags, tag)
 	}
 
 	if err := h.usecase.CreateCategory(c.Request().Context(), cat); err != nil {
@@ -132,8 +136,8 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 	if req.Description != "" {
 		existing.Description = req.Description
 	}
-	if req.OrderBy != 0 {
-		existing.OrderBy = req.OrderBy
+	if req.OrderBy != nil {
+		existing.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.UpdateCategory(c.Request().Context(), existing); err != nil {
@@ -208,7 +212,10 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 		SkillCategoryID: catID,
 		Name:            req.Name,
 		Icon:            req.Icon,
-		OrderBy:         req.OrderBy,
+	}
+
+	if req.OrderBy != nil {
+		tag.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.AddTag(c.Request().Context(), tag); err != nil {

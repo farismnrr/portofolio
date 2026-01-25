@@ -76,6 +76,7 @@ export default function AboutEditor() {
         label: l.name,
         url: l.link,
         icon: l.icon,
+        order_by: l.order_by,
       })),
       workExperience: (workExps || []).map((w) => ({
         id: w.id,
@@ -83,6 +84,7 @@ export default function AboutEditor() {
         company: w.company,
         period: w.timeframe,
         description: w.description || "",
+        order_by: w.order_by,
       })),
       studies: (educations || []).map((e) => ({
         id: e.id,
@@ -90,12 +92,14 @@ export default function AboutEditor() {
         institution: e.institution,
         period: e.period,
         description: e.description,
+        order_by: e.order_by,
       })),
       technicalSkills: (skills || []).map((s) => ({
         id: s.id,
         title: s.title,
         description: s.description || "",
         tags: (s.tags || []).map((t) => ({ name: t.name, icon: t.icon })),
+        order_by: s.order_by,
       })),
     };
 
@@ -145,7 +149,7 @@ export default function AboutEditor() {
           icon: inferIconName(cl.label),
           order_by: i,
         });
-      } else if (cl.label !== ol.label || cl.url !== ol.url) {
+      } else if (cl.label !== ol.label || cl.url !== ol.url || i !== ol.order_by) {
         res = await updateSocialLink(accessToken, cl.id, {
           name: cl.label,
           link: cl.url,
@@ -179,29 +183,29 @@ export default function AboutEditor() {
     }
 
     // Detect Changes & Additions
-    for (const edu of currentEdu) {
+    for (let i = 0; i < currentEdu.length; i++) {
+      const edu = currentEdu[i];
       const old = oldEdu.find((o) => o.id === edu.id);
       let res: MutationResult;
 
+      const payload = {
+        institution: edu.institution,
+        degree: edu.degree,
+        period: edu.period,
+        description: edu.description,
+        order_by: i,
+      };
+
       if (!old) {
-        res = await createEducation(accessToken, {
-          institution: edu.institution,
-          degree: edu.degree,
-          period: edu.period,
-          description: edu.description,
-        });
+        res = await createEducation(accessToken, payload);
       } else if (
         edu.institution !== old.institution ||
         edu.degree !== old.degree ||
         edu.period !== old.period ||
-        edu.description !== old.description
+        edu.description !== old.description ||
+        i !== old.order_by
       ) {
-        res = await updateEducation(accessToken, edu.id, {
-          institution: edu.institution,
-          degree: edu.degree,
-          period: edu.period,
-          description: edu.description,
-        });
+        res = await updateEducation(accessToken, edu.id, payload);
       } else {
         continue;
       }
@@ -229,29 +233,29 @@ export default function AboutEditor() {
     }
 
     // Detect Changes & Additions
-    for (const work of currentWork) {
+    for (let i = 0; i < currentWork.length; i++) {
+      const work = currentWork[i];
       const old = oldWork.find((o) => o.id === work.id);
       let res: MutationResult;
 
+      const payload = {
+        company: work.company,
+        role: work.title,
+        timeframe: work.period,
+        description: work.description,
+        order_by: i,
+      };
+
       if (!old) {
-        res = await createWorkExperience(accessToken, {
-          company: work.company,
-          role: work.title,
-          timeframe: work.period,
-          description: work.description,
-        });
+        res = await createWorkExperience(accessToken, payload);
       } else if (
         work.company !== old.company ||
         work.title !== old.title ||
         work.period !== old.period ||
-        work.description !== old.description
+        work.description !== old.description ||
+        i !== old.order_by
       ) {
-        res = await updateWorkExperience(accessToken, work.id, {
-          company: work.company,
-          role: work.title,
-          timeframe: work.period,
-          description: work.description,
-        });
+        res = await updateWorkExperience(accessToken, work.id, payload);
       } else {
         continue;
       }
@@ -279,32 +283,33 @@ export default function AboutEditor() {
     }
 
     // Detect Changes & Additions
-    for (const skill of currentSkills) {
+    for (let i = 0; i < currentSkills.length; i++) {
+      const skill = currentSkills[i];
       const old = oldSkills.find((o) => o.id === skill.id);
       let res: MutationResult;
 
-      const tagsPayload = skill.tags.map((t, i) => ({
+      const tagsPayload = skill.tags.map((t, idx) => ({
         name: t.name,
         icon: t.icon,
-        order_by: i,
+        order_by: idx,
       })) as unknown as SkillTag[];
 
+      const payload = {
+        title: skill.title,
+        description: skill.description,
+        tags: tagsPayload,
+        order_by: i,
+      };
+
       if (!old) {
-        res = await createSkillCategory(accessToken, {
-          title: skill.title,
-          description: skill.description,
-          tags: tagsPayload,
-        });
+        res = await createSkillCategory(accessToken, payload);
       } else if (
         skill.title !== old.title ||
         skill.description !== old.description ||
-        JSON.stringify(skill.tags) !== JSON.stringify(old.tags)
+        JSON.stringify(skill.tags) !== JSON.stringify(old.tags) ||
+        i !== old.order_by
       ) {
-        res = await updateSkillCategory(accessToken, skill.id, {
-          title: skill.title,
-          description: skill.description,
-          tags: tagsPayload,
-        });
+        res = await updateSkillCategory(accessToken, skill.id, payload);
       } else {
         continue;
       }

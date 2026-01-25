@@ -3,6 +3,7 @@ export interface Link {
   label: string;
   url: string;
   icon: string;
+  order_by: number;
 }
 
 export interface WorkExperience {
@@ -11,6 +12,7 @@ export interface WorkExperience {
   company: string;
   period: string;
   description: string;
+  order_by: number;
 }
 
 export interface Study {
@@ -19,6 +21,7 @@ export interface Study {
   institution: string;
   period: string;
   description: string;
+  order_by: number;
 }
 
 export interface TechTag {
@@ -31,6 +34,7 @@ export interface TechnicalSkill {
   title: string;
   description: string;
   tags: TechTag[];
+  order_by: number;
 }
 
 export interface AboutData {

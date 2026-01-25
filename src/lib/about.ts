@@ -49,6 +49,7 @@ export interface WorkExperience {
   role: string;
   timeframe: string;
   description: string;
+  order_by: number;
 }
 
 // --- EDUCATION ---
@@ -59,6 +60,7 @@ export interface Education {
   degree: string;
   period: string;
   description: string;
+  order_by: number;
 }
 
 // --- SKILLS ---

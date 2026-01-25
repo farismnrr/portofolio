@@ -40,7 +40,7 @@ type CreateWorkRequestFull struct {
 	Role        string `json:"role"`
 	Timeframe   string `json:"timeframe"`
 	Description string `json:"description"`
-	OrderBy     int    `json:"order_by"`
+	OrderBy     *int   `json:"order_by"`
 	AboutID     string `json:"about_id"`
 }
 
@@ -85,8 +85,11 @@ func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 		Role:        req.Role,
 		Timeframe:   req.Timeframe,
 		Description: req.Description,
-		OrderBy:     req.OrderBy,
 		AboutID:     req.AboutID,
+	}
+
+	if req.OrderBy != nil {
+		work.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.CreateWorkExperience(c.Request().Context(), work); err != nil {
@@ -137,8 +140,8 @@ func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 	if req.Description != "" {
 		existing.Description = req.Description
 	}
-	if req.OrderBy != 0 {
-		existing.OrderBy = req.OrderBy
+	if req.OrderBy != nil {
+		existing.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.UpdateWorkExperience(c.Request().Context(), existing); err != nil {

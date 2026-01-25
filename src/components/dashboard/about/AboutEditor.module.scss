@@ -702,3 +702,66 @@
         pointer-events: none;
     }
 }
+
+.reorderBtns {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+
+    button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem;
+        background: transparent;
+        border: 1px solid var(--neutral-border-weak);
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--neutral-on-background-weak);
+        transition: all 0.2s ease;
+
+        &:hover {
+            &:not(:disabled) {
+                background: var(--neutral-background-medium);
+                color: var(--neutral-on-background-strong);
+                border-color: var(--neutral-border-medium);
+            }
+        }
+
+        &:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        svg {
+            font-size: 1rem;
+        }
+    }
+}
+
+.moveBtn {
+    background: transparent;
+    border: none;
+    color: var(--neutral-on-background-weak);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: var(--neutral-background-medium);
+        color: var(--neutral-on-background-strong);
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    svg {
+        font-size: 1.125rem;
+    }
+}

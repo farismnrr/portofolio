@@ -40,7 +40,7 @@ type CreateSocialLinkRequest struct {
 	Name    string `json:"name"`
 	Link    string `json:"link"`
 	Icon    string `json:"icon"` // Make sure entity has this
-	OrderBy int    `json:"order_by"`
+	OrderBy *int   `json:"order_by"`
 	AboutID string `json:"about_id"` // Assuming we link it to an about profile
 }
 
@@ -83,8 +83,11 @@ func (h *SocialHandler) CreateSocialLink(c echo.Context) error {
 		Name:    req.Name,
 		Link:    req.Link,
 		Icon:    req.Icon,
-		OrderBy: req.OrderBy,
 		AboutID: req.AboutID,
+	}
+
+	if req.OrderBy != nil {
+		social.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.CreateSocialLink(c.Request().Context(), social); err != nil {
@@ -142,8 +145,8 @@ func (h *SocialHandler) UpdateSocialLink(c echo.Context) error {
 	if req.Icon != "" {
 		existing.Icon = req.Icon
 	}
-	if req.OrderBy != 0 {
-		existing.OrderBy = req.OrderBy
+	if req.OrderBy != nil {
+		existing.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.UpdateSocialLink(c.Request().Context(), existing); err != nil {

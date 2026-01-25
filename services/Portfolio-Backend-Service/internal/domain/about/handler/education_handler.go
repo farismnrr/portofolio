@@ -40,7 +40,7 @@ type CreateEducationRequest struct {
 	Degree      string `json:"degree"`
 	Period      string `json:"period"`
 	Description string `json:"description"`
-	OrderBy     int    `json:"order_by"`
+	OrderBy     *int   `json:"order_by"`
 	AboutID     string `json:"about_id"`
 }
 
@@ -84,8 +84,11 @@ func (h *EducationHandler) CreateEducation(c echo.Context) error {
 		Degree:      req.Degree,
 		Period:      req.Period,
 		Description: req.Description,
-		OrderBy:     req.OrderBy,
 		AboutID:     req.AboutID,
+	}
+
+	if req.OrderBy != nil {
+		edu.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.CreateEducation(c.Request().Context(), edu); err != nil {
@@ -136,8 +139,8 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 	if req.Description != "" {
 		existing.Description = req.Description
 	}
-	if req.OrderBy != 0 {
-		existing.OrderBy = req.OrderBy
+	if req.OrderBy != nil {
+		existing.OrderBy = *req.OrderBy
 	}
 
 	if err := h.usecase.UpdateEducation(c.Request().Context(), existing); err != nil {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiBriefcase, FiChevronDown, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiBriefcase, FiChevronDown, FiChevronUp, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
 import type { AboutData, WorkExperience } from "../types";
 
@@ -30,8 +30,23 @@ export default function WorkExperienceSection({
       company: "",
       period: "",
       description: "",
+      order_by: data.workExperience.length,
     };
     setData({ ...data, workExperience: [...data.workExperience, newExp] });
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newExp = [...data.workExperience];
+    [newExp[index - 1], newExp[index]] = [newExp[index], newExp[index - 1]];
+    setData({ ...data, workExperience: newExp });
+  };
+
+  const moveDown = (index: number) => {
+    if (index === data.workExperience.length - 1) return;
+    const newExp = [...data.workExperience];
+    [newExp[index + 1], newExp[index]] = [newExp[index], newExp[index + 1]];
+    setData({ ...data, workExperience: newExp });
   };
 
   const updateWorkExperience = (id: string, field: keyof WorkExperience, value: string) => {
@@ -105,14 +120,36 @@ export default function WorkExperienceSection({
                     />
                     <h4 style={{ margin: 0 }}>{exp.title || "New Position"}</h4>
                   </button>
-                  <button
-                    type="button"
-                    className={styles.deleteBtn}
-                    onClick={() => deleteWorkExperience(exp.id)}
-                    title="Delete experience"
-                  >
-                    <FiTrash2 />
-                  </button>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <div className={styles.reorderBtns}>
+                      <button
+                        type="button"
+                        onClick={() => moveUp(data.workExperience.indexOf(exp))}
+                        disabled={data.workExperience.indexOf(exp) === 0}
+                        title="Move Up"
+                      >
+                        <FiChevronUp />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveDown(data.workExperience.indexOf(exp))}
+                        disabled={
+                          data.workExperience.indexOf(exp) === data.workExperience.length - 1
+                        }
+                        title="Move Down"
+                      >
+                        <FiChevronDown />
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.deleteBtn}
+                      onClick={() => deleteWorkExperience(exp.id)}
+                      title="Delete experience"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
                 </div>
                 <div className={styles.collapsibleContent}>
                   <div className={styles.itemFields} style={{ marginTop: "1rem" }}>

@@ -3,7 +3,7 @@
 import { inferIconName } from "@/lib/utils/icons";
 import { Icon } from "@once-ui-system/core";
 import { useState } from "react";
-import { FiChevronDown, FiCode, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiCode, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
 import type { AboutData, TechTag, TechnicalSkill } from "../types";
 
@@ -33,9 +33,29 @@ export default function TechnicalSkillsSection({
       ...data,
       technicalSkills: [
         ...data.technicalSkills,
-        { id: Date.now().toString(), title: "", description: "", tags: [] },
+        {
+          id: Date.now().toString(),
+          title: "",
+          description: "",
+          tags: [],
+          order_by: data.technicalSkills.length,
+        },
       ],
     });
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newSkills = [...data.technicalSkills];
+    [newSkills[index - 1], newSkills[index]] = [newSkills[index], newSkills[index - 1]];
+    setData({ ...data, technicalSkills: newSkills });
+  };
+
+  const moveDown = (index: number) => {
+    if (index === data.technicalSkills.length - 1) return;
+    const newSkills = [...data.technicalSkills];
+    [newSkills[index + 1], newSkills[index]] = [newSkills[index], newSkills[index + 1]];
+    setData({ ...data, technicalSkills: newSkills });
   };
 
   const updateSkill = (id: string, field: keyof TechnicalSkill, value: string | TechTag[]) => {
@@ -134,14 +154,36 @@ export default function TechnicalSkillsSection({
                     />
                     <h4 style={{ margin: 0 }}>{skill.title || "New Skill Category"}</h4>
                   </button>
-                  <button
-                    type="button"
-                    className={styles.deleteBtn}
-                    onClick={() => deleteSkill(skill.id)}
-                    title="Delete skill category"
-                  >
-                    <FiTrash2 />
-                  </button>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <div className={styles.reorderBtns}>
+                      <button
+                        type="button"
+                        onClick={() => moveUp(data.technicalSkills.indexOf(skill))}
+                        disabled={data.technicalSkills.indexOf(skill) === 0}
+                        title="Move Up"
+                      >
+                        <FiChevronUp />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveDown(data.technicalSkills.indexOf(skill))}
+                        disabled={
+                          data.technicalSkills.indexOf(skill) === data.technicalSkills.length - 1
+                        }
+                        title="Move Down"
+                      >
+                        <FiChevronDown />
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.deleteBtn}
+                      onClick={() => deleteSkill(skill.id)}
+                      title="Delete skill category"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
                 </div>
                 <div className={styles.collapsibleContent}>
                   <div className={styles.itemFields} style={{ marginTop: "1rem" }}>

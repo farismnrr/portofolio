@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiBook, FiChevronDown, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiBook, FiChevronDown, FiChevronUp, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
 import type { AboutData, Study } from "../types";
 
@@ -26,8 +26,23 @@ export default function EducationSection({ data, setData, errors }: EducationSec
       institution: "",
       period: "",
       description: "",
+      order_by: data.studies.length,
     };
     setData({ ...data, studies: [...data.studies, newStudy] });
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newStudies = [...data.studies];
+    [newStudies[index - 1], newStudies[index]] = [newStudies[index], newStudies[index - 1]];
+    setData({ ...data, studies: newStudies });
+  };
+
+  const moveDown = (index: number) => {
+    if (index === data.studies.length - 1) return;
+    const newStudies = [...data.studies];
+    [newStudies[index + 1], newStudies[index]] = [newStudies[index], newStudies[index + 1]];
+    setData({ ...data, studies: newStudies });
   };
 
   const updateStudy = (id: string, field: keyof Study, value: string) => {
@@ -101,14 +116,34 @@ export default function EducationSection({ data, setData, errors }: EducationSec
                     />
                     <h4 style={{ margin: 0 }}>{study.institution || "New Institution"}</h4>
                   </button>
-                  <button
-                    type="button"
-                    className={styles.deleteBtn}
-                    onClick={() => deleteStudy(study.id)}
-                    title="Delete education"
-                  >
-                    <FiTrash2 />
-                  </button>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <div className={styles.reorderBtns}>
+                      <button
+                        type="button"
+                        onClick={() => moveUp(data.studies.indexOf(study))}
+                        disabled={data.studies.indexOf(study) === 0}
+                        title="Move Up"
+                      >
+                        <FiChevronUp />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveDown(data.studies.indexOf(study))}
+                        disabled={data.studies.indexOf(study) === data.studies.length - 1}
+                        title="Move Down"
+                      >
+                        <FiChevronDown />
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.deleteBtn}
+                      onClick={() => deleteStudy(study.id)}
+                      title="Delete education"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
                 </div>
                 <div className={styles.collapsibleContent}>
                   <div className={styles.itemFields} style={{ marginTop: "1rem" }}>

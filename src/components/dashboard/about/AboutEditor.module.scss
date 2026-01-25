@@ -52,6 +52,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        transition: margin 0.3s ease;
 
         svg {
             color: #0066cc;
@@ -253,6 +254,7 @@
             align-items: flex-start;
             margin-bottom: 1.5rem;
             gap: 1rem;
+            transition: margin 0.3s ease;
 
             h4 {
                 font-size: 1.125rem;
@@ -680,6 +682,14 @@
 }
 
 .collapsed {
+    padding: 0.75rem 1.25rem !important;
+
+    .sectionHeader,
+    .itemHeader,
+    h2 {
+        margin-bottom: 0 !important;
+    }
+
     .collapseBtn svg {
         transform: rotate(-90deg);
     }

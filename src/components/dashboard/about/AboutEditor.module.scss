@@ -193,6 +193,7 @@
         }
 
         .deleteBtn {
+            margin-top: 1.875rem;
             padding: 0.75rem;
             background: #ef4444;
             color: white;
@@ -616,22 +617,24 @@
         }
     }
 }
+
 .fieldError {
-  color: #ef4444;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  display: block;
-  font-weight: 500;
-  animation: slideDown 0.2s ease-out;
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+    animation: slideDown 0.2s ease-out;
 }
 
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

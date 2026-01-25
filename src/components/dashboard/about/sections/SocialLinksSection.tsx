@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiChevronDown, FiChevronUp, FiLink, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiChevronDown, FiLink, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
 import type { AboutData, Link } from "../types";
 
@@ -23,20 +23,6 @@ export default function SocialLinksSection({ data, setData, errors }: SocialLink
       order_by: data.links.length,
     };
     setData({ ...data, links: [...data.links, newLink] });
-  };
-
-  const moveUp = (index: number) => {
-    if (index === 0) return;
-    const newLinks = [...data.links];
-    [newLinks[index - 1], newLinks[index]] = [newLinks[index], newLinks[index - 1]];
-    setData({ ...data, links: newLinks });
-  };
-
-  const moveDown = (index: number) => {
-    if (index === data.links.length - 1) return;
-    const newLinks = [...data.links];
-    [newLinks[index + 1], newLinks[index]] = [newLinks[index], newLinks[index + 1]];
-    setData({ ...data, links: newLinks });
   };
 
   const updateLink = (id: string, field: keyof Link, value: string) => {
@@ -74,26 +60,6 @@ export default function SocialLinksSection({ data, setData, errors }: SocialLink
         <div className={styles.linksList} style={{ marginTop: "1.5rem" }}>
           {data.links.map((link) => (
             <div key={link.id} className={styles.linkItem}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-                <button
-                  type="button"
-                  className={styles.moveBtn}
-                  onClick={() => moveUp(data.links.indexOf(link))}
-                  disabled={data.links.indexOf(link) === 0}
-                  title="Move Up"
-                >
-                  <FiChevronUp />
-                </button>
-                <button
-                  type="button"
-                  className={styles.moveBtn}
-                  onClick={() => moveDown(data.links.indexOf(link))}
-                  disabled={data.links.indexOf(link) === data.links.length - 1}
-                  title="Move Down"
-                >
-                  <FiChevronDown />
-                </button>
-              </div>
               <div className={styles.formGroup}>
                 <label htmlFor={`link-label-${link.id}`}>Label</label>
                 <input

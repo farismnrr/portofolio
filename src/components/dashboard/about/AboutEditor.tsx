@@ -149,7 +149,7 @@ export default function AboutEditor() {
           icon: inferIconName(cl.label),
           order_by: i,
         });
-      } else if (cl.label !== ol.label || cl.url !== ol.url || i !== ol.order_by) {
+      } else if (cl.label !== ol.label || cl.url !== ol.url) {
         res = await updateSocialLink(accessToken, cl.id, {
           name: cl.label,
           link: cl.url,

@@ -1,6 +1,7 @@
 "use client";
 
 import { inferIconName } from "@/lib/utils/icons";
+import { Icon } from "@once-ui-system/core";
 import { useState } from "react";
 import { FiCode, FiPlus, FiTrash2 } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
@@ -133,6 +134,7 @@ export default function TechnicalSkillsSection({
                 <div className={styles.tagsContainer}>
                   {skill.tags.map((tag, tagIndex) => (
                     <div key={`tag-${skill.id}-${tagIndex}`} className={styles.tagChip}>
+                      {tag.icon && <Icon name={tag.icon} size="s" />}
                       {tag.name}
                       <button
                         type="button"

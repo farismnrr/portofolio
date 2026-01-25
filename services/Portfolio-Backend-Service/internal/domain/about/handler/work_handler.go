@@ -60,6 +60,11 @@ type CreateWorkRequestFull struct {
 // @Router /v1/about/work-experiences [post]
 func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 	var req CreateWorkRequestFull
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -96,7 +101,7 @@ func (h *WorkHandler) CreateWorkExperience(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusCreated, "Work experience created successfully", map[string]interface{}{"work_experience": work})
+	return response.Success(c, http.StatusCreated, "Work experience created successfully", map[string]interface{}{"experience_id": work.ID})
 }
 
 // UpdateWorkExperience updates work experience details
@@ -124,6 +129,11 @@ func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 	}
 
 	var req CreateWorkRequestFull
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -148,7 +158,7 @@ func (h *WorkHandler) UpdateWorkExperience(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "Work experience updated successfully", nil)
+	return response.SuccessNoData(c, http.StatusOK, "Work experience updated successfully")
 }
 
 // DeleteWorkExperience deletes a job entry

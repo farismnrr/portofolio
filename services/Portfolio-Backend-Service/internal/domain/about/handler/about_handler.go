@@ -67,6 +67,11 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 // @Router /v1/about [patch]
 func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 	var req UpdateAboutRequest
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload format")
 	}
@@ -109,7 +114,7 @@ func (h *AboutHandler) UpdateAbout(c echo.Context) error {
 // @Produce json
 // @Security BearerAuth
 // @Param avatar formData file true "Avatar image file"
-// @Success 200 {object} response.SuccessResponse{data=map[string]map[string]string}
+// @Success 200 {object} response.SuccessResponse "Successfully Updated"
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
@@ -131,7 +136,7 @@ func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 	// 2. Validation: File Type (Only images)
 	contentType := file.Header.Get("Content-Type")
 	if !strings.HasPrefix(contentType, "image/") {
-		return response.Error(c, http.StatusBadRequest, "Invalid file type: Only images are allowed")
+		return response.Error(c, http.StatusUnsupportedMediaType, "Invalid file type: Only images are allowed")
 	}
 
 	src, err := file.Open()
@@ -140,17 +145,11 @@ func (h *AboutHandler) UpdateAvatar(c echo.Context) error {
 	}
 	defer src.Close()
 
-	url, err := h.usecase.UpdateAvatar(c.Request().Context(), src, file.Filename)
+	_, err = h.usecase.UpdateAvatar(c.Request().Context(), src, file.Filename)
 	if err != nil {
 		logger.Error("Failed to update avatar", zap.Error(err))
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	res := map[string]interface{}{
-		"about": map[string]string{
-			"avatar": url,
-		},
-	}
-
-	return response.Success(c, http.StatusOK, "Avatar updated successfully", res)
+	return response.SuccessNoData(c, http.StatusOK, "Avatar updated successfully")
 }

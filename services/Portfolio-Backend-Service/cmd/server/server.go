@@ -16,6 +16,7 @@ import (
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/middleware"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/content"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/dashboard"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/interaction"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/site"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/sso"
 	"github.com/labstack/echo/v4"
@@ -88,6 +89,7 @@ func (s *Server) SetupRoutes() {
 	sso.RegisterRoutes(v1, s.config)
 	dashboard.RegisterRoutes(v1, s.config)
 	about.RegisterAboutRoutes(v1, s.db, s.config, s.cacheStore)
+	interaction.RegisterRoutes(v1, s.db, s.config)
 
 	// Status endpoint
 	v1.GET("/status", func(c echo.Context) error {

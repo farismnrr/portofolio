@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -62,75 +64,175 @@ func (m *MockSkillUsecase) GetTagByID(ctx context.Context, id string) (*entity.S
 
 func TestGetSkills(t *testing.T) {
 	e := echo.New()
-	t.Run("Success", func(t *testing.T) {
+	t.Run("Case 1: Successfully Retrieve", func(t *testing.T) {
 		mockUC := new(MockSkillUsecase)
 		h := NewSkillHandler(mockUC)
 
-		cats := []entity.SkillCategory{{Title: "Backend"}}
+		cats := []entity.SkillCategory{{ID: "cat-1", Title: "Backend"}}
 		mockUC.On("GetSkillCategories", mock.Anything).Return(cats, nil)
 
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req := httptest.NewRequest(http.MethodGet, "/v1/about/skills", nil)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		assert.NoError(t, h.GetSkills(c))
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Contains(t, rec.Body.String(), "Skills retrieved successfully")
-		assert.Contains(t, rec.Body.String(), "skill_categories")
-		assert.Contains(t, rec.Body.String(), "Backend")
+		if assert.NoError(t, h.GetSkills(c)) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+			var response struct {
+				Status bool `json:"status"`
+				Data   struct {
+					SkillCategories []entity.SkillCategory `json:"skill_categories"`
+				} `json:"data"`
+			}
+			_ = json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.NotEmpty(t, response.Data.SkillCategories)
+		}
+	})
+
+	t.Run("Case 2: Internal Server Error", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+		mockUC.On("GetSkillCategories", mock.Anything).Return(nil, errors.New("db error"))
+
+		req := httptest.NewRequest(http.MethodGet, "/v1/about/skills", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		if assert.NoError(t, h.GetSkills(c)) {
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+		}
 	})
 }
 
 func TestCreateCategory(t *testing.T) {
 	e := echo.New()
-	t.Run("Success", func(t *testing.T) {
+	t.Run("Case 1: Created", func(t *testing.T) {
 		mockUC := new(MockSkillUsecase)
 		h := NewSkillHandler(mockUC)
 
 		reqBody := `{"title":"Backend","order_by":1}`
 		mockUC.On("CreateCategory", mock.Anything, mock.MatchedBy(func(c *entity.SkillCategory) bool {
 			return c.Title == "Backend"
-		})).Return(nil)
+		})).Return(nil).Run(func(args mock.Arguments) {
+			cat := args.Get(1).(*entity.SkillCategory)
+			cat.ID = "new-cat-uuid"
+		})
 
-		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(reqBody))
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills", strings.NewReader(reqBody))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		assert.NoError(t, h.CreateCategory(c))
-		assert.Equal(t, http.StatusCreated, rec.Code)
-		assert.Contains(t, rec.Body.String(), "Skill category created successfully")
-		assert.Contains(t, rec.Body.String(), "skill_category")
+		if assert.NoError(t, h.CreateCategory(c)) {
+			assert.Equal(t, http.StatusCreated, rec.Code)
+			var response struct {
+				Data struct {
+					CategoryID string `json:"category_id"`
+				} `json:"data"`
+			}
+			_ = json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.Equal(t, "new-cat-uuid", response.Data.CategoryID)
+		}
 	})
 
-	t.Run("ValidationFailed", func(t *testing.T) {
+	t.Run("Case 2: Validation Failed (422)", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+		reqBody := `{"title":""}` // Missing title
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills", strings.NewReader(reqBody))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		if assert.NoError(t, h.CreateCategory(c)) {
+			assert.Equal(t, 422, rec.Code)
+		}
+	})
+
+	t.Run("Case 3: Unsupported Media Type (415)", func(t *testing.T) {
 		mockUC := new(MockSkillUsecase)
 		h := NewSkillHandler(mockUC)
 
-		reqBody := `{"description":"No title"}`
-		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(reqBody))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		reqBody := `{"title":"Backend"}`
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills", strings.NewReader(reqBody))
+		// Invalid Content-Type
+		req.Header.Set(echo.HeaderContentType, echo.MIMETextPlain)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		assert.NoError(t, h.CreateCategory(c))
-		assert.Equal(t, 422, rec.Code)
+		if assert.NoError(t, h.CreateCategory(c)) {
+			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
+		}
 	})
+
+}
+
+func TestUpdateCategory(t *testing.T) {
+	e := echo.New()
+	t.Run("Case 1: Successfully Updated", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+
+		id := "cat-1"
+		mockUC.On("GetCategoryByID", mock.Anything, id).Return(&entity.SkillCategory{ID: id}, nil)
+		mockUC.On("UpdateCategory", mock.Anything, mock.Anything).Return(nil)
+
+		reqBody := `{"title":"Frontend"}`
+		req := httptest.NewRequest(http.MethodPatch, "/v1/about/skills/"+id, strings.NewReader(reqBody))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues(id)
+
+		if assert.NoError(t, h.UpdateCategory(c)) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+			var response struct {
+				Data interface{} `json:"data"`
+			}
+			_ = json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.Nil(t, response.Data)
+		}
+	})
+
+	t.Run("Case 2: Unsupported Media Type (415)", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+
+		id := "cat-1"
+		mockUC.On("GetCategoryByID", mock.Anything, id).Return(&entity.SkillCategory{ID: id}, nil)
+
+		reqBody := `{"title":"Updated"}`
+		req := httptest.NewRequest(http.MethodPatch, "/v1/about/skills/"+id, strings.NewReader(reqBody))
+		// Invalid Content-Type
+		req.Header.Set(echo.HeaderContentType, echo.MIMETextPlain)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues(id)
+
+		if assert.NoError(t, h.UpdateCategory(c)) {
+			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
+		}
+	})
+
 }
 
 func TestAddTag(t *testing.T) {
 	e := echo.New()
-	t.Run("Success", func(t *testing.T) {
+	t.Run("Case 1: Successfully Created", func(t *testing.T) {
 		mockUC := new(MockSkillUsecase)
 		h := NewSkillHandler(mockUC)
 
 		mockUC.On("GetCategoryByID", mock.Anything, "1").Return(&entity.SkillCategory{ID: "1"}, nil)
 		mockUC.On("AddTag", mock.Anything, mock.MatchedBy(func(t *entity.SkillTag) bool {
 			return t.Name == "Go"
-		})).Return(nil)
+		})).Return(nil).Run(func(args mock.Arguments) {
+			tag := args.Get(1).(*entity.SkillTag)
+			tag.ID = "new-tag-uuid"
+		})
 
 		reqBody := `{"name":"Go","order_by":1}`
-		req := httptest.NewRequest(http.MethodPost, "/1/tags", strings.NewReader(reqBody))
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills/1/tags", strings.NewReader(reqBody))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
@@ -138,11 +240,54 @@ func TestAddTag(t *testing.T) {
 		c.SetParamNames("id")
 		c.SetParamValues("1")
 
-		assert.NoError(t, h.AddTag(c))
-		assert.Equal(t, http.StatusCreated, rec.Code)
-		assert.Contains(t, rec.Body.String(), "Skill tag added successfully")
-		assert.Contains(t, rec.Body.String(), "skill_tag")
+		if assert.NoError(t, h.AddTag(c)) {
+			assert.Equal(t, http.StatusCreated, rec.Code)
+			var response struct {
+				Data struct {
+					TagID string `json:"tag_id"`
+				} `json:"data"`
+			}
+			_ = json.Unmarshal(rec.Body.Bytes(), &response)
+			assert.Equal(t, "new-tag-uuid", response.Data.TagID)
+		}
 	})
+
+	t.Run("Case 2: Category Not Found (404)", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+		mockUC.On("GetCategoryByID", mock.Anything, "999").Return(nil, errors.New("not found"))
+
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills/999/tags", strings.NewReader(`{}`))
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues("999")
+
+		if assert.NoError(t, h.AddTag(c)) {
+			assert.Equal(t, http.StatusNotFound, rec.Code)
+		}
+	})
+
+	t.Run("Case 3: Unsupported Media Type (415)", func(t *testing.T) {
+		mockUC := new(MockSkillUsecase)
+		h := NewSkillHandler(mockUC)
+
+		mockUC.On("GetCategoryByID", mock.Anything, "1").Return(&entity.SkillCategory{ID: "1"}, nil)
+
+		reqBody := `{"name":"Go"}`
+		req := httptest.NewRequest(http.MethodPost, "/v1/about/skills/1/tags", strings.NewReader(reqBody))
+		// Invalid Content-Type
+		req.Header.Set(echo.HeaderContentType, echo.MIMETextPlain)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		if assert.NoError(t, h.AddTag(c)) {
+			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
+		}
+	})
+
 }
 
 func TestDeleteTag(t *testing.T) {

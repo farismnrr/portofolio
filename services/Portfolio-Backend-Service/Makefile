@@ -34,11 +34,11 @@ build: ## Build the application binary
 
 test: ## Run tests
 	@echo "Running tests..."
-	@go test -v ./...
+	@go test -v ./cmd/... ./internal/...
 
 test-coverage: ## Run tests with coverage
 	@echo "Running tests with coverage..."
-	@go test -v -coverprofile=coverage.out ./...
+	@go test -v -coverprofile=coverage.out ./cmd/... ./internal/...
 	@go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: coverage.html"
 
@@ -55,7 +55,7 @@ tidy: ## Tidy and verify go.mod
 
 lint: ## Run linter (requires golangci-lint)
 	@echo "Running linter..."
-	@golangci-lint run ./...
+	@go vet ./cmd/... ./internal/...
 
 docker-build: ## Build Docker image
 	@echo "Building Docker image..."

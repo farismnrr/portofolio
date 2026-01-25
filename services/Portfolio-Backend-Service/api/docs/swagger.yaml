@@ -100,6 +100,23 @@ definitions:
       updated_at:
         type: string
     type: object
+  entity.WorksMetadata:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      likes_count:
+        type: integer
+      slug:
+        type: string
+      updated_at:
+        type: string
+      views_count:
+        type: integer
+    type: object
   handler.AboutResponse:
     properties:
       avatar:
@@ -112,16 +129,6 @@ definitions:
         type: string
       role:
         type: string
-    type: object
-  handler.AddCommentRequest:
-    properties:
-      content:
-        type: string
-      user_name:
-        type: string
-    required:
-    - content
-    - user_name
     type: object
   handler.AuthenticateRequest:
     properties:
@@ -142,17 +149,6 @@ definitions:
       authenticated:
         example: true
         type: boolean
-    type: object
-  handler.CommentResponse:
-    properties:
-      content:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      user_name:
-        type: string
     type: object
   handler.CreateCategoryRequest:
     properties:
@@ -229,17 +225,6 @@ definitions:
         example: https://example.com
         type: string
     type: object
-  handler.InteractionResponse:
-    properties:
-      comments:
-        items:
-          $ref: '#/definitions/handler.CommentResponse'
-        type: array
-      likes:
-        type: integer
-      views:
-        type: integer
-    type: object
   handler.LoginRequest:
     properties:
       refresh_token:
@@ -258,11 +243,6 @@ definitions:
         type: string
       order_by:
         type: integer
-    type: object
-  handler.ToggleLikeRequest:
-    properties:
-      is_like:
-        type: boolean
     type: object
   handler.UpdateAboutRequest:
     properties:
@@ -409,18 +389,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Successfully Updated
           schema:
-            allOf:
-            - $ref: '#/definitions/response.SuccessResponse'
-            - properties:
-                data:
-                  additionalProperties:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  type: object
-              type: object
+            $ref: '#/definitions/response.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1243,11 +1214,7 @@ paths:
                   $ref: '#/definitions/handler.UserResponse'
               type: object
         "401":
-          description: No authorization header or failed to fetch user
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: 'Access denied: admin role required'
+          description: Unauthorized (Missing token or Non-admin role)
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       security:
@@ -1255,22 +1222,14 @@ paths:
       summary: Get User Information
       tags:
       - Auth
-  /v1/interactions/{type}/{slug}:
+  /v1/interactions/works/{slug}:
     get:
-      description: Fetch views, likes, and comments for a specific work or blog post.
       parameters:
-      - description: Post Type (work or blog)
-        in: path
-        name: type
-        required: true
-        type: string
-      - description: Post Slug
+      - description: Work Slug
         in: path
         name: slug
         required: true
         type: string
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
@@ -1279,110 +1238,20 @@ paths:
             - $ref: '#/definitions/response.SuccessResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/handler.InteractionResponse'
+                  $ref: '#/definitions/entity.WorksMetadata'
               type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Get post interactions
+      summary: Get Work Metadata
       tags:
       - Interaction
-  /v1/interactions/{type}/{slug}/comment:
-    post:
-      consumes:
-      - application/json
-      description: Add a user comment to a specific work or blog post.
-      parameters:
-      - description: Post Type (work or blog)
-        in: path
-        name: type
-        required: true
-        type: string
-      - description: Post Slug
-        in: path
-        name: slug
-        required: true
-        type: string
-      - description: Comment Data
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/handler.AddCommentRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Add post comment
+    patch:
+      responses: {}
+      summary: Update Work Metadata
       tags:
       - Interaction
-  /v1/interactions/{type}/{slug}/like:
-    post:
-      consumes:
-      - application/json
-      description: Increment or decrement the like count for a specific work or blog
-        post.
+  /v1/interactions/works/{slug}/like:
+    patch:
       parameters:
-      - description: Post Type (work or blog)
-        in: path
-        name: type
-        required: true
-        type: string
-      - description: Post Slug
-        in: path
-        name: slug
-        required: true
-        type: string
-      - description: Toggle Like Data
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/handler.ToggleLikeRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Toggle post like
-      tags:
-      - Interaction
-  /v1/interactions/{type}/{slug}/view:
-    post:
-      description: Increment the view count for a specific work or blog post.
-      parameters:
-      - description: Post Type (work or blog)
-        in: path
-        name: type
-        required: true
-        type: string
-      - description: Post Slug
+      - description: Work Slug
         in: path
         name: slug
         required: true
@@ -1392,15 +1261,23 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.SuccessResponse'
-        "400":
-          description: Bad Request
+      summary: Increment Work Like
+      tags:
+      - Interaction
+  /v1/interactions/works/{slug}/view:
+    patch:
+      parameters:
+      - description: Work Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Record post view
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Increment Work View
       tags:
       - Interaction
   /v1/og/fetch:

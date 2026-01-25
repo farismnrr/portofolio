@@ -61,8 +61,7 @@ func RequireRole(allowedRoles ...string) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			userRole, ok := c.Get("role").(string)
 			if !ok {
-				logger.Error("Role not found in context - did you forget RequireAuth middleware?")
-				return response.Error(c, http.StatusForbidden, "Access denied")
+				return response.Error(c, http.StatusUnauthorized, "Access denied")
 			}
 
 			if !roleMap[userRole] {
@@ -70,7 +69,7 @@ func RequireRole(allowedRoles ...string) echo.MiddlewareFunc {
 					zap.String("user_role", userRole),
 					zap.Strings("allowed_roles", allowedRoles),
 				)
-				return response.Error(c, http.StatusForbidden, "Forbidden: Insufficient permissions")
+				return response.Error(c, http.StatusUnauthorized, "Forbidden: Insufficient permissions")
 			}
 
 			return next(c)

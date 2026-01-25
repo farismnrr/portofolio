@@ -52,7 +52,7 @@ func TestRequireRole_Forbidden(t *testing.T) {
 
 	err := h(c)
 	assert.NoError(t, err) // Handler returns error wrapped in response
-	assert.Equal(t, http.StatusForbidden, rec.Code)
+	assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Forbidden: Insufficient permissions")
 }
 
@@ -70,5 +70,5 @@ func TestRequireRole_NoContext(t *testing.T) {
 
 	err := h(c)
 	assert.NoError(t, err)
-	assert.Equal(t, http.StatusForbidden, rec.Code)
+	assert.Equal(t, http.StatusUnauthorized, rec.Code)
 }

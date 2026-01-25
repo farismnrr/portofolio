@@ -115,8 +115,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=UserResponse} "User data retrieved successfully"
-// @Failure 401 {object} response.ErrorResponse "No authorization header or failed to fetch user"
-// @Failure 403 {object} response.ErrorResponse "Access denied: admin role required"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing token or Non-admin role)"
 // @Router /v1/auth/user [get]
 func (h *Handler) GetUser(c echo.Context) error {
 	// Get authorization header
@@ -146,7 +145,7 @@ func (h *Handler) GetUser(c echo.Context) error {
 			zap.String("username", userData.Username),
 			zap.String("role", userData.Role),
 		)
-		return response.Error(c, http.StatusForbidden, "Access denied: admin role required")
+		return response.Error(c, http.StatusUnauthorized, "Access denied: admin role required")
 	}
 
 	userDataResp := UserDataWrapper{

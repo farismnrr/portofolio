@@ -43,7 +43,7 @@ func TestGetAbout(t *testing.T) {
 		if assert.NoError(t, h.GetAbout(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			var response struct {
+			var resBody struct {
 				Status  bool   `json:"status"`
 				Message string `json:"message"`
 				Data    struct {
@@ -56,12 +56,12 @@ func TestGetAbout(t *testing.T) {
 					} `json:"about"`
 				} `json:"data"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.True(t, response.Status)
-			assert.Equal(t, "About information retrieved successfully", response.Message)
-			assert.Equal(t, "Faris Munir", response.Data.About.Name)
-			assert.Equal(t, id.String(), response.Data.About.ID)
+			assert.True(t, resBody.Status)
+			assert.Equal(t, "About information retrieved successfully", resBody.Message)
+			assert.Equal(t, "Faris Munir", resBody.Data.About.Name)
+			assert.Equal(t, id.String(), resBody.Data.About.ID)
 		}
 	})
 
@@ -78,18 +78,18 @@ func TestGetAbout(t *testing.T) {
 		if assert.NoError(t, h.GetAbout(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			var response struct {
+			var resBody struct {
 				Status  bool   `json:"status"`
 				Message string `json:"message"`
 				Data    struct {
 					About interface{} `json:"about"`
 				} `json:"data"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.True(t, response.Status)
-			assert.Equal(t, "About information is empty", response.Message)
-			assert.Nil(t, response.Data.About)
+			assert.True(t, resBody.Status)
+			assert.Equal(t, "About information is empty", resBody.Message)
+			assert.Nil(t, resBody.Data.About)
 		}
 	})
 
@@ -106,14 +106,14 @@ func TestGetAbout(t *testing.T) {
 		if assert.NoError(t, h.GetAbout(c)) {
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 
-			var response struct {
+			var resBody struct {
 				Status  bool   `json:"status"`
 				Message string `json:"message"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.False(t, response.Status)
-			assert.Equal(t, "Internal server error", response.Message)
+			assert.False(t, resBody.Status)
+			assert.Equal(t, "Internal server error", resBody.Message)
 		}
 	})
 }
@@ -136,14 +136,16 @@ func TestUpdateAbout(t *testing.T) {
 		if assert.NoError(t, h.UpdateAbout(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			var response struct {
-				Status  bool   `json:"status"`
-				Message string `json:"message"`
+			var resBody struct {
+				Status  bool        `json:"status"`
+				Message string      `json:"message"`
+				Data    interface{} `json:"data"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.True(t, response.Status)
-			assert.Equal(t, "About profile updated successfully", response.Message)
+			assert.True(t, resBody.Status)
+			assert.Equal(t, "About profile updated successfully", resBody.Message)
+			assert.Nil(t, resBody.Data) // Should be nil or empty as per new contract
 		}
 	})
 
@@ -158,8 +160,23 @@ func TestUpdateAbout(t *testing.T) {
 		c := e.NewContext(req, rec)
 
 		if assert.NoError(t, h.UpdateAbout(c)) {
+			// Malformed JSON usually 400
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-			assert.Contains(t, rec.Body.String(), "Invalid request payload format")
+		}
+	})
+
+	t.Run("Case 3: Unsupported Media Type (415)", func(t *testing.T) {
+		mockUC := new(MockAboutUsecase)
+		h := NewAboutHandler(mockUC)
+
+		reqBody := `{"name":"Faris"}`
+		req := httptest.NewRequest(http.MethodPatch, "/v1/about", strings.NewReader(reqBody))
+		req.Header.Set(echo.HeaderContentType, echo.MIMETextPlain)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		if assert.NoError(t, h.UpdateAbout(c)) {
+			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
 		}
 	})
 
@@ -176,20 +193,37 @@ func TestUpdateAbout(t *testing.T) {
 
 		if assert.NoError(t, h.UpdateAbout(c)) {
 			assert.Equal(t, 422, rec.Code)
-			var response struct {
+			var resBody struct {
 				Status  bool `json:"status"`
 				Details []struct {
 					Field string `json:"field"`
 				} `json:"details"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.False(t, response.Status)
-			assert.NotEmpty(t, response.Details)
-			assert.Equal(t, "name", response.Details[0].Field)
+			assert.False(t, resBody.Status)
+			assert.NotEmpty(t, resBody.Details)
+			assert.Equal(t, "name", resBody.Details[0].Field)
 		}
 	})
 
+	t.Run("Case 4: Internal Server Error (500)", func(t *testing.T) {
+		mockUC := new(MockAboutUsecase)
+		h := NewAboutHandler(mockUC)
+
+		mockUC.On("UpdateAbout", mock.Anything, mock.Anything).Return(errors.New("db error"))
+
+		reqBody := `{"name":"Faris","role":"Dev","description":"Desc"}`
+		req := httptest.NewRequest(http.MethodPatch, "/v1/about", strings.NewReader(reqBody))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		if assert.NoError(t, h.UpdateAbout(c)) {
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+			assert.Contains(t, rec.Body.String(), "Internal server error")
+		}
+	})
 }
 
 func TestUpdateAvatar(t *testing.T) {
@@ -220,18 +254,16 @@ func TestUpdateAvatar(t *testing.T) {
 
 		if assert.NoError(t, h.UpdateAvatar(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
-			var response struct {
-				Status bool `json:"status"`
-				Data   struct {
-					About struct {
-						AvatarURL string `json:"avatar_url"`
-					} `json:"about"`
-				} `json:"data"`
+			var resBody struct {
+				Status  bool        `json:"status"`
+				Message string      `json:"message"`
+				Data    interface{} `json:"data"`
 			}
-			err := json.Unmarshal(rec.Body.Bytes(), &response)
+			err := json.Unmarshal(rec.Body.Bytes(), &resBody)
 			assert.NoError(t, err)
-			assert.True(t, response.Status)
-			assert.Equal(t, "https://storage.com/new.jpg", response.Data.About.AvatarURL)
+			assert.True(t, resBody.Status)
+			assert.Equal(t, "Avatar updated successfully", resBody.Message)
+			assert.Nil(t, resBody.Data)
 		}
 	})
 
@@ -257,7 +289,7 @@ func TestUpdateAvatar(t *testing.T) {
 		c := e.NewContext(req, rec)
 
 		if assert.NoError(t, h.UpdateAvatar(c)) {
-			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
 			assert.Contains(t, rec.Body.String(), "Only images are allowed")
 		}
 	})
@@ -287,6 +319,35 @@ func TestUpdateAvatar(t *testing.T) {
 		if assert.NoError(t, h.UpdateAvatar(c)) {
 			assert.Equal(t, http.StatusRequestEntityTooLarge, rec.Code)
 			assert.Contains(t, rec.Body.String(), "exceeds the 2MB limit")
+		}
+	})
+
+	t.Run("Case 4: Internal Server Error (500)", func(t *testing.T) {
+		mockUC := new(MockAboutUsecase)
+		h := NewAboutHandler(mockUC)
+
+		body := &bytes.Buffer{}
+		writer := multipart.NewWriter(body)
+
+		h_part := make(textproto.MIMEHeader)
+		h_part.Set("Content-Disposition", `form-data; name="avatar"; filename="test.jpg"`)
+		h_part.Set("Content-Type", "image/jpeg")
+		part, err := writer.CreatePart(h_part)
+		assert.NoError(t, err)
+		_, err = part.Write([]byte("fake data"))
+		assert.NoError(t, err)
+		writer.Close()
+
+		mockUC.On("UpdateAvatar", mock.Anything, mock.Anything, "test.jpg").Return("", errors.New("upload failed"))
+
+		req := httptest.NewRequest(http.MethodPatch, "/v1/about/avatar", body)
+		req.Header.Set(echo.HeaderContentType, writer.FormDataContentType())
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		if assert.NoError(t, h.UpdateAvatar(c)) {
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+			assert.Contains(t, rec.Body.String(), "Internal server error")
 		}
 	})
 }

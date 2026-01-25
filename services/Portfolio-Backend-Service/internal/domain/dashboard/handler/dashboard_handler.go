@@ -22,10 +22,10 @@ func (h *Handler) GetDashboard(c echo.Context) error {
 	username := c.Get("username").(string)
 	role := c.Get("role").(string)
 
-	data := map[string]interface{}{
-		"message":  "Welcome to admin dashboard",
-		"username": username,
-		"role":     role,
+	data := DashboardResponse{
+		Message:  "Welcome to admin dashboard",
+		Username: username,
+		Role:     role,
 	}
 
 	return response.Success(c, http.StatusOK, "Dashboard data retrieved", data)

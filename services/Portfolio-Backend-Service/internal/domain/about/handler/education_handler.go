@@ -60,6 +60,11 @@ type CreateEducationRequest struct {
 // @Router /v1/about/education [post]
 func (h *EducationHandler) CreateEducation(c echo.Context) error {
 	var req CreateEducationRequest
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -95,7 +100,7 @@ func (h *EducationHandler) CreateEducation(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusCreated, "Education entry created successfully", map[string]interface{}{"education": edu})
+	return response.Success(c, http.StatusCreated, "Education entry created successfully", map[string]interface{}{"education_id": edu.ID})
 }
 
 // UpdateEducation updates an education record
@@ -123,6 +128,12 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 	}
 
 	var req CreateEducationRequest
+
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -147,7 +158,7 @@ func (h *EducationHandler) UpdateEducation(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "Education entry updated successfully", nil)
+	return response.SuccessNoData(c, http.StatusOK, "Education entry updated successfully")
 }
 
 // DeleteEducation removes an education record

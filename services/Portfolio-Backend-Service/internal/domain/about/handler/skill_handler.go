@@ -65,6 +65,11 @@ type CreateCategoryRequest struct {
 // @Router /v1/about/skills [post]
 func (h *SkillHandler) CreateCategory(c echo.Context) error {
 	var req CreateCategoryRequest
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -98,7 +103,7 @@ func (h *SkillHandler) CreateCategory(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusCreated, "Skill category created successfully", map[string]interface{}{"skill_category": cat})
+	return response.Success(c, http.StatusCreated, "Skill category created successfully", map[string]interface{}{"category_id": cat.ID})
 }
 
 // UpdateCategory updates category details
@@ -126,6 +131,11 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 	}
 
 	var req CreateCategoryRequest
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -144,7 +154,7 @@ func (h *SkillHandler) UpdateCategory(c echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
 
-	return response.Success(c, http.StatusOK, "Skill category updated successfully", nil)
+	return response.SuccessNoData(c, http.StatusOK, "Skill category updated successfully")
 }
 
 // DeleteCategory deletes a category and all its tags
@@ -200,6 +210,11 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 	}
 
 	var req TagRequest
+	// Strict Content-Type check
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return response.Error(c, http.StatusBadRequest, "Invalid request payload")
 	}
@@ -221,7 +236,7 @@ func (h *SkillHandler) AddTag(c echo.Context) error {
 	if err := h.usecase.AddTag(c.Request().Context(), tag); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Internal server error")
 	}
-	return response.Success(c, http.StatusCreated, "Skill tag added successfully", map[string]interface{}{"skill_tag": tag})
+	return response.Success(c, http.StatusCreated, "Skill tag added successfully", map[string]interface{}{"tag_id": tag.ID})
 }
 
 // DeleteTag removes a specific tag

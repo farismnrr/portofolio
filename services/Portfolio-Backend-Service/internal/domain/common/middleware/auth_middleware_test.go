@@ -117,7 +117,7 @@ func TestRequireRole(t *testing.T) {
 
 		err := middleware(c)
 		assert.NoError(t, err)
-		assert.Equal(t, http.StatusForbidden, rec.Code)
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	})
 
 	t.Run("Missing Role Context", func(t *testing.T) {
@@ -128,6 +128,6 @@ func TestRequireRole(t *testing.T) {
 
 		err := middleware(c)
 		assert.NoError(t, err)
-		assert.Equal(t, http.StatusForbidden, rec.Code)
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	})
 }

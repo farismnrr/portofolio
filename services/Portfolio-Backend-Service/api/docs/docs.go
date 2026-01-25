@@ -164,27 +164,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Successfully Updated",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "type": "object",
-                                                "additionalProperties": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/response.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1480,13 +1462,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "No authorization header or failed to fetch user",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Access denied: admin role required",
+                        "description": "Unauthorized (Missing token or Non-admin role)",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
                         }
@@ -1494,27 +1470,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/interactions/{type}/{slug}": {
+        "/v1/interactions/works/{slug}": {
             "get": {
-                "description": "Fetch views, likes, and comments for a specific work or blog post.",
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "Interaction"
                 ],
-                "summary": "Get post interactions",
+                "summary": "Get Work Metadata",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Post Type (work or blog)",
-                        "name": "type",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Post Slug",
+                        "description": "Work Slug",
                         "name": "slug",
                         "in": "path",
                         "required": true
@@ -1532,166 +1497,33 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/handler.InteractionResponse"
+                                            "$ref": "#/definitions/entity.WorksMetadata"
                                         }
                                     }
                                 }
                             ]
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
                     }
                 }
-            }
-        },
-        "/v1/interactions/{type}/{slug}/comment": {
-            "post": {
-                "description": "Add a user comment to a specific work or blog post.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+            },
+            "patch": {
                 "tags": [
                     "Interaction"
                 ],
-                "summary": "Add post comment",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Post Type (work or blog)",
-                        "name": "type",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Post Slug",
-                        "name": "slug",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Comment Data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.AddCommentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
+                "summary": "Update Work Metadata",
+                "responses": {}
             }
         },
-        "/v1/interactions/{type}/{slug}/like": {
-            "post": {
-                "description": "Increment or decrement the like count for a specific work or blog post.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+        "/v1/interactions/works/{slug}/like": {
+            "patch": {
                 "tags": [
                     "Interaction"
                 ],
-                "summary": "Toggle post like",
+                "summary": "Increment Work Like",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Post Type (work or blog)",
-                        "name": "type",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Post Slug",
-                        "name": "slug",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Toggle Like Data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.ToggleLikeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/interactions/{type}/{slug}/view": {
-            "post": {
-                "description": "Increment the view count for a specific work or blog post.",
-                "tags": [
-                    "Interaction"
-                ],
-                "summary": "Record post view",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Post Type (work or blog)",
-                        "name": "type",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Post Slug",
+                        "description": "Work Slug",
                         "name": "slug",
                         "in": "path",
                         "required": true
@@ -1703,17 +1535,30 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.SuccessResponse"
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request",
+                    }
+                }
+            }
+        },
+        "/v1/interactions/works/{slug}/view": {
+            "patch": {
+                "tags": [
+                    "Interaction"
+                ],
+                "summary": "Increment Work View",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Work Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
+                            "$ref": "#/definitions/response.SuccessResponse"
                         }
                     }
                 }
@@ -2060,6 +1905,32 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.WorksMetadata": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "likes_count": {
+                    "type": "integer"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "views_count": {
+                    "type": "integer"
+                }
+            }
+        },
         "handler.AboutResponse": {
             "type": "object",
             "properties": {
@@ -2076,21 +1947,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.AddCommentRequest": {
-            "type": "object",
-            "required": [
-                "content",
-                "user_name"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "user_name": {
                     "type": "string"
                 }
             }
@@ -2122,23 +1978,6 @@ const docTemplate = `{
                 "authenticated": {
                     "type": "boolean",
                     "example": true
-                }
-            }
-        },
-        "handler.CommentResponse": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "user_name": {
-                    "type": "string"
                 }
             }
         },
@@ -2254,23 +2093,6 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.InteractionResponse": {
-            "type": "object",
-            "properties": {
-                "comments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/handler.CommentResponse"
-                    }
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "views": {
-                    "type": "integer"
-                }
-            }
-        },
         "handler.LoginRequest": {
             "type": "object",
             "properties": {
@@ -2298,14 +2120,6 @@ const docTemplate = `{
                 },
                 "order_by": {
                     "type": "integer"
-                }
-            }
-        },
-        "handler.ToggleLikeRequest": {
-            "type": "object",
-            "properties": {
-                "is_like": {
-                    "type": "boolean"
                 }
             }
         },

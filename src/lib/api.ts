@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/store/auth";
 import { getApiUrl } from "./config/backend";
+import { useUIStore } from "@/store/ui";
 
 /**
  * Standard API Client with automatic token refresh
@@ -41,6 +42,23 @@ export async function apiClient(endpoint: string, options: RequestInit = {}): Pr
           headers: retryHeaders,
         });
       }
+    }
+  }
+
+
+  // Global Error Handling (Side Effects)
+  if (!response.ok && response.status !== 401) {
+    const { addToast } = useUIStore.getState();
+    if (response.status === 403) {
+      addToast({ variant: "danger", title: "Access Denied", description: "You do not have permission." });
+    } else if (response.status === 415) {
+      addToast({ variant: "danger", title: "Invalid Format", description: "Unsupported media type." });
+    } else if (response.status === 422) {
+      addToast({ variant: "danger", title: "Validation Error", description: "Please check your input." });
+    } else if (response.status === 400) {
+      addToast({ variant: "danger", title: "Bad Request", description: "Invalid request data." });
+    } else if (response.status === 500) {
+      addToast({ variant: "danger", title: "Server Error", description: "Something went wrong. Please try again." });
     }
   }
 

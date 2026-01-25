@@ -327,9 +327,11 @@ export default function AboutEditor() {
     const file = e.target.files?.[0];
     if (file && accessToken) {
       setIsSyncing(true);
-      const url = await updateAvatar(accessToken, file);
-      if (url) {
-        setData({ ...data, photo: url });
+      const success = await updateAvatar(accessToken, file);
+      if (success) {
+        const refreshed = await fetchAllData();
+        setData(refreshed);
+        setOriginalData(refreshed);
       }
       setIsSyncing(false);
     }

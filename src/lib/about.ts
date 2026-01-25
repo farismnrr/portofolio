@@ -124,7 +124,7 @@ export async function updateAbout(
   }
 }
 
-export async function updateAvatar(_token: string, file: File): Promise<string | null> {
+export async function updateAvatar(_token: string, file: File): Promise<boolean> {
   try {
     const formData = new FormData();
     formData.append("avatar", file);
@@ -132,12 +132,10 @@ export async function updateAvatar(_token: string, file: File): Promise<string |
       method: "PATCH",
       body: formData,
     });
-    if (!response.ok) return null;
-    const body: ApiResponse<{ about: { avatar: string } }> = await response.json();
-    return body.data.about.avatar;
+    return response.ok;
   } catch (error) {
     console.error("Failed to upload avatar:", error);
-    return null;
+    return false;
   }
 }
 

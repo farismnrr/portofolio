@@ -22,6 +22,8 @@ interface AuthState {
   initialize: (forceRefresh?: boolean) => Promise<void>;
 }
 
+let refreshPromise: Promise<boolean> | null = null;
+
 export const useAuthStore = create<AuthState>((set, _get) => ({
   accessToken: null,
   user: null,
@@ -72,50 +74,66 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
   },
 
   refresh: async () => {
-    set({ isInitializing: true });
-    try {
-      const response = await fetch(getApiUrl("/auth/refresh"), {
-        method: "POST",
-      });
-      const resBody = await response.json();
+    if (refreshPromise) return refreshPromise;
 
-      if (response.ok && (resBody.status || resBody.success) && resBody.data?.access_token) {
-        set({
-          accessToken: resBody.data.access_token,
-          isAuthenticated: true,
+    refreshPromise = (async () => {
+      set({ isInitializing: true });
+      try {
+        const response = await fetch(getApiUrl("/auth/refresh"), {
+          method: "POST",
         });
 
-        // Fetch user data after successful refresh
-        const get = _get as unknown as () => AuthState;
-        await get().fetchUser();
-        return true;
-      }
-      // Refresh failed - clear auth and redirect to login
-      set({
-        accessToken: null,
-        user: null,
-        isAuthenticated: false,
-      });
+        const resBody = await response.json().catch(() => ({}));
 
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
-      return false;
-    } catch (_error) {
-      // Network error or other failure - clear auth and redirect
-      set({
-        accessToken: null,
-        user: null,
-        isAuthenticated: false,
-      });
+        if (response.ok && (resBody.status || resBody.success) && resBody.data?.access_token) {
+          set({
+            accessToken: resBody.data.access_token,
+            isAuthenticated: true,
+          });
 
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
+          // Fetch user data after successful refresh
+          const get = _get as unknown as () => AuthState;
+          await get().fetchUser();
+          return true;
+        }
+
+        // Refresh failed (401, 403, etc.)
+        console.warn("Token refresh failed:", resBody.message || "Unknown error");
+
+        set({
+          accessToken: null,
+          user: null,
+          isAuthenticated: false,
+        });
+
+        if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
+          // Add a small delay for state to settle before redirect
+          setTimeout(() => {
+            if (window.location.pathname !== "/login") {
+              window.location.href = "/login?reason=session_expired";
+            }
+          }, 100);
+        }
+        return false;
+      } catch (error) {
+        console.error("Token refresh crash:", error);
+        set({
+          accessToken: null,
+          user: null,
+          isAuthenticated: false,
+        });
+
+        if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
+          window.location.href = "/login?reason=network_error";
+        }
+        return false;
+      } finally {
+        set({ isInitializing: false });
+        refreshPromise = null;
       }
-      return false;
-    } finally {
-      set({ isInitializing: false });
-    }
+    })();
+
+    return refreshPromise;
   },
 
   logout: async () => {

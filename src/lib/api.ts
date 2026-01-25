@@ -25,23 +25,21 @@ export async function apiClient(endpoint: string, options: RequestInit = {}): Pr
 
   // 3. Handle 401 Unauthorized (Expired Token)
   if (response.status === 401) {
-    const body = await response
-      .clone()
-      .json()
-      .catch(() => ({}));
+    // Attempt to refresh
+    const success = await refresh();
 
-    // Check if it's specifically an "expired" error from Go backend
-    if (body.message === "Invalid or expired token") {
-      // Trigger refresh
-      const success = await refresh();
+    if (success) {
+      // Retry with new token
+      const newToken = useAuthStore.getState().accessToken;
+      if (newToken) {
+        // Clone headers and update Auth
+        const retryHeaders = new Headers(headers);
+        retryHeaders.set("Authorization", `Bearer ${newToken}`);
 
-      if (success) {
-        // Retry with new token
-        const newToken = useAuthStore.getState().accessToken;
-        if (newToken) {
-          headers.set("Authorization", `Bearer ${newToken}`);
-          response = await fetch(url, fetchOptions);
-        }
+        response = await fetch(url, {
+          ...options,
+          headers: retryHeaders,
+        });
       }
     }
   }

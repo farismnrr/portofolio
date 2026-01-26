@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS educations (
 );
 
 -- Create indexes
-CREATE INDEX idx_educations_about_id ON educations(about_id);
-CREATE INDEX idx_educations_deleted_at ON educations(deleted_at);
-CREATE INDEX idx_educations_order_by ON educations(order_by);
+CREATE INDEX IF NOT EXISTS idx_educations_about_id ON educations(about_id);
+CREATE INDEX IF NOT EXISTS idx_educations_deleted_at ON educations(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_educations_order_by ON educations(order_by);

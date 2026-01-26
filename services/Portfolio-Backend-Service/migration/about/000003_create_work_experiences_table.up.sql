@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS work_experiences (
 );
 
 -- Create indexes
-CREATE INDEX idx_work_experiences_about_id ON work_experiences(about_id);
-CREATE INDEX idx_work_experiences_deleted_at ON work_experiences(deleted_at);
-CREATE INDEX idx_work_experiences_order_by ON work_experiences(order_by);
+CREATE INDEX IF NOT EXISTS idx_work_experiences_about_id ON work_experiences(about_id);
+CREATE INDEX IF NOT EXISTS idx_work_experiences_deleted_at ON work_experiences(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_work_experiences_order_by ON work_experiences(order_by);

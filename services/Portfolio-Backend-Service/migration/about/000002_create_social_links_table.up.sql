@@ -13,6 +13,6 @@ CREATE TABLE IF NOT EXISTS social_links (
 );
 
 -- Create indexes
-CREATE INDEX idx_social_links_about_id ON social_links(about_id);
-CREATE INDEX idx_social_links_deleted_at ON social_links(deleted_at);
-CREATE INDEX idx_social_links_order_by ON social_links(order_by);
+CREATE INDEX IF NOT EXISTS idx_social_links_about_id ON social_links(about_id);
+CREATE INDEX IF NOT EXISTS idx_social_links_deleted_at ON social_links(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_social_links_order_by ON social_links(order_by);

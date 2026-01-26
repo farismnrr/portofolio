@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 -- Create indices
-CREATE INDEX idx_comments_post ON comments(post_type, post_slug);
-CREATE INDEX idx_comments_deleted_at ON comments(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_type, post_slug);
+CREATE INDEX IF NOT EXISTS idx_comments_deleted_at ON comments(deleted_at);

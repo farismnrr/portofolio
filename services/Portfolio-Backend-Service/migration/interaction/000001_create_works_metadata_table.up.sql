@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS works_metadata (
 );
 
 -- Create indices
-CREATE INDEX idx_works_metadata_slug ON works_metadata(slug);
-CREATE INDEX idx_works_metadata_deleted_at ON works_metadata(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_works_metadata_slug ON works_metadata(slug);
+CREATE INDEX IF NOT EXISTS idx_works_metadata_deleted_at ON works_metadata(deleted_at);

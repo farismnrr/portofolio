@@ -109,6 +109,7 @@ export default async function RootLayout({
           flexDirection: "column",
           alignItems: "center",
           width: "100%",
+          minHeight: "100vh",
         }}
       >
         <Providers>

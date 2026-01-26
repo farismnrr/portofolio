@@ -12,6 +12,6 @@ CREATE TABLE IF NOT EXISTS skill_categories (
 );
 
 -- Create indexes
-CREATE INDEX idx_skill_categories_about_id ON skill_categories(about_id);
-CREATE INDEX idx_skill_categories_deleted_at ON skill_categories(deleted_at);
-CREATE INDEX idx_skill_categories_order_by ON skill_categories(order_by);
+CREATE INDEX IF NOT EXISTS idx_skill_categories_about_id ON skill_categories(about_id);
+CREATE INDEX IF NOT EXISTS idx_skill_categories_deleted_at ON skill_categories(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_skill_categories_order_by ON skill_categories(order_by);

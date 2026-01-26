@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS abouts (
 );
 
 -- Create index on deleted_at for soft delete queries
-CREATE INDEX idx_abouts_deleted_at ON abouts(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_abouts_deleted_at ON abouts(deleted_at);

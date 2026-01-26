@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS skill_tags (
     FOREIGN KEY (skill_category_id) REFERENCES skill_categories(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_skill_tags_skill_category_id ON skill_tags(skill_category_id);
-CREATE INDEX idx_skill_tags_deleted_at ON skill_tags(deleted_at);
-CREATE INDEX idx_skill_tags_order_by ON skill_tags(order_by);
+CREATE INDEX IF NOT EXISTS idx_skill_tags_category_id ON skill_tags(skill_category_id);
+CREATE INDEX IF NOT EXISTS idx_skill_tags_deleted_at ON skill_tags(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_skill_tags_order_by ON skill_tags(order_by);

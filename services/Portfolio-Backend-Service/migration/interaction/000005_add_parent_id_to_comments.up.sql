@@ -1,2 +1,2 @@
 ALTER TABLE comments ADD COLUMN parent_id TEXT;
-CREATE INDEX idx_comments_parent ON comments(parent_id);
+CREATE INDEX IF NOT EXISTS idx_comments_parent_id ON comments(parent_id);

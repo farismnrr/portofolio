@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS blogs_metadata (
 );
 
 -- Create indices
-CREATE INDEX idx_blogs_metadata_slug ON blogs_metadata(slug);
-CREATE INDEX idx_blogs_metadata_deleted_at ON blogs_metadata(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_blogs_metadata_slug ON blogs_metadata(slug);
+CREATE INDEX IF NOT EXISTS idx_blogs_metadata_deleted_at ON blogs_metadata(deleted_at);

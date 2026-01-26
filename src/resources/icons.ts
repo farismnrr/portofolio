@@ -24,6 +24,8 @@ import {
   HiOutlineGlobeAsiaAustralia,
   HiOutlineLink,
   HiOutlineRocketLaunch,
+  HiPencil,
+  HiTrash,
 } from "react-icons/hi2";
 import {
   PiBookBookmarkDuotone,
@@ -94,6 +96,8 @@ export const iconLibrary: Record<string, IconType> = {
   arrowUpRightFromSquare: HiArrowTopRightOnSquare,
   document: HiOutlineDocument,
   rocket: HiOutlineRocketLaunch,
+  edit: HiPencil,
+  trash: HiTrash,
   javascript: SiJavascript,
   nextjs: SiNextdotjs,
   supabase: SiSupabase,

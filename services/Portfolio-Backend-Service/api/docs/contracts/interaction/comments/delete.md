@@ -4,7 +4,7 @@ Permanently remove a comment.
 
 - **URL**: `/v1/interactions/comments/:id`
 - **Method**: `DELETE`
-- **Auth Required**: Yes (Bearer Token)
+- **Auth Required**: Yes (Bearer Token - Admin Role Required)
 
 ## Scenarios
 

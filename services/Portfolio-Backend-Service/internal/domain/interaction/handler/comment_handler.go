@@ -24,7 +24,7 @@ func (h *Handler) CreateComment(c echo.Context) error {
 	if req.PostType != "work" && req.PostType != "blog" {
 		return response.Error(c, http.StatusUnprocessableEntity, "Invalid post_type")
 	}
-	if req.PostSlug == "" || req.UserName == "" || req.Content == "" {
+	if req.PostSlug == "" || req.UserName == "" || req.Email == "" || req.Content == "" {
 		return response.Error(c, http.StatusUnprocessableEntity, "Missing required fields")
 	}
 
@@ -32,7 +32,9 @@ func (h *Handler) CreateComment(c echo.Context) error {
 		PostType: req.PostType,
 		PostSlug: req.PostSlug,
 		UserName: req.UserName,
+		Email:    req.Email,
 		Content:  req.Content,
+		ParentID: req.ParentID,
 	})
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Failed to create comment")

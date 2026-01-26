@@ -4,12 +4,17 @@ Post a new comment on a blog post.
 
 - **URL**: `/v1/interactions/blog/:slug/comments`
 - **Method**: `POST`
-- **Auth Required**: Yes (Bearer Token)
+- **Auth Required**: No (Public)
 
 ## Request Body
 ```json
 {
-  "content": "string (required)"
+  "post_type": "work|blog (required)",
+  "post_slug": "string (required)",
+  "username": "string (required)",
+  "email": "string (required, valid email)",
+  "content": "string (required)",
+  "parent_id": "string (optional, for replies)"
 }
 ```
 

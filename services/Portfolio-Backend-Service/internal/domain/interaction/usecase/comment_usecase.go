@@ -29,7 +29,9 @@ type CreateCommentRequest struct {
 	PostType string
 	PostSlug string
 	UserName string
+	Email    string
 	Content  string
+	ParentID *string
 }
 
 func (u *commentUsecase) CreateComment(ctx context.Context, req CreateCommentRequest) error {
@@ -46,7 +48,9 @@ func (u *commentUsecase) CreateComment(ctx context.Context, req CreateCommentReq
 		PostType: req.PostType,
 		PostSlug: req.PostSlug,
 		UserName: req.UserName,
+		Email:    req.Email,
 		Content:  req.Content,
+		ParentID: req.ParentID,
 	}
 
 	return u.repo.CreateComment(ctx, comment)

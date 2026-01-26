@@ -9,6 +9,10 @@ import (
 
 type BlogRepository interface {
 	GetBlogMetadata(ctx context.Context, slug string) (*entity.BlogsMetadata, error)
+	ListBlogs(ctx context.Context) ([]entity.BlogsMetadata, error)
+	CreateBlog(ctx context.Context, blog *entity.BlogsMetadata) error
+	UpdateBlog(ctx context.Context, blog *entity.BlogsMetadata) error
+	DeleteBlog(ctx context.Context, id string) error
 	IncrementBlogViews(ctx context.Context, slug string) error
 	IncrementBlogLikes(ctx context.Context, slug string) error
 	UpdateBlogMetadata(ctx context.Context, slug string, views, likes int) error
@@ -26,6 +30,24 @@ func (r *blogRepository) GetBlogMetadata(ctx context.Context, slug string) (*ent
 	var blog entity.BlogsMetadata
 	err := r.db.WithContext(ctx).Where("slug = ?", slug).First(&blog).Error
 	return &blog, err
+}
+
+func (r *blogRepository) ListBlogs(ctx context.Context) ([]entity.BlogsMetadata, error) {
+	var blogs []entity.BlogsMetadata
+	err := r.db.WithContext(ctx).Order("published_at DESC").Find(&blogs).Error
+	return blogs, err
+}
+
+func (r *blogRepository) CreateBlog(ctx context.Context, blog *entity.BlogsMetadata) error {
+	return r.db.WithContext(ctx).Create(blog).Error
+}
+
+func (r *blogRepository) UpdateBlog(ctx context.Context, blog *entity.BlogsMetadata) error {
+	return r.db.WithContext(ctx).Save(blog).Error
+}
+
+func (r *blogRepository) DeleteBlog(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&entity.BlogsMetadata{}, "id = ?", id).Error
 }
 
 func (r *blogRepository) IncrementBlogViews(ctx context.Context, slug string) error {

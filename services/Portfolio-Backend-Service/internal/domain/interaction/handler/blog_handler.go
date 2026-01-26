@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/interaction/entity"
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,7 +14,91 @@ func (h *Handler) GetBlog(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusNotFound, "Blog not found")
 	}
-	return response.Success(c, http.StatusOK, "Blog metadata retrieved", blog)
+	return response.Success(c, http.StatusOK, "Blog retrieved", blog)
+}
+
+func (h *Handler) ListBlogs(c echo.Context) error {
+	blogs, err := h.blogUsecase.ListBlogs(c.Request().Context())
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to list blogs")
+	}
+	return response.Success(c, http.StatusOK, "Blogs retrieved", blogs)
+}
+
+func (h *Handler) CreateBlog(c echo.Context) error {
+	var req BlogCreateUpdateDTO
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
+	}
+
+	blog := &entity.BlogsMetadata{
+		Slug:        req.Slug,
+		Title:       req.Title,
+		Content:     req.Content,
+		Summary:     req.Summary,
+		BlogTitle:   req.BlogTitle,
+		Source:      req.Source,
+		PublishedAt: req.PublishedAt,
+	}
+
+	var seo *entity.SEOMetadata
+	if req.SEOMetadata != nil {
+		seo = &entity.SEOMetadata{
+			Title:       req.SEOMetadata.Title,
+			Description: req.SEOMetadata.Description,
+			Keywords:    req.SEOMetadata.Keywords,
+			OGImage:     req.SEOMetadata.OGImage,
+		}
+	}
+
+	if err := h.blogUsecase.CreateBlog(c.Request().Context(), blog, seo); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to create blog")
+	}
+
+	return response.Success(c, http.StatusCreated, "Blog created successfully", blog)
+}
+
+func (h *Handler) UpdateBlog(c echo.Context) error {
+	id := c.Param("id")
+	var req BlogCreateUpdateDTO
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
+	}
+
+	blog := &entity.BlogsMetadata{
+		Base:        entity.Base{ID: id},
+		Slug:        req.Slug,
+		Title:       req.Title,
+		Content:     req.Content,
+		Summary:     req.Summary,
+		BlogTitle:   req.BlogTitle,
+		Source:      req.Source,
+		PublishedAt: req.PublishedAt,
+	}
+
+	var seo *entity.SEOMetadata
+	if req.SEOMetadata != nil {
+		seo = &entity.SEOMetadata{
+			Title:       req.SEOMetadata.Title,
+			Description: req.SEOMetadata.Description,
+			Keywords:    req.SEOMetadata.Keywords,
+			OGImage:     req.SEOMetadata.OGImage,
+		}
+	}
+
+	if err := h.blogUsecase.UpdateBlog(c.Request().Context(), blog, seo); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to update blog")
+	}
+
+	return response.Success(c, http.StatusOK, "Blog updated successfully", blog)
+}
+
+func (h *Handler) DeleteBlog(c echo.Context) error {
+	id := c.Param("id")
+	if err := h.blogUsecase.DeleteBlog(c.Request().Context(), id); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to delete blog")
+	}
+	return response.SuccessNoData(c, http.StatusOK, "Blog deleted successfully")
 }
 
 func (h *Handler) ViewBlog(c echo.Context) error {
@@ -32,7 +117,7 @@ func (h *Handler) LikeBlog(c echo.Context) error {
 	return response.SuccessNoData(c, http.StatusOK, "Like incremented")
 }
 
-func (h *Handler) UpdateBlog(c echo.Context) error {
+func (h *Handler) UpdateBlogMetadata(c echo.Context) error {
 	slug := c.Param("slug")
 	var req BlogUpdateDTO
 	// Strict Content-Type check

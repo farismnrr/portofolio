@@ -9,21 +9,64 @@ import (
 
 type WorkUsecase interface {
 	GetWork(ctx context.Context, slug string) (*entity.WorksMetadata, error)
+	ListWorks(ctx context.Context) ([]entity.WorksMetadata, error)
+	CreateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error
+	UpdateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error
+	DeleteWork(ctx context.Context, id string) error
 	IncrementWorkViews(ctx context.Context, slug string) error
 	IncrementWorkLikes(ctx context.Context, slug string) error
 	UpdateWorkMetadata(ctx context.Context, slug string, views, likes int) error
 }
 
 type workUsecase struct {
-	repo repository.WorkRepository
+	repo    repository.WorkRepository
+	seoRepo repository.SEORepository
 }
 
-func NewWorkUsecase(repo repository.WorkRepository) WorkUsecase {
-	return &workUsecase{repo: repo}
+func NewWorkUsecase(repo repository.WorkRepository, seoRepo repository.SEORepository) WorkUsecase {
+	return &workUsecase{repo: repo, seoRepo: seoRepo}
 }
 
 func (u *workUsecase) GetWork(ctx context.Context, slug string) (*entity.WorksMetadata, error) {
-	return u.repo.GetWorkMetadata(ctx, slug)
+	work, err := u.repo.GetWorkMetadata(ctx, slug)
+	if err != nil {
+		return nil, err
+	}
+	seo, _ := u.seoRepo.GetByPost(ctx, "work", work.ID)
+	work.SEOMetadata = seo
+	return work, nil
+}
+
+func (u *workUsecase) ListWorks(ctx context.Context) ([]entity.WorksMetadata, error) {
+	return u.repo.ListWorks(ctx)
+}
+
+func (u *workUsecase) CreateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error {
+	if err := u.repo.CreateWork(ctx, work); err != nil {
+		return err
+	}
+	if seo != nil {
+		seo.PostType = "work"
+		seo.PostID = work.ID
+		return u.seoRepo.Upsert(ctx, seo)
+	}
+	return nil
+}
+
+func (u *workUsecase) UpdateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error {
+	if err := u.repo.UpdateWork(ctx, work); err != nil {
+		return err
+	}
+	if seo != nil {
+		seo.PostType = "work"
+		seo.PostID = work.ID
+		return u.seoRepo.Upsert(ctx, seo)
+	}
+	return nil
+}
+
+func (u *workUsecase) DeleteWork(ctx context.Context, id string) error {
+	return u.repo.DeleteWork(ctx, id)
 }
 
 func (u *workUsecase) IncrementWorkViews(ctx context.Context, slug string) error {

@@ -1,5 +1,5 @@
 import { ProjectCard } from "@/components";
-import { getPosts } from "@/utils/utils";
+import { getProjects } from "@/lib/projects";
 import { Column } from "@once-ui-system/core";
 
 interface ProjectsProps {
@@ -7,8 +7,8 @@ interface ProjectsProps {
   exclude?: string[];
 }
 
-export function Projects({ range, exclude }: ProjectsProps) {
-  let allProjects = getPosts(["app", "(marketing)", "work", "projects"]);
+export async function Projects({ range, exclude }: ProjectsProps) {
+  let allProjects = await getProjects();
 
   // Exclude by slug (exact match)
   if (exclude && exclude.length > 0) {
@@ -16,7 +16,7 @@ export function Projects({ range, exclude }: ProjectsProps) {
   }
 
   const sortedProjects = allProjects.sort((a, b) => {
-    return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
+    return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
   });
 
   const displayedProjects = range
@@ -30,12 +30,12 @@ export function Projects({ range, exclude }: ProjectsProps) {
           priority={index < 2}
           key={post.slug}
           href={`/work/${post.slug}`}
-          images={post.metadata.images}
-          title={post.metadata.title}
-          description={post.metadata.summary}
+          images={post.images}
+          title={post.title}
+          description={post.summary}
           content={post.content}
-          avatars={post.metadata.team?.map((member) => ({ src: member.avatar })) || []}
-          link={post.metadata.link || ""}
+          avatars={post.team?.map((member) => ({ src: member.avatar })) || []}
+          link={post.link || ""}
         />
       ))}
     </Column>

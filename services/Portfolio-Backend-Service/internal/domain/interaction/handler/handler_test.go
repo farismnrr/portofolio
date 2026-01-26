@@ -82,3 +82,43 @@ func (m *MockInteractionUsecase) UpdateWorkMetadata(ctx context.Context, slug st
 	args := m.Called(ctx, slug, views, likes)
 	return args.Error(0)
 }
+
+func (m *MockInteractionUsecase) ListWorks(ctx context.Context) ([]entity.WorksMetadata, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]entity.WorksMetadata), args.Error(1)
+}
+func (m *MockInteractionUsecase) CreateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error {
+	args := m.Called(ctx, work, seo)
+	return args.Error(0)
+}
+func (m *MockInteractionUsecase) UpdateWork(ctx context.Context, work *entity.WorksMetadata, seo *entity.SEOMetadata) error {
+	args := m.Called(ctx, work, seo)
+	return args.Error(0)
+}
+func (m *MockInteractionUsecase) DeleteWork(ctx context.Context, id string) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}
+
+func (m *MockInteractionUsecase) ListBlogs(ctx context.Context) ([]entity.BlogsMetadata, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]entity.BlogsMetadata), args.Error(1)
+}
+func (m *MockInteractionUsecase) CreateBlog(ctx context.Context, blog *entity.BlogsMetadata, seo *entity.SEOMetadata) error {
+	args := m.Called(ctx, blog, seo)
+	return args.Error(0)
+}
+func (m *MockInteractionUsecase) UpdateBlog(ctx context.Context, blog *entity.BlogsMetadata, seo *entity.SEOMetadata) error {
+	args := m.Called(ctx, blog, seo)
+	return args.Error(0)
+}
+func (m *MockInteractionUsecase) DeleteBlog(ctx context.Context, id string) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}

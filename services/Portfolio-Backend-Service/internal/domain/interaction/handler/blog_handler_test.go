@@ -24,7 +24,7 @@ func TestUpdateBlog_StrictContentType(t *testing.T) {
 		c.SetParamNames("slug")
 		c.SetParamValues("slug")
 
-		if assert.NoError(t, h.UpdateBlog(c)) {
+		if assert.NoError(t, h.UpdateBlogMetadata(c)) {
 			assert.Equal(t, http.StatusUnsupportedMediaType, rec.Code)
 		}
 	})

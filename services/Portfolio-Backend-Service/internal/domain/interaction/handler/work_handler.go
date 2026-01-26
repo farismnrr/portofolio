@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
+	"github.com/farismnrr/portfolio-backend-service/internal/domain/interaction/entity"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +20,93 @@ func (h *Handler) GetWork(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusNotFound, "Work not found")
 	}
-	return response.Success(c, http.StatusOK, "Work metadata retrieved", work)
+	return response.Success(c, http.StatusOK, "Work retrieved", work)
+}
+
+func (h *Handler) ListWorks(c echo.Context) error {
+	works, err := h.workUsecase.ListWorks(c.Request().Context())
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to list works")
+	}
+	return response.Success(c, http.StatusOK, "Works retrieved", works)
+}
+
+func (h *Handler) CreateWork(c echo.Context) error {
+	var req WorkCreateUpdateDTO
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
+	}
+
+	work := &entity.WorksMetadata{
+		Slug:        req.Slug,
+		Title:       req.Title,
+		Content:     req.Content,
+		Summary:     req.Summary,
+		ProjectName: req.ProjectName,
+		Link:        req.Link,
+		Repository:  req.Repository,
+		PublishedAt: req.PublishedAt,
+	}
+
+	var seo *entity.SEOMetadata
+	if req.SEOMetadata != nil {
+		seo = &entity.SEOMetadata{
+			Title:       req.SEOMetadata.Title,
+			Description: req.SEOMetadata.Description,
+			Keywords:    req.SEOMetadata.Keywords,
+			OGImage:     req.SEOMetadata.OGImage,
+		}
+	}
+
+	if err := h.workUsecase.CreateWork(c.Request().Context(), work, seo); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to create work")
+	}
+
+	return response.Success(c, http.StatusCreated, "Work created successfully", work)
+}
+
+func (h *Handler) UpdateWork(c echo.Context) error {
+	id := c.Param("id")
+	var req WorkCreateUpdateDTO
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
+	}
+
+	work := &entity.WorksMetadata{
+		Base:        entity.Base{ID: id},
+		Slug:        req.Slug,
+		Title:       req.Title,
+		Content:     req.Content,
+		Summary:     req.Summary,
+		ProjectName: req.ProjectName,
+		Link:        req.Link,
+		Repository:  req.Repository,
+		PublishedAt: req.PublishedAt,
+	}
+
+	var seo *entity.SEOMetadata
+	if req.SEOMetadata != nil {
+		seo = &entity.SEOMetadata{
+			Title:       req.SEOMetadata.Title,
+			Description: req.SEOMetadata.Description,
+			Keywords:    req.SEOMetadata.Keywords,
+			OGImage:     req.SEOMetadata.OGImage,
+		}
+	}
+
+	if err := h.workUsecase.UpdateWork(c.Request().Context(), work, seo); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to update work")
+	}
+
+	return response.Success(c, http.StatusOK, "Work updated successfully", work)
+}
+
+func (h *Handler) DeleteWork(c echo.Context) error {
+	id := c.Param("id")
+	if err := h.workUsecase.DeleteWork(c.Request().Context(), id); err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to delete work")
+	}
+	return response.SuccessNoData(c, http.StatusOK, "Work deleted successfully")
 }
 
 // ViewWork increments view count
@@ -50,11 +137,11 @@ func (h *Handler) LikeWork(c echo.Context) error {
 	return response.SuccessNoData(c, http.StatusOK, "Like incremented")
 }
 
-// UpdateWork updates engagement manually (Admin)
+// UpdateWorkMetadata updates engagement manually (Admin)
 // @Summary Update Work Metadata
 // @Tags Interaction
 // @Router /v1/interactions/works/{slug} [patch]
-func (h *Handler) UpdateWork(c echo.Context) error {
+func (h *Handler) UpdateWorkMetadata(c echo.Context) error {
 	slug := c.Param("slug")
 	var req WorkUpdateDTO
 	// Strict Content-Type check

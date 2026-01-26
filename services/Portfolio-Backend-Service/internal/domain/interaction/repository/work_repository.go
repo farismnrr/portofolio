@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/interaction/entity"
 	"gorm.io/gorm"
@@ -10,6 +9,10 @@ import (
 
 type WorkRepository interface {
 	GetWorkMetadata(ctx context.Context, slug string) (*entity.WorksMetadata, error)
+	ListWorks(ctx context.Context) ([]entity.WorksMetadata, error)
+	CreateWork(ctx context.Context, work *entity.WorksMetadata) error
+	UpdateWork(ctx context.Context, work *entity.WorksMetadata) error
+	DeleteWork(ctx context.Context, id string) error
 	IncrementWorkViews(ctx context.Context, slug string) error
 	IncrementWorkLikes(ctx context.Context, slug string) error
 	UpdateWorkMetadata(ctx context.Context, slug string, views, likes int) error
@@ -27,13 +30,25 @@ func NewWorkRepository(db *gorm.DB) WorkRepository {
 func (r *workRepository) GetWorkMetadata(ctx context.Context, slug string) (*entity.WorksMetadata, error) {
 	var work entity.WorksMetadata
 	err := r.db.WithContext(ctx).Where("slug = ?", slug).First(&work).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
-		}
-		return nil, err
-	}
-	return &work, nil
+	return &work, err
+}
+
+func (r *workRepository) ListWorks(ctx context.Context) ([]entity.WorksMetadata, error) {
+	var works []entity.WorksMetadata
+	err := r.db.WithContext(ctx).Order("published_at DESC").Find(&works).Error
+	return works, err
+}
+
+func (r *workRepository) CreateWork(ctx context.Context, work *entity.WorksMetadata) error {
+	return r.db.WithContext(ctx).Create(work).Error
+}
+
+func (r *workRepository) UpdateWork(ctx context.Context, work *entity.WorksMetadata) error {
+	return r.db.WithContext(ctx).Save(work).Error
+}
+
+func (r *workRepository) DeleteWork(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&entity.WorksMetadata{}, "id = ?", id).Error
 }
 
 func (r *workRepository) IncrementWorkViews(ctx context.Context, slug string) error {

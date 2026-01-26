@@ -6,6 +6,7 @@ import (
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about/seeder"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/database"
+	interactionSeeder "github.com/farismnrr/portfolio-backend-service/internal/domain/interaction/seeder"
 	"github.com/joho/godotenv"
 )
 
@@ -23,7 +24,15 @@ func main() {
 	}
 
 	if err := seeder.SeedAboutData(db); err != nil {
-		log.Fatalf("Seeding failed: %v", err)
+		log.Printf("About seeding failed: %v", err)
+	}
+
+	// Seed Interactions (Works/Blogs) from frontend content
+	// Assuming running from services/Portfolio-Backend-Service root or cmd/seed
+	// We need to point to src/app which is ../../src/app relative to service root
+	srcPath := "../../src/app"
+	if err := interactionSeeder.SeedInteractionData(db, srcPath); err != nil {
+		log.Printf("Interaction seeding failed: %v", err)
 	}
 
 	log.Println("✅ Seeding completed successfully")

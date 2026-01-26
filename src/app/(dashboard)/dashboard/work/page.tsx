@@ -285,6 +285,8 @@ export default function WorkDashboard() {
               <Row gap="s">
                 <IconButton
                   icon="edit"
+                  variant="secondary"
+                  tooltip="Edit Project"
                   onClick={() => {
                     setEditingProject(project);
                     setIsCreating(false);
@@ -293,6 +295,7 @@ export default function WorkDashboard() {
                 <IconButton
                   icon="trash"
                   variant="danger"
+                  tooltip="Delete Project"
                   onClick={() => handleDelete(project.id)}
                 />
               </Row>

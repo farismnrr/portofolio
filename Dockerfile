@@ -22,10 +22,16 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# Set environment variables for build time
+ARG NEXT_PUBLIC_SSO_URL
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_TENANT_ID
+ARG NEXT_PUBLIC_API_KEY
+
+ENV NEXT_PUBLIC_SSO_URL=$NEXT_PUBLIC_SSO_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_TENANT_ID=$NEXT_PUBLIC_TENANT_ID
+ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
@@ -36,6 +42,7 @@ RUN \
 
 # Production image, copy all the files and run next
 FROM base AS runner
+RUN apk add --no-cache curl
 WORKDIR /app
 
 ENV NODE_ENV=production

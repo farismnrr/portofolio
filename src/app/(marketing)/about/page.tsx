@@ -22,6 +22,7 @@ import {
   Text,
 } from "@once-ui-system/core";
 import React from "react";
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   return Meta.generate({

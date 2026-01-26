@@ -18,6 +18,8 @@ import {
   Text,
 } from "@once-ui-system/core";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   return Meta.generate({
     title: home.title,

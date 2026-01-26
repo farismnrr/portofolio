@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS abouts (
     role VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     avatar TEXT,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at DATETIME
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 -- Create index on deleted_at for soft delete queries

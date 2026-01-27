@@ -1,30 +1,42 @@
 # ==========================================
 # Stage 1: Build Go Backend
 # ==========================================
-FROM golang:alpine AS backend-builder
+FROM --platform=$BUILDPLATFORM golang:alpine AS backend-builder
 WORKDIR /app
 RUN apk add --no-cache git
 
-# Copy backend source
+# Copy backend dependencies
 COPY services/Portfolio-Backend-Service/go.mod services/Portfolio-Backend-Service/go.sum ./
 RUN go mod download
 
-COPY services/Portfolio-Backend-Service/ .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
+# Copy backend source (Granular to avoid bloat)
+COPY services/Portfolio-Backend-Service/api ./api
+COPY services/Portfolio-Backend-Service/assets ./assets
+COPY services/Portfolio-Backend-Service/cmd ./cmd
+COPY services/Portfolio-Backend-Service/internal ./internal
+COPY services/Portfolio-Backend-Service/migration ./migration
+
+# Build for target architecture
+ARG TARGETOS TARGETARCH
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
 
 # ==========================================
 # Stage 2: Build Next.js Frontend
 # ==========================================
-FROM node:20-alpine AS frontend-builder
+FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
-# Copy frontend source
+# Copy frontend dependencies
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY . .
+# Copy only NO-SECRET frontend source files
+# This avoids copying the 'services/' or 'deployments/' directories
+COPY src ./src
+COPY public ./public
+COPY next.config.mjs tsconfig.json biome.json ./
 
 # Build args for Frontend (Public vars)
 ARG NEXT_PUBLIC_SSO_URL
@@ -39,7 +51,7 @@ ENV NEXT_PUBLIC_TENANT_ID=$NEXT_PUBLIC_TENANT_ID
 ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
 ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 
-# Build standalone
+# Build standalone (Next.js build is architecture independent but standalone helps)
 RUN npm run build
 
 # ==========================================
@@ -56,21 +68,20 @@ RUN adduser --system --uid 1001 nextjs
 
 # --- Setup Frontend ---
 COPY --from=frontend-builder /app/public ./public
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+RUN mkdir .next && chown nextjs:nodejs .next
+
 # Ensure Backend has permissions for its temp/cache dirs
-RUN mkdir -p tmp/badger
-RUN chown -R nextjs:nodejs tmp/badger
-RUN chmod 755 tmp/badger
+RUN mkdir -p tmp/badger && chown -R nextjs:nodejs tmp/badger
+
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # --- Setup Backend ---
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-backend-service .
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-seeder .
-# Copy backend migrations/secrets if needed (Adjust paths if they are in subdirs)
+
+# Copy backend migrations (REQUIRED for first run)
 COPY --from=backend-builder --chown=nextjs:nodejs /app/migration ./migration
-COPY --from=backend-builder --chown=nextjs:nodejs /app/secret ./secret
 
 # --- Setup Startup Script ---
 COPY --chown=nextjs:nodejs start.sh .
@@ -79,5 +90,8 @@ RUN chmod +x start.sh
 USER nextjs
 
 EXPOSE 3000 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8080/health && curl -f http://localhost:3000/api/health || exit 1
 
 CMD ["./start.sh"]

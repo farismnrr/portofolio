@@ -1,13 +1,30 @@
-node_modules
-.next
-out
-.git
-.idea
-.vscode
+node_modules/
+**/node_modules/
+target/
+**/target/
+services/Multitenant-User-Management-Service/target/
+services/Portfolio-Backend-Service/tmp/
+.next/
+**/dist/
+**/out/
+**/build/
+.git/
+.env*
+! .env.example
 *.log
-services/Multitenant-User-Management-Service/target
-services/Portfolio-Backend-Service/bin
-services/Portfolio-Backend-Service/tmp
-.env.prod
-.env
-node_modules
+.DS_Store
+
+# Secrets and sensitive data
+secret/
+services/Portfolio-Backend-Service/secret/
+services/Multitenant-User-Management-Service/secret/
+credentials.json
+*.p12
+*.pem
+
+# Local DBs and Data
+**/data/
+**/tmp/
+deployments/
+*.sqlite
+*.sqlite-journal

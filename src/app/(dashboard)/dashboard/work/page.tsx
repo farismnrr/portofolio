@@ -1,5 +1,6 @@
 "use client";
 
+import { useUI } from "@/context/UIContext";
 import {
   type Project,
   createProject,
@@ -18,7 +19,7 @@ import {
   Text,
   Textarea,
 } from "@once-ui-system/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function WorkDashboard() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -27,20 +28,23 @@ export default function WorkDashboard() {
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+  const { showToast } = useUI();
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       const data = await getProjects();
-      setProjects(data);
+      setProjects(data); // Corrected from setRequests to setProjects
     } catch (error) {
       console.error("Failed to fetch projects:", error);
+      showToast("Failed to load projects", "error");
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]); // Added useCallback dependencies
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]); // fetchProjects is now stable due to useCallback
 
   const handleDelete = async (id: string) => {
     if (!accessToken || !confirm("Are you sure you want to delete this project?")) return;

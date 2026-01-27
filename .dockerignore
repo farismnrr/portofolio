@@ -8,3 +8,6 @@ out
 services/Multitenant-User-Management-Service/target
 services/Portfolio-Backend-Service/bin
 services/Portfolio-Backend-Service/tmp
+.env.prod
+.env
+node_modules

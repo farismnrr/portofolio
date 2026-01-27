@@ -189,6 +189,31 @@ create-tenant:
 		exit 1; \
 	fi
 
+# Production Build
+prod-build:
+	@echo "🏗️ Building production images..."
+	@# Load environment variables from .env.prod for frontend build
+	@export $$(grep -v '^#' .env.prod | xargs) && \
+	docker build -t ghcr.io/farismnrr/user_auth_plugin:latest -f services/Multitenant-User-Management-Service/Dockerfile services/Multitenant-User-Management-Service && \
+	docker build -t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
+		--build-arg NEXT_PUBLIC_SSO_URL=$$NEXT_PUBLIC_SSO_URL \
+		--build-arg NEXT_PUBLIC_BACKEND_URL=$$NEXT_PUBLIC_BACKEND_URL \
+		--build-arg NEXT_PUBLIC_TENANT_ID=$$NEXT_PUBLIC_TENANT_ID \
+		--build-arg NEXT_PUBLIC_API_KEY=$$NEXT_PUBLIC_API_KEY \
+		.
+
+# Production Push
+prod-push:
+	@echo "⬆️ Pushing production images to GHCR..."
+	docker push ghcr.io/farismnrr/user_auth_plugin:latest
+	docker push ghcr.io/farismnrr/portofolio/portfolio-app:latest
+
+# Production Deploy
+prod-deploy:
+	@echo "🚀 Deploying production environment..."
+	docker compose -f docker-compose.prod.yml pull
+	docker compose -f docker-compose.prod.yml up -d
+
 # Generate invite code
 generate-invite:
 	@echo "🚀 Generating invitation code..."

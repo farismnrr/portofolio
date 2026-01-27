@@ -191,7 +191,8 @@ export const ControlsCard = ({
       </div>
 
       <div className={styles.inlineDropContainer}>
-        <div
+        <button
+          type="button"
           className={`${styles.dropzone} ${dragActive ? styles.dropzoneActive : ""}`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -199,6 +200,14 @@ export const ControlsCard = ({
           }}
           onDragLeave={() => setDragActive(false)}
           onDrop={handleDrop}
+          onClick={() => document.getElementById("thumbnail-upload")?.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              document.getElementById("thumbnail-upload")?.click();
+            }
+          }}
+          style={{ border: "none", background: "none", cursor: "pointer", padding: 0 }}
         >
           <div className={styles.dropIcon} aria-hidden="true">
             <svg
@@ -260,7 +269,7 @@ export const ControlsCard = ({
           </div>
           <input
             ref={fileInputRef}
-            id="imageUpload"
+            id="thumbnail-upload"
             type="file"
             accept="image/*"
             multiple
@@ -270,16 +279,16 @@ export const ControlsCard = ({
               (e.currentTarget as HTMLInputElement).value = "";
             }}
           />
-        </div>
-
-        {Object.keys(screenImages).length > 0 && (
-          <div>
-            <button type="button" className={styles.uploadSummary} onClick={handleOpenModal}>
-              Uploaded: {Object.keys(screenImages).length}
-            </button>
-          </div>
-        )}
+        </button>
       </div>
+
+      {Object.keys(screenImages).length > 0 && (
+        <div>
+          <button type="button" className={styles.uploadSummary} onClick={handleOpenModal}>
+            Uploaded: {Object.keys(screenImages).length}
+          </button>
+        </div>
+      )}
 
       <button
         type="button"

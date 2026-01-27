@@ -6,6 +6,7 @@ import { Providers } from "@/components";
 import { baseURL, dataStyle, effects, fonts, home, person, style } from "@/resources";
 import { Background, Meta, RevealFx, type SpacingToken, type opacity } from "@once-ui-system/core";
 import classNames from "classnames";
+import Script from "next/script";
 
 export async function generateMetadata() {
   const metadata = Meta.generate({
@@ -42,11 +43,8 @@ export default async function RootLayout({
       )}
     >
       <head>
-        <script
-          id="theme-init"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe theme initialization script
-          dangerouslySetInnerHTML={{
-            __html: `
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`
               (function() {
                 try {
                   const root = document.documentElement;
@@ -97,9 +95,8 @@ export default async function RootLayout({
                   document.documentElement.setAttribute('data-theme', 'dark');
                 }
               })();
-            `,
-          }}
-        />
+            `}
+        </Script>
       </head>
       <body
         className="fill-height"

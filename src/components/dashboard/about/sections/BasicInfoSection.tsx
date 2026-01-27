@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { FiChevronDown, FiUpload, FiUser } from "react-icons/fi";
 import styles from "../AboutEditor.module.scss";
@@ -41,7 +42,14 @@ export default function BasicInfoSection({
         <div className={styles.photoUpload} style={{ marginTop: "1.5rem" }}>
           <div className={styles.photoPreview}>
             {data.photo ? (
-              <img src={data.photo} alt="Profile" />
+              <Image
+                src={data.photo}
+                alt="Profile"
+                width={80}
+                height={80}
+                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                unoptimized // Since source is unknown user upload
+              />
             ) : (
               <div className={styles.placeholder}>{data.name.charAt(0).toUpperCase()}</div>
             )}

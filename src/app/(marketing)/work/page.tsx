@@ -2,6 +2,8 @@ import { Projects } from "@/components/work/Projects";
 import { about, baseURL, person, work } from "@/resources";
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   return Meta.generate({
     title: work.title,

@@ -59,17 +59,17 @@ export async function GET(request: Request) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "5rem",
+            justifyContent: "center",
           }}
         >
-          <img
-            alt={person.name}
-            src={baseURL + person.avatar}
+          <div
             style={{
-              width: "12rem",
-              height: "12rem",
-              objectFit: "cover",
-              borderRadius: "100%",
+              width: "128px",
+              height: "128px",
+              borderRadius: "50%",
+              backgroundImage: `url(${baseURL + person.avatar})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           />
           <div

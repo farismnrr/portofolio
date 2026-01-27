@@ -1,74 +1,83 @@
-FROM node:20-alpine AS base
+# ==========================================
+# Stage 1: Build Go Backend
+# ==========================================
+FROM golang:alpine AS backend-builder
+WORKDIR /app
+RUN apk add --no-cache git
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+# Copy backend source
+COPY services/Portfolio-Backend-Service/go.mod services/Portfolio-Backend-Service/go.sum ./
+RUN go mod download
+
+COPY services/Portfolio-Backend-Service/ .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
+
+# ==========================================
+# Stage 2: Build Next.js Frontend
+# ==========================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app
 RUN apk add --no-cache libc6-compat
-WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Copy frontend source
+COPY package.json package-lock.json ./
+RUN npm ci
 
-
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set environment variables for build time
+# Build args for Frontend (Public vars)
 ARG NEXT_PUBLIC_SSO_URL
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_TENANT_ID
 ARG NEXT_PUBLIC_API_KEY
+ARG NEXT_PUBLIC_BASE_URL
 
 ENV NEXT_PUBLIC_SSO_URL=$NEXT_PUBLIC_SSO_URL
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 ENV NEXT_PUBLIC_TENANT_ID=$NEXT_PUBLIC_TENANT_ID
 ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Build standalone
+RUN npm run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
-RUN apk add --no-cache curl
+# ==========================================
+# Stage 3: Final Unified Image
+# ==========================================
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
+RUN apk add --no-cache ca-certificates curl
 
+# Setup Users
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
+# --- Setup Frontend ---
+COPY --from=frontend-builder /app/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
+# Ensure Backend has permissions for its temp/cache dirs
+RUN mkdir -p tmp/badger
+RUN chown -R nextjs:nodejs tmp/badger
+RUN chmod 755 tmp/badger
+COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# --- Setup Backend ---
+COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-backend-service .
+COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-seeder .
+# Copy backend migrations/secrets if needed (Adjust paths if they are in subdirs)
+COPY --from=backend-builder --chown=nextjs:nodejs /app/migration ./migration
+COPY --from=backend-builder --chown=nextjs:nodejs /app/secret ./secret
+
+# --- Setup Startup Script ---
+COPY --chown=nextjs:nodejs start.sh .
+RUN chmod +x start.sh
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3000 8080
 
-ENV PORT=3000
-
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "server.js"]
+CMD ["./start.sh"]

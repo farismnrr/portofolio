@@ -16,6 +16,8 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
@@ -39,11 +41,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function Project({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function Project({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   let post: Awaited<ReturnType<typeof getProjectBySlug>> | undefined;

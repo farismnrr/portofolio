@@ -28,16 +28,14 @@ import { person } from "@/resources";
 import { useAuthStore } from "@/store/auth";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./AboutEditor.module.scss";
-
-// Types
-import type { AboutData } from "./types";
-
 // Sections
 import BasicInfoSection from "./sections/BasicInfoSection";
 import EducationSection from "./sections/EducationSection";
 import SocialLinksSection from "./sections/SocialLinksSection";
 import TechnicalSkillsSection from "./sections/TechnicalSkillsSection";
 import WorkExperienceSection from "./sections/WorkExperienceSection";
+// Types
+import type { AboutData } from "./types";
 
 export default function AboutEditor() {
   const { accessToken } = useAuthStore();

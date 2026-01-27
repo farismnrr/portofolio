@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./Mockup.module.scss";
 
 type DeviceType = "website" | "mobile";
@@ -47,14 +48,30 @@ export const Mockup = ({ deviceType, totalScreens, scaleOverride, imageSrc }: Mo
             <div className={styles.browserUrl}>portfolio-showcase.com</div>
           </div>
           <div className={`${styles.greenScreen} ${imageSrc ? styles.withImage : ""}`}>
-            {imageSrc ? <img src={imageSrc} alt="screenshot" /> : null}
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt="screenshot"
+                fill
+                style={{ objectFit: "cover" }}
+                unoptimized
+              />
+            ) : null}
           </div>
         </div>
       ) : (
         <div className={styles.phoneFrame}>
           <div className={styles.phoneNotch} />
           <div className={`${styles.greenScreen} ${imageSrc ? styles.withImage : ""}`}>
-            {imageSrc ? <img src={imageSrc} alt="screenshot" /> : null}
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt="screenshot"
+                fill
+                style={{ objectFit: "cover" }}
+                unoptimized
+              />
+            ) : null}
           </div>
           <div className={styles.phoneHomeIndicator} />
         </div>

@@ -103,6 +103,7 @@ export default function WorkDashboard() {
                 },
               });
             }}
+            variant="secondary"
           >
             Create New Project
           </Button>
@@ -261,7 +262,9 @@ export default function WorkDashboard() {
             >
               Cancel
             </Button>
-            <Button type="submit">{isCreating ? "Create Project" : "Update Project"}</Button>
+            <Button type="submit" variant="secondary">
+              {isCreating ? "Create Project" : "Update Project"}
+            </Button>
           </Row>
         </Column>
       ) : (

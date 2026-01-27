@@ -114,30 +114,36 @@ kill:
 # Run development environment with Docker Compose (fast start, uses cache/existing images)
 dev-docker:
 	@echo "🚀 Starting development environment in Docker (Fast Mode)..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
+	@trap 'echo "🛑 Cleaning up..."; docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes' EXIT INT TERM; \
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes; \
 	docker compose --env-file .env.dev -f docker-compose.dev.yml up
 
 # Run development environment with forced rebuild
 dev-docker-build:
-	@echo "🧹 Cleaning up old Docker resources..."
-	docker image prune -f
-	docker builder prune -f
 	@echo "🚀 Starting development environment in Docker (Forced Rebuild)..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
+	@trap 'echo "🛑 Cleaning up..."; docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes' EXIT INT TERM; \
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes; \
 	docker compose --env-file .env.dev -f docker-compose.dev.yml up --build
 
 # Stop development environment and clean up
 dev-docker-stop:
 	@echo "🛑 Stopping development environment..."
 	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes
-	@echo "🧹 Pruning dangling resources..."
-	docker image prune -f
-	docker builder prune -f
 
 # Rebuild frontend only (useful when env vars change)
 dev-docker-rebuild-frontend:
 	@echo "🔨 Rebuilding frontend with latest environment variables..."
 	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build portofolio
+
+# Rebuild backend only
+dev-docker-rebuild-backend:
+	@echo "🔨 Rebuilding backend..."
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build backend
+
+# Rebuild user-management only
+dev-docker-rebuild-user-management:
+	@echo "🔨 Rebuilding user-management..."
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build user-management
 
 # Deep clean Docker (Dangerous: restores disk space by removing ALL unused items)
 docker-purge:
@@ -147,6 +153,13 @@ docker-purge:
 		echo "🧹 Cleaning stuck volumes in /mnt/docker-volumes..."; \
 		sudo rm -rf /mnt/docker-volumes/* 2>/dev/null || true; \
 	fi
+
+# Refresh base images to fix cache corruption
+refresh-base-images:
+	@echo "🔄 Pulling fresh base images..."
+	docker pull golang:1.25-bookworm
+	docker pull rust:bookworm
+	docker pull node:22-bookworm
 
 # Create tenant and update .env
 create-tenant:

@@ -12,7 +12,7 @@ BACKEND_PID=$!
 # Start Frontend in the foreground (or background and wait for both)
 echo "🚀 Starting Frontend App..."
 # Next.js standalone server
-PORT=3000 node server.js &
+HOSTNAME=0.0.0.0 PORT=3000 node server.js &
 FRONTEND_PID=$!
 
 # Signal handler to kill both processes

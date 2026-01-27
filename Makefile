@@ -189,24 +189,29 @@ create-tenant:
 		exit 1; \
 	fi
 
-# Production Build
-prod-build:
-	@echo "🏗️ Building production images..."
+# Production Push - SSO Only (Multi-arch)
+prod-push-sso:
+	@echo "⬆️ Building and Pushing SSO Service (amd64, arm64)..."
+	@docker buildx build --platform linux/amd64,linux/arm64 \
+		-t ghcr.io/farismnrr/user_auth_plugin:latest \
+		-f services/Multitenant-User-Management-Service/Dockerfile \
+		--push services/Multitenant-User-Management-Service
+
+# Production Push - Portfolio App Only (Multi-arch)
+prod-push-app:
+	@echo "⬆️ Building and Pushing Portfolio App (amd64, arm64)..."
 	@# Load environment variables from .env.prod for frontend build
 	@export $$(grep -v '^#' .env.prod | xargs) && \
-	docker build -t ghcr.io/farismnrr/user_auth_plugin:latest -f services/Multitenant-User-Management-Service/Dockerfile services/Multitenant-User-Management-Service && \
-	docker build -t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
+	docker buildx build --platform linux/amd64,linux/arm64 \
+		-t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
 		--build-arg NEXT_PUBLIC_SSO_URL=$$NEXT_PUBLIC_SSO_URL \
 		--build-arg NEXT_PUBLIC_BACKEND_URL=$$NEXT_PUBLIC_BACKEND_URL \
 		--build-arg NEXT_PUBLIC_TENANT_ID=$$NEXT_PUBLIC_TENANT_ID \
 		--build-arg NEXT_PUBLIC_API_KEY=$$NEXT_PUBLIC_API_KEY \
-		.
+		--push .
 
-# Production Push
-prod-push:
-	@echo "⬆️ Pushing production images to GHCR..."
-	docker push ghcr.io/farismnrr/user_auth_plugin:latest
-	docker push ghcr.io/farismnrr/portofolio/portfolio-app:latest
+# Production Push - All
+prod-push: prod-push-sso prod-push-app
 
 # Production Deploy
 prod-deploy:

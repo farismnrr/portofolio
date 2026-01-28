@@ -43,20 +43,23 @@ export async function generateMetadata({
     title: post.metadata.title,
     description: post.metadata.summary,
     baseURL: baseURL,
-    image: post.metadata.image || post.metadata.images[0] || `/api/og/generate?title=${post.metadata.title}`,
+    image:
+      post.metadata.image ||
+      post.metadata.images[0] ||
+      `/api/og/generate?title=${post.metadata.title}`,
     path: `${work.path}/${post.slug}`,
   });
 }
 
-export default async function Project({ params }: { params: Promise<{ slug: string | string[] }> }) {
+export default async function Project({
+  params,
+}: { params: Promise<{ slug: string | string[] }> }) {
   const routeParams = await params;
   const slugPath = Array.isArray(routeParams.slug)
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const post = getPosts(["content", "projects"]).find(
-    (post) => post.slug === slugPath,
-  );
+  const post = getPosts(["content", "projects"]).find((post) => post.slug === slugPath);
 
   if (!post) {
     notFound();

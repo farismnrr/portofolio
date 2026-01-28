@@ -31,6 +31,12 @@ export interface Project {
 
 import { getApiUrl } from "@/lib/config/backend";
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 export async function getProjects(): Promise<Project[]> {
   const response = await fetch(getApiUrl("/interactions/works"), {
     next: { revalidate: 60 },
@@ -40,11 +46,11 @@ export async function getProjects(): Promise<Project[]> {
     throw new Error("Failed to fetch projects");
   }
 
-  const result = await response.json();
-  return result.data.map((p: Project) => ({
+  const result: ApiResponse<Project[]> = await response.json();
+  return result.data.map((p) => ({
     ...p,
-    images: p.images ? JSON.parse(p.images as unknown as string) : [],
-    team: p.team ? JSON.parse(p.team as unknown as string) : [],
+    images: p.images ? (typeof p.images === "string" ? JSON.parse(p.images) : p.images) : [],
+    team: p.team ? (typeof p.team === "string" ? JSON.parse(p.team) : p.team) : [],
   }));
 }
 
@@ -57,12 +63,12 @@ export async function getProjectBySlug(slug: string): Promise<Project> {
     throw new Error("Project not found");
   }
 
-  const result = await response.json();
+  const result: ApiResponse<Project> = await response.json();
   const p = result.data;
   return {
     ...p,
-    images: p.images ? JSON.parse(p.images) : [],
-    team: p.team ? JSON.parse(p.team) : [],
+    images: p.images ? (typeof p.images === "string" ? JSON.parse(p.images) : p.images) : [],
+    team: p.team ? (typeof p.team === "string" ? JSON.parse(p.team) : p.team) : [],
   };
 }
 
@@ -81,11 +87,11 @@ export async function createProject(project: Partial<Project>, token: string): P
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error: ApiResponse<null> = await response.json();
     throw new Error(error.message || "Failed to create project");
   }
 
-  const result = await response.json();
+  const result: ApiResponse<Project> = await response.json();
   return result.data;
 }
 
@@ -108,11 +114,11 @@ export async function updateProject(
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error: ApiResponse<null> = await response.json();
     throw new Error(error.message || "Failed to update project");
   }
 
-  const result = await response.json();
+  const result: ApiResponse<Project> = await response.json();
   return result.data;
 }
 
@@ -125,7 +131,7 @@ export async function deleteProject(id: string, token: string): Promise<void> {
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error: ApiResponse<null> = await response.json();
     throw new Error(error.message || "Failed to delete project");
   }
 }

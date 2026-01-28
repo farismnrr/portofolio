@@ -33,8 +33,6 @@ COPY --from=builder /app/portfolio-backend-service .
 COPY --from=builder /app/portfolio-seeder .
 # Copy migrations
 COPY --from=builder /app/migration ./migration
-# Copy secrets
-COPY --from=builder /app/secret ./secret
 # Copy entrypoint
 COPY --from=builder /app/docker-entrypoint.sh .
 RUN chmod +x docker-entrypoint.sh

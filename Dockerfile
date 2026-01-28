@@ -32,7 +32,6 @@ RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Copy only NO-SECRET frontend source files
 # This avoids copying the 'services/' or 'deployments/' directories
 COPY src ./src
 COPY public ./public

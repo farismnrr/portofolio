@@ -7,7 +7,8 @@
     "build": "next build",
     "biome-write": "npx @biomejs/biome format --write .",
     "start": "next start",
-    "lint": "npx @biomejs/biome check src/"
+    "lint": "npx @biomejs/biome check src/",
+    "lint:fix": "npx @biomejs/biome check --write src/"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

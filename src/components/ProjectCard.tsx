@@ -65,10 +65,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             )}
             <Flex gap="24" wrap>
               {content?.trim() && (
-                <SmartLink
-                  style={{ margin: "0", width: "fit-content" }}
-                  href={href}
-                >
+                <SmartLink style={{ margin: "0", width: "fit-content" }} href={href}>
                   <Flex gap="4" vertical="center">
                     <Text variant="body-default-s">Read case study</Text>
                     <Icon name="arrowRight" size="s" />
@@ -76,10 +73,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 </SmartLink>
               )}
               {link && (
-                <SmartLink
-                  style={{ margin: "0", width: "fit-content" }}
-                  href={link}
-                >
+                <SmartLink style={{ margin: "0", width: "fit-content" }} href={link}>
                   <Flex gap="4" vertical="center">
                     <Text variant="body-default-s">View project</Text>
                     <Icon name="arrowUpRight" size="s" />

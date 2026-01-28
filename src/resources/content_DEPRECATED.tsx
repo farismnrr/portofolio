@@ -7,7 +7,7 @@ const person: Person = {
   name: "Faris Munir Mahdi",
   role: "Software Engineer",
   avatar: "/images/projects/avatar.jpg",
-  email: "farismunir2@gmail.com",
+  email: "farismunir@farismnrr.com",
   location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
   languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
 };

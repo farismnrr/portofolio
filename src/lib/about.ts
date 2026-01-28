@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import type { AboutProfile, Education, SkillCategory, WorkExperience } from "./types";
 
 // Constants defining content directories
 const CONTENT_DIR = path.join(process.cwd(), "src/content");
@@ -9,8 +10,7 @@ const WORK_DIR = path.join(CONTENT_DIR, "work");
 const STUDIES_DIR = path.join(CONTENT_DIR, "studies");
 const TECHNICAL_DIR = path.join(CONTENT_DIR, "technical");
 
-// biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-export async function getAbout(): Promise<any> {
+export async function getAbout(): Promise<AboutProfile | null> {
   if (!fs.existsSync(ABOUT_FILE)) return null;
   const fileContent = fs.readFileSync(ABOUT_FILE, "utf-8");
   const { data, content } = matter(fileContent);
@@ -18,7 +18,7 @@ export async function getAbout(): Promise<any> {
   return {
     ...data,
     description: content,
-  };
+  } as AboutProfile;
 }
 
 export async function getSocialLinks() {
@@ -26,7 +26,7 @@ export async function getSocialLinks() {
   return about?.social || [];
 }
 
-export async function getWorkExperiences() {
+export async function getWorkExperiences(): Promise<WorkExperience[]> {
   if (!fs.existsSync(WORK_DIR)) return [];
 
   const files = fs.readdirSync(WORK_DIR).filter((file) => file.endsWith(".md"));
@@ -34,15 +34,13 @@ export async function getWorkExperiences() {
   const experiences = files.map((file) => {
     const fileContent = fs.readFileSync(path.join(WORK_DIR, file), "utf-8");
     const { data } = matter(fileContent);
-    return data;
+    return data as WorkExperience;
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Loose typing
-  return experiences.sort((a: any, b: any) => a.order - b.order);
+  return experiences.sort((a, b) => a.order - b.order);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-export async function getEducations(): Promise<any[]> {
+export async function getEducations(): Promise<Education[]> {
   if (!fs.existsSync(STUDIES_DIR)) return [];
 
   const files = fs.readdirSync(STUDIES_DIR).filter((file) => file.endsWith(".md"));
@@ -53,15 +51,13 @@ export async function getEducations(): Promise<any[]> {
     return {
       ...data,
       description: content.trim(),
-    };
+    } as Education;
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Loose typing
-  return educations.sort((a: any, b: any) => a.order - b.order);
+  return educations.sort((a, b) => a.order - b.order);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-export async function getSkills(): Promise<any[]> {
+export async function getSkills(): Promise<SkillCategory[]> {
   if (!fs.existsSync(TECHNICAL_DIR)) return [];
 
   const files = fs.readdirSync(TECHNICAL_DIR).filter((file) => file.endsWith(".md"));
@@ -72,9 +68,8 @@ export async function getSkills(): Promise<any[]> {
     return {
       ...data,
       description: content.trim(),
-    };
+    } as SkillCategory;
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Loose typing
-  return skills.sort((a: any, b: any) => a.order - b.order);
+  return skills.sort((a, b) => a.order - b.order);
 }

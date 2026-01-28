@@ -55,20 +55,18 @@ export default async function About() {
   // Map data to structure expected by UI
   const works =
     workExperiences.length > 0
-      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-        workExperiences.map((w: any) => ({
+      ? workExperiences.map((w) => ({
           company: w.company,
           timeframe: w.timeframe,
           role: w.role,
           achievements: w.achievements || [],
-          images: [],
+          images: [] as { src: string; alt: string; width: number; height: number }[],
         }))
       : [];
 
   const institutions =
     educations.length > 0
-      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-        educations.map((e: any) => ({
+      ? educations.map((e) => ({
           name: e.institution,
           description: `${e.degree} (${e.period}). ${e.description}`,
         }))
@@ -76,13 +74,11 @@ export default async function About() {
 
   const skills =
     skillCategories.length > 0
-      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-        skillCategories.map((s: any) => ({
+      ? skillCategories.map((s) => ({
           title: s.title,
           description: s.description,
-          // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-          tags: s.tags.map((t: any) => ({ name: t.name, icon: t.icon })),
-          images: [],
+          tags: s.tags.map((t) => ({ name: t.name, icon: t.icon })),
+          images: [] as { src: string; alt: string; width: number; height: number }[],
         }))
       : [];
 
@@ -95,20 +91,17 @@ export default async function About() {
     {
       title: about.work.title,
       display: works.length > 0,
-      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-      items: works.map((w: any) => w.company),
+      items: works.map((w) => w.company),
     },
     {
       title: about.studies.title,
       display: institutions.length > 0,
-      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-      items: institutions.map((i: any) => i.name),
+      items: institutions.map((i) => i.name),
     },
     {
       title: about.technical.title,
       display: skills.length > 0,
-      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-      items: skills.map((s: any) => s.title),
+      items: skills.map((s) => s.title),
     },
   ];
 
@@ -162,7 +155,7 @@ export default async function About() {
             </Row>
             {personalInfo.languages && personalInfo.languages.length > 0 && (
               <Row wrap gap="8">
-                {personalInfo.languages.map((language, index) => (
+                {personalInfo.languages?.map((language, index) => (
                   <Tag key={language || index} size="l">
                     {language}
                   </Tag>
@@ -225,34 +218,30 @@ export default async function About() {
                 fitWidth
                 data-border="rounded"
               >
-                {socialLinks
-                  // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-                  .sort((a: any, b: any) => a.order_by - b.order_by)
-                  // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
-                  .map((item: any) => (
-                    <React.Fragment key={item.name}>
-                      <Row s={{ hide: true }}>
-                        <Button
-                          key={item.name}
-                          href={item.link}
-                          prefixIcon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
-                          label={item.name}
-                          size="s"
-                          weight="default"
-                          variant="secondary"
-                        />
-                      </Row>
-                      <Row hide s={{ hide: false }}>
-                        <IconButton
-                          size="l"
-                          key={`${item.name}-icon`}
-                          href={item.link}
-                          icon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
-                          variant="secondary"
-                        />
-                      </Row>
-                    </React.Fragment>
-                  ))}
+                {socialLinks.map((item) => (
+                  <React.Fragment key={item.name}>
+                    <Row s={{ hide: true }}>
+                      <Button
+                        key={item.name}
+                        href={item.link}
+                        prefixIcon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
+                        label={item.name}
+                        size="s"
+                        weight="default"
+                        variant="secondary"
+                      />
+                    </Row>
+                    <Row hide s={{ hide: false }}>
+                      <IconButton
+                        size="l"
+                        key={`${item.name}-icon`}
+                        href={item.link}
+                        icon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
+                        variant="secondary"
+                      />
+                    </Row>
+                  </React.Fragment>
+                ))}
               </Row>
             )}
           </Column>
@@ -269,8 +258,7 @@ export default async function About() {
                 {about.work.title}
               </Heading>
               <Column fillWidth gap="l" marginBottom="40">
-                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
-                {works.map((experience: any, index: number) => (
+                {works.map((experience, index) => (
                   <Column key={`${experience.company}-${experience.role}-${index}`} fillWidth>
                     <Row fillWidth horizontal="between" vertical="end" marginBottom="4">
                       <Text id={experience.company} variant="heading-strong-l">
@@ -311,8 +299,7 @@ export default async function About() {
                 {about.studies.title}
               </Heading>
               <Column fillWidth gap="l" marginBottom="40">
-                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
-                {institutions.map((institution: any, index: number) => (
+                {institutions.map((institution, index) => (
                   <Column key={`${institution.name}-${index}`} fillWidth gap="4">
                     <Text id={institution.name} variant="heading-strong-l">
                       {institution.name}
@@ -337,8 +324,7 @@ export default async function About() {
                 {about.technical.title}
               </Heading>
               <Column fillWidth gap="l">
-                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
-                {skills.map((skill: any, index: number) => (
+                {skills.map((skill, index) => (
                   <Column key={`${skill.title}-${index}`} fillWidth gap="4">
                     <Text id={skill.title} variant="heading-strong-l">
                       {skill.title}
@@ -348,8 +334,7 @@ export default async function About() {
                     </Text>
                     {skill.tags && skill.tags.length > 0 && (
                       <Row wrap gap="8" paddingTop="8">
-                        {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
-                        {skill.tags.map((tag: any, tagIndex: number) => (
+                        {skill.tags.map((tag, tagIndex) => (
                           // Explicitely use tag.icon if available, else maybe default or omit
                           <Tag key={`${skill.title}-${tagIndex}`} size="l" prefixIcon={tag.icon}>
                             {tag.name}

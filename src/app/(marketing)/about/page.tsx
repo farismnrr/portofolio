@@ -60,13 +60,7 @@ export default async function About() {
           company: w.company,
           timeframe: w.timeframe,
           role: w.role,
-          achievements: w.description
-            ? w.description
-                .split("\n")
-                .map((line: string) => line.trim())
-                .filter(Boolean)
-                .map((line: string) => line.replace(/^-\s*/, ""))
-            : [],
+          achievements: w.achievements || [],
           images: [],
         }))
       : [];

@@ -1,7 +1,7 @@
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
 import { Projects } from "@/components/work/Projects";
-import { fetchAbout } from "@/lib/about";
+import { getAbout } from "@/lib/about";
 import { about, baseURL, home, person, routes } from "@/resources";
 import { getPosts } from "@/utils/utils";
 import {
@@ -31,7 +31,7 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const profile = await fetchAbout();
+  const profile = await getAbout();
   const personalInfo = {
     name: profile?.name || person.name,
     role: profile?.role || person.role,

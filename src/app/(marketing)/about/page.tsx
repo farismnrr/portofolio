@@ -1,11 +1,11 @@
 import TableOfContents from "@/components/about/TableOfContents";
 import styles from "@/components/about/about.module.scss";
 import {
-  fetchAbout,
-  fetchEducations,
-  fetchSkills,
-  fetchSocialLinks,
-  fetchWorkExperiences,
+  getAbout,
+  getEducations,
+  getSkills,
+  getSocialLinks,
+  getWorkExperiences,
 } from "@/lib/about";
 import { about, baseURL, person } from "@/resources";
 import {
@@ -36,11 +36,11 @@ export async function generateMetadata() {
 
 export default async function About() {
   const [profile, socialLinks, workExperiences, educations, skillCategories] = await Promise.all([
-    fetchAbout(),
-    fetchSocialLinks(),
-    fetchWorkExperiences(),
-    fetchEducations(),
-    fetchSkills(),
+    getAbout(),
+    getSocialLinks(),
+    getWorkExperiences(),
+    getEducations(),
+    getSkills(),
   ]);
 
   const personalInfo = {
@@ -55,16 +55,17 @@ export default async function About() {
   // Map data to structure expected by UI
   const works =
     workExperiences.length > 0
-      ? workExperiences.map((w) => ({
+      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+        workExperiences.map((w: any) => ({
           company: w.company,
           timeframe: w.timeframe,
           role: w.role,
           achievements: w.description
             ? w.description
                 .split("\n")
-                .map((line) => line.trim())
+                .map((line: string) => line.trim())
                 .filter(Boolean)
-                .map((line) => line.replace(/^-\s*/, ""))
+                .map((line: string) => line.replace(/^-\s*/, ""))
             : [],
           images: [],
         }))
@@ -72,7 +73,8 @@ export default async function About() {
 
   const institutions =
     educations.length > 0
-      ? educations.map((e) => ({
+      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+        educations.map((e: any) => ({
           name: e.institution,
           description: `${e.degree} (${e.period}). ${e.description}`,
         }))
@@ -80,10 +82,12 @@ export default async function About() {
 
   const skills =
     skillCategories.length > 0
-      ? skillCategories.map((s) => ({
+      ? // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+        skillCategories.map((s: any) => ({
           title: s.title,
           description: s.description,
-          tags: s.tags.map((t) => ({ name: t.name, icon: t.icon })),
+          // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+          tags: s.tags.map((t: any) => ({ name: t.name, icon: t.icon })),
           images: [],
         }))
       : [];
@@ -97,17 +101,20 @@ export default async function About() {
     {
       title: about.work.title,
       display: works.length > 0,
-      items: works.map((w) => w.company),
+      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+      items: works.map((w: any) => w.company),
     },
     {
       title: about.studies.title,
       display: institutions.length > 0,
-      items: institutions.map((i) => i.name),
+      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+      items: institutions.map((i: any) => i.name),
     },
     {
       title: about.technical.title,
       display: skills.length > 0,
-      items: skills.map((s) => s.title),
+      // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+      items: skills.map((s: any) => s.title),
     },
   ];
 
@@ -225,8 +232,10 @@ export default async function About() {
                 data-border="rounded"
               >
                 {socialLinks
-                  .sort((a, b) => a.order_by - b.order_by)
-                  .map((item) => (
+                  // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+                  .sort((a: any, b: any) => a.order_by - b.order_by)
+                  // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
+                  .map((item: any) => (
                     <React.Fragment key={item.id}>
                       <Row s={{ hide: true }}>
                         <Button
@@ -266,7 +275,8 @@ export default async function About() {
                 {about.work.title}
               </Heading>
               <Column fillWidth gap="l" marginBottom="40">
-                {works.map((experience, index) => (
+                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
+                {works.map((experience: any, index: number) => (
                   <Column key={`${experience.company}-${experience.role}-${index}`} fillWidth>
                     <Row fillWidth horizontal="between" vertical="end" marginBottom="4">
                       <Text id={experience.company} variant="heading-strong-l">
@@ -307,7 +317,8 @@ export default async function About() {
                 {about.studies.title}
               </Heading>
               <Column fillWidth gap="l" marginBottom="40">
-                {institutions.map((institution, index) => (
+                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
+                {institutions.map((institution: any, index: number) => (
                   <Column key={`${institution.name}-${index}`} fillWidth gap="4">
                     <Text id={institution.name} variant="heading-strong-l">
                       {institution.name}
@@ -332,7 +343,8 @@ export default async function About() {
                 {about.technical.title}
               </Heading>
               <Column fillWidth gap="l">
-                {skills.map((skill, index) => (
+                {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
+                {skills.map((skill: any, index: number) => (
                   <Column key={`${skill.title}-${index}`} fillWidth gap="4">
                     <Text id={skill.title} variant="heading-strong-l">
                       {skill.title}
@@ -342,7 +354,8 @@ export default async function About() {
                     </Text>
                     {skill.tags && skill.tags.length > 0 && (
                       <Row wrap gap="8" paddingTop="8">
-                        {skill.tags.map((tag, tagIndex) => (
+                        {/* biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content */}
+                        {skill.tags.map((tag: any, tagIndex: number) => (
                           // Explicitely use tag.icon if available, else maybe default or omit
                           <Tag key={`${skill.title}-${tagIndex}`} size="l" prefixIcon={tag.icon}>
                             {tag.name}

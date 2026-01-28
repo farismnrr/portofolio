@@ -236,10 +236,10 @@ export default async function About() {
                   .sort((a: any, b: any) => a.order_by - b.order_by)
                   // biome-ignore lint/suspicious/noExplicitAny: Loose typing for markdown content
                   .map((item: any) => (
-                    <React.Fragment key={item.id}>
+                    <React.Fragment key={item.name}>
                       <Row s={{ hide: true }}>
                         <Button
-                          key={item.id}
+                          key={item.name}
                           href={item.link}
                           prefixIcon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
                           label={item.name}
@@ -251,7 +251,7 @@ export default async function About() {
                       <Row hide s={{ hide: false }}>
                         <IconButton
                           size="l"
-                          key={`${item.id}-icon`}
+                          key={`${item.name}-icon`}
                           href={item.link}
                           icon={item.icon || item.name.toLowerCase()} // Prefer explicit icon from DB
                           variant="secondary"

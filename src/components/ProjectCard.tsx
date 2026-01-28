@@ -6,6 +6,7 @@ import {
   Column,
   Flex,
   Heading,
+  Icon,
   SmartLink,
   Text,
 } from "@once-ui-system/core";
@@ -17,7 +18,7 @@ interface ProjectCardProps {
   title: string;
   content: string;
   description: string;
-  avatars: { src: string }[];
+  avatars: { src: string; alt: string }[];
   link: string;
 }
 
@@ -65,20 +66,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <Flex gap="24" wrap>
               {content?.trim() && (
                 <SmartLink
-                  suffixIcon="arrowRight"
                   style={{ margin: "0", width: "fit-content" }}
                   href={href}
                 >
-                  <Text variant="body-default-s">Read case study</Text>
+                  <Flex gap="4" vertical="center">
+                    <Text variant="body-default-s">Read case study</Text>
+                    <Icon name="arrowRight" size="s" />
+                  </Flex>
                 </SmartLink>
               )}
               {link && (
                 <SmartLink
-                  suffixIcon="arrowUpRightFromSquare"
                   style={{ margin: "0", width: "fit-content" }}
                   href={link}
                 >
-                  <Text variant="body-default-s">View project</Text>
+                  <Flex gap="4" vertical="center">
+                    <Text variant="body-default-s">View project</Text>
+                    <Icon name="arrowUpRight" size="s" />
+                  </Flex>
                 </SmartLink>
               )}
             </Flex>

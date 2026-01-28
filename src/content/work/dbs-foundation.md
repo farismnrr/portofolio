@@ -1,8 +1,8 @@
 ---
 company: DBS Foundation
 role: Machine Learning Engineer
-timeframe: Feb 2025 - Present
-order: 1
+timeframe: Feb 2025 - July 2025
+order: 2
 achievements:
   - Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.
   - Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.

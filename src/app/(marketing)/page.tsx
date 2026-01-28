@@ -38,7 +38,7 @@ export default async function Home() {
     avatar: profile?.avatar || person.avatar,
   };
 
-  const latestProject = getPosts(["app", "(marketing)", "work", "projects"]).sort(
+  const latestProject = getPosts(["content", "projects"]).sort(
     (a, b) =>
       new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime(),
   )[0];

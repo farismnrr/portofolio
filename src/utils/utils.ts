@@ -58,7 +58,7 @@ function readMDXFile(filePath: string) {
   return { metadata, content };
 }
 
-export function getPosts(customPath: string[] = ["app", "work", "projects"]) {
+export function getPosts(customPath: string[] = ["content", "projects"]) {
   const postsDirectory = path.join(process.cwd(), "src", ...customPath);
   const mdxFiles = getMDXFiles(postsDirectory);
 

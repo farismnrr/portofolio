@@ -3,7 +3,7 @@ import { getPosts } from "@/utils/utils";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const posts = getPosts(["app", "blog", "posts"]);
+  const posts = getPosts(["content", "blog"]);
 
   // Sort posts by date (newest first)
   const sortedPosts = posts.sort((a, b) => {

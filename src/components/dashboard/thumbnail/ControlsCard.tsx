@@ -2,7 +2,7 @@ import { useUI } from "@/context/UIContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import styles from "./ControlsCard.module.scss";
-import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./PreviewCard";
+import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./constants";
 
 type DeviceType = "website" | "mobile";
 

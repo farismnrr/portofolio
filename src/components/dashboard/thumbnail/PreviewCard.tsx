@@ -2,6 +2,7 @@ import type React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Mockup } from "./Mockup";
 import styles from "./PreviewCard.module.scss";
+import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./constants";
 
 const CANVAS_MARGIN = 12; // px (left/right/top/bottom)
 // Per-device horizontal/vertical gaps
@@ -13,9 +14,6 @@ const GAP_VERTICAL_MOBILE = -50;
 // Per-device screen base widths (used for layout math)
 const SCREEN_WIDTH_WEB = 620; // px
 const SCREEN_WIDTH_MOBILE = 240; // px
-// Per-device maximum columns to force before allowing overflow
-export const MAX_COLS_WEB = 4;
-export const MAX_COLS_MOBILE = 6;
 type DeviceType = "website" | "mobile";
 
 interface PreviewCardProps {

@@ -14,8 +14,8 @@ const GAP_VERTICAL_MOBILE = -50;
 const SCREEN_WIDTH_WEB = 620; // px
 const SCREEN_WIDTH_MOBILE = 240; // px
 // Per-device maximum columns to force before allowing overflow
-const MAX_COLS_WEB = 4;
-const MAX_COLS_MOBILE = 6;
+export const MAX_COLS_WEB = 4;
+export const MAX_COLS_MOBILE = 6;
 type DeviceType = "website" | "mobile";
 
 interface PreviewCardProps {

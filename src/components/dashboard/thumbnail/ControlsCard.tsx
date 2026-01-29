@@ -2,6 +2,7 @@ import { useUI } from "@/context/UIContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import styles from "./ControlsCard.module.scss";
+import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./PreviewCard";
 
 type DeviceType = "website" | "mobile";
 
@@ -30,6 +31,14 @@ export const ControlsCard = ({
 }: ControlsCardProps) => {
   const { showToast, showModal, hideModal } = useUI();
   const [isExporting, setIsExporting] = useState(false);
+
+  // Auto-reset rotation if screenCount is below maxCols
+  useEffect(() => {
+    const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
+    if (screenCount < maxCols && rotation !== 0) {
+      setRotation(0);
+    }
+  }, [screenCount, deviceType, rotation, setRotation]);
 
   const handleFile = (file: File | null) => {
     if (!file) return;
@@ -176,19 +185,21 @@ export const ControlsCard = ({
         </fieldset>
       </div>
 
-      <div className={styles.controlGroup}>
-        <label htmlFor="rotation">
-          Rotation Angle: <strong>{rotation}°</strong>
-        </label>
-        <input
-          id="rotation"
-          type="range"
-          min={-45}
-          max={45}
-          value={rotation}
-          onChange={(e) => setRotation(Number(e.target.value))}
-        />
-      </div>
+      {screenCount >= (deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE) && (
+        <div className={styles.controlGroup}>
+          <label htmlFor="rotation">
+            Rotation Angle: <strong>{rotation}°</strong>
+          </label>
+          <input
+            id="rotation"
+            type="range"
+            min={-45}
+            max={45}
+            value={rotation}
+            onChange={(e) => setRotation(Number(e.target.value))}
+          />
+        </div>
+      )}
 
       <div className={styles.inlineDropContainer}>
         <button

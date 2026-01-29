@@ -57,9 +57,9 @@ export async function apiClient(endpoint: string, options: RequestInit = {}): Pr
       // Force logout for 403 Forbidden
       useAuthStore.getState().clearAuth();
       if (typeof window !== "undefined") {
-         setTimeout(() => {
-             window.location.href = "/login?reason=forbidden";
-         }, 1500);
+        setTimeout(() => {
+          window.location.href = "/login?reason=forbidden";
+        }, 1500);
       }
     } else if (response.status === 415) {
       addToast({

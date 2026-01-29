@@ -24,8 +24,10 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Content outside will be clipped */
     position: relative;
+    /* Force height to be exactly 9/16 of width */
+    height: auto;
+    max-height: calc(100vw * 9 / 16);
 }
 
 .mockupsContainer {

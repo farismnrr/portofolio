@@ -6,7 +6,6 @@ import styles from "./PreviewCard.module.scss";
 import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./constants";
 
 const CANVAS_MARGIN = 12; // px (left/right/top/bottom)
-// Per-device horizontal/vertical gaps
 const GAP_HORIZONTAL_WEB = 120;
 const GAP_HORIZONTAL_MOBILE = 10;
 const GAP_VERTICAL_WEB = 80;

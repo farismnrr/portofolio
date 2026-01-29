@@ -13,8 +13,13 @@ const GAP_VERTICAL_WEB = 80;
 const GAP_VERTICAL_MOBILE = -50;
 
 // Per-device screen base widths (used for layout math)
-const SCREEN_WIDTH_WEB = 620; // px
-const SCREEN_WIDTH_MOBILE = 240; // px
+const SCREEN_WIDTH_WEB = 800; // synced with Mockup.module.scss
+const SCREEN_WIDTH_MOBILE = 300; // synced with Mockup.module.scss
+
+// Define standard dual monitor size
+const MONITOR_DUAL_WIDTH = 1240;
+const MONITOR_DUAL_HEIGHT = 600;
+
 type DeviceType = "website" | "mobile";
 
 interface PreviewCardProps {
@@ -35,31 +40,25 @@ export const PreviewCard = ({
   const innerRef = useRef<HTMLDivElement | null>(null);
   const [fitScale, setFitScale] = useState(1);
   const [positions, setPositions] = useState<Array<{ top: number; left: number }>>([]);
+  const [contentBounds, setContentBounds] = useState({ width: 0, height: 0 });
 
   useLayoutEffect(() => {
     const updateFit = () => {
       const canvas = canvasRef.current;
-      const inner = innerRef.current;
-      if (!canvas || !inner) return;
-
-      // Temporarily set inner transform to rotation with scale 1 to measure bounding box
-      inner.style.transform = `rotate(${rotation}deg) scale(1)`;
+      if (!canvas) return;
 
       // Use rAF to ensure the browser applied the transform
       requestAnimationFrame(() => {
-        const rect = inner.getBoundingClientRect();
         const canvasRect = canvas.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return;
+        if (canvasRect.width === 0 || canvasRect.height === 0) return;
 
-        const margin = CANVAS_MARGIN; // safety margin in pixels to avoid touching edges
+        const margin = CANVAS_MARGIN;
         const availableWidth = canvasRect.width - margin * 2;
         const availableHeight = canvasRect.height - margin * 2;
-        const _scale = Math.min(1, availableWidth / rect.width, availableHeight / rect.height);
 
-        // Compute fixed-spacing positions in pixel coordinates (more readable)
-        const gap = deviceType === "website" ? GAP_HORIZONTAL_WEB : GAP_HORIZONTAL_MOBILE; // horizontal gap per device
+        const gap = deviceType === "website" ? GAP_HORIZONTAL_WEB : GAP_HORIZONTAL_MOBILE;
         const baseItemW = deviceType === "website" ? SCREEN_WIDTH_WEB : SCREEN_WIDTH_MOBILE;
-        // If count is less than maxCols, compute dynamic item width so items start large and shrink as count grows
+
         let itemW: number;
         if (
           screenCount < (deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE) &&
@@ -72,69 +71,68 @@ export const PreviewCard = ({
         } else {
           itemW = baseItemW;
         }
-        // approximate heights (unscaled)
+
         const itemH =
           deviceType === "website" ? 40 + itemW * (10 / 16) + 2 : 24 + itemW * (19.5 / 9) + 4;
 
-        // Use a fixed mockup scale so sizes don't change when rotating or changing count
         const mockupScale = deviceType === "website" ? 0.5 : 0.85;
-        // Determine if we should scale up to fill available width when screenCount < maxCols
         const maxCols = deviceType === "website" ? MAX_COLS_WEB : MAX_COLS_MOBILE;
 
-        // If fewer screens than maxCols, compute a target scale to better fill the canvas width
         let appliedScale = mockupScale;
         if (screenCount < maxCols && screenCount > 0) {
-          // targetScale uses unscaled itemW so we can grow up to full size (<= 1)
           const targetScale = Math.max(
             0.01,
             (availableWidth - (screenCount - 1) * gap) / (screenCount * itemW),
           );
-
-          // Blend between targetScale (for small counts) and mockupScale (at maxCols)
           const t = maxCols <= 1 ? 0 : Math.min(1, (screenCount - 1) / (maxCols - 1));
           const blended = (1 - t) * targetScale + t * mockupScale;
-
-          // Clamp so we don't exceed natural size and don't go below mockupScale
           appliedScale = Math.max(mockupScale, Math.min(1, blended));
         }
 
         const itemWScaled = itemW * appliedScale;
         const itemHScaled = itemH * appliedScale;
-
-        // Use per-device maximum columns when forcing fixed columns; when screenCount < maxCols use screenCount columns
         const cols = screenCount >= maxCols ? maxCols : Math.max(1, screenCount);
         const rows = Math.ceil(screenCount / cols);
+        const verticalGap = deviceType === "website" ? GAP_VERTICAL_WEB : GAP_VERTICAL_MOBILE;
 
-        // Compute horizontal total using the horizontal gap (unchanged)
-        const totalW = cols * itemWScaled + (cols - 1) * gap;
+        let totalW: number;
+        let totalH: number;
 
-        // Use a fixed vertical gap per device so vertical spacing does not change when screenCount changes
-        const verticalGap = deviceType === "website" ? GAP_VERTICAL_WEB : GAP_VERTICAL_MOBILE; // px
+        if (deviceType === "website" && screenCount === 2) {
+          // Special case for dual monitor bounds
+          totalW = MONITOR_DUAL_WIDTH;
+          totalH = MONITOR_DUAL_HEIGHT;
+        } else {
+          totalW = cols * itemWScaled + (cols - 1) * gap;
+          totalH = rows * itemHScaled + (rows - 1) * verticalGap;
+        }
 
-        const totalH = rows * itemHScaled + (rows - 1) * verticalGap;
+        setContentBounds({ width: totalW, height: totalH });
 
-        // Compute vertical centering; horizontal centering will be handled per-item using center-based offsets
-        const _leftEdge = (canvasRect.width - totalW) / 2;
-        const topStart = margin + (availableHeight - totalH) / 2;
+        // Calculate fitScale after setting total bounds
+        // We need to account for rotation. A simple way is to use the diagonal if rotating,
+        // but the previous code used getBoundingClientRect of a transformed inner.
+        // Let's do a simplified bounding box calculation for rotation
+        const rad = (Math.abs(rotation) * Math.PI) / 180;
+        const rotatedW = totalW * Math.cos(rad) + totalH * Math.sin(rad);
+        const rotatedH = totalW * Math.sin(rad) + totalH * Math.cos(rad);
 
+        const scale = Math.min(1, availableWidth / rotatedW, availableHeight / rotatedH);
+        setFitScale(scale);
+
+        // Center positions within the totalW/totalH area
         const newPositions: Array<{ top: number; left: number }> = [];
         for (let i = 0; i < screenCount; i++) {
           const r = Math.floor(i / cols);
           const c = i % cols;
-          // Position items symmetrically from the canvas center (grow outwards from center)
-          const centerX = canvasRect.width / 2;
-          const colOffset = c - (cols - 1) / 2;
-          const left = centerX + colOffset * (itemWScaled + gap);
-          const top = topStart + r * (itemHScaled + verticalGap) + itemHScaled / 2;
+          const left = (c - (cols - 1) / 2) * (itemWScaled + gap) + totalW / 2;
+          const top =
+            (r + 0.5) * itemHScaled +
+            r * verticalGap +
+            (totalH - (rows * itemHScaled + (rows - 1) * verticalGap)) / 2;
           newPositions.push({ top, left });
         }
-
         setPositions(newPositions);
-        // Keep scale fixed to 1 so size doesn't change on rotate/resize
-        setFitScale(1);
-
-        // Apply final transform (rotation only)
-        inner.style.transform = `rotate(${rotation}deg) scale(1)`;
       });
     };
 
@@ -195,9 +193,15 @@ export const PreviewCard = ({
             transformOrigin: "center center",
           }}
         >
-          <div className={styles.mockupsContainer}>
+          <div
+            className={styles.mockupsContainer}
+            style={{
+              width: `${contentBounds.width}px`,
+              height: `${contentBounds.height}px`,
+            }}
+          >
             {deviceType === "website" && screenCount === 2 ? (
-              <div className={styles.dualMonitorContainer} style={{ transform: "scale(0.7)" }}>
+              <div className={styles.dualMonitorContainer}>
                 <MonitorMockup
                   className={styles.monitorLeft}
                   imageSrc={screenImages ? screenImages[1] : undefined}

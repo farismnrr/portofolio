@@ -5,11 +5,11 @@
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 
     &.website {
-        width: 800px;
+        width: 620px;
     }
 
     &.mobile {
-        width: 300px;
+        width: 240px;
     }
 }
 
@@ -74,7 +74,8 @@
     font-size: 2rem;
     font-weight: 700;
     color: rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* ensure child images are clipped to the green screen shape */
+    overflow: hidden;
+    /* ensure child images are clipped to the green screen shape */
 
     &::after {
         content: "GREEN SCREEN";

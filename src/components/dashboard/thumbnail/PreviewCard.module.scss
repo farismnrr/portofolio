@@ -24,6 +24,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    /* Content outside will be clipped */
     position: relative;
 }
 
@@ -31,6 +32,8 @@
     position: relative;
     /* change to relative positioning with absolute children to allow free placement */
     display: block;
+    width: 100%;
+    height: 100%;
     margin-left: 0;
 }
 
@@ -70,9 +73,8 @@
     gap: 40px;
     align-items: center;
     justify-content: center;
-    width: 1240px;
-    /* (600 * 2) + 40 gap */
-    height: 600px;
+    width: 100%;
+    height: 100%;
     perspective: 2000px;
 }
 

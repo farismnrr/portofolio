@@ -1,0 +1,68 @@
+.singleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.85);
+}
+
+.dualContainer {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    perspective: 2000px;
+    transform: scale(0.45);
+}
+
+.tripleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    perspective: 2000px;
+    transform: scale(0.38);
+}
+
+.tripleLayer {
+    position: relative;
+    width: 1000px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+}
+
+.monitorLeft {
+    transform: rotateY(25deg);
+}
+
+.monitorRight {
+    transform: rotateY(-25deg);
+}
+
+/* Triple Layout Specifics */
+.monitorFront {
+    position: absolute;
+    z-index: 10;
+    transform: translateZ(100px);
+}
+
+.monitorBackLeft {
+    position: absolute;
+    left: 0;
+    transform: rotateY(35deg) translateZ(-100px);
+    opacity: 0.9;
+}
+
+.monitorBackRight {
+    position: absolute;
+    right: 0;
+    transform: rotateY(-35deg) translateZ(-100px);
+    opacity: 0.9;
+}

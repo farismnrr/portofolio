@@ -197,7 +197,7 @@ export const PreviewCard = ({
         >
           <div className={styles.mockupsContainer}>
             {deviceType === "website" && screenCount === 2 ? (
-              <div className={styles.dualMonitorContainer} style={{ transform: "scale(0.55)" }}>
+              <div className={styles.dualMonitorContainer} style={{ transform: "scale(0.7)" }}>
                 <MonitorMockup
                   className={styles.monitorLeft}
                   imageSrc={screenImages ? screenImages[1] : undefined}

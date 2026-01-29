@@ -30,6 +30,14 @@ const nextConfig = {
   output: "standalone",
   allowedDevOrigins: ["app.farismunir.my.id", "localhost:3000"],
   reactStrictMode: false,
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://127.0.0.1:8080/:path*",
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);

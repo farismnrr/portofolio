@@ -37,13 +37,13 @@
     width: 1600px;
     height: 700px;
     perspective: 2000px;
-    transform: scale(0.38);
+    transform: scale(0.55);
     /* Slightly increased to fill canvas better with wider spread */
     position: absolute;
     top: 50%;
     left: 50%;
     transform-origin: center center;
-    margin-left: -10000px;
+    margin-left: -800px;
     margin-top: -350px;
 }
 

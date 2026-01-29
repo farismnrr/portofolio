@@ -139,12 +139,14 @@ func (s *SSOClient) VerifyUser(ctx context.Context, accessToken string) (*UserDa
 		return nil, fmt.Errorf("SSO error: %s", baseResp.Message)
 	}
 
-	var user UserData
-	if err := json.Unmarshal(baseResp.Data, &user); err != nil {
+	var wrapper struct {
+		User UserData `json:"user"`
+	}
+	if err := json.Unmarshal(baseResp.Data, &wrapper); err != nil {
 		return nil, fmt.Errorf("failed to decode user data: %w", err)
 	}
 
-	return &user, nil
+	return &wrapper.User, nil
 }
 
 // Logout calls SSO logout endpoint to invalidate session

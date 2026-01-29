@@ -21,8 +21,10 @@ ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
 
-# Install migrate tool
-RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+# Install migrate tool (Download binary directly)
+RUN apk add --no-cache curl
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-$TARGETARCH.tar.gz | tar xvz
+RUN mv migrate /go/bin/migrate
 
 # ==========================================
 # Stage 2: Build Next.js Frontend

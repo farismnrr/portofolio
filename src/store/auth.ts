@@ -62,6 +62,14 @@ export const useAuthStore = create<AuthState>((set, _get) => ({
         },
       });
 
+      if (response.status === 403) {
+        get().clearAuth();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login?reason=forbidden";
+        }
+        return;
+      }
+
       if (response.ok) {
         const resBody = await response.json();
         if ((resBody.status || resBody.success) && resBody.data?.user) {

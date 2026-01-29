@@ -202,8 +202,10 @@ export const ControlsCard = ({
       )}
 
       <div className={styles.inlineDropContainer}>
-        <button
-          type="button"
+        {/* biome-ignore lint/a11y/useSemanticElements: nested buttons are invalid HTML, so we use a div with role="button" */}
+        <div
+          role="button"
+          tabIndex={0}
           className={`${styles.dropzone} ${dragActive ? styles.dropzoneActive : ""}`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -290,7 +292,7 @@ export const ControlsCard = ({
               (e.currentTarget as HTMLInputElement).value = "";
             }}
           />
-        </button>
+        </div>
       </div>
 
       {Object.keys(screenImages).length > 0 && (

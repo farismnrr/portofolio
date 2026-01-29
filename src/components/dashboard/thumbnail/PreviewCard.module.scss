@@ -68,6 +68,24 @@
     will-change: transform;
 }
 
+.dualMonitorContainer {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    perspective: 2000px;
+}
+
+.monitorLeft {
+    transform: rotateY(25deg);
+}
+
+.monitorRight {
+    transform: rotateY(-25deg);
+}
+
 @media (max-width: 768px) {
     .previewCanvas {
         padding: 1.5rem;

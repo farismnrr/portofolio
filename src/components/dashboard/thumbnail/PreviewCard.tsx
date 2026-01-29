@@ -196,35 +196,48 @@ export const PreviewCard = ({
           }}
         >
           <div className={styles.mockupsContainer}>
-            {Array.from({ length: screenCount }).map((_, index) => {
-              const pos = positions[index] || { top: 0, left: 0 };
-              return (
-                <div
-                  key={`mockup-${screenCount}-${deviceType}-${index}`}
-                  className={styles.mockupWrapper}
-                  style={{
-                    top: `${pos.top}px`,
-                    left: `${pos.left}px`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  {deviceType === "website" && screenCount === 1 ? (
-                    <div style={{ transform: "scale(0.85)" }}>
-                      <MonitorMockup
+            {deviceType === "website" && screenCount === 2 ? (
+              <div className={styles.dualMonitorContainer} style={{ transform: "scale(0.55)" }}>
+                <MonitorMockup
+                  className={styles.monitorLeft}
+                  imageSrc={screenImages ? screenImages[1] : undefined}
+                />
+                <MonitorMockup
+                  className={styles.monitorRight}
+                  imageSrc={screenImages ? screenImages[2] : undefined}
+                />
+              </div>
+            ) : (
+              Array.from({ length: screenCount }).map((_, index) => {
+                const pos = positions[index] || { top: 0, left: 0 };
+                return (
+                  <div
+                    key={`mockup-${screenCount}-${deviceType}-${index}`}
+                    className={styles.mockupWrapper}
+                    style={{
+                      top: `${pos.top}px`,
+                      left: `${pos.left}px`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    {deviceType === "website" && screenCount === 1 ? (
+                      <div style={{ transform: "scale(0.85)" }}>
+                        <MonitorMockup
+                          imageSrc={screenImages ? screenImages[index + 1] : undefined}
+                        />
+                      </div>
+                    ) : (
+                      <Mockup
+                        deviceType={deviceType}
+                        totalScreens={screenCount}
+                        scaleOverride={deviceType === "website" ? 0.5 : 0.6}
                         imageSrc={screenImages ? screenImages[index + 1] : undefined}
                       />
-                    </div>
-                  ) : (
-                    <Mockup
-                      deviceType={deviceType}
-                      totalScreens={screenCount}
-                      scaleOverride={deviceType === "website" ? 0.5 : 0.6}
-                      imageSrc={screenImages ? screenImages[index + 1] : undefined}
-                    />
-                  )}
-                </div>
-              );
-            })}
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

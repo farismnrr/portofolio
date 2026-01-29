@@ -1,6 +1,7 @@
 import type React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Mockup } from "./Mockup";
+import { MonitorMockup } from "./MonitorMockup";
 import styles from "./PreviewCard.module.scss";
 import { MAX_COLS_MOBILE, MAX_COLS_WEB } from "./constants";
 
@@ -207,12 +208,20 @@ export const PreviewCard = ({
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  <Mockup
-                    deviceType={deviceType}
-                    totalScreens={screenCount}
-                    scaleOverride={deviceType === "website" ? 0.5 : 0.6}
-                    imageSrc={screenImages ? screenImages[index + 1] : undefined}
-                  />
+                  {deviceType === "website" && screenCount === 1 ? (
+                    <div style={{ transform: "scale(0.85)" }}>
+                      <MonitorMockup
+                        imageSrc={screenImages ? screenImages[index + 1] : undefined}
+                      />
+                    </div>
+                  ) : (
+                    <Mockup
+                      deviceType={deviceType}
+                      totalScreens={screenCount}
+                      scaleOverride={deviceType === "website" ? 0.5 : 0.6}
+                      imageSrc={screenImages ? screenImages[index + 1] : undefined}
+                    />
+                  )}
                 </div>
               );
             })}

@@ -21,6 +21,9 @@ ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
 
+# Install migrate tool
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 # ==========================================
 # Stage 2: Build Next.js Frontend
 # ==========================================
@@ -78,6 +81,7 @@ COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/static ./.next/sta
 # --- Setup Backend ---
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-backend-service .
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-seeder .
+COPY --from=backend-builder --chown=nextjs:nodejs /go/bin/migrate ./migrate
 
 # Copy backend migrations (REQUIRED for first run)
 COPY --from=backend-builder --chown=nextjs:nodejs /app/migration ./migration

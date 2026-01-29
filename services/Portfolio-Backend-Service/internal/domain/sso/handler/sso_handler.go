@@ -145,7 +145,7 @@ func (h *Handler) GetUser(c echo.Context) error {
 			zap.String("username", userData.Username),
 			zap.String("role", userData.Role),
 		)
-		return response.Error(c, http.StatusUnauthorized, "Access denied: admin role required")
+		return response.Error(c, http.StatusForbidden, "Access denied: admin role required")
 	}
 
 	userDataResp := UserDataWrapper{

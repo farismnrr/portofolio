@@ -197,7 +197,7 @@ func TestGetUser(t *testing.T) {
 		c := e.NewContext(req, rec)
 
 		if assert.NoError(t, h.GetUser(c)) {
-			assert.Equal(t, http.StatusUnauthorized, rec.Code)
+			assert.Equal(t, http.StatusForbidden, rec.Code)
 		}
 	})
 

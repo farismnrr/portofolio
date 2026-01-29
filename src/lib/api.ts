@@ -52,8 +52,15 @@ export async function apiClient(endpoint: string, options: RequestInit = {}): Pr
       addToast({
         variant: "danger",
         title: "Access Denied",
-        description: "You do not have permission.",
+        description: "You do not have permission. Redirecting to login...",
       });
+      // Force logout for 403 Forbidden
+      useAuthStore.getState().clearAuth();
+      if (typeof window !== "undefined") {
+         setTimeout(() => {
+             window.location.href = "/login?reason=forbidden";
+         }, 1500);
+      }
     } else if (response.status === 415) {
       addToast({
         variant: "danger",

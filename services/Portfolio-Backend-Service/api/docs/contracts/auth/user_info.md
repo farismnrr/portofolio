@@ -28,9 +28,9 @@ Retrieve authenticated user details and verify RBAC.
 ```
 
 ### 2. Error: Unauthorized (RBAC Required)
-- **Status**: `401 Unauthorized`
+- **Status**: `403 Forbidden`
 - **Description**: User exists but role is not `admin`. Triggers forced logout.
-- **Response**: See [common/errors.md#401-unauthorized](../common/errors.md#401-unauthorized)
+- **Response**: See [common/errors.md#403-forbidden](../common/errors.md#403-forbidden)
 
 ### 3. Error: Unauthorized (Missing/Invalid Token)
 - **Status**: `401 Unauthorized`

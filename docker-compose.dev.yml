@@ -17,11 +17,11 @@ services:
       - BACKEND_INTERNAL_URL=${BACKEND_INTERNAL_URL}
       - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
       - DB_HOST=postgres-sql
-      - DB_PORT=5432
+      - DB_PORT=${CORE_DB_PORT:-5432}
       - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-sql:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-sql:${CORE_DB_PORT:-5432}/${POSTGRES_DB}
       - CORE_DB_SEED_DUMMY=true
     env_file:
       - .env.dev
@@ -57,6 +57,7 @@ services:
       - CORE_DB_USER=${POSTGRES_USER}
       - CORE_DB_PASS=${POSTGRES_PASSWORD}
       - CORE_DB_NAME=${UM_DB_NAME:-iotnet_auth}
+      - SERVER_PORT=${AUTH_PORT:-5500}
     env_file:
       - .env.dev
     depends_on:

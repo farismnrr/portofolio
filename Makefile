@@ -114,7 +114,8 @@ kill:
 # Run development environment with Docker Compose (fast start, uses cache/existing images)
 dev-docker:
 	@echo "🚀 Starting development environment in Docker (Fast Mode)..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml up
+	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes 2>/dev/null || true; \
+	docker compose --env-file .env.dev -f docker-compose.dev.yml up --build
 
 # Stop development environment and clean up
 dev-docker-stop:

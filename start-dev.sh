@@ -54,13 +54,21 @@ for dir in node_modules .next; do
     fi
     
     # Ensure it is a link pointing to the volume target
-    ln -sfn ".dev_data/$target_name" "$dir"
+    ln -sfn "$DEV_DATA/$target_name" "$dir"
 done
 
 # Check if dependencies are installed in the volume
-if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ] || [ ! -f "node_modules/.bin/next" ]; then
     echo "📦 Installing dependencies into volume..."
     npm install --no-audit --no-fund
+    
+    # Double check if npm removed the symlink and replaced it with a directory
+    if [ -d "node_modules" ] && [ ! -L "node_modules" ]; then
+        echo "🔄 npm replaced symlink with directory, migrating back to volume..."
+        cp -au "node_modules/." "$DEV_DATA/node_modules/"
+        rm -rf "node_modules"
+        ln -sfn "$DEV_DATA/node_modules" "node_modules"
+    fi
 fi
 
 export NODE_PATH=/app/node_modules
@@ -68,4 +76,4 @@ export NODE_PATH=/app/node_modules
 echo "🚀 Starting Frontend App (Next.js Dev)..."
 # Double check the .next/dev target exists before starting
 mkdir -p "$DEV_DATA/next/dev"
-PORT=3000 exec npx next dev --turbopack
+PORT=3000 exec npm run dev -- --turbopack

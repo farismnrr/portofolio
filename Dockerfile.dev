@@ -1,22 +1,28 @@
-
 FROM node:22-bookworm
+
+# Install Go 1.25
+ENV GO_VERSION=1.25.0
+RUN apt-get update && apt-get install -y wget && \
+    wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+    rm go${GO_VERSION}.linux-amd64.tar.gz
+
+ENV PATH="/usr/local/go/bin:${PATH}"
+ENV GOPATH="/go"
+ENV PATH="${GOPATH}/bin:${PATH}"
 
 WORKDIR /app
 
-# Install system dependencies with cache mount
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install system dependencies and Go tools
+RUN apt-get update && apt-get install -y curl git && \
+    go install github.com/air-verse/air@latest && \
+    go install -tags 'postgres sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy package files
-COPY package*.json ./
+# Prepare startup script (Source code will be mounted)
+COPY start-dev.sh .
+RUN chmod +x start-dev.sh
 
-# Install dependencies with cache mount
-RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm install
+EXPOSE 3000 8080
 
-# Copy source code (will be overridden by bind mount, but good for image completeness)
-COPY . .
-
-# Run dev server
-CMD ["npm", "run", "dev"]
+CMD ["./start-dev.sh"]

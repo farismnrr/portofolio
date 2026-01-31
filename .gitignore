@@ -31,6 +31,13 @@ yarn-error.log*
 .env*.local
 .env.*
 
+# secrets
+secret/
+**/secret/
+*.secret
+*.key
+*.pem
+
 # vercel
 .vercel
 

@@ -70,7 +70,7 @@ type DatabaseConfig struct {
 func Load() (*Config, error) {
 	cfg := &Config{
 		Server: ServerConfig{
-			Port:          getEnv("PORT", "8080"),
+			Port:          getEnv("BACKEND_PORT", getEnv("PORT", "8080")),
 			Env:           getEnv("ENV", "development"),
 			SwaggerAPIKey: getEnv("SWAGGER_API_KEY", ""),
 		},

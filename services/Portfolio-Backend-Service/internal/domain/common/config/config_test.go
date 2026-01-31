@@ -10,6 +10,7 @@ import (
 func TestLoad(t *testing.T) {
 	// Setup environment variables
 	os.Setenv("PORT", "9090")
+	os.Setenv("BACKEND_PORT", "9091")
 	os.Setenv("ENV", "production")
 	os.Setenv("SSO_URL", "http://sso.test")
 	os.Setenv("API_KEY", "test-api-key")
@@ -24,6 +25,7 @@ func TestLoad(t *testing.T) {
 	// Cleanup after test
 	defer func() {
 		os.Unsetenv("PORT")
+		os.Unsetenv("BACKEND_PORT")
 		os.Unsetenv("ENV")
 		os.Unsetenv("SSO_URL")
 		os.Unsetenv("API_KEY")
@@ -41,7 +43,7 @@ func TestLoad(t *testing.T) {
 	assert.NotNil(t, cfg)
 
 	// Verify values
-	assert.Equal(t, "9090", cfg.Server.Port)
+	assert.Equal(t, "9091", cfg.Server.Port)
 	assert.Equal(t, "production", cfg.Server.Env)
 	assert.Equal(t, "http://sso.test", cfg.SSO.URL)
 	assert.Equal(t, "test-api-key", cfg.SSO.APIKey)

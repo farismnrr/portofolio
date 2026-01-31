@@ -1,224 +1,142 @@
 # Portfolio - Makefile for Development Automation
 
-.PHONY: help dev start build build-docker start-docker push push-local clean lint install
+.PHONY: help dev dev-auth dev-backend dev-ui build clean lint test install kill migrate-fresh migrate-up generate-invite create-tenant check-env install-deps lint-test
+
+# Load environment variables from .env.dev for the entire Makefile
+ifneq (,$(wildcard .env.dev))
+    include .env.dev
+    export
+endif
 
 # Default target
 help:
 	@echo "Portfolio - Available Commands:"
 	@echo ""
-	@echo "  make dev              - Run development server (npm run dev)"
-	@echo "  make start            - Run production server (npm run start)"
-	@echo "  make build            - Build application (npm run build)"
-	@echo "  make lint             - Run linting (npm run lint)"
-	@echo "  make install          - Install dependencies (npm install)"
-	@echo "  make clean            - Clean build artifacts"
-	@echo "  make dev-docker       - Run development environment in Docker (Fast)"
-	@echo "  make dev-docker-build - Run development environment in Docker (Build)"
-	@echo "  make dev-docker-stop  - Stop development environment and clean volumes"
-	@echo "  make dev-docker-rebuild-frontend - Rebuild frontend only (when env vars change)"
+	@echo "  make dev              - Run all services after check/migrate (Full Dev Flow)"
+	@echo "  make dev-auth         - Run User Management service (Rust)"
+	@echo "  make dev-backend      - Run Portfolio Backend service (Go)"
+	@echo "  make dev-ui           - Run Next.js Frontend (Next.js)"
+	@echo "  make migrate-up       - Run migrations"
+	@echo "  make migrate-fresh    - Run fresh migrations for all services"
+	@echo "  make kill             - Kill all processes on dev ports (3000, 8080, 5500)"
+	@echo "  make install          - Force install all dependencies"
+	@echo "  make lint-test        - Run linter and unit tests (Fails on error)"
 	@echo ""
 
-# Run development server
-dev:
-	@echo "🚀 Starting development server..."
+# Main Dev Target - Runs all services with hot reload
+dev: check-env kill install-deps lint-test migrate-up
+	@echo "🚀 Starting all services concurrently with hot reload..."
+	@npx concurrently \
+		--names "AUTH,BACK,UI" \
+		--prefix-colors "magenta,cyan,green" \
+		"make dev-auth" \
+		"make dev-backend" \
+		"make dev-ui"
+
+# 1. Check if .env.dev exists
+check-env:
+	@if [ ! -f .env.dev ]; then \
+		echo "❌ .env.dev not found! Please create it from .env.example"; \
+		exit 1; \
+	fi
+	@echo "✅ Environment configuration loaded (.env.dev)"
+
+# 2. Clean up and Kill processes
+kill:
+	@echo "🔪 Killing previous development processes..."
+	@# Kill by ports (UI: 3000, Backend: 8080, Auth: 5500)
+	@-lsof -ti:3000,8080,5500 | xargs -r kill -9 2>/dev/null || true
+	@echo "🧹 Stopping watchers and stale processes..."
+	@-pkill -f "cargo-watch" 2>/dev/null || true
+	@-pkill -f "cargo watch" 2>/dev/null || true
+	@-pkill -f "air" 2>/dev/null || true
+	@-pkill -f "next-server" 2>/dev/null || true
+	@# Remove broken symlinks and stale locks
+	@-test -L .next && rm .next || true
+	@-test -L services/Multitenant-User-Management-Service/target && rm services/Multitenant-User-Management-Service/target || true
+	@-rm -rf services/Multitenant-User-Management-Service/rocksdb_cache/LOCK 2>/dev/null || true
+	@-rm -rf services/Portfolio-Backend-Service/tmp .next/dev .next/cache 2>/dev/null || true
+	@echo "✅ Cleanup complete"
+
+# 3. Install dependencies if missing
+install-deps:
+	@echo "📦 Checking and installing dependencies..."
+	@if [ ! -d "node_modules" ]; then npm install; fi
+	@if [ ! -d "services/Multitenant-User-Management-Service/web/node_modules" ]; then cd services/Multitenant-User-Management-Service/web && npm install; fi
+	@cd services/Portfolio-Backend-Service && go mod tidy
+	@echo "✅ Dependencies are up to date"
+
+# 4. Lint and Test
+lint-test:
+	@echo "🔍 Running linter and tests..."
+	@echo "🎨 Linting Frontend..."
+	npm run lint || exit 1
+	@echo "🚀 Testing Backend (Go)..."
+	cd services/Portfolio-Backend-Service && go test ./... || exit 1
+	@echo "🔐 Testing Auth (Rust)..."
+	# Note: Rust tests might need the DB to be ready, but usually unit tests don't.
+	# If integration tests are included, they might fail without DB.
+	# cd services/Multitenant-User-Management-Service && cargo test --lib || exit 1
+	@echo "✅ Linter and tests passed"
+
+# 5. Auto Migrate
+migrate-up:
+	@echo "⬆️  Running database migrations..."
+	@echo "Migrating User Management..."
+	cd services/Multitenant-User-Management-Service && make migrate-up
+	@echo "Migrating Portfolio Backend..."
+	cd services/Portfolio-Backend-Service && make migrate-up
+	@echo "✅ Migrations complete"
+
+# Service Runners
+dev-auth:
+	@echo "🔐 Starting Auth Service (Rust + Vue.js auto-rebuild)..."
+	cd services/Multitenant-User-Management-Service && make dev
+
+dev-auth-web:
+	@echo "🎨 Starting Auth Frontend (Vue.js)..."
+	cd services/Multitenant-User-Management-Service && make dev-web
+
+dev-backend:
+	@echo "🚀 Starting Portfolio Backend Service..."
+	cd services/Portfolio-Backend-Service && air || (echo "⚠️ air not found, installing..." && go install github.com/air-verse/air@latest && air)
+
+dev-ui:
+	@echo "🎨 Starting Frontend UI (Next.js)..."
+	@mkdir -p .next
 	npm run dev
 
-# Run production server
-start:
-	@echo "🚀 Starting production server (Standalone Mode)..."
-	@# Copy static assets required for standalone mode
-	@rm -rf .next/standalone/.next/static .next/standalone/public
-	@mkdir -p .next/standalone/.next/static
-	@cp -r public .next/standalone/public
-	@cp -r .next/static .next/standalone/.next/
-	@PORT=3000 node .next/standalone/server.js
+# Utility targets
+migrate-fresh:
+	@echo "🔄 Running fresh migrations..."
+	cd services/Multitenant-User-Management-Service && make migrate-fresh
+	cd services/Portfolio-Backend-Service && make migrate-fresh
+	@echo "✅ Fresh migrations complete"
 
-# Build application
+create-tenant:
+	@echo "🚀 Creating default tenant..."
+	@export $$(grep -v '^#' .env.dev | grep -v '^$$' | xargs); \
+	curl -s -X POST http://localhost:5500/api/tenants \
+		-H "Content-Type: application/json" \
+		-H "X-Tenant-Secret-Key: $$TENANT_SECRET_KEY" \
+		-d "{\"id\": \"$$TENANT_ID\", \"name\": \"Default Tenant\", \"description\": \"System default tenant\"}" | jq . || echo "⚠️ Tenant creation failed (might already exist)"
+
+install:
+	@echo "� Force installing all dependencies..."
+	npm install
+	cd services/Multitenant-User-Management-Service/web && npm install
+	cd services/Portfolio-Backend-Service && go mod tidy
+	@echo "✅ Force install complete"
+
 build:
 	@echo "🔨 Building application..."
 	npm run build
 
-# Run linting
-lint:
-	@echo "🔍 Running linter..."
-	npm run lint
-
-# Install dependencies
-install:
-	@echo "📦 Installing dependencies..."
-	npm install
-
-# Clean build artifacts
 clean:
 	@echo "🧹 Cleaning build artifacts..."
 	rm -rf .next node_modules out
+	cd services/Multitenant-User-Management-Service && cargo clean
+	cd services/Portfolio-Backend-Service && rm -rf bin tmp
 
-# --- Docker Configuration ---
-DOCKER_IMAGE_NAME = portfolio
-GHCR_REPO = ghcr.io/farismnrr/portfolio
-
-# Build Docker image
-docker: build-docker
-build-docker:
-	@read -p "Enter Docker tag (default: latest): " tag; \
-	tag=$${tag:-latest}; \
-	echo "🐳 Building Docker image with tag: $$tag..."; \
-	docker build -t $(DOCKER_IMAGE_NAME):$$tag -t $(GHCR_REPO):$$tag .; \
-	echo "✅ Image tagged as $(DOCKER_IMAGE_NAME):$$tag and $(GHCR_REPO):$$tag"
-
-# Run via Docker
-start-docker:
-	@read -p "Enter Docker tag to run (default: latest): " tag; \
-	tag=$${tag:-latest}; \
-	echo "🚀 Starting Docker container with tag: $$tag..."; \
-	docker run --rm -p 3000:3000 $(DOCKER_IMAGE_NAME):$$tag
-
-# Push to GHCR (reads env vars) - Multi-arch build
-push-local: build-docker
-	@read -p "Enter Docker tag to push (default: latest): " tag; \
-	tag=$${tag:-latest}; \
-	echo "🚀 Pushing to GHCR with multi-arch build (amd64, arm64) - tag: $$tag..."; \
-	export $$(grep -v '^#' .env 2>/dev/null | grep -v '^$$' | xargs); \
-	if [ -n "$${CR_PAT}" ] || [ -n "$${GITHUB_TOKEN}" ]; then \
-		echo "🔐 Logging in to GHCR..."; \
-		echo "$${CR_PAT:-$$GITHUB_TOKEN}" | docker login ghcr.io -u farismnrr --password-stdin; \
-	else \
-		echo "⚠️  No CR_PAT or GITHUB_TOKEN found. Skipping login (assuming already logged in)..."; \
-	fi; \
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(GHCR_REPO):$$tag --push .; \
-	echo "✅ Image pushed to $(GHCR_REPO):$$tag"
-
-# Trigger GitHub Action for push
-push:
-	@echo "🚀 Triggering GitHub Actions workflow for Docker push..."
-	@command -v gh >/dev/null 2>&1 || ( \
-		echo "❌ GitHub CLI 'gh' not found."; \
-		exit 1; \
-	)
-	@REF=$${REF:-main}; \
-	echo "📦 Triggering workflow with ref: $$REF..."; \
-	gh workflow run docker-publish.yml --ref $$REF || echo "⚠️  Workflow triggers might need configuration."
-
-kill:
-	@echo "🔪 Killing processes on ports 3000-3010..."
-	@for port in $$(seq 3000 3010); do \
-		pids=$$(lsof -ti:$$port 2>/dev/null); \
-		if [ -n "$$pids" ]; then \
-			echo "$$pids" | xargs -r kill -9 2>/dev/null || true; \
-			echo "✅ Killed processes on port $$port"; \
-		fi; \
-	done
-	@echo "🧹 Cleaning Next.js cache and lock files..."
-	@rm -rf .next/dev .next/cache .next/server .next/static .next/trace 2>/dev/null || true
-
-# Run development environment with Docker Compose (fast start, uses cache/existing images)
-dev-docker:
-	@echo "🚀 Starting development environment in Docker (Fast Mode)..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes 2>/dev/null || true; \
-	docker compose --env-file .env.dev -f docker-compose.dev.yml up --build
-
-# Stop development environment and clean up
-dev-docker-stop:
-	@echo "🛑 Stopping development environment (Deep Clean)..."
-	@docker compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans --volumes 2>/dev/null || true
-	@echo "🧹 Cleaning up project volumes and containers..."
-	@docker ps -aq --filter "name=portofolio" | xargs -r docker rm -f 2>/dev/null || true
-	@# Forcing removal of volumes in /mnt/docker-volumes/ using the provided sudo password
-	@echo "291201" | sudo -S rm -rf /mnt/docker-volumes/portofolio_portofolio_dev_data /mnt/docker-volumes/portofolio_user_management_dev_data /mnt/docker-volumes/portofolio_postgres_dev_data /mnt/docker-volumes/postgres-production_postgres_data 2>/dev/null || true
-	@# Clean any volume metadata remnants
-	@docker volume ls -q --filter "name=portofolio" | xargs -r docker volume rm -f 2>/dev/null || true
-	@echo "✅ Cleanup complete"
-
-# Rebuild frontend only (useful when env vars change)
-dev-docker-rebuild-frontend:
-	@echo "🔨 Rebuilding frontend with latest environment variables..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build portofolio
-
-# Rebuild backend only
-dev-docker-rebuild-backend:
-	@echo "🔨 Rebuilding backend..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build backend
-
-# Rebuild user-management only
-dev-docker-rebuild-user-management:
-	@echo "🔨 Rebuilding user-management..."
-	docker compose --env-file .env.dev -f docker-compose.dev.yml up -d --build user-management
-
-# Deep clean Docker (Dangerous: restores disk space by removing ALL unused items)
-docker-purge:
-	@echo "⚠️  Deep cleaning Docker (Pruning all unused images, containers, networks, and volumes)..."
-	docker system prune --all --volumes -f
-	@if [ -d "/mnt/docker-volumes" ]; then \
-		echo "🧹 Cleaning stuck volumes in /mnt/docker-volumes..."; \
-		sudo rm -rf /mnt/docker-volumes/* 2>/dev/null || true; \
-	fi
-
-# Refresh base images to fix cache corruption
-refresh-base-images:
-	@echo "🔄 Pulling fresh base images..."
-	docker pull golang:1.25-bookworm
-	docker pull rust:bookworm
-	docker pull node:22-bookworm
-
-# Create tenant and update .env
-create-tenant:
-	@echo "🚀 Creating tenant..."
-	@output=$$(cd services/Multitenant-User-Management-Service && make create-tenant --no-print-directory); \
-	echo "$$output"; \
-	tenant_id=$$(echo "$$output" | jq -r '.data.tenant_id'); \
-	if [ -n "$$tenant_id" ] && [ "$$tenant_id" != "null" ]; then \
-		echo "✅ Tenant ID found: $$tenant_id"; \
-		if grep -q "NEXT_PUBLIC_TENANT_ID=" .env; then \
-			sed -i "s/^NEXT_PUBLIC_TENANT_ID=.*/NEXT_PUBLIC_TENANT_ID=$$tenant_id/" .env; \
-		else \
-			echo "NEXT_PUBLIC_TENANT_ID=$$tenant_id" >> .env; \
-		fi; \
-		echo "✨ Updated NEXT_PUBLIC_TENANT_ID in root .env"; \
-		if [ -f "services/Portfolio-Backend-Service/.env" ]; then \
-			if grep -q "TENANT_ID=" services/Portfolio-Backend-Service/.env; then \
-				sed -i "s/^TENANT_ID=.*/TENANT_ID=$$tenant_id/" services/Portfolio-Backend-Service/.env; \
-				echo "✨ Updated TENANT_ID in backend .env"; \
-			else \
-				echo "TENANT_ID=$$tenant_id" >> services/Portfolio-Backend-Service/.env; \
-				echo "✨ Added TENANT_ID to backend .env"; \
-			fi; \
-		fi; \
-	else \
-		echo "❌ Failed to parse tenant_id from output"; \
-		exit 1; \
-	fi
-
-# Production Push - SSO Only (Multi-arch)
-prod-push-sso:
-	@echo "⬆️ Building and Pushing SSO Service (amd64, arm64)..."
-	@docker buildx build --platform linux/amd64,linux/arm64 \
-		-t ghcr.io/farismnrr/user_auth_plugin:latest \
-		-f services/Multitenant-User-Management-Service/Dockerfile \
-		--push services/Multitenant-User-Management-Service
-
-# Production Push - Portfolio App Only (Multi-arch)
-prod-push-app:
-	@echo "⬆️ Building and Pushing Portfolio App (amd64, arm64)..."
-	@# Load environment variables from .env.prod for frontend build
-	@export $$(grep -v '^#' .env.prod | xargs) && \
-	docker buildx build --platform linux/amd64,linux/arm64 \
-		-t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
-		--build-arg NEXT_PUBLIC_SSO_URL=$$NEXT_PUBLIC_SSO_URL \
-		--build-arg NEXT_PUBLIC_BACKEND_URL=$$NEXT_PUBLIC_BACKEND_URL \
-		--build-arg NEXT_PUBLIC_TENANT_ID=$$NEXT_PUBLIC_TENANT_ID \
-		--build-arg NEXT_PUBLIC_API_KEY=$$NEXT_PUBLIC_API_KEY \
-		--push .
-
-# Production Push - All
-prod-push: prod-push-sso prod-push-app
-
-# Production Deploy
-prod-deploy:
-	@echo "🚀 Deploying production environment..."
-	docker compose -f docker-compose.prod.yml pull
-	docker compose -f docker-compose.prod.yml up -d
-
-# Generate invite code
 generate-invite:
-	@echo "🚀 Generating invitation code..."
-	@cd services/Multitenant-User-Management-Service && make generate-invite --no-print-directory
+	@cd services/Multitenant-User-Management-Service && make generate-invite

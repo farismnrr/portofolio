@@ -20,11 +20,13 @@ func TestRequireAuth(t *testing.T) {
 			err := json.NewEncoder(w).Encode(map[string]interface{}{
 				"status": true,
 				"data": map[string]interface{}{
-					"id":        "user-123",
-					"username":  "testuser",
-					"email":     "test@example.com",
-					"role":      "admin",
-					"tenant_id": "tenant-abc",
+					"user": map[string]interface{}{
+						"id":        "user-123",
+						"username":  "testuser",
+						"email":     "test@example.com",
+						"role":      "admin",
+						"tenant_id": "tenant-abc",
+					},
 				},
 			})
 			if err != nil {

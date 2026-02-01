@@ -14,9 +14,7 @@ info:
 
 servers:
   - url: http://localhost:8080/v1
-    description: Development server
-  - url: https://api.yourdomain.com/v1
-    description: Production server
+    description: API Server (dynamically set based on environment)
 
 tags:
   - name: Config

@@ -108,8 +108,25 @@ func (s *Server) SetupRoutes() {
 	// Ensure /swagger and /swagger/ both serve index.html
 	s.echo.File("/swagger", "docs/swagger/index.html")
 	s.echo.File("/swagger/", "docs/swagger/index.html")
-	// Serve OpenAPI specification
-	s.echo.File("/docs/openapi.yaml", "docs/openapi.yaml")
+	// Serve OpenAPI specification dynamically with correct server URL
+	s.echo.GET("/docs/openapi.yaml", func(c echo.Context) error {
+		// Read the static openapi.yaml
+		data, err := os.ReadFile("docs/openapi.yaml")
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Failed to load OpenAPI spec")
+		}
+		
+		yamlContent := string(data)
+		
+		// In production, replace localhost with actual host
+		if s.config.Server.Env == "production" {
+			serverURL := fmt.Sprintf("https://%s/v1", c.Request().Host)
+			yamlContent = fmt.Sprintf("servers:\n  - url: %s\n    description: Production API Server\n", serverURL) +
+				yamlContent[len("servers:\n  - url: http://localhost:8080/v1\n    description: API Server (dynamically set based on environment)\n"):]
+		}
+		
+		return c.Blob(http.StatusOK, "application/x-yaml", []byte(yamlContent))
+	})
 }
 
 // Start starts the HTTP server

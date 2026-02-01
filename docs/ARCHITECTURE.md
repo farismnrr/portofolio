@@ -33,7 +33,7 @@ Backend API service providing:
 **Documentation**:
 - [README.md](./services/Portfolio-Backend-Service/README.md) - Backend setup
 - [docs/API-REFERENCE.md](./services/Portfolio-Backend-Service/docs/API-REFERENCE.md) - Complete API endpoints
-- [api/docs/contracts/](./services/Portfolio-Backend-Service/api/docs/contracts/) - Contract-driven specifications
+- [docs/contracts/](./services/Portfolio-Backend-Service/docs/contracts/) - Contract-driven specifications
 
 ---
 
@@ -138,7 +138,7 @@ make dev
 All services use contract-driven development:
 
 ### Backend Service Contracts
-Located at: `services/Portfolio-Backend-Service/api/docs/contracts/`
+Located at: `services/Portfolio-Backend-Service/docs/contracts/`
 
 ```
 contracts/

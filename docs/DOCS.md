@@ -20,7 +20,7 @@ Quick reference for all documentation in this monorepo.
 |----------|---------|
 | [README.md](../services/Portfolio-Backend-Service/README.md) | Setup and development guide |
 | [docs/API-REFERENCE.md](../services/Portfolio-Backend-Service/docs/API-REFERENCE.md) | Complete API endpoint documentation |
-| [api/docs/contracts/](../services/Portfolio-Backend-Service/api/docs/contracts/) | Contract specifications for all endpoints |
+| [docs/contracts/](../services/Portfolio-Backend-Service/docs/contracts/) | Contract specifications for all endpoints |
 
 **Quick Links**:
 - API Status: `GET /v1/status`
@@ -54,7 +54,7 @@ Quick reference for all documentation in this monorepo.
 
 **Backend Service Contracts**:
 ```
-services/Portfolio-Backend-Service/api/docs/contracts/
+services/Portfolio-Backend-Service/docs/contracts/
 ├── about/               → About/profile endpoints
 ├── auth/                → Authentication
 ├── content/             → Open Graph
@@ -106,7 +106,7 @@ What the endpoint does
 ```
 
 **Example Contract Locations**:
-- Backend: `services/Portfolio-Backend-Service/api/docs/contracts/auth/login.md`
+- Backend: `services/Portfolio-Backend-Service/docs/contracts/auth/login.md`
 - SSO: `services/Multitenant-User-Management-Service/tests/e2e/contracts/2_auth_test/2a_register.md`
 
 ---
@@ -150,8 +150,11 @@ What the endpoint does
 │   ├── Portfolio-Backend-Service/
 │   │   ├── README.md            ← Backend setup
 │   │   ├── docs/
-│   │   │   └── API-REFERENCE.md ← Backend API docs
-│   │   └── api/docs/contracts/  ← Backend contracts (SOURCE OF TRUTH)
+│   │   │   ├── API-REFERENCE.md ← Backend API docs
+│   │   │   ├── contracts/       ← Backend contracts (SOURCE OF TRUTH)
+│   │   │   ├── swagger/         ← Swagger UI files
+│   │   │   └── openapi.yaml     ← OpenAPI specification
+│   │   └── api/                 ← Static files (images, etc.)
 │   └── Multitenant-User-Management-Service/
 │       ├── README.md            ← SSO overview
 │       ├── docs/                ← SSO guides (01-07)
@@ -165,7 +168,7 @@ What the endpoint does
 
 - [Architecture Overview](./ARCHITECTURE.md)
 - [Backend API Reference](../services/Portfolio-Backend-Service/docs/API-REFERENCE.md)
-- [Backend Contracts](../services/Portfolio-Backend-Service/api/docs/contracts/)
+- [Backend Contracts](../services/Portfolio-Backend-Service/docs/contracts/)
 - [SSO API Reference](../services/Multitenant-User-Management-Service/docs/06-api-reference.md)
 - [SSO Contracts](../services/Multitenant-User-Management-Service/tests/e2e/contracts/)
 - [Frontend Guide](../README.md)

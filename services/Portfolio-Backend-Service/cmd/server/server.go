@@ -108,6 +108,8 @@ func (s *Server) SetupRoutes() {
 	// Ensure /swagger and /swagger/ both serve index.html
 	s.echo.File("/swagger", "docs/swagger/index.html")
 	s.echo.File("/swagger/", "docs/swagger/index.html")
+	// Serve OpenAPI specification
+	s.echo.File("/docs/openapi.yaml", "docs/openapi.yaml")
 }
 
 // Start starts the HTTP server

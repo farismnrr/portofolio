@@ -1,81 +1,98 @@
 # ==========================================
 # Stage 1: Build Go Backend
 # ==========================================
-FROM --platform=$BUILDPLATFORM golang:alpine AS backend-builder
+FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS backend-builder
 WORKDIR /app
-RUN apk add --no-cache git
 
-# Copy backend dependencies
+# System deps
+RUN apk add --no-cache git curl ca-certificates
+
+# --- Go cache dirs (helps buildx) ---
+ENV GOMODCACHE=/go/pkg/mod
+ENV GOCACHE=/go/cache
+
+# Copy go mod files first (cacheable)
 COPY services/Portfolio-Backend-Service/go.mod services/Portfolio-Backend-Service/go.sum ./
 RUN go mod download
 
-# Copy backend source (Granular to avoid bloat)
+# Copy backend source
 COPY services/Portfolio-Backend-Service/api ./api
 COPY services/Portfolio-Backend-Service/assets ./assets
 COPY services/Portfolio-Backend-Service/cmd ./cmd
 COPY services/Portfolio-Backend-Service/internal ./internal
 COPY services/Portfolio-Backend-Service/migration ./migration
 
-# Build for target architecture
+# Build binaries for target arch (NO forced rebuild)
 ARG TARGETOS TARGETARCH
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-backend-service ./cmd/server
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -o portfolio-seeder ./cmd/seed
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -o portfolio-backend-service ./cmd/server
 
-# Install migrate tool (Download binary directly)
-RUN apk add --no-cache curl
-RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-$TARGETARCH.tar.gz | tar xvz
-RUN mv migrate /go/bin/migrate
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -o portfolio-seeder ./cmd/seed
+
+# --- Install migrate (arch-safe) ---
+ARG TARGETARCH
+RUN case "$TARGETARCH" in \
+      amd64) ARCH=amd64 ;; \
+      arm64) ARCH=arm64 ;; \
+      *) echo "Unsupported arch: $TARGETARCH" && exit 1 ;; \
+    esac && \
+    curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-$ARCH.tar.gz | tar xvz && \
+    mv migrate /go/bin/migrate
+
 
 # ==========================================
 # Stage 2: Build Next.js Frontend
 # ==========================================
 FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 WORKDIR /app
+
 RUN apk add --no-cache libc6-compat
 
-# Copy frontend dependencies
+# Copy frontend deps first
 COPY package.json package-lock.json ./
-RUN npm ci
 
-# This avoids copying the 'services/' or 'deployments/' directories
+# Install with optional swc-musl for Alpine
+RUN npm ci && \
+    npm install --no-save --force @next/swc-linux-x64-musl || true
+
+# Copy frontend source (minimal)
 COPY src ./src
 COPY public ./public
 COPY next.config.mjs tsconfig.json biome.json ./
 
-# Build standalone (Next.js build is architecture independent but standalone helps)
+# Build standalone output without Turbopack
 RUN npm run build
 
+
 # ==========================================
-# Stage 3: Final Unified Image
+# Stage 3: Runtime Image
 # ==========================================
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl dumb-init
 
-# Setup Users
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# --- Setup Frontend ---
+# --- Frontend ---
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/public ./public
-RUN mkdir .next && chown nextjs:nodejs .next
-
-# Ensure Backend has permissions for its temp/cache dirs
-RUN mkdir -p tmp/badger && chown -R nextjs:nodejs tmp/badger
-
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# --- Setup Backend ---
+# --- Backend ---
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-backend-service .
 COPY --from=backend-builder --chown=nextjs:nodejs /app/portfolio-seeder .
 COPY --from=backend-builder --chown=nextjs:nodejs /go/bin/migrate ./migrate
-
-# Copy backend migrations (REQUIRED for first run)
 COPY --from=backend-builder --chown=nextjs:nodejs /app/migration ./migration
 
-# --- Setup Startup Script ---
+# Runtime dirs
+RUN mkdir -p tmp/badger logs && \
+    chown -R nextjs:nodejs tmp logs
+
+# Startup script
 COPY --chown=nextjs:nodejs start.sh .
 RUN chmod +x start.sh
 
@@ -83,7 +100,9 @@ USER nextjs
 
 EXPOSE 3000 8080
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8080/health && curl -f http://localhost:3000/api/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/health && \
+      curl -f http://localhost:3000/api/health || exit 1
 
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["./start.sh"]

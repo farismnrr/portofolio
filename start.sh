@@ -1,27 +1,34 @@
 #!/bin/sh
 set -e
 
-# Start Backend in the background
-# Start Backend in the background
-echo "🚀 Starting Backend Service..."
+echo "🚀 Starting Portfolio App"
 
-# Run Migrations
-echo "🔄 Running Database Migrations..."
-if [ "$CORE_DB_TYPE" = "postgres" ]; then
-    DATABASE_URL="postgres://$CORE_DB_USER:$CORE_DB_PASS@$CORE_DB_HOST:$CORE_DB_PORT/$CORE_DB_NAME?sslmode=disable&x-migrations-table="
-    
-    echo "Migrating About domain..."
-    ./migrate -path migration/about -database "${DATABASE_URL}about_schema_migrations" up
-    
-    echo "Migrating Interaction domain..."
-    ./migrate -path migration/interaction -database "${DATABASE_URL}interaction_schema_migrations" up
+# -------------------------------
+# Optional Migrations
+# -------------------------------
+if [ "$RUN_MIGRATIONS" = "true" ] && [ "$CORE_DB_TYPE" = "postgres" ]; then
+  echo "🔄 Running Database Migrations..."
+
+  DATABASE_URL="postgres://${CORE_DB_USER}:${CORE_DB_PASS}@${CORE_DB_HOST}:${CORE_DB_PORT}/${CORE_DB_NAME}?sslmode=disable"
+
+  echo "➡️ Migrating About domain..."
+  ./migrate -path migration/about \
+    -database "${DATABASE_URL}&x-migrations-table=about_schema_migrations" up
+
+  echo "➡️ Migrating Interaction domain..."
+  ./migrate -path migration/interaction \
+    -database "${DATABASE_URL}&x-migrations-table=interaction_schema_migrations" up
+
+  echo "✅ Migrations completed"
+else
+  echo "⏭️ Skipping migrations"
 fi
 
-./portfolio-backend-service &
-BACKEND_PID=$!
-
-# Generate Frontend Runtime Configuration
+# -------------------------------
+# Generate Frontend Runtime Config
+# -------------------------------
 echo "🔧 Generating Frontend Runtime Configuration..."
+
 cat <<EOF > public/runtime-config.js
 window.config = {
   ssoUrl: "${NEXT_PUBLIC_SSO_URL:-$SSO_URL}",
@@ -30,19 +37,33 @@ window.config = {
   backendUrl: "${NEXT_PUBLIC_BACKEND_URL:-$BACKEND_URL}"
 };
 EOF
-echo "✅ Runtime configuration generated in public/runtime-config.js"
 
-# Start Frontend in the foreground (or background and wait for both)
-echo "🚀 Starting Frontend App..."
-# Next.js standalone server
+echo "✅ Runtime config ready"
+
+# -------------------------------
+# Start Services
+# -------------------------------
+echo "🚀 Starting Backend..."
+./portfolio-backend-service &
+BACKEND_PID=$!
+
+echo "🚀 Starting Frontend..."
 HOSTNAME=0.0.0.0 PORT=3000 node server.js &
 FRONTEND_PID=$!
 
-# Signal handler to kill both processes
-trap "kill $BACKEND_PID $FRONTEND_PID; exit" INT TERM
+# -------------------------------
+# Graceful Shutdown
+# -------------------------------
+shutdown() {
+  echo "🛑 Shutting down services..."
+  kill -TERM "$BACKEND_PID" "$FRONTEND_PID" 2>/dev/null || true
+  wait "$BACKEND_PID" "$FRONTEND_PID" 2>/dev/null || true
+  echo "✅ Shutdown complete"
+}
 
-# Wait for any process to exit
-wait -n
+trap shutdown INT TERM
 
-# Exit with status of process that exited first
-exit $?
+# -------------------------------
+# Wait for processes
+# -------------------------------
+wait "$BACKEND_PID" "$FRONTEND_PID"

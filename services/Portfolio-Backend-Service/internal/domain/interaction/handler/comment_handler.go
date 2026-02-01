@@ -56,6 +56,40 @@ func (h *Handler) GetComments(c echo.Context) error {
 	return response.Success(c, http.StatusOK, "Comments retrieved", comments)
 }
 
+// UpdateComment updates an existing comment (Admin only)
+func (h *Handler) UpdateComment(c echo.Context) error {
+	id := c.Param("id")
+	
+	var req struct {
+		Content string `json:"content"`
+	}
+	
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		return response.Error(c, http.StatusUnsupportedMediaType, "Unsupported media type")
+	}
+	
+	if err := c.Bind(&req); err != nil {
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
+	}
+	
+	if req.Content == "" {
+		return response.Error(c, http.StatusUnprocessableEntity, "Content is required")
+	}
+	
+	// Get role from context
+	role, ok := c.Get("role").(string)
+	if !ok {
+		return response.Error(c, http.StatusUnauthorized, "Unauthorized")
+	}
+	
+	err := h.commentUsecase.UpdateComment(c.Request().Context(), id, req.Content, role)
+	if err != nil {
+		return response.Error(c, http.StatusForbidden, err.Error())
+	}
+	
+	return response.SuccessNoData(c, http.StatusOK, "Comment updated successfully")
+}
+
 // DeleteComment removes a comment (Admin only)
 func (h *Handler) DeleteComment(c echo.Context) error {
 	id := c.Param("id")

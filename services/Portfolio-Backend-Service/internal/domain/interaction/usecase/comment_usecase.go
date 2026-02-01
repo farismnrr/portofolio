@@ -13,6 +13,7 @@ import (
 type CommentUsecase interface {
 	CreateComment(ctx context.Context, req CreateCommentRequest) error
 	GetComments(ctx context.Context, postType, postSlug string) ([]entity.Comment, error)
+	UpdateComment(ctx context.Context, id, content, userRole string) error
 	DeleteComment(ctx context.Context, id, userRole string) error
 }
 
@@ -58,6 +59,24 @@ func (u *commentUsecase) CreateComment(ctx context.Context, req CreateCommentReq
 
 func (u *commentUsecase) GetComments(ctx context.Context, postType, postSlug string) ([]entity.Comment, error) {
 	return u.repo.GetCommentsByPost(ctx, postType, postSlug)
+}
+
+func (u *commentUsecase) UpdateComment(ctx context.Context, id, content, userRole string) error {
+	// Check if exists
+	comment, err := u.repo.GetCommentByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	
+	// Authorization Check: Only Admin can update comments
+	if userRole != "admin" {
+		return errors.New("unauthorized: admin role required")
+	}
+	
+	comment.Content = content
+	comment.UpdatedAt = time.Now()
+	
+	return u.repo.UpdateComment(ctx, comment)
 }
 
 func (u *commentUsecase) DeleteComment(ctx context.Context, id, userRole string) error {

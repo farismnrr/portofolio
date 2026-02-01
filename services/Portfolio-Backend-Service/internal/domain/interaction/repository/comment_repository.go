@@ -10,8 +10,9 @@ import (
 type CommentRepository interface {
 	CreateComment(ctx context.Context, comment *entity.Comment) error
 	GetCommentsByPost(ctx context.Context, postType, postSlug string) ([]entity.Comment, error)
-	DeleteComment(ctx context.Context, id string) error
 	GetCommentByID(ctx context.Context, id string) (*entity.Comment, error)
+	UpdateComment(ctx context.Context, comment *entity.Comment) error
+	DeleteComment(ctx context.Context, id string) error
 }
 
 type commentRepositoryImpl struct {
@@ -35,12 +36,16 @@ func (r *commentRepositoryImpl) GetCommentsByPost(ctx context.Context, postType,
 	return comments, err
 }
 
-func (r *commentRepositoryImpl) DeleteComment(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&entity.Comment{}, "id = ?", id).Error
-}
-
 func (r *commentRepositoryImpl) GetCommentByID(ctx context.Context, id string) (*entity.Comment, error) {
 	var comment entity.Comment
 	err := r.db.WithContext(ctx).First(&comment, "id = ?", id).Error
 	return &comment, err
+}
+
+func (r *commentRepositoryImpl) UpdateComment(ctx context.Context, comment *entity.Comment) error {
+	return r.db.WithContext(ctx).Save(comment).Error
+}
+
+func (r *commentRepositoryImpl) DeleteComment(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&entity.Comment{}, "id = ?", id).Error
 }

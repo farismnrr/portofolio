@@ -100,7 +100,7 @@ All configuration is done via environment variables. See `.env.example` for avai
 → [API-REFERENCE.md](./docs/API-REFERENCE.md) - Complete endpoint documentation
 
 ### Contracts
-→ [api/docs/contracts/](./api/docs/contracts/) - Contract-driven specifications for all endpoints
+→ [docs/contracts/](./docs/contracts/) - Contract-driven specifications for all endpoints
 
 ### Swagger UI
 Access interactive API documentation at:

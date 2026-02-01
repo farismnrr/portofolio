@@ -11,7 +11,7 @@ http://localhost:8080  # Development
 https://api.example.com # Production
 ```
 
-All API responses follow the standard response format defined in [common/errors.md](../api/docs/contracts/common/errors.md).
+All API responses follow the standard response format defined in [common/errors.md](./contracts/common/errors.md).
 
 ---
 
@@ -26,14 +26,14 @@ All API responses follow the standard response format defined in [common/errors.
 
 ### Authentication (SSO Proxy)
 
-All endpoints proxy requests to the SSO service. See [auth contracts](../api/docs/contracts/auth/).
+All endpoints proxy requests to the SSO service. See [auth contracts](./contracts/auth/).
 
 - `POST /v1/auth/login` - Login via SSO (requires Bearer token from SSO)
 - `POST /v1/auth/refresh` - Refresh access token using refresh token cookie
 - `GET /v1/auth/user` - Get current user information
 - `POST /v1/auth/logout` - Logout and clear refresh token
 
-**Reference**: [auth contracts](../api/docs/contracts/auth/)
+**Reference**: [auth contracts](./contracts/auth/)
 
 ---
 
@@ -44,7 +44,7 @@ Guest access to protected pages using simple password authentication.
 - `POST /v1/page-auth/authenticate` - Authenticate with page password
 - `GET /v1/page-auth/check` - Check current authentication status
 
-**Reference**: [site contracts](../api/docs/contracts/site/)
+**Reference**: [site contracts](./contracts/site/)
 
 ---
 
@@ -55,7 +55,7 @@ Fetch and proxy Open Graph metadata from URLs.
 - `GET /v1/og/fetch` - Fetch OG metadata from URL
 - `GET /v1/og/proxy` - Proxy image from URL
 
-**Reference**: [content contracts](../api/docs/contracts/content/)
+**Reference**: [content contracts](./contracts/content/)
 
 ---
 
@@ -69,7 +69,7 @@ Public and admin endpoints for profile information.
 - `PATCH /v1/about/avatar` - Update avatar (admin only)
 - `PATCH /v1/about` - Update profile (admin only)
 
-**Reference**: [about/profile contracts](../api/docs/contracts/about/profile/)
+**Reference**: [about/profile contracts](./contracts/about/profile/)
 
 #### Social Links
 
@@ -78,7 +78,7 @@ Public and admin endpoints for profile information.
 - `PATCH /v1/about/social-links/:id` - Update social link (admin only)
 - `DELETE /v1/about/social-links/:id` - Delete social link (admin only)
 
-**Reference**: [about/social_links contracts](../api/docs/contracts/about/social_links/)
+**Reference**: [about/social_links contracts](./contracts/about/social_links/)
 
 #### Work Experience
 
@@ -87,7 +87,7 @@ Public and admin endpoints for profile information.
 - `PATCH /v1/about/work-experiences/:id` - Update work experience (admin only)
 - `DELETE /v1/about/work-experiences/:id` - Delete work experience (admin only)
 
-**Reference**: [about/work_experience contracts](../api/docs/contracts/about/work_experience/)
+**Reference**: [about/work_experience contracts](./contracts/about/work_experience/)
 
 #### Education
 
@@ -96,7 +96,7 @@ Public and admin endpoints for profile information.
 - `PATCH /v1/about/education/:id` - Update education (admin only)
 - `DELETE /v1/about/education/:id` - Delete education (admin only)
 
-**Reference**: [about/education contracts](../api/docs/contracts/about/education/)
+**Reference**: [about/education contracts](./contracts/about/education/)
 
 #### Skills
 
@@ -107,7 +107,7 @@ Public and admin endpoints for profile information.
 - `POST /v1/about/skills/:id/tags` - Add skill tag (admin only)
 - `DELETE /v1/about/skills/tags/:tag_id` - Delete skill tag (admin only)
 
-**Reference**: [about/skills contracts](../api/docs/contracts/about/skills/)
+**Reference**: [about/skills contracts](./contracts/about/skills/)
 
 ---
 
@@ -126,7 +126,7 @@ Public and admin endpoints for portfolio works and blog posts.
 - `PATCH /v1/interactions/works/:slug/like` - Like work
 - `PATCH /v1/interactions/works/:slug` - Update work metadata (admin only)
 
-**Reference**: [interaction/works contracts](../api/docs/contracts/interaction/works/)
+**Reference**: [interaction/works contracts](./contracts/interaction/works/)
 
 #### Blogs
 
@@ -139,7 +139,7 @@ Public and admin endpoints for portfolio works and blog posts.
 - `PATCH /v1/interactions/blogs/:slug/like` - Like blog
 - `PATCH /v1/interactions/blogs/:slug` - Update blog metadata (admin only)
 
-**Reference**: [interaction/blogs contracts](../api/docs/contracts/interaction/blogs/)
+**Reference**: [interaction/blogs contracts](./contracts/interaction/blogs/)
 
 #### Comments
 
@@ -148,7 +148,7 @@ Public and admin endpoints for portfolio works and blog posts.
 - `DELETE /v1/interactions/comments/:id` - Delete comment (admin only)
 - `PUT /v1/interactions/comments/:id` - Update comment (admin only)
 
-**Reference**: [interaction/comments contracts](../api/docs/contracts/interaction/comments/)
+**Reference**: [interaction/comments contracts](./contracts/interaction/comments/)
 
 ---
 
@@ -156,7 +156,7 @@ Public and admin endpoints for portfolio works and blog posts.
 
 - `GET /v1/dashboard` - Get dashboard overview data
 
-**Reference**: [dashboard contracts](../api/docs/contracts/dashboard/)
+**Reference**: [dashboard contracts](./contracts/dashboard/)
 
 ---
 
@@ -198,7 +198,7 @@ Endpoints marked as "admin only" require:
 
 All endpoints are contract-driven. For detailed specifications, request/response examples, and test scenarios, see:
 
-📁 [Contracts Directory](../api/docs/contracts/)
+📁 [Contracts Directory](./contracts/)
 
 Each endpoint has a corresponding contract file defining:
 - Request format and validation

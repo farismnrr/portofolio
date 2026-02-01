@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"time"
 
-	_ "github.com/farismnrr/portfolio-backend-service/api/docs"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/about"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/cache"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/config"
@@ -100,16 +99,15 @@ func (s *Server) SetupRoutes() {
 	})
 
 	// API Documentation (Swagger UI)
-	s.echo.Static("/api", "api")
 	s.echo.GET("/swagger/config.js", func(c echo.Context) error {
 		configJS := fmt.Sprintf("window.SWAGGER_CONFIG = { apiKey: '%s' };", s.config.Server.SwaggerAPIKey)
 		return c.Blob(http.StatusOK, "application/javascript", []byte(configJS))
 	})
 	// Serve the static files for swagger UI
-	s.echo.Static("/swagger", "api")
+	s.echo.Static("/swagger", "docs/swagger")
 	// Ensure /swagger and /swagger/ both serve index.html
-	s.echo.File("/swagger", "api/index.html")
-	s.echo.File("/swagger/", "api/index.html")
+	s.echo.File("/swagger", "docs/swagger/index.html")
+	s.echo.File("/swagger/", "docs/swagger/index.html")
 }
 
 // Start starts the HTTP server

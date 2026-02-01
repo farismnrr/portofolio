@@ -113,23 +113,49 @@ migrate-fresh:
 	cd services/Portfolio-Backend-Service && make migrate-fresh
 	@echo "✅ Fresh migrations complete"
 
-# Production Push - SSO Only (Multi-arch)
-prod-push-sso:
+# -----------------------------
+# Buildx bootstrap (auto setup)
+# -----------------------------
+BUILDER_NAME := multiarch
+
+ensure-buildx:
+	@docker buildx inspect $(BUILDER_NAME) >/dev/null 2>&1 || \
+	( \
+		echo "🔧 Creating buildx builder: $(BUILDER_NAME)"; \
+		docker buildx create \
+			--name $(BUILDER_NAME) \
+			--driver docker-container \
+			--use \
+	)
+	@docker buildx inspect --bootstrap >/dev/null
+
+# ---------------------------------
+# Production Push - SSO (Multi-arch)
+# ---------------------------------
+prod-push-sso: ensure-buildx
 	@echo "⬆️ Building and Pushing SSO Service (amd64, arm64)..."
-	@docker buildx build --platform linux/amd64,linux/arm64 \
+	@docker buildx build \
+		--builder $(BUILDER_NAME) \
+		--platform linux/amd64,linux/arm64 \
 		-t ghcr.io/farismnrr/user_auth_plugin:latest \
 		-f services/Multitenant-User-Management-Service/Dockerfile \
 		--push services/Multitenant-User-Management-Service
 
-# Production Push - Portfolio App Only (Multi-arch)
-prod-push-app:
+# -----------------------------------------
+# Production Push - Portfolio App (Multi-arch)
+# -----------------------------------------
+prod-push-app: ensure-buildx
 	@echo "⬆️ Building and Pushing Portfolio App (amd64, arm64)..."
-	@docker buildx build --platform linux/amd64,linux/arm64 \
+	@docker buildx build \
+		--builder $(BUILDER_NAME) \
+		--platform linux/amd64,linux/arm64 \
 		-t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
 		--push .
 
+# -----------------------------
 # Production Push - All
-prod-push: prod-push-sso prod-push-app
+# -----------------------------
+push: prod-push-sso prod-push-app
 
 prod-deploy:
 	@echo "🚀 Deploying production environment..."

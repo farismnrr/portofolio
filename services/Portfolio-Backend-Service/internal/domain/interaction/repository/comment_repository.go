@@ -47,5 +47,12 @@ func (r *commentRepositoryImpl) UpdateComment(ctx context.Context, comment *enti
 }
 
 func (r *commentRepositoryImpl) DeleteComment(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&entity.Comment{}, "id = ?", id).Error
+	result := r.db.WithContext(ctx).Delete(&entity.Comment{}, "id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }

@@ -55,6 +55,7 @@ func (m *MockSocialUsecase) GetSocialLinkByID(ctx context.Context, id string) (*
 
 // Tests
 
+// TestGetSocialLinks - Contract: docs/contracts/about/social_links/list.md
 func TestGetSocialLinks(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Retrieve", func(t *testing.T) {
@@ -96,6 +97,7 @@ func TestGetSocialLinks(t *testing.T) {
 	})
 }
 
+// TestCreateSocialLink - Contract: docs/contracts/about/social_links/create.md
 func TestCreateSocialLink(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Created", func(t *testing.T) {
@@ -157,6 +159,7 @@ func TestCreateSocialLink(t *testing.T) {
 	})
 }
 
+// TestUpdateSocialLink - Contract: docs/contracts/about/social_links/update.md
 func TestUpdateSocialLink(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Updated", func(t *testing.T) {
@@ -224,6 +227,7 @@ func TestUpdateSocialLink(t *testing.T) {
 
 }
 
+// TestDeleteSocialLink - Contract: docs/contracts/about/social_links/delete.md
 func TestDeleteSocialLink(t *testing.T) {
 	e := echo.New()
 	t.Run("Success", func(t *testing.T) {

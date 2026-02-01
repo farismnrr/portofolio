@@ -116,6 +116,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 // @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=UserResponse} "User data retrieved successfully"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing token or Non-admin role)"
+// @Failure 403 {object} response.ErrorResponse "Forbidden (Non-admin role)"
 // @Router /v1/auth/user [get]
 func (h *Handler) GetUser(c echo.Context) error {
 	// Get authorization header

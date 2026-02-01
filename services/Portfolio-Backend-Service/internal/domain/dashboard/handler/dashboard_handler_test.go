@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestGetDashboard - Contract: docs/contracts/dashboard/overview.md
 func TestGetDashboard(t *testing.T) {
 	e := echo.New()
 
@@ -40,6 +41,20 @@ func TestGetDashboard(t *testing.T) {
 			assert.True(t, response.Status)
 			assert.Equal(t, "admin_user", response.Data.Username)
 			assert.Equal(t, "admin", response.Data.Role)
+		}
+	})
+
+	t.Run("Unauthorized - Non Admin Role", func(t *testing.T) {
+		h := NewHandler()
+
+		req := httptest.NewRequest(http.MethodGet, "/v1/dashboard", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.Set("username", "user")
+		c.Set("role", "user")
+
+		if assert.NoError(t, h.GetDashboard(c)) {
+			assert.Equal(t, http.StatusUnauthorized, rec.Code)
 		}
 	})
 }

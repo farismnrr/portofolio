@@ -1,14 +1,29 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/common/response"
 	"github.com/farismnrr/portfolio-backend-service/internal/domain/interaction/usecase"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 // CreateComment adds a public comment
+// @Summary Create Comment
+// @Description Public endpoint to add a comment to a blog or work post
+// @Tags Interaction - Comments
+// @Accept json
+// @Produce json
+// @Param request body CreateCommentDTO true "Comment Data"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse "Bad Request"
+// @Failure 415 {object} response.ErrorResponse "Unsupported media type"
+// @Failure 422 {object} response.ErrorResponse "Unprocessable Entity"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
+// @Router /v1/interactions/blog/{slug}/comments [post]
 func (h *Handler) CreateComment(c echo.Context) error {
 	var req CreateCommentDTO
 	// Strict Content-Type check
@@ -44,6 +59,17 @@ func (h *Handler) CreateComment(c echo.Context) error {
 }
 
 // GetComments retrieves comments for a post
+// @Summary Get Comments
+// @Description Fetch all comments for a specific blog or work post
+// @Tags Interaction - Comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param slug path string true "Post Slug"
+// @Success 200 {object} response.SuccessResponse{data=[]entity.Comment}
+// @Failure 401 {object} response.ErrorResponse "Unauthorized"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
+// @Router /v1/interactions/blog/{slug}/comments [get]
 func (h *Handler) GetComments(c echo.Context) error {
 	postType := c.Param("post_type")
 	postSlug := c.Param("post_slug")
@@ -57,6 +83,23 @@ func (h *Handler) GetComments(c echo.Context) error {
 }
 
 // UpdateComment updates an existing comment (Admin only)
+// @Summary Update Comment
+// @Description Admin-only endpoint to edit comment content
+// @Tags Interaction - Comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Comment ID"
+// @Param request body object{content=string} true "Updated Content"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse "Bad Request"
+// @Failure 401 {object} response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} response.ErrorResponse "Forbidden"
+// @Failure 404 {object} response.ErrorResponse "Comment not found"
+// @Failure 415 {object} response.ErrorResponse "Unsupported media type"
+// @Failure 422 {object} response.ErrorResponse "Unprocessable Entity"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
+// @Router /v1/interactions/comments/{id} [patch]
 func (h *Handler) UpdateComment(c echo.Context) error {
 	id := c.Param("id")
 	
@@ -84,13 +127,32 @@ func (h *Handler) UpdateComment(c echo.Context) error {
 	
 	err := h.commentUsecase.UpdateComment(c.Request().Context(), id, req.Content, role)
 	if err != nil {
-		return response.Error(c, http.StatusForbidden, err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) || strings.Contains(strings.ToLower(err.Error()), "not found") {
+			return response.Error(c, http.StatusNotFound, "Comment not found")
+		}
+		if err.Error() == "unauthorized: admin role required" {
+			return response.Error(c, http.StatusForbidden, err.Error())
+		}
+		return response.Error(c, http.StatusInternalServerError, "Failed to update comment")
 	}
 	
 	return response.SuccessNoData(c, http.StatusOK, "Comment updated successfully")
 }
 
 // DeleteComment removes a comment (Admin only)
+// @Summary Delete Comment
+// @Description Admin-only endpoint to permanently remove a comment
+// @Tags Interaction - Comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Comment ID"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 401 {object} response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} response.ErrorResponse "Forbidden"
+// @Failure 404 {object} response.ErrorResponse "Comment not found"
+// @Failure 500 {object} response.ErrorResponse "Internal server error"
+// @Router /v1/interactions/comments/{id} [delete]
 func (h *Handler) DeleteComment(c echo.Context) error {
 	id := c.Param("id")
 
@@ -103,7 +165,13 @@ func (h *Handler) DeleteComment(c echo.Context) error {
 
 	err := h.commentUsecase.DeleteComment(c.Request().Context(), id, role)
 	if err != nil {
-		return response.Error(c, http.StatusForbidden, err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) || strings.Contains(strings.ToLower(err.Error()), "not found") {
+			return response.Error(c, http.StatusNotFound, "Comment not found")
+		}
+		if err.Error() == "unauthorized: admin role required" {
+			return response.Error(c, http.StatusForbidden, err.Error())
+		}
+		return response.Error(c, http.StatusInternalServerError, "Failed to delete comment")
 	}
 
 	return response.SuccessNoData(c, http.StatusOK, "Comment deleted successfully")

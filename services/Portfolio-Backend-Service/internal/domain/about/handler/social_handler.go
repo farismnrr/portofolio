@@ -24,7 +24,9 @@ func NewSocialHandler(u usecase.SocialUsecase) *SocialHandler {
 // @Tags About
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SocialLink}
+// @Failure 401 {object} response.ErrorResponse "Unauthorized"
 // @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about/social-links [get]
 func (h *SocialHandler) GetSocialLinks(c echo.Context) error {

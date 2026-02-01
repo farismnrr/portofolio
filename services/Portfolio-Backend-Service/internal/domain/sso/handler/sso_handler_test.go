@@ -42,6 +42,7 @@ func (m *MockSSOUsecase) Logout(ctx context.Context, accessToken string) error {
 	return args.Error(0)
 }
 
+// TestLogin - Contract: docs/contracts/auth/login.md
 func TestLogin(t *testing.T) {
 	e := echo.New()
 	cfg := &config.Config{
@@ -100,6 +101,7 @@ func TestLogin(t *testing.T) {
 	})
 }
 
+// TestRefreshToken - Contract: docs/contracts/auth/refresh.md
 func TestRefreshToken(t *testing.T) {
 	e := echo.New()
 	cfg := &config.Config{}
@@ -163,6 +165,7 @@ func TestRefreshToken(t *testing.T) {
 	})
 }
 
+// TestGetUser - Contract: docs/contracts/auth/user_info.md
 func TestGetUser(t *testing.T) {
 	e := echo.New()
 	cfg := &config.Config{}
@@ -218,6 +221,7 @@ func TestGetUser(t *testing.T) {
 	})
 }
 
+// TestLogout - Contract: docs/contracts/auth/logout.md
 func TestLogout(t *testing.T) {
 	e := echo.New()
 	cfg := &config.Config{}

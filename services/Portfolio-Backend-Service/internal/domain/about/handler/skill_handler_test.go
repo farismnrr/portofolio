@@ -62,6 +62,7 @@ func (m *MockSkillUsecase) GetTagByID(ctx context.Context, id string) (*entity.S
 	return args.Get(0).(*entity.SkillTag), args.Error(1)
 }
 
+// TestGetSkills - Contract: docs/contracts/about/skills/list.md
 func TestGetSkills(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Retrieve", func(t *testing.T) {
@@ -103,6 +104,7 @@ func TestGetSkills(t *testing.T) {
 	})
 }
 
+// TestCreateCategory - Contract: docs/contracts/about/skills/create_category.md
 func TestCreateCategory(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Created", func(t *testing.T) {
@@ -166,6 +168,7 @@ func TestCreateCategory(t *testing.T) {
 
 }
 
+// TestUpdateCategory - Contract: docs/contracts/about/skills/update_category.md
 func TestUpdateCategory(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Updated", func(t *testing.T) {
@@ -217,6 +220,7 @@ func TestUpdateCategory(t *testing.T) {
 
 }
 
+// TestAddTag - Contract: docs/contracts/about/skills/add_tag.md
 func TestAddTag(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Created", func(t *testing.T) {
@@ -290,6 +294,7 @@ func TestAddTag(t *testing.T) {
 
 }
 
+// TestDeleteTag - Contract: docs/contracts/about/skills/delete_tag.md
 func TestDeleteTag(t *testing.T) {
 	e := echo.New()
 	t.Run("Success", func(t *testing.T) {

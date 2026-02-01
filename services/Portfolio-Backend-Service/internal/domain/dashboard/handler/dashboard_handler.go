@@ -19,8 +19,11 @@ func NewHandler() *Handler {
 // This endpoint requires admin role
 func (h *Handler) GetDashboard(c echo.Context) error {
 	// Get user info from context (set by RequireAuth middleware)
-	username := c.Get("username").(string)
-	role := c.Get("role").(string)
+	username, _ := c.Get("username").(string)
+	role, _ := c.Get("role").(string)
+	if role != "admin" {
+		return response.Error(c, http.StatusUnauthorized, "Unauthorized")
+	}
 
 	data := DashboardResponse{
 		Message:  "Welcome to admin dashboard",

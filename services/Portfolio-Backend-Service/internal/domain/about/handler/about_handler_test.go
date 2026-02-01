@@ -18,6 +18,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// TestGetAbout - Contract: docs/contracts/about/profile/get.md
 func TestGetAbout(t *testing.T) {
 	e := echo.New()
 
@@ -118,6 +119,7 @@ func TestGetAbout(t *testing.T) {
 	})
 }
 
+// TestUpdateAbout - Contract: docs/contracts/about/profile/update.md
 func TestUpdateAbout(t *testing.T) {
 	e := echo.New()
 
@@ -226,6 +228,7 @@ func TestUpdateAbout(t *testing.T) {
 	})
 }
 
+// TestUpdateAvatar - Contract: docs/contracts/about/profile/avatar.md
 func TestUpdateAvatar(t *testing.T) {
 	e := echo.New()
 

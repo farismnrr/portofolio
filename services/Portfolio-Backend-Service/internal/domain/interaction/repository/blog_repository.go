@@ -47,7 +47,14 @@ func (r *blogRepository) UpdateBlog(ctx context.Context, blog *entity.BlogsMetad
 }
 
 func (r *blogRepository) DeleteBlog(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&entity.BlogsMetadata{}, "id = ?", id).Error
+	result := r.db.WithContext(ctx).Delete(&entity.BlogsMetadata{}, "id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }
 
 func (r *blogRepository) IncrementBlogViews(ctx context.Context, slug string) error {

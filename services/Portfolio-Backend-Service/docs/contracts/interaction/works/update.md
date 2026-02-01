@@ -2,7 +2,7 @@
 
 Manually update view/like counts for a project.
 
-- **URL**: `/v1/interactions/works/:id`
+- **URL**: `/v1/interactions/works/:slug`
 - **Method**: `PATCH`
 - **Auth Required**: Yes (Bearer Token)
 - **Required Role**: `admin`

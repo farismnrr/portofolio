@@ -23,6 +23,7 @@ func NewSkillHandler(u usecase.SkillUsecase) *SkillHandler {
 // @Tags About
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.SkillCategory} "Successfully Retrieve"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 500 {object} response.ErrorResponse "Internal server error"

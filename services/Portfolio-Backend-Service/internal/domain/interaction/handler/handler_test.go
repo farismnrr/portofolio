@@ -39,6 +39,10 @@ func (m *MockInteractionUsecase) CreateComment(ctx context.Context, req usecase.
 	args := m.Called(ctx, req)
 	return args.Error(0)
 }
+func (m *MockInteractionUsecase) UpdateComment(ctx context.Context, id, content, userRole string) error {
+	args := m.Called(ctx, id, content, userRole)
+	return args.Error(0)
+}
 func (m *MockInteractionUsecase) DeleteComment(ctx context.Context, id string, role string) error {
 	args := m.Called(ctx, id, role)
 	return args.Error(0)

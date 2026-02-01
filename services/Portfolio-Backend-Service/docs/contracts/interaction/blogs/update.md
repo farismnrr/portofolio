@@ -2,7 +2,7 @@
 
 Manually update view/like counts.
 
-- **URL**: `/v1/interactions/blogs/:id`
+- **URL**: `/v1/interactions/blogs/:slug`
 - **Method**: `PATCH`
 - **Auth Required**: Yes (Bearer Token)
 - **Required Role**: `admin`

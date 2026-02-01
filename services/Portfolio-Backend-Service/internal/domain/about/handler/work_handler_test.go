@@ -47,6 +47,7 @@ func (m *MockWorkUsecase) DeleteWorkExperience(ctx context.Context, id string) e
 	return args.Error(0)
 }
 
+// TestGetWorkExperiences - Contract: docs/contracts/about/work_experience/list.md
 func TestGetWorkExperiences(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Retrieve", func(t *testing.T) {
@@ -88,6 +89,7 @@ func TestGetWorkExperiences(t *testing.T) {
 	})
 }
 
+// TestCreateWorkExperience - Contract: docs/contracts/about/work_experience/create.md
 func TestCreateWorkExperience(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Created", func(t *testing.T) {
@@ -153,6 +155,7 @@ func TestCreateWorkExperience(t *testing.T) {
 	})
 }
 
+// TestUpdateWorkExperience - Contract: docs/contracts/about/work_experience/update.md
 func TestUpdateWorkExperience(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Updated", func(t *testing.T) {
@@ -201,6 +204,7 @@ func TestUpdateWorkExperience(t *testing.T) {
 	})
 }
 
+// TestDeleteWorkExperience - Contract: docs/contracts/about/work_experience/delete.md
 func TestDeleteWorkExperience(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Deleted", func(t *testing.T) {

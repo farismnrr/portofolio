@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestAuthenticate_Success - Contract: docs/contracts/site/authenticate.md
 func TestAuthenticate_Success(t *testing.T) {
 	// Setup
 	e := echo.New()
@@ -53,6 +54,7 @@ func TestAuthenticate_Success(t *testing.T) {
 	}
 }
 
+// TestAuthenticate_WrongPassword - Contract: docs/contracts/site/authenticate.md
 func TestAuthenticate_WrongPassword(t *testing.T) {
 	// Setup
 	e := echo.New()
@@ -85,6 +87,7 @@ func TestAuthenticate_WrongPassword(t *testing.T) {
 	}
 }
 
+// TestCheckAuth_Authenticated - Contract: docs/contracts/site/check_auth.md
 func TestCheckAuth_Authenticated(t *testing.T) {
 	// Setup
 	e := echo.New()
@@ -117,6 +120,7 @@ func TestCheckAuth_Authenticated(t *testing.T) {
 	}
 }
 
+// TestCheckAuth_NotAuthenticated - Contract: docs/contracts/site/check_auth.md
 func TestCheckAuth_NotAuthenticated(t *testing.T) {
 	// Setup
 	e := echo.New()

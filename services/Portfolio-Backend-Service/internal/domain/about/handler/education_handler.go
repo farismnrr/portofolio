@@ -23,6 +23,7 @@ func NewEducationHandler(u usecase.EducationUsecase) *EducationHandler {
 // @Tags About
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=map[string][]entity.Education} "Successfully Retrieve"
 // @Failure 401 {object} response.ErrorResponse "Unauthorized (Missing or Invalid Token)"
 // @Failure 500 {object} response.ErrorResponse "Internal server error"

@@ -47,6 +47,7 @@ func (m *MockEducationUsecase) DeleteEducation(ctx context.Context, id string) e
 	return args.Error(0)
 }
 
+// TestGetEducations - Contract: docs/contracts/about/education/list.md
 func TestGetEducations(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Retrieve", func(t *testing.T) {
@@ -90,6 +91,7 @@ func TestGetEducations(t *testing.T) {
 	})
 }
 
+// TestCreateEducation - Contract: docs/contracts/about/education/create.md
 func TestCreateEducation(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Created", func(t *testing.T) {
@@ -156,6 +158,7 @@ func TestCreateEducation(t *testing.T) {
 
 }
 
+// TestUpdateEducation - Contract: docs/contracts/about/education/update.md
 func TestUpdateEducation(t *testing.T) {
 	e := echo.New()
 	t.Run("Case 1: Successfully Updated", func(t *testing.T) {
@@ -224,6 +227,7 @@ func TestUpdateEducation(t *testing.T) {
 
 }
 
+// TestDeleteEducation - Contract: docs/contracts/about/education/delete.md
 func TestDeleteEducation(t *testing.T) {
 	e := echo.New()
 	t.Run("Success", func(t *testing.T) {

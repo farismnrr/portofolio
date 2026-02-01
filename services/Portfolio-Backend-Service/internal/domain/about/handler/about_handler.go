@@ -26,6 +26,7 @@ func NewAboutHandler(u usecase.AboutUsecase) *AboutHandler {
 // @Tags About
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} response.SuccessResponse{data=map[string]AboutResponse}
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse "Internal server error"
@@ -60,8 +61,10 @@ func (h *AboutHandler) GetAbout(c echo.Context) error {
 // @Security BearerAuth
 // @Param request body UpdateAboutRequest true "Profile Data"
 // @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse "Invalid request payload format"
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 403 {object} response.ErrorResponse
+// @Failure 415 {object} response.ErrorResponse "Unsupported media type"
 // @Failure 422 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse "Internal server error"
 // @Router /v1/about [patch]

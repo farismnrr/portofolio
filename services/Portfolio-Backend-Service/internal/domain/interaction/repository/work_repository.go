@@ -48,7 +48,14 @@ func (r *workRepository) UpdateWork(ctx context.Context, work *entity.WorksMetad
 }
 
 func (r *workRepository) DeleteWork(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&entity.WorksMetadata{}, "id = ?", id).Error
+	result := r.db.WithContext(ctx).Delete(&entity.WorksMetadata{}, "id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }
 
 func (r *workRepository) IncrementWorkViews(ctx context.Context, slug string) error {

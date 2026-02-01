@@ -20,8 +20,17 @@ fi
 ./portfolio-backend-service &
 BACKEND_PID=$!
 
-# Wait for backend to be ready (optional, but good practice)
-# sleep 5
+# Generate Frontend Runtime Configuration
+echo "🔧 Generating Frontend Runtime Configuration..."
+cat <<EOF > public/runtime-config.js
+window.config = {
+  ssoUrl: "${NEXT_PUBLIC_SSO_URL:-$SSO_URL}",
+  apiKey: "${NEXT_PUBLIC_API_KEY:-$API_KEY}",
+  tenantId: "${NEXT_PUBLIC_TENANT_ID:-$TENANT_ID}",
+  backendUrl: "${NEXT_PUBLIC_BACKEND_URL:-$BACKEND_URL}"
+};
+EOF
+echo "✅ Runtime configuration generated in public/runtime-config.js"
 
 # Start Frontend in the foreground (or background and wait for both)
 echo "🚀 Starting Frontend App..."

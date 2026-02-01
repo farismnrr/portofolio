@@ -6,7 +6,7 @@ services:
       - .env.prod
     environment:
       - CORE_DB_TYPE=postgres
-      - CORE_DB_HOST=postgres
+      - CORE_DB_HOST=${POSTGRES_HOST}
       - CORE_DB_PORT=${POSTGRES_PORT}
       - CORE_DB_USER=${POSTGRES_USER}
       - CORE_DB_PASS=${POSTGRES_PASSWORD}
@@ -46,7 +46,7 @@ services:
       - API_KEY=${API_KEY}
       - TENANT_ID=${TENANT_ID}
       - CORE_DB_TYPE=postgres
-      - CORE_DB_HOST=postgres
+      - CORE_DB_HOST=${POSTGRES_HOST}
       - CORE_DB_PORT=${POSTGRES_PORT}
       - CORE_DB_USER=portfolio_user
       - CORE_DB_PASS=b13853aa5210bba2a5e8a8509ae09aaf5feadbb47d32ba1c769f427bb3f845321f1b5154e4dec219c65fb4392789bf4db543fd025e44019586ca4e818dbf168b

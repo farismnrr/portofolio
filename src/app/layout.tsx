@@ -43,6 +43,7 @@ export default async function RootLayout({
       )}
     >
       <head>
+        <Script src="/runtime-config.js" strategy="beforeInteractive" />
         <Script id="theme-init" strategy="beforeInteractive">
           {`
               (function() {

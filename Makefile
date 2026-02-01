@@ -113,6 +113,29 @@ migrate-fresh:
 	cd services/Portfolio-Backend-Service && make migrate-fresh
 	@echo "✅ Fresh migrations complete"
 
+# Production Push - SSO Only (Multi-arch)
+prod-push-sso:
+	@echo "⬆️ Building and Pushing SSO Service (amd64, arm64)..."
+	@docker buildx build --platform linux/amd64,linux/arm64 \
+		-t ghcr.io/farismnrr/user_auth_plugin:latest \
+		-f services/Multitenant-User-Management-Service/Dockerfile \
+		--push services/Multitenant-User-Management-Service
+
+# Production Push - Portfolio App Only (Multi-arch)
+prod-push-app:
+	@echo "⬆️ Building and Pushing Portfolio App (amd64, arm64)..."
+	@docker buildx build --platform linux/amd64,linux/arm64 \
+		-t ghcr.io/farismnrr/portofolio/portfolio-app:latest \
+		--push .
+
+# Production Push - All
+prod-push: prod-push-sso prod-push-app
+
+prod-deploy:
+	@echo "🚀 Deploying production environment..."
+	docker compose -f docker-compose.prod.yml pull
+	docker compose -f docker-compose.prod.yml up -d
+
 create-tenant:
 	@echo "🚀 Creating default tenant..."
 	@export $$(grep -v '^#' .env.dev | grep -v '^$$' | xargs); \

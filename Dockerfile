@@ -42,19 +42,6 @@ COPY src ./src
 COPY public ./public
 COPY next.config.mjs tsconfig.json biome.json ./
 
-# Build args for Frontend (Public vars)
-ARG NEXT_PUBLIC_SSO_URL
-ARG NEXT_PUBLIC_BACKEND_URL
-ARG NEXT_PUBLIC_TENANT_ID
-ARG NEXT_PUBLIC_API_KEY
-ARG NEXT_PUBLIC_BASE_URL
-
-ENV NEXT_PUBLIC_SSO_URL=$NEXT_PUBLIC_SSO_URL
-ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_TENANT_ID=$NEXT_PUBLIC_TENANT_ID
-ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
-ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
-
 # Build standalone (Next.js build is architecture independent but standalone helps)
 RUN npm run build
 
@@ -71,7 +58,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # --- Setup Frontend ---
-COPY --from=frontend-builder /app/public ./public
+COPY --from=frontend-builder --chown=nextjs:nodejs /app/public ./public
 RUN mkdir .next && chown nextjs:nodejs .next
 
 # Ensure Backend has permissions for its temp/cache dirs

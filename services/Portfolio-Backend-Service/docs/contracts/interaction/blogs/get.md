@@ -2,7 +2,7 @@
 
 Retrieve view and like counts for a blog post.
 
-- **URL**: `/v1/interactions/blog/:slug`
+- **URL**: `/v1/interactions/blogs/:slug`
 - **Method**: `GET`
 - **Auth Required**: Yes (Bearer Token)
 

@@ -122,9 +122,9 @@ Public and admin endpoints for portfolio works and blog posts.
 - `POST /v1/interactions/works` - Create work (admin only)
 - `PUT /v1/interactions/works/:id` - Update work (admin only)
 - `DELETE /v1/interactions/works/:id` - Delete work (admin only)
-- `PATCH /v1/interactions/works/:slug/view` - Record work view
-- `PATCH /v1/interactions/works/:slug/like` - Like work
 - `PATCH /v1/interactions/works/:slug` - Update work metadata (admin only)
+- `POST /v1/interactions/works/:slug/view` - Record work view
+- `POST /v1/interactions/works/:slug/like` - Like work
 
 **Reference**: [interaction/works contracts](./contracts/interaction/works/)
 
@@ -135,9 +135,9 @@ Public and admin endpoints for portfolio works and blog posts.
 - `POST /v1/interactions/blogs` - Create blog (admin only)
 - `PUT /v1/interactions/blogs/:id` - Update blog (admin only)
 - `DELETE /v1/interactions/blogs/:id` - Delete blog (admin only)
-- `PATCH /v1/interactions/blogs/:slug/view` - Record blog view
-- `PATCH /v1/interactions/blogs/:slug/like` - Like blog
 - `PATCH /v1/interactions/blogs/:slug` - Update blog metadata (admin only)
+- `POST /v1/interactions/blogs/:slug/view` - Record blog view
+- `POST /v1/interactions/blogs/:slug/like` - Like blog
 
 **Reference**: [interaction/blogs contracts](./contracts/interaction/blogs/)
 
@@ -145,8 +145,8 @@ Public and admin endpoints for portfolio works and blog posts.
 
 - `POST /v1/interactions/comments` - Create comment
 - `GET /v1/interactions/:post_type/:post_slug/comments` - Get comments for post
+- `PATCH /v1/interactions/comments/:id` - Update comment (admin only)
 - `DELETE /v1/interactions/comments/:id` - Delete comment (admin only)
-- `PUT /v1/interactions/comments/:id` - Update comment (admin only)
 
 **Reference**: [interaction/comments contracts](./contracts/interaction/comments/)
 

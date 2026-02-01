@@ -2,7 +2,7 @@
 
 Permanently remove work project metadata.
 
-- **URL**: `/v1/interactions/work/:id`
+- **URL**: `/v1/interactions/works/:id`
 - **Method**: `DELETE`
 - **Auth Required**: Yes (Bearer Token)
 - **Required Role**: `admin`

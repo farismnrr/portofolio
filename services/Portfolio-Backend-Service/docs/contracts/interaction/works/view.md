@@ -2,7 +2,7 @@
 
 Increment the view count for a work project.
 
-- **URL**: `/v1/interactions/work/:slug/view`
+- **URL**: `/v1/interactions/works/:slug/view`
 - **Method**: `POST`
 - **Auth Required**: Yes (Bearer Token)
 

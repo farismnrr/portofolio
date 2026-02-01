@@ -2,7 +2,7 @@
 
 Increment the view count for a blog post.
 
-- **URL**: `/v1/interactions/blog/:slug/view`
+- **URL**: `/v1/interactions/blogs/:slug/view`
 - **Method**: `POST`
 - **Auth Required**: Yes (Bearer Token)
 

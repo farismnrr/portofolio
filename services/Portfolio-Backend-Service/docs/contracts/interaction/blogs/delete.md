@@ -2,7 +2,7 @@
 
 Permanently remove blog metadata.
 
-- **URL**: `/v1/interactions/blog/:id`
+- **URL**: `/v1/interactions/blogs/:id`
 - **Method**: `DELETE`
 - **Auth Required**: Yes (Bearer Token)
 - **Required Role**: `admin`

@@ -2,7 +2,7 @@
 
 Like or unlike a work project.
 
-- **URL**: `/v1/interactions/work/:slug/like`
+- **URL**: `/v1/interactions/works/:slug/like`
 - **Method**: `POST`
 - **Auth Required**: Yes (Bearer Token)
 

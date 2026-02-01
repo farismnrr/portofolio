@@ -2,7 +2,7 @@
 
 Like or unlike a blog post.
 
-- **URL**: `/v1/interactions/blog/:slug/like`
+- **URL**: `/v1/interactions/blogs/:slug/like`
 - **Method**: `POST`
 - **Auth Required**: Yes (Bearer Token)
 

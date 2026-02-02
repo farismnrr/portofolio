@@ -58,15 +58,17 @@ help: ## Show available commands
 # =====================================================
 # Dev Flow
 # =====================================================
-dev: check-env kill install-tools install-deps lint-test migrate-up bootstrap ## Run full dev environment
-	@echo "🚀 Starting all services (AUTH, BACKEND, UI)..."
+dev: check-env kill install-tools install-deps lint-test migrate-up ## Run full dev environment
+	@echo "🚀 Starting all services (AUTH, BACKEND, UI) and Bootstrapper..."
 	@trap 'make kill' EXIT INT TERM; \
 	npx concurrently \
-		--names "AUTH,BACK,UI" \
-		--prefix-colors "magenta,cyan,green" \
+		--names "AUTH,BACK,UI,BOOT" \
+		--prefix-colors "magenta,cyan,green,yellow" \
+		--kill-others-on-fail \
 		"make dev-auth" \
 		"make dev-backend" \
-		"make dev-ui"
+		"make dev-ui" \
+		"BOOTSTRAP_WAIT_ONLY=true make bootstrap"
 
 check-env: ## Ensure .env.dev exists
 	@if [ ! -f $(ENV_FILE) ]; then \
@@ -85,7 +87,7 @@ kill: ## Gracefully stop dev services
 	@echo "🧹 Cleaning caches..."
 	@-rm -rf .next .next/cache .next/dev || true
 	@-rm -rf services/Portfolio-Backend-Service/tmp || true
-	@-rm -rf services/Multitenant-User-Management-Service/rocksdb_cache/LOCK || true
+	@-rm -rf services/Multitenant-User-Management-Service/rocksdb_cache || true
 	@echo "🐳 Stopping postgres-sql container..."
 	@-docker stop postgres-sql 2>/dev/null || true
 	@-docker rm postgres-sql 2>/dev/null || true

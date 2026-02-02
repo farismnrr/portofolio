@@ -35,31 +35,44 @@ TENANT_COUNT=$(docker exec postgres-sql psql -U $CORE_DB_USER -d $DB_NAME -t -c 
 
 if [ "$TENANT_COUNT" == "0" ]; then
     echo "🌱 Fresh environment detected! Bootstrapping..."
+    sleep 2 # Give other services a moment to start binding ports if running concurrently
 
-    # 1. Start Auth service in background
-    echo "🚀 Starting Auth service for bootstrapping..."
-    cd services/Multitenant-User-Management-Service
-    
-    # Check if binary exists, if not build it
-    if [ ! -f ./target/debug/user-auth-plugin ]; then
-        echo "🔨 Building Auth service..."
-        cargo build > /dev/null 2>&1
+    # 1. Start Auth service in background (if not already running and not in wait-only mode)
+    if [ "$BOOTSTRAP_WAIT_ONLY" != "true" ] && ! lsof -i:5500 > /dev/null 2>&1; then
+        echo "🚀 Starting Auth service for bootstrapping..."
+        cd services/Multitenant-User-Management-Service
+        
+        # Check if binary exists, if not build it
+        if [ ! -f ./target/debug/user-auth-plugin ]; then
+            echo "🔨 Building Auth service..."
+            cargo build > /dev/null 2>&1
+        fi
+
+        # Run in background
+        ./target/debug/user-auth-plugin > /dev/null 2>&1 &
+        AUTH_PID=$!
+        cd ../..
+    else
+        if [ "$BOOTSTRAP_WAIT_ONLY" == "true" ]; then
+            echo "⏳ Wait-only mode enabled, waiting for external Auth service on port 5500..."
+        else
+            echo "🌐 Auth service already running on port 5500, using existing instance..."
+        fi
+        AUTH_PID=""
     fi
 
-    # Run in background
-    ./target/debug/user-auth-plugin > /dev/null 2>&1 &
-    AUTH_PID=$!
-    cd ../..
-
     # 2. Wait for Auth service to be ready
-    MAX_RETRIES=30
+    MAX_RETRIES=120 # Increased timeout for slow builds/starts
     COUNT=0
+    echo "⏳ Waiting for Auth service to respond..."
     while ! curl -s http://localhost:5500/health > /dev/null; do
-        sleep 1
-        COUNT=$((COUNT+1))
+        sleep 2 # Check every 2 seconds
+        COUNT=$((COUNT+2))
         if [ $COUNT -ge $MAX_RETRIES ]; then
-            echo "❌ Auth service failed to start"
-            kill $AUTH_PID 2>/dev/null || true
+            echo "❌ Auth service failed to respond on port 5500 after ${MAX_RETRIES}s"
+            if [ -n "$AUTH_PID" ]; then
+                kill $AUTH_PID 2>/dev/null || true
+            fi
             exit 1
         fi
     done
@@ -110,9 +123,11 @@ if [ "$TENANT_COUNT" == "0" ]; then
     echo "=========================================="
 
     # 6. Cleanup
-    kill $AUTH_PID 2>/dev/null || true
-    # Wait a bit for the port to be released
-    sleep 2
+    if [ -n "$AUTH_PID" ]; then
+        kill $AUTH_PID 2>/dev/null || true
+        # Wait a bit for the port to be released
+        sleep 2
+    fi
 else
     if [ "$TENANT_COUNT" == "error" ]; then
         echo "⚠️  Could not check tenant count (database might still be starting). Skipping bootstrap."

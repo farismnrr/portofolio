@@ -43,45 +43,44 @@ export default function ThumbnailPage() {
     };
   }, []);
 
-  // Load html2canvas from CDN when needed to avoid bundler resolving issues in certain environments
-  type Html2CanvasType = (
-    el: HTMLElement,
-    options?: { backgroundColor?: string; scale?: number },
-  ) => Promise<HTMLCanvasElement>;
+  // Load html-to-image from CDN when needed
+  interface HtmlToImage {
+    toPng: (el: HTMLElement, options?: Record<string, unknown>) => Promise<string>;
+  }
 
-  const loadHtml2Canvas = async () => {
+  const loadHtmlToImage = async (): Promise<HtmlToImage> => {
     if (typeof window === "undefined")
-      throw new Error("html2canvas requires a browser environment");
+      throw new Error("html-to-image requires a browser environment");
 
-    const w = window as Window & { html2canvas?: Html2CanvasType };
-    if (w.html2canvas) return w.html2canvas;
+    const w = window as Window & { htmlToImage?: HtmlToImage };
+    if (w.htmlToImage) return w.htmlToImage;
 
     await new Promise<void>((resolve, reject) => {
       const s = document.createElement("script");
-      s.src = "https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js";
+      s.src = "https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
       s.async = true;
       s.onload = () => resolve();
-      s.onerror = () => reject(new Error("Failed to load html2canvas from CDN"));
+      s.onerror = () => reject(new Error("Failed to load html-to-image from CDN"));
       document.body.appendChild(s);
     });
 
-    if (!w.html2canvas) throw new Error("html2canvas not available after loading script");
-    return w.html2canvas;
+    if (!w.htmlToImage) throw new Error("html-to-image not available after loading script");
+    return w.htmlToImage;
   };
 
   const handleExport = async () => {
     if (!canvasRef.current) return;
 
     try {
-      const html2canvas = await loadHtml2Canvas();
-      const canvas = await html2canvas(canvasRef.current, {
-        backgroundColor: "#f5f5f5",
-        scale: 2,
+      const htmlToImage = await loadHtmlToImage();
+      const dataUrl = await htmlToImage.toPng(canvasRef.current, {
+        backgroundColor: "transparent",
+        pixelRatio: 2,
       });
 
       const link = document.createElement("a");
       link.download = `thumbnail-${Date.now()}.png`;
-      link.href = canvas.toDataURL();
+      link.href = dataUrl;
       link.click();
     } catch (error) {
       console.error("Export failed:", error);

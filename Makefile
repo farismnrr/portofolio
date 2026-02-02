@@ -58,7 +58,7 @@ help: ## Show available commands
 # =====================================================
 # Dev Flow
 # =====================================================
-dev: check-env kill install-tools install-deps lint-test migrate-up ## Run full dev environment
+dev: check-env kill install-tools install-deps lint-test migrate-up bootstrap ## Run full dev environment
 	@echo "🚀 Starting all services (AUTH, BACKEND, UI)..."
 	@trap 'make kill' EXIT INT TERM; \
 	npx concurrently \
@@ -148,6 +148,7 @@ migrate-fresh: ## Drop & re-run migrations
 	@echo "🔄 Fresh migrations..."
 	@docker rm -f postgres-sql 2>/dev/null || true
 	@make migrate-up
+	@make bootstrap
 
 # =====================================================
 # Service Runners
@@ -261,3 +262,13 @@ create-tenant: ## Create default tenant
 		-H "Content-Type: application/json" \
 		-H "X-Tenant-Secret-Key: $$TENANT_SECRET_KEY" \
 		-d "{\"id\":\"$$TENANT_ID\",\"name\":\"Default Tenant\"}" | jq .
+
+bootstrap: ## Run bootstrapping for fresh environment
+	@echo "🧪 Bootstrapping environment..."
+	@chmod +x scripts/bootstrap.sh
+	@./scripts/bootstrap.sh
+
+generate-invite: ## Generate a new invitation code
+	@export $$(grep -v '^#' $(ENV_FILE) | xargs); \
+	curl -s -X POST http://localhost:5500/auth/internal/invitations \
+		-H "X-Tenant-Secret-Key: $$TENANT_SECRET_KEY" | jq .

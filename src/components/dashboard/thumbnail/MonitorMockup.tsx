@@ -17,7 +17,7 @@ export const MonitorMockup = ({ imageSrc, className }: MonitorMockupProps) => {
                 src={imageSrc}
                 alt="screenshot"
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "fill" }}
                 unoptimized
               />
             ) : null}

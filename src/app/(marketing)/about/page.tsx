@@ -305,7 +305,12 @@ export default async function About() {
                       {institution.name}
                     </Text>
                     <Text variant="heading-default-xs" onBackground="neutral-weak">
-                      {institution.description}
+                      {institution.description.split(/(\*\*.*?\*\*)/).map((part, i) => {
+                        if (part.startsWith("**") && part.endsWith("**")) {
+                          return <strong key={i}>{part.slice(2, -2)}</strong>;
+                        }
+                        return part;
+                      })}
                     </Text>
                   </Column>
                 ))}

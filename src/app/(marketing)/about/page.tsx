@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+import SavePDFButton from "@/components/about/SavePDFButton";
 import TableOfContents from "@/components/about/TableOfContents";
 import styles from "@/components/about/about.module.scss";
 import {
@@ -7,7 +10,9 @@ import {
   getSocialLinks,
   getWorkExperiences,
 } from "@/lib/about";
-import { about, baseURL, person } from "@/resources";
+import type { PDFData } from "@/lib/pdf";
+import { about, baseURL, person, social } from "@/resources";
+import { getPosts } from "@/utils/utils";
 import {
   Avatar,
   Button,
@@ -23,6 +28,59 @@ import {
 } from "@once-ui-system/core";
 import React from "react";
 export const dynamic = "force-dynamic";
+
+const CERTIFICATIONS_DIR = path.join(process.cwd(), "public", "images", "certifications");
+const PDF_ASSET_BASE_URL = "https://farismnrr.com";
+
+const normalizeUrl = (url?: string) => {
+  if (!url) return undefined;
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  if (url.startsWith("/")) return `${PDF_ASSET_BASE_URL}${url}`;
+  return url;
+};
+
+const getAllCertificationTitles = () => {
+  if (!fs.existsSync(CERTIFICATIONS_DIR)) return [];
+
+  const groups = fs
+    .readdirSync(CERTIFICATIONS_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+
+  const results: { title: string; imageUrl?: string }[] = [];
+
+  for (const group of groups) {
+    const groupDir = path.join(CERTIFICATIONS_DIR, group);
+    const files = fs.readdirSync(groupDir).filter((file) => /\.(png|jpg|jpeg)$/i.test(file));
+
+    for (const file of files) {
+      const title = path.parse(file).name;
+      const imageUrl = normalizeUrl(`/images/certifications/${group}/${file}`);
+      results.push({ title, imageUrl });
+    }
+  }
+
+  return results.sort((a, b) => a.title.localeCompare(b.title));
+};
+
+const extractParagraph = (content: string, fallback: string) => {
+  const blocks = content
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+
+  const paragraph =
+    blocks.find((block) => !block.startsWith("#") && !block.startsWith("##")) || fallback;
+
+  const cleaned = paragraph
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[>*_`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned || fallback;
+};
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -42,6 +100,49 @@ export default async function About() {
     getEducations(),
     getSkills(),
   ]);
+
+  const allProjects = getPosts(["content", "projects"]);
+  const pdfProjects = allProjects.map((p) => ({
+    title: p.metadata.title,
+    summary: extractParagraph(p.content, p.metadata.summary),
+    link: normalizeUrl(p.metadata.link || p.metadata.repository),
+  }));
+
+  const certificationsData = getAllCertificationTitles();
+
+  const pdfData: PDFData = {
+    personalInfo: {
+      name: profile?.name || person.name,
+      role: profile?.role || person.role,
+      location: person.location,
+      description:
+        (profile?.description as string) ||
+        "Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems.",
+    },
+    socialLinks:
+      socialLinks.length > 0
+        ? socialLinks.map((s) => ({ name: s.name, link: s.link }))
+        : social.map((s) => ({ name: s.name, link: s.link })),
+    workExperiences: workExperiences.map((exp) => ({
+      company: exp.company,
+      role: exp.role,
+      timeframe: exp.timeframe,
+      achievements: exp.achievements || [],
+    })),
+    studies: educations.map((edu) => ({
+      institution: edu.institution,
+      degree: edu.degree,
+      period: edu.period,
+      description: edu.description,
+    })),
+    technicalSkills: skillCategories.map((skill) => ({
+      title: skill.title,
+      description: skill.description,
+      tags: skill.tags?.map((tag) => tag.name) || [],
+    })),
+    projects: pdfProjects,
+    certifications: certificationsData,
+  };
 
   const personalInfo = {
     name: profile?.name || person.name,
@@ -242,6 +343,12 @@ export default async function About() {
                     </Row>
                   </React.Fragment>
                 ))}
+                <Row s={{ hide: true }}>
+                  <SavePDFButton data={pdfData} />
+                </Row>
+                <Row hide s={{ hide: false }}>
+                  <SavePDFButton data={pdfData} iconOnly />
+                </Row>
               </Row>
             )}
           </Column>

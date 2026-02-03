@@ -4,7 +4,16 @@ import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { about, blog, certifications, display, gallery, person, routes, work } from "@/resources";
+import {
+  about,
+  blog,
+  certifications,
+  display,
+  gallery,
+  person,
+  projects,
+  routes,
+} from "@/resources";
 import styles from "./Header.module.scss";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -108,21 +117,21 @@ export const Header = () => {
                   </Row>
                 </>
               )}
-              {routes["/work"] && (
+              {routes["/projects"] && (
                 <>
                   <Row s={{ hide: true }}>
                     <ToggleButton
                       prefixIcon="grid"
-                      href="/work"
-                      label={work.label}
-                      selected={pathname.startsWith("/work")}
+                      href="/projects"
+                      label={projects.label}
+                      selected={pathname.startsWith("/projects")}
                     />
                   </Row>
                   <Row hide s={{ hide: false }}>
                     <ToggleButton
                       prefixIcon="grid"
-                      href="/work"
-                      selected={pathname.startsWith("/work")}
+                      href="/projects"
+                      selected={pathname.startsWith("/projects")}
                     />
                   </Row>
                 </>

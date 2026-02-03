@@ -1,4 +1,13 @@
-import type { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
+import type {
+  About,
+  Blog,
+  Gallery,
+  Home,
+  Newsletter,
+  Person,
+  ProjectsPageConfig,
+  Social,
+} from "@/types";
 import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
@@ -68,7 +77,7 @@ const home: Home = {
         </Text>
       </Row>
     ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "/projects/building-once-ui-a-customizable-design-system",
   },
   subline: (
     <>
@@ -113,7 +122,7 @@ const about: About = {
     title: "Work Experience",
     experiences: [
       {
-        company: "PT Wira Artha Perkasa",
+        company: "PT Perkasa Pilar Utama",
         timeframe: "July 2025 - Present",
         role: "Backend Developer",
         achievements: [
@@ -406,13 +415,13 @@ const blog: Blog = {
   // All posts will be listed on the /blog route
 };
 
-const work: Work = {
-  path: "/work",
-  label: "Work",
+const projects: ProjectsPageConfig = {
+  path: "/projects",
+  label: "Projects",
   title: `Projects – ${person.name}`,
   description: `Design and dev projects by ${person.name}`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
-  // All projects will be listed on the /home and /work routes
+  // All projects will be listed on the /home and /projects routes
 };
 
 const certifications = {
@@ -429,4 +438,4 @@ const gallery: Gallery = {
   description: `A photo collection by ${person.name}`,
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery, certifications };
+export { person, social, newsletter, home, about, blog, projects, gallery, certifications };

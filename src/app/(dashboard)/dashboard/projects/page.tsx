@@ -21,7 +21,7 @@ import {
 } from "@once-ui-system/core";
 import { useCallback, useEffect, useState } from "react";
 
-export default function WorkDashboard() {
+export default function ProjectsDashboard() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ export default function WorkDashboard() {
   return (
     <Column gap="24" fillWidth>
       <Row horizontal="between" vertical="center" fillWidth>
-        <Heading variant="display-strong-m">Work Management</Heading>
+        <Heading variant="display-strong-m">Project Management</Heading>
         {!editingProject && (
           <Button
             onClick={() => {

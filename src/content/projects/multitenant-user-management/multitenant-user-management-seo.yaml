@@ -1,0 +1,5 @@
+title: "Multitenant User Management"
+description: "Secure authentication and authorization service for IoTNet"
+tags: "IoTNet, Multi-tenancy, User Management Service, Auth Service, Actix Web, Rust Programming, Backend Performance, RBAC Implementation, OAuth2 Provider, JWT Authentication, Microservices, Cloud Native Backend, API Security, Database Migrations, SQLx Postgres, Rust Backend, Enterprise Auth, Multi-tenant Architecture, Secure Login, Identity Provider, High Performance API, Rust Framework, Backend Engineering"
+backlink: "https://github.com/i-otnet/iotnet-user-management"
+label: "Core Service"

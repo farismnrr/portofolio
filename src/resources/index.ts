@@ -1,5 +1,4 @@
-// import a pre-defined template for config and content options
-export {
+import {
   about,
   blog,
   certifications,
@@ -7,9 +6,17 @@ export {
   home,
   newsletter,
   person,
+  projects as projectsData,
   social,
-  work,
 } from "./content_DEPRECATED";
+
+const projects = {
+  ...projectsData,
+  path: "/projects",
+  label: "Projects",
+};
+
+export { about, blog, certifications, gallery, home, newsletter, person, social, projects };
 
 export {
   baseURL,

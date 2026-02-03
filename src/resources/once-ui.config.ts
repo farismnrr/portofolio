@@ -19,7 +19,7 @@ const baseURL: string = "https://portfolio.farismnrr.com";
 const routes: RoutesConfig = {
   "/": true,
   "/about": true,
-  "/work": true,
+  "/projects": true,
   "/blog": true,
   "/certifications": true,
   "/gallery": true,

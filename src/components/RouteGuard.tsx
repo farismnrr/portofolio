@@ -51,7 +51,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
         }
 
         // Check dynamic routes
-        const dynamicRoutes = ["/blog", "/work", "/dashboard"] as const;
+        const dynamicRoutes = ["/blog", "/projects", "/dashboard"] as const;
         for (const route of dynamicRoutes) {
           if (pathname?.startsWith(route)) {
             // Dashboard is special - it might not be in the public 'routes' map but is valid

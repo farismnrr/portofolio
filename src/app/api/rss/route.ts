@@ -37,7 +37,7 @@ export async function GET() {
       <pubDate>${new Date(post.metadata.publishedAt).toUTCString()}</pubDate>
       <description><![CDATA[${post.metadata.summary}]]></description>
       ${post.metadata.image ? `<enclosure url="${baseURL}${post.metadata.image}" type="image/jpeg" />` : ""}
-      ${post.metadata.tag ? `<category>${post.metadata.tag}</category>` : ""}
+      ${post.metadata.tags && post.metadata.tags.length > 0 ? `<category>${post.metadata.tags[0]}</category>` : ""}
       <author>${person.email || "noreply@example.com"} (${person.name})</author>
     </item>`,
       )

@@ -10,7 +10,7 @@ interface Post {
     title: string;
     publishedAt: string;
     image?: string;
-    tag?: string;
+    tags: string[];
   };
 }
 
@@ -61,10 +61,14 @@ export default function Post({ post, thumbnail, direction }: PostProps) {
           <Text variant="heading-strong-l" wrap="balance">
             {post.metadata.title}
           </Text>
-          {post.metadata.tag && (
-            <Text variant="label-strong-s" onBackground="neutral-weak">
-              {post.metadata.tag}
-            </Text>
+          {post.metadata.tags && post.metadata.tags.length > 0 && (
+            <Row gap="8" wrap>
+              {post.metadata.tags.slice(0, 3).map((tag) => (
+                <Text key={tag} variant="label-strong-s" onBackground="neutral-weak">
+                  {tag}
+                </Text>
+              ))}
+            </Row>
           )}
         </Column>
       </Row>

@@ -1,5 +1,5 @@
 import { CustomMDX, ScrollToHash } from "@/components";
-import { about, baseURL, person, work } from "@/resources";
+import { about, baseURL, person, projects } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
 import { getPosts } from "@/utils/utils";
 import {
@@ -47,7 +47,7 @@ export async function generateMetadata({
       post.metadata.image ||
       post.metadata.images[0] ||
       `/api/og/generate?title=${post.metadata.title}`,
-    path: `${work.path}/${post.slug}`,
+    path: `${projects.path}/${post.slug}`,
   });
 }
 
@@ -75,7 +75,7 @@ export default async function Project({
       <Schema
         as="blogPosting"
         baseURL={baseURL}
-        path={`${work.path}/${post.slug}`}
+        path={`${projects.path}/${post.slug}`}
         title={post.metadata.title}
         description={post.metadata.summary}
         datePublished={post.metadata.publishedAt}
@@ -92,7 +92,7 @@ export default async function Project({
         }}
       />
       <Column maxWidth="s" gap="16" horizontal="center" align="center">
-        <SmartLink href="/work">
+        <SmartLink href={projects.path}>
           <Text variant="label-strong-m">Projects</Text>
         </SmartLink>
         <Text variant="body-default-xs" onBackground="neutral-weak" marginBottom="12">

@@ -1,5 +1,5 @@
 ---
-company: PT Wira Artha Perkasa
+company: PT Perkasa Pilar Utama
 role: Backend Developer
 timeframe: July 2025 - Present
 order: 1

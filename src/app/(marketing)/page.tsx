@@ -1,6 +1,6 @@
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
-import { Projects } from "@/components/work/Projects";
+import { Projects } from "@/components/projects/Projects";
 import { getAbout } from "@/lib/about";
 import { about, baseURL, home, person, routes } from "@/resources";
 import { getPosts } from "@/utils/utils";
@@ -75,7 +75,7 @@ export default async function Home() {
                 onBackground="neutral-strong"
                 textVariant="label-default-s"
                 arrow={false}
-                href={`/work/${latestProject.slug}`}
+                href={`/projects/${latestProject.slug}`}
               >
                 <Row gap="12" vertical="center" paddingY="2">
                   <strong className="ml-4">
@@ -83,7 +83,7 @@ export default async function Home() {
                   </strong>
                   <Line background="brand-alpha-strong" vert height="20" />
                   <Text marginRight="4" onBackground="brand-medium">
-                    Featured work
+                    Featured project
                   </Text>
                 </Row>
               </Badge>

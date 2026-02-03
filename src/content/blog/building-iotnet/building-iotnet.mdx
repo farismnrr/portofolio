@@ -55,7 +55,7 @@ The hardest part wasn't the code—it was the architecture decisions:
 - How do we prevent tenant A from accessing tenant B's data?
 - What happens when a tenant exceeds their device limit?
 
-I ended up building a separate [authentication service](/work/multitenant-user-management) in Rust. Separating auth from the frontend was the best decision I made. Each service can scale independently.
+I ended up building a separate [authentication service](/projects/multitenant-user-management) in Rust. Separating auth from the frontend was the best decision I made. Each service can scale independently.
 
 ### Challenge 3: Mobile Responsiveness
 

@@ -21,7 +21,7 @@ import styles from "./Sidebar.module.scss";
 const menuItems = [
   { name: "Home", icon: FiHome, path: "/" },
   { name: "About", icon: FiInfo, path: "/dashboard/about" },
-  { name: "Work", icon: FiBriefcase, path: "/dashboard/work" },
+  { name: "Projects", icon: FiBriefcase, path: "/dashboard/projects" },
   { name: "Blog", icon: FiFileText, path: "/dashboard/blog" },
   { name: "Certification", icon: FiAward, path: "/dashboard/certifications" },
   { name: "Gallery", icon: FiImage, path: "/dashboard/gallery" },

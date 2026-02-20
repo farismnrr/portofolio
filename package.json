@@ -41,7 +41,7 @@
     "@types/styled-jsx": "^2.2.9",
     "concurrently": "^9.2.1",
     "eslint": "^9.25.0",
-    "jspdf": "^4.1.0",
+    "jspdf": "^4.2.0",
     "typescript": "5.9.3",
     "tzdata": "^1.0.44"
   }

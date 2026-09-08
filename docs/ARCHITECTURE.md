@@ -1,234 +1,124 @@
-# Portfolio Microservices Architecture
+# Portfolio Architecture
 
-This monorepo contains the complete portfolio application built with a microservices architecture.
+## Goal
 
-## Services
+The portfolio is a **static-first website**. It has no authentication boundary and no application backend. All public content is generated at build time so the deployed runtime can be a plain static web server or CDN.
 
-### 1. Frontend Application
-**Location**: `/` (root)  
-**Technology**: Next.js 16 + React 19  
-**Port**: 3000
+## Runtime model
 
-Portfolio web application with project showcase, blog, and profile sections.
-
-**Documentation**:
-- [README.md](./README.md) - Frontend setup and development
-- [src/](./src/) - Application source code
-
----
-
-### 2. Portfolio Backend Service
-**Location**: `services/Portfolio-Backend-Service/`  
-**Technology**: Go + Echo Framework  
-**Port**: 8080
-
-Backend API service providing:
-- Authentication proxy to SSO service
-- Page access management
-- Content delivery (Open Graph metadata)
-- Portfolio data management (about, skills, work, education)
-- Interactions (works, blogs, comments)
-- Dashboard endpoints
-
-**Documentation**:
-- [README.md](./services/Portfolio-Backend-Service/README.md) - Backend setup
-- [docs/API-REFERENCE.md](./services/Portfolio-Backend-Service/docs/API-REFERENCE.md) - Complete API endpoints
-- [docs/contracts/](./services/Portfolio-Backend-Service/docs/contracts/) - Contract-driven specifications
-
----
-
-### 3. Multitenant User Management Service (SSO)
-**Location**: `services/Multitenant-User-Management-Service/`  
-**Technology**: Rust + Actix-web  
-**Port**: 5500
-
-Central authentication service handling:
-- User registration and authentication
-- JWT token management
-- Multi-tenant support
-- MQTT user management
-- API key management
-
-**Documentation**:
-- [README.md](./services/Multitenant-User-Management-Service/README.md) - Service setup
-- [docs/](./services/Multitenant-User-Management-Service/docs/) - Complete integration guide
-- [tests/e2e/contracts/](./services/Multitenant-User-Management-Service/tests/e2e/contracts/) - Contract specifications
-
----
-
-## Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   Frontend (Next.js)                        │
-│                  Port 3000 (User UI)                        │
-└──────────────────┬──────────────────────────────────────────┘
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-        ▼                     ▼
-┌──────────────────────┐  ┌─────────────────────┐
-│  Backend Service     │  │  SSO Service        │
-│  (Go/Echo)           │  │  (Rust/Actix-web)   │
-│  Port 8080           │  │  Port 5500          │
-├──────────────────────┤  ├─────────────────────┤
-│ • Auth Proxy         │  │ • Auth Management   │
-│ • Portfolio Data     │◀─┤ • JWT Tokens        │
-│ • Content Delivery   │  │ • Multi-tenancy     │
-│ • Interactions       │  │ • MQTT Management   │
-└──────────────────────┘  └─────────────────────┘
+```text
+Markdown / MDX + static resources
+              │
+              ▼
+       Next.js build time
+              │
+              ▼
+      prerendered ./out
+              │
+              ▼
+        CDN / nginx / S3
+              │
+              ▼
+            Browser
 ```
 
----
+No database, API server, SSO service, login flow, refresh tokens, dashboard, migrations, or server-side request processing are required.
 
-## Development Workflow
+## Application structure
 
-### Prerequisites
-- Go 1.21+
-- Rust 1.23+
-- Node.js 18+
-- Docker & Docker Compose
-- PostgreSQL 15
-
-### Quick Start
-
-```bash
-# Install root dependencies
-npm install
-
-# Start all services (dev mode with hot reload)
-make dev
-
-# Or use docker-compose for containerized stack
-make dev-docker
-
-# Check service health
-make health-check
+```text
+src/
+├── app/
+│   ├── (marketing)/          # public static pages
+│   ├── layout.tsx
+│   ├── robots.ts             # static robots.txt
+│   └── sitemap.ts            # static sitemap.xml
+├── components/               # reusable React UI
+├── content/                  # Markdown/MDX source of truth
+├── context/                  # browser-only UI state
+├── lib/                      # build-time/local utilities
+├── resources/                # site config/design/content config
+├── store/                    # browser UI state only
+├── types/
+└── utils/
 ```
 
-See [Makefile](./Makefile) for all available commands.
+## Rendering rules
 
-### Service-Specific Setup
+`next.config.mjs` uses:
 
-**Backend Service**:
-```bash
-cd services/Portfolio-Backend-Service
-make run
+```js
+output: "export"
 ```
 
-**SSO Service**:
-```bash
-cd services/Multitenant-User-Management-Service
-make dev
+This means `npm run build` must be able to resolve every page without a runtime server.
+
+### Static pages
+
+Pages without dynamic path segments are prerendered directly.
+
+### Dynamic content pages
+
+Blog and project detail routes provide `generateStaticParams()` from the repository's local content, so every known slug is generated during the build.
+
+### Client components
+
+Interactive UI such as theme switching can still use client-side React. Client components do not make the page SSR-dependent as long as they do not require request-time server data.
+
+## Content source
+
+Content lives in Git under `src/content/` and is read during the build. This replaces the previous database/API-backed editing model.
+
+Changing portfolio content follows a simple flow:
+
+```text
+edit Markdown/MDX → commit → build → deploy static output
 ```
 
----
+## SEO
 
-## API Documentation
+The static architecture supports SEO through:
 
-- **Frontend API**: Internal Next.js API routes
-- **Backend API**: [docs/API-REFERENCE.md](./services/Portfolio-Backend-Service/docs/API-REFERENCE.md)
-- **SSO API**: [services/Multitenant-User-Management-Service/docs/](./services/Multitenant-User-Management-Service/docs/)
-- **Swagger UI**: Available at `http://localhost:8080/swagger` (development)
+- prerendered HTML for every public page;
+- per-page metadata generated at build time;
+- static Open Graph fallback image;
+- generated `robots.txt`;
+- generated `sitemap.xml`;
+- crawlable project and blog detail URLs;
+- no login or auth gate around public content.
 
----
+## Images
 
-## Contract-Driven Development
-
-All services use contract-driven development:
-
-### Backend Service Contracts
-Located at: `services/Portfolio-Backend-Service/docs/contracts/`
-
-```
-contracts/
-├── about/               # Profile, skills, work, education
-├── auth/                # SSO integration
-├── content/             # Open Graph endpoints
-├── dashboard/           # Admin dashboard
-├── interaction/         # Works, blogs, comments
-└── site/                # Page authentication
-```
-
-### SSO Service Contracts
-Located at: `services/Multitenant-User-Management-Service/tests/e2e/contracts/`
-
-```
-contracts/
-├── 2_auth_test/         # Authentication endpoints
-├── 5_mqtt_test/         # MQTT management
-├── 3_tenant_test/       # Tenant management
-└── ...
-```
-
----
-
-## Database
-
-PostgreSQL is used for data persistence:
-- **Backend Database**: `portfolio_db`
-- **SSO Database**: `sso_db`
-
-Migrations are run automatically during service startup.
-
----
+Next.js runtime image optimization is disabled because there is no Next.js server in production. The project still uses responsive image markup where applicable; production image transformation/compression can be handled at asset-generation time or by the hosting CDN.
 
 ## Deployment
 
-### Docker Stack
-All services are containerized and can be deployed using:
+### Static host
 
-```bash
-make prod-up        # Start production stack
-make prod-down      # Stop production stack
-make prod-restart   # Restart all services
-```
+Upload the contents of `out/` to any static platform.
 
-### Environment Configuration
-- Development: `.env.dev`
-- Production: `.env.prod`
+### Docker
 
----
+The root `Dockerfile` has two stages:
 
-## Repository Structure
+1. Node builds the Next.js static export.
+2. nginx serves only the generated `out/` files.
 
-```
-.
-├── src/                              # Frontend Next.js app
-├── services/
-│   ├── Portfolio-Backend-Service/    # Go backend
-│   └── Multitenant-User-Management-Service/  # Rust SSO
-├── deployments/                      # Docker configs
-├── docs/                             # Documentation (this file)
-├── Makefile                          # Root orchestration
-├── docker-compose.yml                # Dev stack
-├── docker-compose.prod.yml           # Prod stack
-└── README.md                         # Root README
-```
+No application process runs beside nginx.
 
----
+## Explicitly removed architecture
 
-## Key Features
+The following are no longer part of this repository's runtime model:
 
-✅ **Microservices Architecture**: Independent services with clear boundaries  
-✅ **Contract-Driven Development**: Contracts as single source of truth  
-✅ **Multi-tenant Support**: SSO service handles multiple tenants  
-✅ **Type Safety**: TypeScript, Rust, Go with full type checking  
-✅ **API Documentation**: Comprehensive contracts and API references  
-✅ **Docker Ready**: Complete containerization for all services  
-✅ **Hot Reload**: Development mode with automatic reloading  
-✅ **PostgreSQL**: Persistent storage with migrations  
+- `/login` and OAuth callback routes;
+- authenticated dashboard routes;
+- Next.js `/api/*` routes;
+- Go portfolio backend;
+- multitenant SSO/user-management service;
+- PostgreSQL and migrations;
+- runtime backend configuration;
+- API proxy rewrites;
+- dynamic OG image endpoint;
+- auth state/bootstrap logic.
 
----
-
-## Troubleshooting
-
-See individual service READMEs:
-- [Backend Troubleshooting](./services/Portfolio-Backend-Service/README.md#troubleshooting)
-- [SSO Troubleshooting](./services/Multitenant-User-Management-Service/docs/07-troubleshooting.md)
-
----
-
-## License
-
-MIT - See [LICENSE](./LICENSE) for details
+Any future feature should remain static/client-only unless there is a strong reason to reintroduce a server runtime.

@@ -1,81 +1,113 @@
-# Faris Munir Mahdi - Portfolio
+# Faris Munir Mahdi — Portfolio
 
-A modern, responsive portfolio website built with Next.js and Once UI, showcasing projects, blog posts, and professional experience with a clean, customizable design system.
+A fully static personal portfolio built with Next.js 16.3.4, React 19, Once UI, MDX, and local content files.
 
-🌐 **Live Preview**: [portofolio.iotunnel.my.id](https://portofolio.iotunnel.my.id)
+The application intentionally has **no login, dashboard, API routes, database, SSO service, or backend runtime**. Production builds are exported as static HTML/CSS/JS into `out/` for fast delivery, simple hosting, and strong crawlability.
 
-## Overview
+## Architecture
 
-This is the personal portfolio website of **Faris Munir Mahdi**, a Software Engineer specializing in Backend, Cloud, and IoT. The portfolio emphasizes clean aesthetics, performance, and user experience while showcasing professional projects and technical writing.
+- **Framework:** Next.js App Router
+- **Rendering:** Static export (`output: "export"`)
+- **Content:** Local Markdown/MDX and static assets
+- **UI:** Once UI + React
+- **SEO:** Static metadata, Open Graph image, `robots.txt`, `sitemap.xml`, prerendered project/blog detail routes
+- **Deployment:** Any static host, CDN, object storage, or the provided nginx Docker image
 
-## Key Features
+## Routes
 
-- 📱 **Responsive Design**: Optimized for all devices with mobile-first approach
-- 🌙 **Dark Mode**: Theme switching with system preference detection
-- 📝 **MDX Blog**: Rich content with code syntax highlighting
-- 🎨 **Project Showcase**: Dedicated pages for each project with detailed descriptions
-- ⚡ **Performance**: Static site generation with Next.js for fast load times
-- 🔍 **SEO Optimized**: Proper meta tags, Open Graph, and sitemap generation
+All public routes are generated at build time:
 
-## Tech Stack
+- `/`
+- `/about/`
+- `/blog/`
+- `/blog/[slug]/`
+- `/certifications/`
+- `/gallery/`
+- `/projects/`
+- `/projects/[slug]/`
+- `/robots.txt`
+- `/sitemap.xml`
 
-### Frontend
-- **Framework**: Next.js 16.1.1 with App Router
-- **UI Library**: React 19.2.3
-- **Design System**: Once UI (customizable component library)
-- **Styling**: CSS Modules with design tokens
-- **Icons**: Custom icon system with fallbacks
-
-### Content Management
-- **Blog**: MDX (Markdown + JSX) for rich content
-- **Metadata**: Frontmatter-based project and blog metadata
-- **Image Optimization**: Next.js Image component with lazy loading
-
-### Developer Experience
-- **Language**: TypeScript
-- **Build Tool**: Turbopack (Next.js 16)
-- **Linting**: ESLint with Next.js config
-- **Version Control**: Git with conventional commits
+There are no authentication or server API routes.
 
 ## Development
 
-To run the project locally:
+```bash
+npm ci
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Static production build
 
 ```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
 npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The production site is written to:
 
-## Project Structure
-
-```
-├── src/
-│   ├── app/              # Next.js App Router pages
-│   │   ├── work/         # Project showcase pages
-│   │   ├── blog/         # Blog posts (MDX)
-│   │   └── about/        # About page
-│   ├── components/       # Reusable UI components
-│   ├── resources/        # Content and configuration
-│   └── utils/            # Utility functions
-├── public/
-│   └── images/           # Static images and assets
-└── README.md
+```text
+out/
 ```
 
-## Design Philosophy
+Preview the exact exported site:
 
-- **Clean and Professional**: Minimalist design with focus on content
-- **Customizable**: Design tokens for easy theming and modular architecture
-- **Performance-First**: Static site generation, optimized images, minimal JavaScript
+```bash
+make preview
+```
+
+## Docker
+
+The Docker image builds the static export and serves it with nginx only:
+
+```bash
+make docker-build
+make docker-run
+```
+
+Then open `http://localhost:8080`.
+
+## Content editing
+
+Portfolio content is versioned with the source code under `src/content/`:
+
+```text
+src/content/
+├── about/
+├── blog/
+├── projects/
+├── studies/
+├── technical/
+└── work/
+```
+
+Project and blog detail pages use `generateStaticParams`, so every known slug is prerendered during `npm run build`.
+
+## SEO / performance model
+
+The site is designed so the origin does not need Node.js at request time:
+
+- HTML exists before a crawler requests a page.
+- Project and blog routes are prerendered.
+- `robots.txt` and `sitemap.xml` are statically generated.
+- OG metadata uses a static image rather than a runtime image-generation API.
+- Next Image optimization is disabled at runtime because the site is exported; image delivery can be handled by the CDN/static host.
+- No auth/bootstrap API calls run in the browser.
+
+## Governance and quality
+
+The repository uses a Sensio-derived single-codebase governance workflow. Root `AGENTS.md` is canonical.
+
+```bash
+make guard-fast
+make guard-full
+make guard-release
+python3 .agents/scripts/maintainability.py portfolio
+```
+
+The full guard enforces static-only architecture, Biome, TypeScript, static export, and a zero-vulnerability npm audit.
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+See [LICENSE](LICENSE).

@@ -1,4 +1,5 @@
 import type { IconType } from "react-icons";
+import { FaAws } from "react-icons/fa";
 import {
   FaDiscord,
   FaFacebook,
@@ -13,6 +14,7 @@ import {
   FaXTwitter,
 } from "react-icons/fa6";
 import {
+  HiArrowDownTray,
   HiArrowRight,
   HiArrowTopRightOnSquare,
   HiArrowUpRight,
@@ -36,7 +38,6 @@ import {
 } from "react-icons/pi";
 import {
   SiActix,
-  SiAmazonwebservices,
   SiArduino,
   SiCplusplus,
   SiDocker,
@@ -60,7 +61,7 @@ import {
   SiNginx,
   SiNodedotjs,
   SiNodered,
-  SiNuxtdotjs,
+  SiNuxt,
   SiPostgresql,
   SiPython,
   SiReact,
@@ -77,6 +78,7 @@ import {
 export const iconLibrary: Record<string, IconType> = {
   arrowUpRight: HiArrowUpRight,
   arrowRight: HiArrowRight,
+  download: HiArrowDownTray,
   email: HiEnvelope,
   globe: HiOutlineGlobeAsiaAustralia,
   person: PiUserCircleDuotone,
@@ -131,7 +133,7 @@ export const iconLibrary: Record<string, IconType> = {
   java: FaJava,
   typescript: SiTypescript,
   hapi: SiNodedotjs,
-  nuxt: SiNuxtdotjs,
+  nuxt: SiNuxt,
   mysql: SiMysql,
   sqlite: SiSqlite,
   rocksdb: SiRocksdb,
@@ -140,7 +142,7 @@ export const iconLibrary: Record<string, IconType> = {
   emqx: SiMqtt,
   grafana: SiGrafana,
   nodered: SiNodered,
-  aws: SiAmazonwebservices,
+  aws: FaAws,
   actix: SiActix,
   youtube: SiYoutube,
 };

@@ -1,3 +1,4 @@
+import { Line, Row, Text } from "@once-ui-system/core";
 import type {
   About,
   Blog,
@@ -8,7 +9,6 @@ import type {
   ProjectsPageConfig,
   Social,
 } from "@/types";
-import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
   firstName: "Faris",
@@ -438,4 +438,4 @@ const gallery: Gallery = {
   description: `A photo collection by ${person.name}`,
 };
 
-export { person, social, newsletter, home, about, blog, projects, gallery, certifications };
+export { about, blog, certifications, gallery, home, newsletter, person, projects, social };

@@ -1,7 +1,3 @@
-import { CustomMDX, ScrollToHash } from "@/components";
-import { about, baseURL, person, projects } from "@/resources";
-import { formatDate } from "@/utils/formatDate";
-import { getPosts } from "@/utils/utils";
 import {
   AvatarGroup,
   Column,
@@ -16,6 +12,10 @@ import {
 } from "@once-ui-system/core";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CustomMDX, ScrollToHash } from "@/components";
+import { about, baseURL, person, projects } from "@/resources";
+import { formatDate } from "@/utils/formatDate";
+import { getPosts } from "@/utils/utils";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getPosts(["content", "projects"]);
@@ -43,17 +43,16 @@ export async function generateMetadata({
     title: post.metadata.title,
     description: post.metadata.summary,
     baseURL: baseURL,
-    image:
-      post.metadata.image ||
-      post.metadata.images[0] ||
-      `/api/og/generate?title=${post.metadata.title}`,
+    image: post.metadata.image || post.metadata.images[0] || "/images/og/home.jpg",
     path: `${projects.path}/${post.slug}`,
   });
 }
 
 export default async function Project({
   params,
-}: { params: Promise<{ slug: string | string[] }> }) {
+}: {
+  params: Promise<{ slug: string | string[] }>;
+}) {
   const routeParams = await params;
   const slugPath = Array.isArray(routeParams.slug)
     ? routeParams.slug.join("/")
@@ -80,11 +79,7 @@ export default async function Project({
         description={post.metadata.summary}
         datePublished={post.metadata.publishedAt}
         dateModified={post.metadata.publishedAt}
-        image={
-          post.metadata.image ||
-          post.metadata.images[0] ||
-          `/api/og/generate?title=${encodeURIComponent(post.metadata.title)}`
-        }
+        image={post.metadata.image || post.metadata.images[0] || "/images/og/home.jpg"}
         author={{
           name: person.name,
           url: `${baseURL}${about.path}`,

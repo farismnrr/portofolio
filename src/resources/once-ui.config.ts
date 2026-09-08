@@ -217,16 +217,16 @@ const socialSharing: SocialSharingConfig = {
 };
 
 export {
-  display,
-  mailchimp,
-  routes,
-  protectedRoutes,
   baseURL,
-  fonts,
-  style,
-  schema,
-  sameAs,
-  socialSharing,
-  effects,
   dataStyle,
+  display,
+  effects,
+  fonts,
+  mailchimp,
+  protectedRoutes,
+  routes,
+  sameAs,
+  schema,
+  socialSharing,
+  style,
 };

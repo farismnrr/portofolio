@@ -1,5 +1,5 @@
-import { Footer, Header, RouteGuard } from "@/components";
 import { Flex } from "@once-ui-system/core";
+import { Footer, Header } from "@/components";
 
 export default function MarketingLayout({
   children,
@@ -12,7 +12,7 @@ export default function MarketingLayout({
       <Header />
       <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
         <Flex horizontal="center" fillWidth minHeight="0">
-          <RouteGuard>{children}</RouteGuard>
+          {children}
         </Flex>
       </Flex>
       <Footer />

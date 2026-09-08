@@ -9,7 +9,10 @@ const withMDX = mdx({
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   transpilePackages: ["next-mdx-remote"],
+  output: "export",
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -27,17 +30,8 @@ const nextConfig = {
     compiler: "modern",
     silenceDeprecations: ["legacy-js-api"],
   },
-  output: "standalone",
   allowedDevOrigins: ["app.farismunir.my.id", "localhost:3000"],
-  reactStrictMode: false,
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "http://127.0.0.1:8080/:path*",
-      },
-    ];
-  },
+  reactStrictMode: true,
 };
 
 export default withMDX(nextConfig);

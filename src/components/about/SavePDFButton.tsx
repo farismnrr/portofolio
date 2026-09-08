@@ -1,7 +1,7 @@
 "use client";
 
-import { type PDFData, generatePDF } from "@/lib/pdf";
 import { Button, IconButton } from "@once-ui-system/core";
+import { generatePDF, type PDFData } from "@/lib/pdf";
 
 interface SavePDFButtonProps {
   data: PDFData;

@@ -1,15 +1,13 @@
+import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 import { Projects } from "@/components/projects/Projects";
 import { about, baseURL, person, projects } from "@/resources";
-import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   return Meta.generate({
     title: projects.title,
     description: projects.description,
     baseURL: baseURL,
-    image: `/api/og/generate?title=${encodeURIComponent(projects.title)}`,
+    image: "/images/og/home.jpg",
     path: projects.path,
   });
 }
@@ -23,7 +21,7 @@ export default function ProjectsPage() {
         path={projects.path}
         title={projects.title}
         description={projects.description}
-        image={`/api/og/generate?title=${encodeURIComponent(projects.title)}`}
+        image={"/images/og/home.jpg"}
         author={{
           name: person.name,
           url: `${baseURL}${about.path}`,

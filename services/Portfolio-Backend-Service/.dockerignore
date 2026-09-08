@@ -1,8 +1,0 @@
-bin
-tmp
-portfolio_backend
-vendor
-.git
-.idea
-.vscode
-*.log

@@ -1,8 +1,8 @@
 "use client";
 
+import { Avatar, Card, Column, Media, Row, Text } from "@once-ui-system/core";
 import { person } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
-import { Avatar, Card, Column, Media, Row, Text } from "@once-ui-system/core";
 
 interface Post {
   slug: string;

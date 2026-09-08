@@ -193,15 +193,6 @@ export const Header = () => {
                   </Row>
                 </>
               )}
-              {/* Login Button */}
-              <Line background="neutral-alpha-medium" vert maxHeight="24" />
-              <Row s={{ hide: true }}>
-                <ToggleButton prefixIcon="person" href="/login" label="Login" />
-              </Row>
-              <Row hide s={{ hide: false }}>
-                <ToggleButton prefixIcon="person" href="/login" />
-              </Row>
-
               {display.themeSwitcher && (
                 <>
                   <Line background="neutral-alpha-medium" vert maxHeight="24" />

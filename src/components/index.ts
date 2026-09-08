@@ -1,4 +1,3 @@
-export { AuthInitializer } from "@/components/AuthInitializer";
 export { Footer } from "@/components/Footer";
 export { Header } from "@/components/Header";
 export { HeadingLink } from "@/components/HeadingLink";
@@ -6,6 +5,5 @@ export { Mailchimp } from "@/components/Mailchimp";
 export { CustomMDX } from "@/components/mdx";
 export { ProjectCard } from "@/components/ProjectCard";
 export { Providers } from "@/components/Providers";
-export { RouteGuard } from "@/components/RouteGuard";
 export { ScrollToHash } from "@/components/ScrollToHash";
 export { ThemeToggle } from "@/components/ThemeToggle";

@@ -24,18 +24,16 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     <dialog
       className={styles.modalOverlay}
       open
-      onClick={onClose}
-      onKeyUp={(e) => {
-        if (e.key === "Enter" || e.key === " ") onClose();
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      onKeyUp={(event) => {
+        if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+          onClose();
+        }
       }}
     >
-      <div
-        className={styles.modal}
-        onClick={(e) => e.stopPropagation()}
-        onKeyUp={(e) => {
-          if (e.key === "Enter" || e.key === " ") e.stopPropagation();
-        }}
-      >
+      <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h3>{title}</h3>
           <button type="button" className={styles.closeBtn} aria-label="Close" onClick={onClose}>

@@ -1,5 +1,5 @@
-import { baseURL, certifications, person } from "@/resources";
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
+import { baseURL, certifications, person } from "@/resources";
 import CertificationList from "./CertificationList";
 
 export async function generateMetadata() {
@@ -7,7 +7,7 @@ export async function generateMetadata() {
     title: certifications.title,
     description: certifications.description,
     baseURL: baseURL,
-    image: `/api/og/generate?title=${encodeURIComponent(certifications.title)}`,
+    image: "/images/og/home.jpg",
     path: certifications.path,
   });
 }
@@ -192,7 +192,7 @@ export default function Certifications() {
         title={certifications.title}
         description={certifications.description}
         path={certifications.path}
-        image={`/api/og/generate?title=${encodeURIComponent(certifications.title)}`}
+        image={"/images/og/home.jpg"}
         author={{
           name: person.name,
           url: `${baseURL}/certifications`,

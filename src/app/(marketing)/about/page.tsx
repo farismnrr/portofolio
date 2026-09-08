@@ -1,18 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import SavePDFButton from "@/components/about/SavePDFButton";
-import TableOfContents from "@/components/about/TableOfContents";
-import styles from "@/components/about/about.module.scss";
-import {
-  getAbout,
-  getEducations,
-  getSkills,
-  getSocialLinks,
-  getWorkExperiences,
-} from "@/lib/about";
-import type { PDFData } from "@/lib/pdf";
-import { about, baseURL, person, social } from "@/resources";
-import { getPosts } from "@/utils/utils";
 import {
   Avatar,
   Button,
@@ -27,7 +14,19 @@ import {
   Text,
 } from "@once-ui-system/core";
 import React from "react";
-export const dynamic = "force-dynamic";
+import styles from "@/components/about/about.module.scss";
+import SavePDFButton from "@/components/about/SavePDFButton";
+import TableOfContents from "@/components/about/TableOfContents";
+import {
+  getAbout,
+  getEducations,
+  getSkills,
+  getSocialLinks,
+  getWorkExperiences,
+} from "@/lib/about";
+import type { PDFData } from "@/lib/pdf";
+import { about, baseURL, person, social } from "@/resources";
+import { getPosts } from "@/utils/utils";
 
 const CERTIFICATIONS_DIR = path.join(process.cwd(), "public", "images", "certifications");
 const PDF_ASSET_BASE_URL = "https://farismnrr.com";
@@ -87,7 +86,7 @@ export async function generateMetadata() {
     title: about.title,
     description: about.description,
     baseURL: baseURL,
-    image: `/api/og/generate?title=${encodeURIComponent(about.title)}`,
+    image: "/images/og/home.jpg",
     path: about.path,
   });
 }
@@ -214,7 +213,7 @@ export default async function About() {
         title={about.title}
         description={about.description}
         path={about.path}
-        image={`/api/og/generate?title=${encodeURIComponent(about.title)}`}
+        image={"/images/og/home.jpg"}
         author={{
           name: personalInfo.name,
           url: `${baseURL}${about.path}`,

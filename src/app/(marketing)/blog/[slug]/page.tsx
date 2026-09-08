@@ -1,9 +1,3 @@
-import { CustomMDX, ScrollToHash } from "@/components";
-import { Posts } from "@/components/blog/Posts";
-import { ShareSection } from "@/components/blog/ShareSection";
-import { about, baseURL, blog, person } from "@/resources";
-import { formatDate } from "@/utils/formatDate";
-import { getPosts } from "@/utils/utils";
 import {
   Avatar,
   Column,
@@ -19,6 +13,12 @@ import {
 } from "@once-ui-system/core";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CustomMDX, ScrollToHash } from "@/components";
+import { Posts } from "@/components/blog/Posts";
+import { ShareSection } from "@/components/blog/ShareSection";
+import { about, baseURL, blog, person } from "@/resources";
+import { formatDate } from "@/utils/formatDate";
+import { getPosts } from "@/utils/utils";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getPosts(["content", "blog"]);
@@ -46,7 +46,7 @@ export async function generateMetadata({
     title: post.metadata.title,
     description: post.metadata.summary,
     baseURL: baseURL,
-    image: post.metadata.image || `/api/og/generate?title=${post.metadata.title}`,
+    image: post.metadata.image || "/images/og/home.jpg",
     path: `${blog.path}/${post.slug}`,
   });
 }
@@ -81,10 +81,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
             description={post.metadata.summary}
             datePublished={post.metadata.publishedAt}
             dateModified={post.metadata.publishedAt}
-            image={
-              post.metadata.image ||
-              `/api/og/generate?title=${encodeURIComponent(post.metadata.title)}`
-            }
+            image={post.metadata.image || "/images/og/home.jpg"}
             author={{
               name: person.name,
               url: `${baseURL}${about.path}`,

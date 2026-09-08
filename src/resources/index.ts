@@ -16,8 +16,6 @@ const projects = {
   label: "Projects",
 };
 
-export { about, blog, certifications, gallery, home, newsletter, person, social, projects };
-
 export {
   baseURL,
   dataStyle,
@@ -32,3 +30,4 @@ export {
   socialSharing,
   style,
 } from "./once-ui.config";
+export { about, blog, certifications, gallery, home, newsletter, person, projects, social };

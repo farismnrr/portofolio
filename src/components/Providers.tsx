@@ -1,6 +1,5 @@
 "use client";
 
-import { UIProvider } from "@/context/UIContext";
 import {
   type BorderStyle,
   type ChartMode,
@@ -18,9 +17,9 @@ import {
   ToastProvider,
   type TransitionStyle,
 } from "@once-ui-system/core";
+import { UIProvider } from "@/context/UIContext";
 import { dataStyle, style } from "../resources";
 import { iconLibrary } from "../resources/icons";
-import { AuthInitializer } from "./AuthInitializer";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -51,9 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
           <ToastProvider>
             <UIProvider>
-              <AuthInitializer>
-                <IconProvider icons={iconLibrary}>{children}</IconProvider>
-              </AuthInitializer>
+              <IconProvider icons={iconLibrary}>{children}</IconProvider>
             </UIProvider>
           </ToastProvider>
         </DataThemeProvider>

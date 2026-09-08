@@ -1,30 +1,32 @@
 node_modules/
-**/node_modules/
-target/
-**/target/
-services/Multitenant-User-Management-Service/target/
-services/Portfolio-Backend-Service/tmp/
-.next/
-**/dist/
-**/out/
-**/build/
 .git/
 .env*
-! .env.example
+!.env.example
 *.log
 .DS_Store
 
-# Secrets and sensitive data
+# Generated output / local caches
+dist/
+.ssr/
+.next/
+out/
+build/
+coverage/
+playwright-report/
+test-results/
+.tmp-ui-check/
+*.tsbuildinfo
+
+# Editor/local state
+.vscode/
+.idea/
+
+# Secrets and local data
 secret/
-services/Portfolio-Backend-Service/secret/
-services/Multitenant-User-Management-Service/secret/
+**/secret/
 credentials.json
 *.p12
 *.pem
-
-# Local DBs and Data
-**/data/
-**/tmp/
-deployments/
+*.key
 *.sqlite
 *.sqlite-journal

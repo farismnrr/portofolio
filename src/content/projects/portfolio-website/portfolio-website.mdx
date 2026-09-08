@@ -2,7 +2,7 @@
 title: "Personal Portfolio Website"
 projectName: "Portfolio"
 publishedAt: "2026-01-09"
-summary: "A modern, responsive portfolio website built with Next.js and Once UI, showcasing projects, blog posts, and professional experience with a clean, customizable design system."
+summary: "A lightweight static portfolio built with Vue 3, Vite, TypeScript, and SCSS, with repository-local content prerendered to plain HTML for fast hosting and predictable maintenance."
 images:
   - "/images/projects/project-01/Selected Works.png"
 link: "https://farismnrr.com"
@@ -16,99 +16,53 @@ team:
 
 ## Overview
 
-A modern, responsive portfolio website designed to showcase professional projects, technical skills, and blog content. Built with Next.js and Once UI design system, this portfolio emphasizes clean aesthetics, performance, and user experience.
+A lightweight personal portfolio for presenting software projects, technical writing, professional experience, certifications, and photography. The application intentionally avoids a production server runtime: Vue handles the interface, Vite handles development and bundling, and a repository-owned prerender step emits every route as static HTML.
 
 ## Solution
 
-This portfolio delivers a structured, fast, and visually consistent platform to present professional work, technical writing, and credentials in one place, making it easy for recruiters and collaborators to evaluate projects and experience quickly.
+The portfolio keeps content and presentation deliberately simple. Project, blog, experience, education, and skill data live in repository-local Markdown/MDX files, are normalized at build time, and are rendered into a responsive Vue interface styled entirely with SCSS.
 
 ## Key Features
 
-- **Project Showcase**: Dedicated pages for each project with detailed descriptions, tech stacks, and live demos
-- **Blog Integration**: MDX-based blog system for technical writing and documentation
-- **Responsive Design**: Optimized for all devices with mobile-first approach
-- **Dark Mode**: Theme switching with system preference detection
-- **SEO Optimized**: Proper meta tags, Open Graph, and sitemap generation
-- **Performance**: Static site generation with Next.js for fast load times
+- **Static by default**: Every known route is prerendered to HTML and can be served from any static host or CDN.
+- **Repository-local content**: Projects, blog posts, work history, studies, and skills remain version-controlled alongside the site.
+- **Responsive design**: Desktop and mobile layouts use custom SCSS rather than an external component framework.
+- **Dark mode**: Theme preference is stored locally with system preference fallback.
+- **SEO output**: Build-time metadata, canonical URLs, Open Graph fields, sitemap, robots file, and static 404 page.
+- **Low runtime overhead**: No backend, database, authentication layer, server components, or production SSR server.
 
 ## Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16.1.1 with App Router
-- **UI Library**: React 19.2.3
-- **Design System**: Once UI (customizable component library)
-- **Styling**: CSS Modules with design tokens
-- **Icons**: Custom icon system with fallbacks
 
-### Content Management
-- **Blog**: MDX (Markdown + JSX) for rich content
-- **Metadata**: Frontmatter-based project and blog metadata
-- **Image Optimization**: Next.js Image component with lazy loading
-
-### Developer Experience
+- **UI**: Vue 3
+- **Routing**: Vue Router
 - **Language**: TypeScript
-- **Build Tool**: Turbopack (Next.js 16)
-- **Linting**: ESLint with Next.js config
-- **Version Control**: Git with conventional commits
+- **Styling**: SCSS and CSS custom properties
+- **Build tool / dev server**: Vite
+
+### Content and SSG
+
+- **Content**: Markdown/MDX with frontmatter
+- **Parsing**: gray-matter and markdown-it
+- **Prerendering**: Vite SSR build plus `@vue/server-renderer`, used only during `npm run build`
+- **Output**: Plain HTML/CSS/JS in `dist/`
+
+## Architecture
+
+The build has four stages:
+
+1. Repository content is normalized into generated TypeScript data.
+2. Vite produces the browser bundle.
+3. Vite produces a temporary server-render bundle used only by the build script.
+4. Every root and content-derived route is rendered to `dist/<route>/index.html`; the temporary SSR bundle is then removed.
+
+The deployed artifact contains no Node server and no Vue SSR runtime service.
 
 ## Design Philosophy
 
-### Clean and Professional
-- Minimalist design with focus on content
-- Consistent typography and spacing
-- High contrast for readability
-- Smooth animations and transitions
-
-### Customizable
-- Design tokens for easy theming
-- Modular component architecture
-- Configurable content structure
-- Flexible layout system
-
-### Performance-First
-- Static site generation where possible
-- Optimized images and assets
-- Minimal JavaScript bundle
-- Fast page transitions
-
-## Project Structure
-
-The portfolio is organized into clear sections:
-- **Home**: Introduction and featured projects
-- **Projects**: Project showcase with filtering
-- **Blog**: Technical articles and documentation
-- **About**: Professional background and skills
-- **Gallery**: Visual portfolio (optional)
-
-## Content Features
-
-### Project Pages
-Each project includes:
-- Comprehensive overview and context
-- Detailed tech stack breakdown
-- Key features and architecture
-- Live demo and GitHub repository links
-- Team information and roles
-
-### Blog System
-- MDX support for rich content formatting
-- Code syntax highlighting
-- Responsive images and media
-- Reading time estimation
-- Tag-based organization
+The visual language stays intentionally light, airy, and content-first: a compact floating navigation pill, restrained cyan ambient lighting, large typography, and spacious project imagery. All design tokens and responsive behavior are owned by this repository so dependency upgrades cannot silently change component behavior.
 
 ## Deployment
 
-The portfolio supports multiple deployment options:
-- **Vercel**: Optimized Next.js hosting with automatic deployments
-- **Static Export**: Can be deployed to any static hosting service
-- **Self-Hosted**: Docker support for custom infrastructure
-
-## Continuous Improvement
-
-This portfolio is continuously updated with:
-- New projects and case studies
-- Technical blog posts
-- Performance optimizations
-- Design refinements
-- Feature additions based on feedback
+`npm run build` produces `dist/`. That directory can be uploaded directly to a static hosting platform or copied into nginx using the repository Dockerfile.

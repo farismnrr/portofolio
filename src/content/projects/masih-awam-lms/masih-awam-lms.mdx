@@ -1,0 +1,50 @@
+---
+title: "Masih Awam LMS: Beginner-First Learning Platform"
+projectName: "Masih Awam LMS"
+publishedAt: "2026-09-05"
+summary: "A beginner-friendly LMS with a lightweight HTML/SCSS/vanilla JavaScript frontend, Rust/Axum backend, PostgreSQL learning domain, and production-minded account security."
+images:
+  - "/images/projects/featured/masih-awam-lms.png"
+tag:
+  - "LMS"
+  - "Vanilla JavaScript"
+  - "SCSS"
+  - "Rust"
+  - "Axum"
+  - "PostgreSQL"
+  - "OpenTelemetry"
+team:
+  - name: "Faris Munir Mahdi"
+    role: "Builder"
+    avatar: "/images/projects/avatar.jpg"
+    linkedIn: "https://www.linkedin.com/in/farismnrr"
+---
+
+## Overview
+
+**Masih Awam LMS** is a beginner-first learning platform designed to make the first step into technical learning feel approachable without making the product feel childish.
+
+The frontend deliberately stays lightweight with HTML, SCSS, and vanilla JavaScript, while a Rust/Axum backend handles the LMS domain, account security, and production-facing platform behavior.
+
+## Product Direction
+
+The learning experience uses large editorial typography, scroll-driven storytelling, course discovery, learning paths, and progress-oriented flows. The component architecture keeps UI atoms, cards, visuals, sections, pages, and static data separated so the landing experience remains maintainable without a frontend framework.
+
+## Key Capabilities
+
+- **Pure HTML/SCSS/vanilla JS frontend** with reusable component boundaries
+- **Scroll-driven 3D storytelling** with reduced-motion support
+- **Rust/Axum backend** and PostgreSQL learning domain
+- **Courses, modules, lessons, enrollment, and lesson progress**
+- **Hybrid rendering strategy** across static, server-rendered, and client interactions where appropriate
+- **Strong account security** including Argon2id, fresh-auth boundaries, session management, MFA for admin, and recovery codes
+- **Email verification/recovery flows** using hashed single-use tokens
+- **Observability stack** with OpenTelemetry and Grafana ecosystem components
+
+## Architecture
+
+The UI dependency direction stays intentionally simple: UI atoms feed cards and visuals, which feed sections, which are composed by page-level modules. The server remains a thin Rust/Axum boundary around authentication, learning data, and operational concerns.
+
+## Stack
+
+HTML, SCSS, vanilla JavaScript, Rust, Axum, PostgreSQL, OpenTelemetry, Prometheus/Loki/Tempo/Grafana, and Playwright.

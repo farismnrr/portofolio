@@ -6,7 +6,7 @@ SHELL := /bin/bash
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
 
-dev: ## Run Next.js development server
+dev: ## Run the Vite development server on port 3006
 	npm run dev
 
 install: ## Install dependencies from the lockfile
@@ -15,7 +15,7 @@ install: ## Install dependencies from the lockfile
 lint: ## Run Biome checks
 	npm run lint
 
-typecheck: ## Run TypeScript without emitting files
+typecheck: ## Run Vue/TypeScript type checks
 	npm run typecheck
 
 audit: ## Require zero known npm vulnerabilities
@@ -30,14 +30,14 @@ guard-full: ## Run full static-site engineering guard
 guard-release: ## Run release static-site engineering guard
 	./.agents/scripts/engineering-guard.sh portfolio release
 
-build: ## Generate fully static site into ./out
+build: ## Prerender the fully static site into ./dist
 	npm run build
 
-preview: build ## Preview the exported static site on http://localhost:3000
-	python3 -m http.server 3000 --directory out
+preview: build ## Preview the static production build on port 3006
+	npm run preview
 
 clean: ## Remove generated output
-	rm -rf .next out
+	rm -rf dist .ssr src/generated .tmp-ui-check
 
 docker-build: ## Build static nginx image
 	docker build -t faris-portfolio-static .

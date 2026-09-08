@@ -1,6 +1,6 @@
 # Agent Governance
 
-This directory contains the portfolio repository's durable agent governance, adapted from the Sensio workflow for a single static Next.js codebase.
+This directory contains durable governance for the single static Vue 3 + Vite portfolio codebase.
 
 - `codebases.conf` — codebase registry.
 - `scripts/codebase-policy.sh` — architecture/testing policy checks.

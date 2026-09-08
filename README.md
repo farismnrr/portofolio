@@ -1,113 +1,52 @@
 # Faris Munir Mahdi — Portfolio
 
-A fully static personal portfolio built with Next.js 16.3.4, React 19, Once UI, MDX, and local content files.
+A fully static personal portfolio built with **Vue 3, Vite, TypeScript, SCSS, and repository-local Markdown/MDX content**.
 
-The application intentionally has **no login, dashboard, API routes, database, SSO service, or backend runtime**. Production builds are exported as static HTML/CSS/JS into `out/` for fast delivery, simple hosting, and strong crawlability.
+There is intentionally no backend runtime, authentication, dashboard, database, or API service. Development is served directly by Vite; production is prerendered into plain HTML/CSS/JS under `dist/` and can be hosted by any static server/CDN.
 
-## Architecture
+## Stack
 
-- **Framework:** Next.js App Router
-- **Rendering:** Static export (`output: "export"`)
-- **Content:** Local Markdown/MDX and static assets
-- **UI:** Once UI + React
-- **SEO:** Static metadata, Open Graph image, `robots.txt`, `sitemap.xml`, prerendered project/blog detail routes
-- **Deployment:** Any static host, CDN, object storage, or the provided nginx Docker image
+- Vue 3 + Vue Router
+- Vite
+- TypeScript + `vue-tsc`
+- SCSS only for styling; no Tailwind or UI component framework
+- Markdown/MDX content parsed at build time
+- `@vue/server-renderer` used **only during build** to prerender static HTML
+- Biome for source checks
 
-## Routes
-
-All public routes are generated at build time:
-
-- `/`
-- `/about/`
-- `/blog/`
-- `/blog/[slug]/`
-- `/certifications/`
-- `/gallery/`
-- `/projects/`
-- `/projects/[slug]/`
-- `/robots.txt`
-- `/sitemap.xml`
-
-There are no authentication or server API routes.
-
-## Development
+## Commands
 
 ```bash
 npm ci
-npm run dev
+npm run dev       # http://localhost:3006
+npm run typecheck
+npm run lint
+npm run build     # static output -> dist/
+npm run preview   # preview dist on port 3006
+npm run audit
 ```
 
-Open `http://localhost:3000`.
+Ports `3000`–`3005` are treated as reserved local service ports; this portfolio uses `3006` by default.
 
-## Static production build
+## Static build pipeline
 
-```bash
-npm run build
-```
+1. `scripts/content-plugin.ts` reads repository-local Markdown/MDX and asset indexes directly during Vite compilation.
+2. Each domain is exposed as an in-memory virtual module (`virtual:content/about`, `virtual:content/skills`, `virtual:content/projects`, etc.); no generated content file is written to the repository.
+3. Vite creates the browser bundle and a temporary SSR bundle used only for build-time rendering.
+4. `scripts/build.mjs` prerenders every known route to `dist/<route>/index.html`.
+5. `robots.txt`, `sitemap.xml`, and `404.html` are emitted into `dist/`.
+6. Temporary `.ssr/` output is deleted. Production needs only the files inside `dist/`.
 
-The production site is written to:
+## Content
 
-```text
-out/
-```
+The content source of truth remains under `src/content/`:
 
-Preview the exact exported site:
+- `about/`, `work/`, `studies/`, `skills/`
+- `projects/`
+- `blog/`
 
-```bash
-make preview
-```
+Images and certification/gallery assets live under `public/`.
 
-## Docker
+## Architecture rules
 
-The Docker image builds the static export and serves it with nginx only:
-
-```bash
-make docker-build
-make docker-run
-```
-
-Then open `http://localhost:8080`.
-
-## Content editing
-
-Portfolio content is versioned with the source code under `src/content/`:
-
-```text
-src/content/
-├── about/
-├── blog/
-├── projects/
-├── studies/
-├── technical/
-└── work/
-```
-
-Project and blog detail pages use `generateStaticParams`, so every known slug is prerendered during `npm run build`.
-
-## SEO / performance model
-
-The site is designed so the origin does not need Node.js at request time:
-
-- HTML exists before a crawler requests a page.
-- Project and blog routes are prerendered.
-- `robots.txt` and `sitemap.xml` are statically generated.
-- OG metadata uses a static image rather than a runtime image-generation API.
-- Next Image optimization is disabled at runtime because the site is exported; image delivery can be handled by the CDN/static host.
-- No auth/bootstrap API calls run in the browser.
-
-## Governance and quality
-
-The repository uses a Sensio-derived single-codebase governance workflow. Root `AGENTS.md` is canonical.
-
-```bash
-make guard-fast
-make guard-full
-make guard-release
-python3 .agents/scripts/maintainability.py portfolio
-```
-
-The full guard enforces static-only architecture, Biome, TypeScript, static export, and a zero-vulnerability npm audit.
-
-## License
-
-See [LICENSE](LICENSE).
+See [`AGENTS.md`](./AGENTS.md) and [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). The important invariants are: static production only, no runtime content API, Vue without a meta-framework, SCSS as the UI styling layer, and build-time prerendering of dynamic project/blog routes.

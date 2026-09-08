@@ -1,45 +1,32 @@
 {
   "name": "faris-portfolio",
-  "version": "2.3.0",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "typecheck": "tsc --noEmit",
-    "audit": "npm audit --audit-level=low",
-    "biome-write": "biome format --write .",
-    "lint": "biome check src/",
-    "lint:fix": "biome check --write src/"
+    "dev": "vite --host 0.0.0.0 --port 3006",
+    "build": "node scripts/build.mjs",
+    "preview": "vite preview --host 0.0.0.0 --port 3006",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "biome check src scripts vite.config.ts",
+    "lint:fix": "biome check --write src scripts vite.config.ts",
+    "audit": "npm audit --audit-level=low"
   },
   "dependencies": {
-    "@mdx-js/loader": "^3.1.0",
-    "@next/mdx": "^16.3.4",
-    "@once-ui-system/core": "^1.8.4",
-    "classnames": "^2.5.1",
+    "@vue/server-renderer": "^3.5.0",
     "gray-matter": "^4.0.3",
-    "jspdf": "^4.2.1",
-    "next": "^16.3.4",
-    "next-mdx-remote": "^6.0.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-icons": "^5.7.0",
-    "sass": "^1.104.0",
-    "sharp": "^0.35.4",
-    "transliteration": "^2.3.5",
-    "zustand": "^5.0.15"
+    "markdown-it": "^14.1.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.12",
-    "@types/node": "^26.5.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "typescript": "5.9.3",
-    "tzdata": "^1.0.50"
-  },
-  "overrides": {
-    "dompurify": "3.4.15",
-    "fflate": "0.8.3",
-    "js-yaml": "3.15.1",
-    "picomatch": "4.0.4",
-    "yaml": "2.8.3"
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^26.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "sass": "^1.90.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vue-tsc": "^3.0.0"
   }
 }

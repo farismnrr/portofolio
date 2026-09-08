@@ -1,0 +1,7 @@
+.gallery-grid { columns: 2; column-gap: 18px; }
+.gallery-grid a { display: block; break-inside: avoid; margin-bottom: 18px; overflow: hidden; border-radius: var(--radius-m); border: 1px solid var(--line); }
+.gallery-grid img { width: 100%; height: auto; }
+
+@media (max-width: 520px) {
+  .gallery-grid { columns: 1; }
+}

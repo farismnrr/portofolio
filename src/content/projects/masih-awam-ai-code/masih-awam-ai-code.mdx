@@ -1,0 +1,53 @@
+---
+title: "Masih Awam AI Code: Agentic Coding Workspace"
+projectName: "Masih Awam AI Code"
+publishedAt: "2026-09-08"
+summary: "A self-hosted agentic coding workspace combining multi-provider AI, MCP orchestration, secure native execution, bounded subagents, and durable evidence of what agents changed."
+images:
+  - "/images/projects/featured/masih-awam-ai-code.png"
+repository: "https://github.com/farismnrr/agentic-ai-code"
+tag:
+  - "Agentic AI"
+  - "MCP"
+  - "Rust"
+  - "Nuxt"
+  - "PostgreSQL"
+  - "OAuth/OIDC"
+  - "OpenTelemetry"
+team:
+  - name: "Faris Munir Mahdi"
+    role: "Builder"
+    avatar: "/images/projects/avatar.jpg"
+    linkedIn: "https://www.linkedin.com/in/farismnrr"
+---
+
+## Overview
+
+**Masih Awam AI Code** is a self-hosted coding workspace built around agents that can reason, call tools, execute work, and leave durable evidence behind.
+
+Rather than treating AI as a chat box next to an editor, the system is designed around an execution loop: plan, retrieve context, call MCP tools, run bounded work, and surface activity and diffs that can be reviewed afterward.
+
+## What It Solves
+
+Agentic coding gets much more useful when it can act on a real workspace, but that also raises hard questions around trust, containment, orchestration, and evidence. This project focuses on those boundaries directly.
+
+## Key Capabilities
+
+- **Multi-provider AI chat** with authenticated workspaces and configurable model providers
+- **MCP orchestration** for connecting remote and local tools to agents
+- **Secure native execution** through a Rust relay with Linux/Bubblewrap containment
+- **Bounded subagents** and dependency-aware background work
+- **Reviewed writer worktrees** for safer mutation workflows
+- **Durable activity ledger** capturing agent actions and execution evidence
+- **Exact mutation diffs** so supported changes can be inspected after execution
+- **OpenTelemetry-compatible observability** across the agent/runtime path
+
+## Architecture
+
+The product combines a Nuxt/Vue application surface with a Rust execution layer, PostgreSQL-backed state, MCP integration, OAuth/OIDC boundaries, and sandboxed native task execution.
+
+The important architectural choice is separation between model reasoning and trusted execution. Agents can propose and orchestrate work, while execution happens through explicit constrained boundaries that produce reviewable evidence.
+
+## Stack
+
+Nuxt 4, Vue, Rust, MCP, PostgreSQL, Drizzle, OAuth/OIDC, Bubblewrap, and OpenTelemetry.

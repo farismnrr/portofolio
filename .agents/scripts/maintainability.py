@@ -11,8 +11,8 @@ BASELINE = ROOT / ".agents" / "maintainability" / "portfolio.json"
 SOURCE_ROOT = ROOT / "src"
 SOURCE_MAX_LINES = 400
 MAX_CODE_FILES_PER_DIRECTORY = 15
-CODE_SUFFIXES = {".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".scss", ".css"}
-IGNORED_PARTS = {"node_modules", ".next", "out", "coverage", "playwright-report", "test-results"}
+CODE_SUFFIXES = {".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".vue", ".scss", ".css"}
+IGNORED_PARTS = {"node_modules", "generated", "dist", ".ssr", "coverage", "playwright-report", "test-results"}
 BYPASS = re.compile(r"biome-ignore|@ts-ignore|@ts-nocheck|@ts-expect-error")
 
 

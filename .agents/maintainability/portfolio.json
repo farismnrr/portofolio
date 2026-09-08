@@ -4,13 +4,8 @@
     "source_max_lines": 400,
     "max_code_files_per_directory": 15
   },
-  "oversized_files": {
-    "src/app/(marketing)/about/page.tsx": 465,
-    "src/resources/content_DEPRECATED.tsx": 441
-  },
-  "dense_directories": {
-    "src/components": 16
-  },
+  "oversized_files": {},
+  "dense_directories": {},
   "inline_bypasses": {},
-  "scanned_files": 59
+  "scanned_files": 19
 }

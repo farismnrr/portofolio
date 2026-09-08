@@ -4,10 +4,16 @@ node_modules/
 .pnp.*
 .yarn/
 
-# Next.js / static export
+# Static build output / temporary prerender output
+dist/
+.ssr/
+build/
+
+# Legacy framework output kept ignored during migrations
 .next/
 out/
-build/
+
+# Generated source
 
 # Test and tool artifacts
 coverage/
@@ -16,7 +22,6 @@ test-results/
 .cache/
 .turbo/
 *.tsbuildinfo
-next-env.d.ts
 
 # Local environment / secrets
 .env
@@ -43,6 +48,7 @@ pnpm-debug.log*
 # Hosting/tool state
 .vercel/
 
-# Local scratch
+# Local scratch / visual checks
 .tmp/
 tmp/
+.tmp-ui-check/

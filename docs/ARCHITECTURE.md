@@ -1,124 +1,43 @@
-# Portfolio Architecture
-
-## Goal
-
-The portfolio is a **static-first website**. It has no authentication boundary and no application backend. All public content is generated at build time so the deployed runtime can be a plain static web server or CDN.
+# Architecture
 
 ## Runtime model
 
-```text
-Markdown / MDX + static resources
-              │
-              ▼
-       Next.js build time
-              │
-              ▼
-      prerendered ./out
-              │
-              ▼
-        CDN / nginx / S3
-              │
-              ▼
-            Browser
-```
-
-No database, API server, SSO service, login flow, refresh tokens, dashboard, migrations, or server-side request processing are required.
-
-## Application structure
+The portfolio is a static Vue application. Vite is the development server and bundler, but no Node/Vue server is required in production.
 
 ```text
-src/
-├── app/
-│   ├── (marketing)/          # public static pages
-│   ├── layout.tsx
-│   ├── robots.ts             # static robots.txt
-│   └── sitemap.ts            # static sitemap.xml
-├── components/               # reusable React UI
-├── content/                  # Markdown/MDX source of truth
-├── context/                  # browser-only UI state
-├── lib/                      # build-time/local utilities
-├── resources/                # site config/design/content config
-├── store/                    # browser UI state only
-├── types/
-└── utils/
+src/content + public assets
+          |
+          v
+scripts/content-plugin.ts
+          |
+          v
+virtual:content/* modules (memory only)
+          |
+          +--> Vite client build
+          |
+          +--> Vite temporary SSR build
+                    |
+                    v
+             @vue/server-renderer
+                    |
+                    v
+             dist/**/*.html
 ```
 
-## Rendering rules
+The SSR bundle is a build implementation detail only. `scripts/build.mjs` removes `.ssr/` after prerendering.
 
-`next.config.mjs` uses:
+## Routes
 
-```js
-output: "export"
-```
+Static root routes are `/`, `/about`, `/projects`, `/blog`, `/certifications`, and `/gallery`. Project and blog detail routes are enumerated from local content at build time and emitted as static `index.html` files. A static `404.html`, `robots.txt`, and `sitemap.xml` are also generated.
 
-This means `npm run build` must be able to resolve every page without a runtime server.
+## UI
 
-### Static pages
+Vue 3 is used directly with Vue Router. There is no Nuxt, React/Next, Tailwind, or third-party UI component system. Shared visual rules live in `src/styles/`; reusable site components live in `src/components/`. SCSS/CSS variables own the light/dark design tokens.
 
-Pages without dynamic path segments are prerendered directly.
+## Content
 
-### Dynamic content pages
+`src/content/` is the durable source of truth. Vite parses Markdown/MDX into in-memory `virtual:content/*` modules during dev/build; no generated content source file is written to disk. Portfolio pages must not fetch repository content at runtime.
 
-Blog and project detail routes provide `generateStaticParams()` from the repository's local content, so every known slug is generated during the build.
+## Hosting
 
-### Client components
-
-Interactive UI such as theme switching can still use client-side React. Client components do not make the page SSR-dependent as long as they do not require request-time server data.
-
-## Content source
-
-Content lives in Git under `src/content/` and is read during the build. This replaces the previous database/API-backed editing model.
-
-Changing portfolio content follows a simple flow:
-
-```text
-edit Markdown/MDX → commit → build → deploy static output
-```
-
-## SEO
-
-The static architecture supports SEO through:
-
-- prerendered HTML for every public page;
-- per-page metadata generated at build time;
-- static Open Graph fallback image;
-- generated `robots.txt`;
-- generated `sitemap.xml`;
-- crawlable project and blog detail URLs;
-- no login or auth gate around public content.
-
-## Images
-
-Next.js runtime image optimization is disabled because there is no Next.js server in production. The project still uses responsive image markup where applicable; production image transformation/compression can be handled at asset-generation time or by the hosting CDN.
-
-## Deployment
-
-### Static host
-
-Upload the contents of `out/` to any static platform.
-
-### Docker
-
-The root `Dockerfile` has two stages:
-
-1. Node builds the Next.js static export.
-2. nginx serves only the generated `out/` files.
-
-No application process runs beside nginx.
-
-## Explicitly removed architecture
-
-The following are no longer part of this repository's runtime model:
-
-- `/login` and OAuth callback routes;
-- authenticated dashboard routes;
-- Next.js `/api/*` routes;
-- Go portfolio backend;
-- multitenant SSO/user-management service;
-- PostgreSQL and migrations;
-- runtime backend configuration;
-- API proxy rewrites;
-- dynamic OG image endpoint;
-- auth state/bootstrap logic.
-
-Any future feature should remain static/client-only unless there is a strong reason to reintroduce a server runtime.
+Run `npm run build` and publish the contents of `dist/` to any static host or CDN. The provided Dockerfile copies `dist/` into nginx; it does not ship Node or Vue SSR infrastructure.

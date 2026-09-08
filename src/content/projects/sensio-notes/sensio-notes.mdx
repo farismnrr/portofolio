@@ -1,0 +1,52 @@
+---
+title: "Sensio Notes: Reliable Meeting Intelligence"
+projectName: "Sensio Notes"
+publishedAt: "2026-09-07"
+summary: "Cross-platform meeting intelligence built around durable recording, upload recovery, ordered multi-source audio, and structured AI-derived outcomes grounded in meeting evidence."
+images:
+  - "/images/projects/featured/sensio-notes.png"
+tag:
+  - "Meeting Intelligence"
+  - "React"
+  - "Capacitor"
+  - "NestJS"
+  - "PostgreSQL"
+  - "S3"
+  - "SSE"
+team:
+  - name: "Faris Munir Mahdi"
+    role: "Software Engineer"
+    avatar: "/images/projects/avatar.jpg"
+    linkedIn: "https://www.linkedin.com/in/farismnrr"
+---
+
+## Overview
+
+**Sensio Notes** is a cross-platform meeting intelligence product designed around a less glamorous but crucial problem: recordings and uploads need to survive real-world interruptions before the AI layer can be useful.
+
+It records across web and mobile, recovers interrupted capture/upload state, supports multiple ordered recording sources, and turns meetings into structured summaries, decisions, tasks, timelines, and evidence-grounded insights.
+
+## Reliability First
+
+Meeting software runs into unstable networks, background execution limits, long audio files, accidental interruptions, and multiple recording sources. Sensio Notes treats those as first-class product constraints rather than edge cases.
+
+## Key Capabilities
+
+- **Web/PWA recording** with IndexedDB checkpointing and interrupted-recording recovery
+- **Native background recording** through Capacitor
+- **Atomic browser uploads** and native multipart upload with retry/recovery semantics
+- **Multiple sequential recordings** per meeting with explicit source ordering
+- **Authenticated SSE progress** backed by authoritative backend snapshots
+- **PPP summaries** plus decisions, action items, discussion timelines, and citations
+- **Evidence-grounded insights** tied back to meeting content rather than detached AI output
+- **Native update integrity** with staged OTA rollout behavior
+
+## Architecture
+
+The product spans a React/Capacitor client and NestJS backend with PostgreSQL, object storage, and streaming progress. Recording state is made durable before upload, and upload state is designed to be recoverable instead of relying on one fragile request lifecycle.
+
+AI-derived outputs sit downstream of that durable media pipeline, which keeps the intelligence layer grounded in a reliable source of truth.
+
+## Stack
+
+React 19, Vite, Tailwind, Motion, Capacitor, NestJS, PostgreSQL, S3-compatible storage, SSE, and Playwright.

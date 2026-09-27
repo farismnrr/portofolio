@@ -69,11 +69,13 @@
   gap: 10px;
 }
 
-.site-header__contact {
+.site-header__contact.v-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
   min-height: 34px;
+  height: 34px;
   padding: 0 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -87,9 +89,10 @@
   background: var(--line);
 }
 
-.site-header__theme {
+.site-header__theme.v-btn {
   display: grid;
   place-items: center;
+  min-width: 34px;
   width: 34px;
   height: 34px;
   padding: 0;
@@ -151,3 +154,5 @@
 @media print {
   .site-header { display: none !important; }
 }
+
+.site-header__contact.v-btn { letter-spacing: inherit; text-transform: none; font-weight: inherit; }

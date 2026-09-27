@@ -1,7 +1,8 @@
 .project-list { display: flex; flex-direction: column; gap: 72px; }
 .project-card__media { display: block; overflow: hidden; border-radius: var(--radius-m); background: #101314; border: 1px solid var(--line); }
-.project-card__media img { width: 100%; aspect-ratio: 16/9; object-fit: cover; transition: transform .35s ease; }
-.project-card__media:hover img { transform: scale(1.008); }
+.project-card__media .v-img { width: 100%; aspect-ratio: 16/9; }
+.project-card__media .v-img__img { transition: transform .35s ease; }
+.project-card__media:hover .v-img__img { transform: scale(1.008); }
 .project-card__body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 42px; padding: 22px 12px 0; }
 .project-card h2 { margin: 0; font-size: clamp(25px, 3.1vw, 34px); line-height: 1.02; letter-spacing: -.045em; }
 .project-card__context { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }

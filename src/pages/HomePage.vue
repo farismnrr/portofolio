@@ -55,8 +55,10 @@ const locationLabel = "Jakarta, Indonesia";
         <p>{{ about.description }}</p>
 
         <div class="home-hero__actions">
-          <a class="button button--primary" :href="`mailto:${about.email}`">Contact me <AppIcon name="arrow" :size="15" /></a>
-          <RouterLink class="button" to="/projects">View projects</RouterLink>
+          <v-btn class="button button--primary" :href="`mailto:${about.email}`" variant="plain" density="compact">
+            Contact me <AppIcon name="arrow" :size="15" />
+          </v-btn>
+          <v-btn class="button" to="/projects" variant="plain" density="compact">View projects</v-btn>
         </div>
 
         <div class="home-hero__meta">
@@ -66,7 +68,7 @@ const locationLabel = "Jakarta, Indonesia";
       </div>
 
       <div class="home-portrait" aria-label="Portrait">
-        <img :src="about.avatar" :alt="about.name" />
+        <v-img class="home-portrait__image" :src="about.avatar" :alt="about.name" cover />
         <blockquote class="home-portrait__quote">
           <span aria-hidden="true">“</span>
           <p>Technology is more meaningful when it solves real problems.</p>
@@ -86,16 +88,19 @@ const locationLabel = "Jakarta, Indonesia";
         <div class="home-focus__social">
           <span class="home-focus__label">Let's connect</span>
           <div>
-            <a
+            <v-btn
               v-for="item in essentialSocial"
               :key="item.name"
               :href="item.link"
               :aria-label="item.name"
               :target="item.link.startsWith('http') ? '_blank' : undefined"
               rel="noreferrer"
+              variant="plain"
+              density="compact"
+              icon
             >
               <AppIcon :name="item.icon" :size="18" />
-            </a>
+            </v-btn>
           </div>
         </div>
       </aside>
@@ -160,7 +165,9 @@ const locationLabel = "Jakarta, Indonesia";
         <div class="eyebrow">About me</div>
         <h2>More than just code.</h2>
         <p>I care about building software that is maintainable, reliable, and useful in the real world. My work sits across backend engineering, intelligent systems, IoT, and the infrastructure that keeps them running.</p>
-        <RouterLink class="button" to="/about">More about me <AppIcon name="arrow" :size="15" /></RouterLink>
+        <v-btn class="button" to="/about" variant="plain" density="compact">
+          More about me <AppIcon name="arrow" :size="15" />
+        </v-btn>
       </div>
 
       <div class="home-values">

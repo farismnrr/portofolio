@@ -2,7 +2,7 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 IMAGE := ghcr.io/farismnrr/portofolio/portfolio-app:latest
-CONTAINER := faris-portfolio
+CONTAINER := portfolio-app
 
 .PHONY: help install lint typecheck audit guard-fast guard-full guard-release build clean image-pull recreate stop logs
 

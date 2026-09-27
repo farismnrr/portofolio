@@ -46,7 +46,7 @@ jobs:
 
       - name: Create browser smoke test
         run: |
-          cat > visual-smoke.spec.js <<'EOF'
+          cat > visual-smoke.spec.cjs <<'EOF'
           const { test, expect } = require("@playwright/test");
 
           async function collectHydrationErrors(page) {
@@ -108,7 +108,7 @@ jobs:
             await page.goto("http://127.0.0.1:3006/about", { waitUntil: "networkidle" });
             await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
             await expect(page.locator(".v-application")).toHaveClass(/v-theme--dark/);
-            await expect(page.locator("body")).not.toHaveJSProperty("scrollWidth", 0);
+            expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
             await page.screenshot({ path: "visual-artifacts/about-dark-mobile.png", fullPage: true });
 
             await page.goto("http://127.0.0.1:3006/projects", { waitUntil: "networkidle" });
@@ -122,7 +122,7 @@ jobs:
       - name: Run browser smoke test
         run: |
           mkdir -p visual-artifacts
-          npx --yes @playwright/test@1.55.0 test visual-smoke.spec.js --workers=1
+          npx --yes @playwright/test@1.55.0 test visual-smoke.spec.cjs --workers=1
 
       - name: Upload visual artifacts
         if: always()

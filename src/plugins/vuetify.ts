@@ -2,7 +2,9 @@ import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import { VApp, VBtn, VCard, VChip, VCol, VRow } from "vuetify/components";
 
-export function createPortfolioVuetify() {
+export type ThemeMode = "light" | "dark";
+
+export function createPortfolioVuetify(defaultTheme: ThemeMode = "light") {
   return createVuetify({
     ssr: true,
     components: {
@@ -14,9 +16,9 @@ export function createPortfolioVuetify() {
       VRow,
     },
     theme: {
-      defaultTheme: "portfolioLight",
+      defaultTheme,
       themes: {
-        portfolioLight: {
+        light: {
           dark: false,
           colors: {
             background: "#ffffff",
@@ -29,7 +31,7 @@ export function createPortfolioVuetify() {
             "on-primary": "#ffffff",
           },
         },
-        portfolioDark: {
+        dark: {
           dark: true,
           colors: {
             background: "#090b0c",

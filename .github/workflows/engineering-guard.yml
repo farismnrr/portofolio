@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - fix/restore-new-ui
   pull_request:
 
 permissions:
@@ -44,7 +43,7 @@ jobs:
   publish-image:
     name: Publish container image
     needs: guard
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/restore-new-ui' || github.event_name == 'workflow_dispatch')
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

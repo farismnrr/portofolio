@@ -9,17 +9,12 @@
   --line-strong: color-mix(in srgb, var(--text) 18%, transparent);
   --brand: rgb(var(--v-theme-secondary));
   --brand-soft: color-mix(in srgb, var(--brand) 13%, transparent);
-  --accent: rgb(var(--v-theme-accent));
-  --shadow: 0 8px 28px color-mix(in srgb, #000 10%, transparent);
   --radius-s: 10px;
   --radius-m: 18px;
-  --radius-l: 26px;
   --content: 960px;
   --wide: 1180px;
-  --header-h: 70px;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --shadow: 0 8px 28px color-mix(in srgb, #000 28%, transparent);
 }

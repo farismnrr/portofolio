@@ -1,12 +1,16 @@
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import * as components from "vuetify/components";
-import * as directives from "vuetify/directives";
+import { VApp, VBtn, VCard, VChip } from "vuetify/components";
 
 export function createPortfolioVuetify() {
   return createVuetify({
-    components,
-    directives,
+    ssr: true,
+    components: {
+      VApp,
+      VBtn,
+      VCard,
+      VChip,
+    },
     theme: {
       defaultTheme: "portfolioLight",
       themes: {

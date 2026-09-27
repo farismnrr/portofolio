@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3006",
     "build": "node scripts/build.mjs",
-    "preview": "vite preview --host 0.0.0.0 --port 3006",
+    "serve": "node scripts/serve-spa.mjs",
+    "preview": "npm run build && npm run serve",
     "typecheck": "vue-tsc --noEmit",
     "lint": "biome check src scripts vite.config.ts",
     "lint:fix": "biome check --write src scripts vite.config.ts",

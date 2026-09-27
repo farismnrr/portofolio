@@ -24,9 +24,9 @@ Equivalent commands:
 
 ```bash
 docker pull ghcr.io/farismnrr/portofolio/portfolio-app:latest
-docker rm -f faris-portfolio 2>/dev/null || true
+docker rm -f portfolio-app 2>/dev/null || true
 docker run -d \
-  --name faris-portfolio \
+  --name portfolio-app \
   --restart unless-stopped \
   -p 3001:3001 \
   ghcr.io/farismnrr/portofolio/portfolio-app:latest

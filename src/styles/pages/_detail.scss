@@ -4,8 +4,7 @@
 .detail-hero time { display: block; color: var(--muted); font-size: 12px; }
 .detail-hero h1 { margin: 13px 0; font-size: clamp(40px, 6vw, 68px); line-height: 1; letter-spacing: -.055em; }
 .detail-hero p { margin: 0 auto; color: var(--muted); max-width: 650px; line-height: 1.6; }
-.detail-team { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-.detail-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+.detail-team { font-size: 13px; color: var(--muted); }
 .detail-cover { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-m); border: 1px solid var(--line); }
 .prose { max-width: 720px; margin: 54px auto 80px; font-size: 16px; line-height: 1.75; }
 .prose h2, .prose h3, .prose h4 { scroll-margin-top: 90px; line-height: 1.15; letter-spacing: -.035em; }

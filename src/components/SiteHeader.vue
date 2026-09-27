@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import about from "virtual:content/about";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useTheme } from "vuetify";
 import type { ThemeMode } from "../plugins/vuetify";
@@ -8,32 +8,22 @@ import AppIcon from "./AppIcon.vue";
 
 const route = useRoute();
 const vuetifyTheme = useTheme();
-const time = ref("");
 const theme = ref<ThemeMode>("light");
-let timer: number | undefined;
 
 const nav = [
-  { to: "/about", label: "About", icon: "person" },
-  { to: "/projects", label: "Projects", icon: "grid" },
-  { to: "/blog", label: "Blog", icon: "book" },
-  { to: "/certifications", label: "Certifications", icon: "document" },
-  { to: "/gallery", label: "Gallery", icon: "gallery" },
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/projects", label: "Projects" },
+  { to: "/blog", label: "Blog" },
+  { to: "/certifications", label: "Certifications" },
+  { to: "/gallery", label: "Gallery" },
 ];
 
 const current = computed(() => route.path);
 
 function isActive(path: string) {
+  if (path === "/") return current.value === "/";
   return current.value === path || current.value.startsWith(`${path}/`);
-}
-
-function tick() {
-  time.value = new Intl.DateTimeFormat("en-GB", {
-    timeZone: about.location,
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(new Date());
 }
 
 function applyTheme(next: ThemeMode) {
@@ -52,65 +42,53 @@ function toggleTheme() {
 
 onMounted(() => {
   theme.value = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-  tick();
-  timer = window.setInterval(tick, 1000);
 });
-
-onUnmounted(() => timer && clearInterval(timer));
 </script>
 
 <template>
   <header class="site-header">
-    <div class="site-header__edge">{{ about.location }}</div>
+    <v-container class="site-header__inner d-flex align-center px-4 px-md-6" fluid>
+      <RouterLink to="/" class="site-brand" aria-label="Faris Munir Mahdi home">
+        farismnrr<span>.</span>
+      </RouterLink>
 
-    <v-sheet
-      tag="nav"
-      class="nav-pill d-flex align-center ga-1 pa-1"
-      aria-label="Primary navigation"
-      rounded="pill"
-      border
-      elevation="4"
-    >
-      <v-btn
-        to="/"
-        :variant="current === '/' ? 'tonal' : 'text'"
-        rounded="xl"
-        size="small"
-        icon
-        aria-label="Home"
-      >
-        <AppIcon name="home" :size="16" />
-      </v-btn>
+      <nav class="site-nav d-none d-lg-flex align-center justify-center ga-1" aria-label="Primary navigation">
+        <v-btn
+          v-for="item in nav"
+          :key="item.to"
+          :to="item.to"
+          variant="text"
+          size="small"
+          rounded="lg"
+          class="site-nav__item text-none"
+          :class="{ 'site-nav__item--active': isActive(item.to) }"
+        >
+          {{ item.label }}
+        </v-btn>
+      </nav>
 
-      <v-divider vertical class="mx-1" />
+      <div class="site-header__actions d-flex align-center justify-end ga-2">
+        <v-btn
+          :href="`mailto:${about.email}`"
+          variant="outlined"
+          rounded="xl"
+          size="small"
+          class="text-none d-none d-sm-inline-flex"
+        >
+          Contact
+        </v-btn>
 
-      <v-btn
-        v-for="item in nav"
-        :key="item.to"
-        :to="item.to"
-        :variant="isActive(item.to) ? 'tonal' : 'text'"
-        rounded="xl"
-        size="small"
-        class="text-none px-2 px-md-3"
-      >
-        <AppIcon :name="item.icon" :size="15" />
-        <span class="d-none d-md-inline">{{ item.label }}</span>
-      </v-btn>
-
-      <v-divider vertical class="mx-1" />
-
-      <v-btn
-        variant="text"
-        rounded="xl"
-        size="small"
-        icon
-        :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
-        @click="toggleTheme"
-      >
-        <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="16" />
-      </v-btn>
-    </v-sheet>
-
-    <div class="site-header__edge site-header__edge--right">{{ time }}</div>
+        <v-btn
+          variant="outlined"
+          rounded="circle"
+          size="small"
+          icon
+          :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
+          @click="toggleTheme"
+        >
+          <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="17" />
+        </v-btn>
+      </div>
+    </v-container>
   </header>
 </template>

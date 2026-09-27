@@ -184,7 +184,7 @@ const locationLabel = "Jakarta, Indonesia";
               </v-chip>
             </div>
           </div>
-        </article>
+        </v-card>
       </div>
     </section>
 

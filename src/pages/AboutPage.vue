@@ -44,7 +44,7 @@ function printPage() {
           <h1>{{ about.name }}</h1>
           <div class="about-role">{{ about.role }}</div>
 
-          <div class="d-flex flex-wrap ga-2 mt-5 mb-7">
+          <div class="about-actions d-flex flex-wrap ga-2 mt-5 mb-7">
             <v-btn
               v-for="item in about.social"
               :key="item.name"

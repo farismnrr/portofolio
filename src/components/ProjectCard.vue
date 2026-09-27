@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import type { Project } from "../content/types";
 import AppIcon from "./AppIcon.vue";
 
 defineProps<{ project: Project; priority?: boolean }>();
+
+const isMobile = ref(false);
+
+onMounted(() => {
+  isMobile.value = window.matchMedia("(max-width: 800px)").matches;
+});
 </script>
 <template>
   <v-card tag="article" class="project-card" variant="flat" color="transparent">
@@ -11,7 +18,7 @@ defineProps<{ project: Project; priority?: boolean }>();
         class="project-card__image"
         :src="project.images[0]"
         :alt="project.title"
-        eager
+        :eager="priority || isMobile"
         aspect-ratio="16/9"
         cover
       />

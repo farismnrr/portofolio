@@ -10,4 +10,7 @@ export default defineConfig({
     assetsDir: "assets",
     sourcemap: false,
   },
+  ssr: {
+    noExternal: ["vuetify"],
+  },
 });

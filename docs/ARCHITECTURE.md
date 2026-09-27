@@ -56,7 +56,7 @@ Custom SCSS under `src/styles/` remains responsible for page composition, respon
 
 GitHub Actions is the image build authority.
 
-- Image: `ghcr.io/farismnrr/portofolio:latest`
+- Image: `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 - Production container port: `3001`
 - Local deployment: pull the CI image and recreate the container
 - Local Docker builds are not part of the normal deployment flow

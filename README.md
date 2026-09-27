@@ -8,7 +8,7 @@ GitHub Actions validates the repository, builds the production container image, 
 
 ## Production runtime
 
-- CI image: `ghcr.io/farismnrr/portofolio:latest`
+- CI image: `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 - Container port: `3001`
 - Runtime: dependency-free Node static SPA server
 - SPA history fallback: unknown client-side routes fall back to `dist/index.html`
@@ -23,13 +23,13 @@ make recreate
 Equivalent commands:
 
 ```bash
-docker pull ghcr.io/farismnrr/portofolio:latest
+docker pull ghcr.io/farismnrr/portofolio/portfolio-app:latest
 docker rm -f faris-portfolio 2>/dev/null || true
 docker run -d \
   --name faris-portfolio \
   --restart unless-stopped \
   -p 3001:3001 \
-  ghcr.io/farismnrr/portofolio:latest
+  ghcr.io/farismnrr/portofolio/portfolio-app:latest
 ```
 
 The portfolio is then available at `http://localhost:3001`.

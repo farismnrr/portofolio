@@ -75,7 +75,13 @@ const locationLabel = "Jakarta, Indonesia";
       </div>
 
       <div class="home-portrait" aria-label="Portrait">
-        <img :src="about.avatar" :alt="about.name" />
+        <v-img
+          class="home-portrait__image"
+          :src="about.avatar"
+          :alt="about.name"
+          eager
+          cover
+        />
         <blockquote class="home-portrait__quote">
           <span aria-hidden="true">“</span>
           <p>Technology is more meaningful when it solves real problems.</p>

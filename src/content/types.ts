@@ -57,7 +57,6 @@ export interface Project {
   projectName: string;
   publishedAt: string;
   summary: string;
-  order: number;
   images: string[];
   link: string;
   repository: string;

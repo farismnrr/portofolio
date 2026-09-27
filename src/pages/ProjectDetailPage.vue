@@ -15,73 +15,13 @@ const formatted = computed(() =>
     : "",
 );
 </script>
-
 <template>
   <section v-if="project" class="page detail-page">
-    <div class="detail-hero">
-      <v-btn to="/projects" variant="text" size="small" rounded="xl" class="text-none mb-1">
-        Projects
-      </v-btn>
-      <time>{{ formatted }}</time>
-      <h1>{{ project.title }}</h1>
-      <p>{{ project.summary }}</p>
-    </div>
-
-    <div v-if="project.team?.length" class="d-flex justify-center align-center ga-3 mb-5 detail-team">
-      <div class="avatar-stack">
-        <v-avatar
-          v-for="member in project.team"
-          :key="member.name"
-          :image="member.avatar"
-          :aria-label="member.name"
-          size="30"
-        />
-      </div>
-      <span>{{ project.team.map((m: ProjectMember) => m.name).join(", ") }}</span>
-    </div>
-
-    <div class="d-flex justify-center flex-wrap ga-2 mb-8">
-      <v-btn
-        v-if="project.link"
-        :href="project.link"
-        target="_blank"
-        rel="noreferrer"
-        color="primary"
-        variant="flat"
-        rounded="xl"
-      >
-        Visit live project
-        <AppIcon name="external" :size="16" />
-      </v-btn>
-
-      <v-btn
-        v-if="project.repository"
-        :href="project.repository"
-        target="_blank"
-        rel="noreferrer"
-        variant="outlined"
-        rounded="xl"
-      >
-        View code
-        <AppIcon name="github" :size="16" />
-      </v-btn>
-    </div>
-
-    <v-img
-      v-if="project.images?.[0]"
-      :src="project.images[0]"
-      :alt="project.title"
-      aspect-ratio="16/9"
-      cover
-      rounded="lg"
-      class="border-sm"
-    />
-
+    <div class="detail-hero"><RouterLink to="/projects" class="back-link">Projects</RouterLink><time>{{ formatted }}</time><h1>{{ project.title }}</h1><p>{{ project.summary }}</p></div>
+    <div class="detail-team" v-if="project.team?.length"><div class="avatar-stack"><img v-for="member in project.team" :key="member.name" :src="member.avatar" :alt="member.name" /></div><span>{{ project.team.map((m: ProjectMember) => m.name).join(', ') }}</span></div>
+    <div class="detail-actions"><a v-if="project.link" class="button button--primary" :href="project.link" target="_blank" rel="noreferrer">Visit live project <AppIcon name="external" :size="16" /></a><a v-if="project.repository" class="button" :href="project.repository" target="_blank" rel="noreferrer">View code <AppIcon name="github" :size="16" /></a></div>
+    <img v-if="project.images?.[0]" class="detail-cover" :src="project.images[0]" :alt="project.title" />
     <article class="prose" v-html="project.html" />
   </section>
-
-  <section v-else class="page empty-state d-flex flex-column align-center justify-center ga-3">
-    <h1>Project not found</h1>
-    <v-btn to="/projects" variant="outlined" rounded="xl">Back to projects</v-btn>
-  </section>
+  <section v-else class="page empty-state"><h1>Project not found</h1><RouterLink to="/projects">Back to projects</RouterLink></section>
 </template>

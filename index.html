@@ -8,25 +8,14 @@
     <!--app-head-->
     <script>
       (() => {
-        const saved = localStorage.getItem("theme");
-        const theme =
-          saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const saved = localStorage.getItem('theme');
+        const theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.dataset.theme = theme;
-        document.documentElement.classList.add(`v-theme--${theme}`);
       })();
     </script>
   </head>
   <body>
     <div id="app"><!--app-html--></div>
-    <script>
-      (() => {
-        const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-        const app = document.querySelector("#app .v-application");
-        if (!app) return;
-        app.classList.remove("v-theme--light", "v-theme--dark");
-        app.classList.add(`v-theme--${theme}`);
-      })();
-    </script>
     <script type="module" src="/src/entry-client.ts"></script>
   </body>
 </html>

@@ -4,14 +4,10 @@ import SiteHeader from "./components/SiteHeader.vue";
 </script>
 
 <template>
-  <v-app>
+  <div class="site-shell">
     <div class="ambient" aria-hidden="true" />
     <SiteHeader />
-    <v-main class="site-main">
-      <v-container fluid class="pa-0">
-        <RouterView />
-      </v-container>
-    </v-main>
+    <main class="site-main"><RouterView /></main>
     <SiteFooter />
-  </v-app>
+  </div>
 </template>

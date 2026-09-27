@@ -23,23 +23,28 @@ function printPage() {
       <a v-for="section in sections" :key="section.id" :href="`#${section.id}`"><span />{{ section.label }}</a>
     </aside>
 
-    <div class="about-grid">
-      <aside class="profile-rail">
-        <img class="profile-avatar" :src="about.avatar" :alt="about.name" />
-        <div class="profile-location"><AppIcon name="globe" :size="17" /> {{ about.location }}</div>
-        <div class="tag-row">
-          <v-chip v-for="language in about.languages" :key="language" size="small" variant="outlined">
-            {{ language }}
-          </v-chip>
-        </div>
-      </aside>
+    <v-row align="start">
+      <v-col cols="12" md="3">
+        <aside class="profile-rail d-flex flex-row flex-md-column align-start align-md-center flex-wrap ga-4">
+          <img class="profile-avatar" :src="about.avatar" :alt="about.name" />
+          <div class="profile-location d-flex align-center ga-2">
+            <AppIcon name="globe" :size="17" />
+            {{ about.location }}
+          </div>
+          <div class="d-flex flex-wrap ga-2">
+            <v-chip v-for="language in about.languages" :key="language" size="small" variant="outlined">
+              {{ language }}
+            </v-chip>
+          </div>
+        </aside>
+      </v-col>
 
-      <div class="about-main">
+      <v-col cols="12" md="9" class="about-main">
         <section id="introduction" class="about-intro">
           <h1>{{ about.name }}</h1>
           <div class="about-role">{{ about.role }}</div>
 
-          <div class="social-actions">
+          <div class="d-flex flex-wrap ga-2 mt-5 mb-7">
             <v-btn
               v-for="item in about.social"
               :key="item.name"
@@ -65,7 +70,7 @@ function printPage() {
         <section id="work-experience" class="resume-section">
           <h2>Work Experience</h2>
           <article v-for="item in work" :key="`${item.company}-${item.role}`" class="resume-item">
-            <div class="resume-item__head">
+            <div class="d-flex flex-column flex-md-row justify-space-between align-start ga-1">
               <div>
                 <h3>{{ item.company }}</h3>
                 <span class="accent-text">{{ item.role }}</span>
@@ -79,7 +84,7 @@ function printPage() {
         <section id="studies" class="resume-section">
           <h2>Studies</h2>
           <article v-for="item in studies" :key="item.institution" class="resume-item resume-item--compact">
-            <div class="resume-item__head">
+            <div class="d-flex flex-column flex-md-row justify-space-between align-start ga-1">
               <div>
                 <h3>{{ item.institution }}</h3>
                 <span class="accent-text">{{ item.degree }}</span>
@@ -95,14 +100,14 @@ function printPage() {
           <article v-for="item in skills" :key="item.title" class="resume-item resume-item--compact">
             <h3>{{ item.title }}</h3>
             <div class="rich-copy" v-html="item.descriptionHtml" />
-            <div class="tag-row">
+            <div class="d-flex flex-wrap ga-2">
               <v-chip v-for="tag in item.tags" :key="tag.name" size="small" variant="outlined">
                 {{ tag.name }}
               </v-chip>
             </div>
           </article>
         </section>
-      </div>
-    </div>
+      </v-col>
+    </v-row>
   </section>
 </template>

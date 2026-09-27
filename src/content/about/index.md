@@ -3,7 +3,7 @@ firstName: Faris
 lastName: Munir Mahdi
 name: Faris Munir Mahdi
 role: Software Engineer
-avatar: /images/projects/avatar.jpg
+avatar: /images/profile/faris-munir.png
 email: farismunir@farismnrr.com
 location: Asia/Jakarta
 languages:

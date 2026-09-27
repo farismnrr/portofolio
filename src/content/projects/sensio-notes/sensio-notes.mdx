@@ -1,52 +1,78 @@
 ---
-title: "Sensio Notes: Reliable Meeting Intelligence"
+title: "Sensio Notes: Meeting Intelligence Platform"
 projectName: "Sensio Notes"
 publishedAt: "2026-09-07"
-summary: "Cross-platform meeting intelligence built around durable recording, upload recovery, ordered multi-source audio, and structured AI-derived outcomes grounded in meeting evidence."
+order: 1
+organization: "PT Perkasa Pilar Utama"
+role: "Software Engineer"
+summary: "End-to-end meeting intelligence across recording, asynchronous processing, RAG retrieval, structured generation, storage, and observability—using LangGraph/LangChain, Voyage embeddings, pgvector, graph-based context, PostgreSQL, S3, and SSE."
 images:
   - "/images/projects/featured/sensio-notes.png"
 tag:
   - "Meeting Intelligence"
-  - "React"
-  - "Capacitor"
+  - "RAG"
+  - "LangGraph"
+  - "Voyage"
+  - "pgvector"
   - "NestJS"
-  - "PostgreSQL"
-  - "S3"
-  - "SSE"
+  - "React"
 team:
   - name: "Faris Munir Mahdi"
     role: "Software Engineer"
-    avatar: "/images/projects/avatar.jpg"
+    avatar: "/images/profile/faris-munir.png"
     linkedIn: "https://www.linkedin.com/in/farismnrr"
 ---
 
 ## Overview
 
-**Sensio Notes** is a cross-platform meeting intelligence product designed around a less glamorous but crucial problem: recordings and uploads need to survive real-world interruptions before the AI layer can be useful.
+**Sensio Notes** is a cross-platform meeting intelligence platform I worked on end to end across the frontend, backend, AI processing, storage, and infrastructure.
 
-It records across web and mobile, recovers interrupted capture/upload state, supports multiple ordered recording sources, and turns meetings into structured summaries, decisions, tasks, timelines, and evidence-grounded insights.
+The product is built around two requirements that have to work together: the recording and upload path must remain reliable under real-world interruptions, and the AI layer must produce useful meeting knowledge that stays grounded in the source evidence.
 
-## Reliability First
+## AI and Retrieval
 
-Meeting software runs into unstable networks, background execution limits, long audio files, accidental interruptions, and multiple recording sources. Sensio Notes treats those as first-class product constraints rather than edge cases.
+The meeting intelligence pipeline goes beyond one-shot summarization. Finished transcripts are processed through a structured retrieval and generation flow that combines:
 
-## Key Capabilities
+- **LangChain and LangGraph** for stateful AI workflows
+- **Voyage embeddings** stored alongside transcript chunks
+- **pgvector retrieval** over PostgreSQL-backed meeting knowledge
+- **Graph-based context** for additional relationship and provenance signals
+- **Prompt engineering and grounding rules** that keep generated outputs tied to meeting evidence
+- **Structured generation** for summaries, decisions, action items, insights, and searchable meeting knowledge
 
-- **Web/PWA recording** with IndexedDB checkpointing and interrupted-recording recovery
-- **Native background recording** through Capacitor
-- **Atomic browser uploads** and native multipart upload with retry/recovery semantics
-- **Multiple sequential recordings** per meeting with explicit source ordering
-- **Authenticated SSE progress** backed by authoritative backend snapshots
-- **PPP summaries** plus decisions, action items, discussion timelines, and citations
-- **Evidence-grounded insights** tied back to meeting content rather than detached AI output
-- **Native update integrity** with staged OTA rollout behavior
+The backend also contains evaluation paths for summary quality and output behavior, so AI work is treated as an engineering system rather than just a prompt attached to a transcript.
 
-## Architecture
+## Media and Processing Reliability
 
-The product spans a React/Capacitor client and NestJS backend with PostgreSQL, object storage, and streaming progress. Recording state is made durable before upload, and upload state is designed to be recoverable instead of relying on one fragile request lifecycle.
+Before retrieval can be useful, the underlying meeting data needs to survive real usage. Sensio Notes includes:
 
-AI-derived outputs sit downstream of that durable media pipeline, which keeps the intelligence layer grounded in a reliable source of truth.
+- durable web/PWA recording state and interrupted-recording recovery
+- native background recording through Capacitor
+- atomic browser uploads and recoverable S3 multipart uploads
+- multiple ordered recording sources under one meeting
+- asynchronous transcription and processing jobs
+- authoritative progress snapshots delivered through authenticated SSE
+- retry and reconciliation paths for interrupted media processing
+
+PostgreSQL remains the durable authority for meeting and processing state, while object storage owns the media artifacts.
+
+## Product Outputs
+
+The platform turns meetings into structured, evidence-aware outputs including:
+
+- searchable meeting knowledge
+- summaries and key discussion points
+- decisions and action items
+- discussion timelines
+- citations and evidence-linked insights
+- speaker-resolution and transcript-cleanup workflows
+
+Structured decisions and action items remain first-class data instead of being flattened into presentation-only text.
+
+## Platform and Security
+
+The product also includes the operational pieces required to ship the system as a real application: authentication and session security, transactional email, asynchronous workers, deployment configuration, OpenTelemetry-compatible tracing, and native OTA integrity controls.
 
 ## Stack
 
-React 19, Vite, Tailwind, Motion, Capacitor, NestJS, PostgreSQL, S3-compatible storage, SSE, and Playwright.
+React 19, Vite, Capacitor, NestJS 11, TypeScript, LangChain, LangGraph, Voyage embeddings, PostgreSQL + pgvector, Drizzle ORM, Redis/BullMQ, S3-compatible storage, SSE, OpenTelemetry, and Playwright.

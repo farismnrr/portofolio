@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DevAgentation from "./components/DevAgentation.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import SiteHeader from "./components/SiteHeader.vue";
 </script>
@@ -9,5 +10,6 @@ import SiteHeader from "./components/SiteHeader.vue";
     <SiteHeader />
     <main class="site-main"><RouterView /></main>
     <SiteFooter />
+    <DevAgentation />
   </div>
 </template>

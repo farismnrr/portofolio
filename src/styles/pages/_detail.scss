@@ -3,6 +3,7 @@
 .back-link { display: inline-block; color: var(--brand); font-weight: 600; font-size: 13px; margin-bottom: 8px; }
 .detail-hero time { display: block; color: var(--muted); font-size: 12px; }
 .detail-hero h1 { margin: 13px 0; font-size: clamp(40px, 6vw, 68px); line-height: 1; letter-spacing: -.055em; }
+.detail-project-context { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin: -2px 0 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .detail-hero p { margin: 0 auto; color: var(--muted); max-width: 650px; line-height: 1.6; }
 .detail-team { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 .detail-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }

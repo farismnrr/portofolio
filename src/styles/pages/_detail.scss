@@ -6,8 +6,29 @@
 .detail-project-context { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin: -2px 0 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .detail-hero p { margin: 0 auto; color: var(--muted); max-width: 650px; line-height: 1.6; }
 .detail-team { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+.detail-team__avatars {
+  display: flex;
+  align-items: center;
+}
+
+.detail-team__avatars .v-avatar {
+  margin-left: -8px;
+  border: 2px solid var(--bg);
+}
+
+.detail-team__avatars .v-avatar:first-child { margin-left: 0; }
+
 .detail-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
-.detail-cover { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-m); border: 1px solid var(--line); }
+
+.detail-cover.v-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--line);
+}
+
+.detail-cover.v-img .v-img__img { object-fit: cover; }
 .prose { max-width: 720px; margin: 54px auto 80px; font-size: 16px; line-height: 1.75; }
 .prose h2, .prose h3, .prose h4 { scroll-margin-top: 90px; line-height: 1.15; letter-spacing: -.035em; }
 .prose h2 { font-size: 32px; margin: 48px 0 16px; }

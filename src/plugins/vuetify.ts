@@ -1,6 +1,6 @@
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import { VApp, VBtn, VCard, VChip } from "vuetify/components";
+import { VApp, VBtn, VCard, VChip, VCol, VRow } from "vuetify/components";
 
 export function createPortfolioVuetify() {
   return createVuetify({
@@ -10,6 +10,8 @@ export function createPortfolioVuetify() {
       VBtn,
       VCard,
       VChip,
+      VCol,
+      VRow,
     },
     theme: {
       defaultTheme: "portfolioLight",

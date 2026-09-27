@@ -3,15 +3,11 @@
   align-items: center;
 }
 
-.avatar-stack img {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
+.avatar-stack .v-avatar {
   border: 2px solid var(--bg);
   margin-left: -8px;
 }
 
-.avatar-stack img:first-child {
+.avatar-stack .v-avatar:first-child {
   margin-left: 0;
 }

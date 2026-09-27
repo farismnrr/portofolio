@@ -19,7 +19,9 @@ const formatted = computed(() =>
 <template>
   <section v-if="project" class="page detail-page">
     <div class="detail-hero">
-      <RouterLink to="/projects" class="back-link">Projects</RouterLink>
+      <v-btn to="/projects" variant="text" size="small" rounded="xl" class="text-none mb-1">
+        Projects
+      </v-btn>
       <time>{{ formatted }}</time>
       <h1>{{ project.title }}</h1>
       <p>{{ project.summary }}</p>
@@ -27,7 +29,13 @@ const formatted = computed(() =>
 
     <div v-if="project.team?.length" class="d-flex justify-center align-center ga-3 mb-5 detail-team">
       <div class="avatar-stack">
-        <img v-for="member in project.team" :key="member.name" :src="member.avatar" :alt="member.name" />
+        <v-avatar
+          v-for="member in project.team"
+          :key="member.name"
+          :image="member.avatar"
+          :aria-label="member.name"
+          size="30"
+        />
       </div>
       <span>{{ project.team.map((m: ProjectMember) => m.name).join(", ") }}</span>
     </div>
@@ -45,6 +53,7 @@ const formatted = computed(() =>
         Visit live project
         <AppIcon name="external" :size="16" />
       </v-btn>
+
       <v-btn
         v-if="project.repository"
         :href="project.repository"
@@ -58,11 +67,20 @@ const formatted = computed(() =>
       </v-btn>
     </div>
 
-    <img v-if="project.images?.[0]" class="detail-cover" :src="project.images[0]" :alt="project.title" />
+    <v-img
+      v-if="project.images?.[0]"
+      :src="project.images[0]"
+      :alt="project.title"
+      aspect-ratio="16/9"
+      cover
+      rounded="lg"
+      class="border-sm"
+    />
+
     <article class="prose" v-html="project.html" />
   </section>
 
-  <section v-else class="page empty-state">
+  <section v-else class="page empty-state d-flex flex-column align-center justify-center ga-3">
     <h1>Project not found</h1>
     <v-btn to="/projects" variant="outlined" rounded="xl">Back to projects</v-btn>
   </section>

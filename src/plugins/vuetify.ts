@@ -1,6 +1,20 @@
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import { VApp, VBtn, VCard, VChip, VCol, VRow } from "vuetify/components";
+import {
+  VApp,
+  VAvatar,
+  VBtn,
+  VCard,
+  VChip,
+  VCol,
+  VContainer,
+  VDivider,
+  VFooter,
+  VImg,
+  VMain,
+  VRow,
+  VSheet,
+} from "vuetify/components";
 
 export type ThemeMode = "light" | "dark";
 
@@ -9,11 +23,18 @@ export function createPortfolioVuetify(defaultTheme: ThemeMode = "light") {
     ssr: true,
     components: {
       VApp,
+      VAvatar,
       VBtn,
       VCard,
       VChip,
       VCol,
+      VContainer,
+      VDivider,
+      VFooter,
+      VImg,
+      VMain,
       VRow,
+      VSheet,
     },
     theme: {
       defaultTheme,

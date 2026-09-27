@@ -22,6 +22,10 @@ const nav = [
 
 const current = computed(() => route.path);
 
+function isActive(path: string) {
+  return current.value === path || current.value.startsWith(`${path}/`);
+}
+
 function tick() {
   time.value = new Intl.DateTimeFormat("en-GB", {
     timeZone: about.location,
@@ -58,44 +62,55 @@ onUnmounted(() => timer && clearInterval(timer));
 <template>
   <header class="site-header">
     <div class="site-header__edge">{{ about.location }}</div>
-    <nav class="nav-pill" aria-label="Primary navigation">
+
+    <v-sheet
+      tag="nav"
+      class="nav-pill d-flex align-center ga-1 pa-1"
+      aria-label="Primary navigation"
+      rounded="pill"
+      border
+      elevation="4"
+    >
       <v-btn
         to="/"
-        class="nav-pill__item nav-pill__home"
-        :class="{ active: current === '/' }"
-        variant="text"
+        :variant="current === '/' ? 'tonal' : 'text'"
         rounded="xl"
         size="small"
+        icon
         aria-label="Home"
       >
         <AppIcon name="home" :size="16" />
       </v-btn>
-      <span class="nav-pill__divider" />
+
+      <v-divider vertical class="mx-1" />
+
       <v-btn
         v-for="item in nav"
         :key="item.to"
         :to="item.to"
-        class="nav-pill__item"
-        :class="{ active: current === item.to || current.startsWith(item.to + '/') }"
-        variant="text"
+        :variant="isActive(item.to) ? 'tonal' : 'text'"
         rounded="xl"
         size="small"
+        class="text-none px-2 px-md-3"
       >
         <AppIcon :name="item.icon" :size="15" />
-        <span>{{ item.label }}</span>
+        <span class="d-none d-md-inline">{{ item.label }}</span>
       </v-btn>
-      <span class="nav-pill__divider" />
+
+      <v-divider vertical class="mx-1" />
+
       <v-btn
-        class="nav-pill__item nav-pill__home"
         variant="text"
         rounded="xl"
         size="small"
+        icon
         :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
         @click="toggleTheme"
       >
         <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="16" />
       </v-btn>
-    </nav>
+    </v-sheet>
+
     <div class="site-header__edge site-header__edge--right">{{ time }}</div>
   </header>
 </template>

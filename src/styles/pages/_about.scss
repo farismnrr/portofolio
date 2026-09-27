@@ -1,6 +1,6 @@
 .about-page { width: min(820px, 100%); }
 .profile-rail { position: sticky; top: 92px; padding-top: 4px; }
-.profile-avatar { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; }
+.profile-avatar.v-avatar { flex: 0 0 auto; }
 .profile-location { font-size: 14px; }
 .about-main { max-width: 650px; }
 .about-intro { min-height: 240px; padding-top: 4px; }
@@ -29,7 +29,7 @@
 
 @media (max-width: 800px) {
   .profile-rail { position: static; padding: 0 0 14px; }
-  .profile-avatar { width: 84px; height: 84px; }
+  .profile-avatar.v-avatar { width: 84px !important; height: 84px !important; }
   .about-intro h1 { font-size: clamp(44px, 13vw, 64px); }
 }
 

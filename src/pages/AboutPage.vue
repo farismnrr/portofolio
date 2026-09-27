@@ -20,17 +20,24 @@ function printPage() {
 <template>
   <section class="about-page page">
     <aside class="about-toc" aria-label="About sections">
-      <a v-for="section in sections" :key="section.id" :href="`#${section.id}`"><span />{{ section.label }}</a>
+      <a v-for="section in sections" :key="section.id" :href="`#${section.id}`">
+        <span />
+        {{ section.label }}
+      </a>
     </aside>
 
     <v-row align="start">
       <v-col cols="12" md="3">
         <aside class="profile-rail d-flex flex-row flex-md-column align-start align-md-center flex-wrap ga-4">
-          <img class="profile-avatar" :src="about.avatar" :alt="about.name" />
+          <v-avatar class="profile-avatar" size="112">
+            <v-img :src="about.avatar" :alt="about.name" cover />
+          </v-avatar>
+
           <div class="profile-location d-flex align-center ga-2">
             <AppIcon name="globe" :size="17" />
             {{ about.location }}
           </div>
+
           <div class="d-flex flex-wrap ga-2">
             <v-chip v-for="language in about.languages" :key="language" size="small" variant="outlined">
               {{ language }}
@@ -58,6 +65,7 @@ function printPage() {
               <AppIcon :name="item.icon" :size="15" />
               {{ item.name }}
             </v-btn>
+
             <v-btn size="small" variant="outlined" rounded="xl" @click="printPage">
               <AppIcon name="download" :size="15" />
               Save to PDF
@@ -77,7 +85,9 @@ function printPage() {
               </div>
               <time>{{ item.timeframe }}</time>
             </div>
-            <ul><li v-for="achievement in item.achievements" :key="achievement">{{ achievement }}</li></ul>
+            <ul>
+              <li v-for="achievement in item.achievements" :key="achievement">{{ achievement }}</li>
+            </ul>
           </article>
         </section>
 

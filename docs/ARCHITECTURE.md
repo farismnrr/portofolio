@@ -13,9 +13,9 @@ scripts/content-plugin.ts
           v
 virtual:content/* modules (memory only)
           |
-          +--> Vite client build
+          +--> Vite client build + Vuetify
           |
-          +--> Vite temporary SSR build
+          +--> Vite temporary SSR build + Vuetify
                     |
                     v
              @vue/server-renderer
@@ -32,7 +32,13 @@ Static root routes are `/`, `/about`, `/projects`, `/blog`, `/certifications`, a
 
 ## UI
 
-Vue 3 is used directly with Vue Router. There is no Nuxt, React/Next, Tailwind, or third-party UI component system. Shared visual rules live in `src/styles/`; reusable site components live in `src/components/`. SCSS/CSS variables own the light/dark design tokens.
+Vue 3 is used directly with Vue Router and Vuetify 4.
+
+Vuetify owns reusable interface primitives such as buttons, chips, cards, navigation controls, overlays, form controls, and theme integration. The portfolio does not maintain parallel SCSS implementations of those primitives.
+
+Custom SCSS under `src/styles/` remains responsible for the site's visual identity: page composition, responsive layout, typography, ambient effects, image treatments, prose styling, and focused Vuetify overrides. Tailwind and additional UI frameworks are intentionally excluded.
+
+`src/plugins/vuetify.ts` creates a fresh Vuetify instance for client and build-time SSR usage so prerendering remains isolated and deterministic.
 
 ## Content
 

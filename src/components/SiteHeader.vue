@@ -3,12 +3,13 @@ import about from "virtual:content/about";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useTheme } from "vuetify";
+import type { ThemeMode } from "../plugins/vuetify";
 import AppIcon from "./AppIcon.vue";
 
 const route = useRoute();
 const vuetifyTheme = useTheme();
 const time = ref("");
-const theme = ref<"light" | "dark">("light");
+const theme = ref<ThemeMode>("light");
 let timer: number | undefined;
 
 const nav = [
@@ -31,20 +32,22 @@ function tick() {
   }).format(new Date());
 }
 
-function applyTheme(next: "light" | "dark") {
+function applyTheme(next: ThemeMode) {
   theme.value = next;
   document.documentElement.dataset.theme = next;
-  vuetifyTheme.global.name.value = next === "dark" ? "portfolioDark" : "portfolioLight";
+  document.documentElement.classList.remove("v-theme--light", "v-theme--dark");
+  document.documentElement.classList.add(`v-theme--${next}`);
+  vuetifyTheme.global.name.value = next;
 }
 
 function toggleTheme() {
-  const next = theme.value === "dark" ? "light" : "dark";
+  const next: ThemeMode = theme.value === "dark" ? "light" : "dark";
   applyTheme(next);
   localStorage.setItem("theme", next);
 }
 
 onMounted(() => {
-  applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+  theme.value = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
   tick();
   timer = window.setInterval(tick, 1000);
 });

@@ -37,21 +37,37 @@ onMounted(() => {
     </RouterLink>
 
     <nav class="site-nav" aria-label="Primary navigation">
-      <RouterLink
+      <v-btn
         v-for="item in nav"
         :key="item.to"
         :to="item.to"
         :class="{ active: item.to === '/' ? current === '/' : current === item.to || current.startsWith(item.to + '/') }"
+        variant="plain"
+        density="compact"
       >
         {{ item.label }}
-      </RouterLink>
+      </v-btn>
     </nav>
 
     <div class="site-header__actions">
-      <a class="site-header__contact" :href="`mailto:${about.email}`">Contact</a>
-      <button type="button" class="site-header__theme" :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`" @click="toggleTheme">
+      <v-btn
+        class="site-header__contact"
+        :href="`mailto:${about.email}`"
+        variant="plain"
+        density="compact"
+      >
+        Contact
+      </v-btn>
+      <v-btn
+        class="site-header__theme"
+        :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
+        variant="plain"
+        density="compact"
+        icon
+        @click="toggleTheme"
+      >
         <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="16" />
-      </button>
+      </v-btn>
     </div>
   </header>
 </template>

@@ -137,7 +137,7 @@ const locationLabel = "Jakarta, Indonesia";
             <div class="experience-item__company">{{ item.company }}</div>
             <p>{{ item.achievements[0] }}</p>
           </div>
-        </v-card>
+        </article>
       </div>
     </section>
 

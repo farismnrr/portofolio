@@ -2,3 +2,27 @@
 .button:hover, .chip-button:hover { border-color: var(--line-strong); transform: translateY(-1px); }
 .button--primary { background: var(--text); color: var(--bg); border-color: var(--text); }
 .chip-button { min-height: 32px; padding: 0 10px; font-size: 12px; }
+
+.chip-button.v-btn {
+  min-width: 0;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: inherit;
+  font-size: 12px;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+}
+
+.chip-button.v-btn .v-btn__content {
+  gap: 8px;
+}
+
+.chip-button.v-btn:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}

@@ -31,8 +31,29 @@ function printPage() {
           <h1>{{ about.name }}</h1>
           <div class="about-role">{{ about.role }}</div>
           <div class="social-actions">
-            <a v-for="item in about.social" :key="item.name" class="chip-button" :href="item.link" :target="item.link.startsWith('http') ? '_blank' : undefined" rel="noreferrer"><AppIcon :name="item.icon" :size="15" />{{ item.name }}</a>
-            <button class="chip-button" type="button" @click="printPage"><AppIcon name="download" :size="15" />Save to PDF</button>
+            <v-btn
+              v-for="item in about.social"
+              :key="item.name"
+              class="chip-button"
+              :href="item.link"
+              :target="item.link.startsWith('http') ? '_blank' : undefined"
+              rel="noreferrer"
+              variant="plain"
+              density="compact"
+            >
+              <AppIcon :name="item.icon" :size="15" />
+              {{ item.name }}
+            </v-btn>
+            <v-btn
+              class="chip-button"
+              type="button"
+              variant="plain"
+              density="compact"
+              @click="printPage"
+            >
+              <AppIcon name="download" :size="15" />
+              Save to PDF
+            </v-btn>
           </div>
           <p class="lead">{{ about.description }}</p>
         </section>

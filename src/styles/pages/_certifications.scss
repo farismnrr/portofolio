@@ -1,14 +1,5 @@
 .cert-group { margin: 0 0 48px; }
 .cert-group > h2 { font-size: 24px; text-transform: capitalize; margin-bottom: 18px; }
-.cert-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.cert-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-m); background: var(--surface); }
+.cert-card { overflow: hidden; }
 .cert-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 .cert-card span { display: block; padding: 14px; font-size: 13px; line-height: 1.4; }
-
-@media (max-width: 800px) {
-  .cert-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (max-width: 520px) {
-  .cert-grid { grid-template-columns: 1fr; }
-}

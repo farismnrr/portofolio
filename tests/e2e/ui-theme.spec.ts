@@ -20,20 +20,25 @@ async function themeSnapshot(page) {
   });
 }
 
-test.describe("Sep 8 portfolio baseline", () => {
-  test("home matches the Sep 8 hero", async ({ page }, testInfo) => {
+test.describe("recovered pre-vuetify portfolio UI", () => {
+  test("home matches recovered landing page", async ({ page }, testInfo) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Design.");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Code.");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Create.");
-    await expect(page.getByText(/Software engineering · AI · IoT/i)).toBeVisible();
-    await expect(page.getByRole("link", { name: /About me/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /View projects/i })).toBeVisible();
-    await expect(page.getByText("Selected work")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Faris Munir Mahdi" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: /Building useful things with code/i })).toBeVisible();
+    await expect(page.getByText("Available for opportunities")).toBeVisible();
+    await expect(page.getByText("Focused on")).toBeVisible();
+    await expect(page.getByText("Work that shaped how I build.")).toBeVisible();
+    await expect(page.getByText("Work that shows how I think.")).toBeVisible();
+    await expect(page.getByText("More than just code.")).toBeVisible();
+    await expect(page.getByText("Design. Code. Create.")).toHaveCount(0);
+
+    await expect(page.locator(".experience-item")).toHaveCount(3);
+    await expect(page.locator(".home-project-card")).toHaveCount(4);
+    await expect(page.locator(".home-values article")).toHaveCount(4);
 
     await page.screenshot({
-      path: testInfo.outputPath("sep8-home-full.png"),
+      path: testInfo.outputPath("recovered-home-full.png"),
       fullPage: true,
     });
   });

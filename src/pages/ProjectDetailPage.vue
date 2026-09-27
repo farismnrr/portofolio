@@ -25,14 +25,14 @@ const formatted = computed(() =>
       <p>{{ project.summary }}</p>
     </div>
 
-    <div v-if="project.team?.length" class="detail-team">
+    <div v-if="project.team?.length" class="d-flex justify-center align-center ga-3 mb-5 detail-team">
       <div class="avatar-stack">
         <img v-for="member in project.team" :key="member.name" :src="member.avatar" :alt="member.name" />
       </div>
       <span>{{ project.team.map((m: ProjectMember) => m.name).join(", ") }}</span>
     </div>
 
-    <div class="detail-actions">
+    <div class="d-flex justify-center flex-wrap ga-2 mb-8">
       <v-btn
         v-if="project.link"
         :href="project.link"

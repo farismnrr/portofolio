@@ -33,14 +33,14 @@ guard-release: ## Run release static-site engineering guard
 build: ## Prerender the fully static site into ./dist
 	npm run build
 
-preview: build ## Preview the static production build on port 3006
+preview: ## Build and serve the production SPA on port 3001
 	npm run preview
 
 clean: ## Remove generated output
 	rm -rf dist .ssr .tmp-ui-check
 
-docker-build: ## Build static nginx image
+docker-build: ## Build production SPA image
 	docker build -t faris-portfolio-static .
 
-docker-run: ## Serve the static nginx image on http://localhost:8080
-	docker run --rm -p 8080:80 faris-portfolio-static
+docker-run: ## Serve the production SPA on http://localhost:3001
+	docker run --rm -p 3001:3001 faris-portfolio-static

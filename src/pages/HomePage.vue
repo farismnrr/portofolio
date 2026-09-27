@@ -153,7 +153,13 @@ const locationLabel = "Jakarta, Indonesia";
       <div class="home-project-grid">
         <article v-for="(project, index) in featured" :key="project.slug" class="home-project-card">
           <RouterLink :to="`/projects/${project.slug}`" class="home-project-card__media">
-            <img :src="project.images[0]" :alt="project.title" :loading="index === 0 ? 'eager' : 'lazy'" />
+            <v-img
+              class="home-project-card__image"
+              :src="project.images[0]"
+              :alt="project.title"
+              :eager="index === 0"
+              cover
+            />
           </RouterLink>
           <div class="home-project-card__body">
             <div v-if="project.organization || project.role" class="home-project-card__context">

@@ -1,20 +1,17 @@
 .about-page { width: min(820px, 100%); }
-.about-grid { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 42px; align-items: start; }
-.profile-rail { position: sticky; top: 92px; display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 4px; }
+.profile-rail { position: sticky; top: 92px; padding-top: 4px; }
 .profile-avatar { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; }
-.profile-location { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; }
+.profile-location { font-size: 14px; }
 .about-main { max-width: 650px; }
 .about-intro { min-height: 240px; padding-top: 4px; }
 .about-intro h1 { margin: 0; font-size: clamp(48px, 6vw, 72px); line-height: .98; letter-spacing: -.055em; }
 .about-role { margin-top: 4px; color: var(--muted); font-size: clamp(25px, 3vw, 32px); }
-.social-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 22px 0 30px; }
 .lead { margin: 0 0 58px; max-width: 610px; font-size: 16px; line-height: 1.55; }
 .resume-section { scroll-margin-top: 96px; margin-bottom: 58px; }
 .resume-section h2 { margin: 0 0 28px; font-size: 36px; line-height: 1.05; letter-spacing: -.045em; }
 .resume-item { margin-bottom: 48px; }
 .resume-item:last-child { margin-bottom: 0; }
 .resume-item--compact { margin-bottom: 34px; }
-.resume-item__head { display: flex; justify-content: space-between; gap: 22px; align-items: baseline; }
 .resume-item h3 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
 .resume-item time { flex: none; color: var(--muted); font-size: 13px; }
 .accent-text { display: block; margin-top: 4px; color: var(--brand); font-size: 12px; }
@@ -31,17 +28,12 @@
 }
 
 @media (max-width: 800px) {
-  .about-grid { grid-template-columns: 1fr; gap: 20px; }
-  .profile-rail { position: static; align-items: flex-start; flex-direction: row; flex-wrap: wrap; padding: 0 0 14px; }
+  .profile-rail { position: static; padding: 0 0 14px; }
   .profile-avatar { width: 84px; height: 84px; }
-  .profile-location { align-self: center; }
-  .profile-rail .tag-row { width: 100%; }
   .about-intro h1 { font-size: clamp(44px, 13vw, 64px); }
-  .resume-item__head { align-items: flex-start; flex-direction: column; gap: 4px; }
 }
 
 @media print {
-  .about-toc, .social-actions { display: none !important; }
-  .about-grid { grid-template-columns: 150px 1fr; }
+  .about-toc, .about-actions { display: none !important; }
   .profile-rail { position: static; }
 }

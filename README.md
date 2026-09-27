@@ -1,15 +1,16 @@
 # Faris Munir Mahdi — Portfolio
 
-A fully static personal portfolio built with **Vue 3, Vite, TypeScript, SCSS, and repository-local Markdown/MDX content**.
+A fully static personal portfolio built with **Vue 3, Vuetify 4, Vite, TypeScript, SCSS, and repository-local Markdown/MDX content**.
 
 There is intentionally no backend runtime, authentication, dashboard, database, or API service. Development is served directly by Vite; production is prerendered into plain HTML/CSS/JS under `dist/` and can be hosted by any static server/CDN.
 
 ## Stack
 
 - Vue 3 + Vue Router
+- Vuetify 4 for reusable UI primitives and theme integration
 - Vite
 - TypeScript + `vue-tsc`
-- SCSS only for styling; no Tailwind or UI component framework
+- SCSS for portfolio-specific layout, typography, ambient visuals, prose, and focused component overrides
 - Markdown/MDX content parsed at build time
 - `@vue/server-renderer` used **only during build** to prerender static HTML
 - Biome for source checks
@@ -49,4 +50,4 @@ Images and certification/gallery assets live under `public/`.
 
 ## Architecture rules
 
-See [`AGENTS.md`](./AGENTS.md) and [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). The important invariants are: static production only, no runtime content API, Vue without a meta-framework, SCSS as the UI styling layer, and build-time prerendering of dynamic project/blog routes.
+See [`AGENTS.md`](./AGENTS.md) and [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). The important invariants are: static production only, no runtime content API, Vue without a meta-framework, Vuetify as the approved UI component system, SCSS reserved for bespoke visual/layout work, and build-time prerendering of dynamic project/blog routes.

@@ -69,6 +69,8 @@ function contentFor(root: string, domain: string) {
           publishedAt: data.publishedAt ?? "",
           summary: data.summary ?? "",
           order: typeof data.order === "number" ? data.order : 999,
+          organization: data.organization ?? "",
+          role: data.role ?? "",
           images: data.images ?? [],
           link: data.link ?? "",
           repository: data.repository ?? "",

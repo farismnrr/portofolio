@@ -68,6 +68,7 @@ function contentFor(root: string, domain: string) {
           projectName: data.projectName ?? data.title ?? slug,
           publishedAt: data.publishedAt ?? "",
           summary: data.summary ?? "",
+          order: typeof data.order === "number" ? data.order : 999,
           images: data.images ?? [],
           link: data.link ?? "",
           repository: data.repository ?? "",
@@ -77,11 +78,13 @@ function contentFor(root: string, domain: string) {
           html,
         };
       })
-      .sort(
-        (a, b) =>
+      .sort((a, b) => {
+        if (a.order !== b.order) return a.order - b.order;
+        return (
           new Date(String(b.publishedAt || 0)).getTime() -
-          new Date(String(a.publishedAt || 0)).getTime(),
-      );
+          new Date(String(a.publishedAt || 0)).getTime()
+        );
+      });
   }
 
   if (domain === "blog") {

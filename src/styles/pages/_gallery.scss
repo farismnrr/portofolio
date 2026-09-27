@@ -1,7 +1,19 @@
-.gallery-grid { columns: 2; column-gap: 18px; }
-.gallery-grid a { display: block; break-inside: avoid; margin-bottom: 18px; overflow: hidden; border-radius: var(--radius-m); border: 1px solid var(--line); }
-.gallery-grid img { width: 100%; height: auto; }
+.gallery-grid {
+  columns: 2;
+  column-gap: 18px;
+}
+
+.gallery-item {
+  display: block;
+  break-inside: avoid;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+}
 
 @media (max-width: 520px) {
-  .gallery-grid { columns: 1; }
+  .gallery-grid {
+    columns: 1;
+  }
 }

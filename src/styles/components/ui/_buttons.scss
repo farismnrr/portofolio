@@ -1,4 +1,0 @@
-.button, .chip-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; }
-.button:hover, .chip-button:hover { border-color: var(--line-strong); transform: translateY(-1px); }
-.button--primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-.chip-button { min-height: 32px; padding: 0 10px; font-size: 12px; }

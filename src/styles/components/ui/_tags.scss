@@ -1,5 +1,0 @@
-.tag-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.tag { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: var(--surface); font-size: 12px; }
-.avatar-stack { display: flex; align-items: center; }
-.avatar-stack img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); margin-left: -8px; }
-.avatar-stack img:first-child { margin-left: 0; }

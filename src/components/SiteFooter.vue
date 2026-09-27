@@ -4,11 +4,29 @@ import AppIcon from "./AppIcon.vue";
 
 const year = new Date().getFullYear();
 </script>
+
 <template>
-  <footer class="site-footer">
+  <v-footer
+    color="transparent"
+    class="site-footer d-flex flex-column flex-sm-row align-start align-sm-center justify-center justify-sm-space-between ga-4 ga-sm-6 px-0"
+  >
     <div>© {{ year }} / <strong>{{ about.name }}</strong></div>
-    <div class="site-footer__links">
-      <a v-for="item in about.social" :key="item.name" :href="item.link" :aria-label="item.name" :target="item.link.startsWith('http') ? '_blank' : undefined" rel="noreferrer"><AppIcon :name="item.icon" :size="18" /></a>
+
+    <div class="d-flex align-center ga-1">
+      <v-btn
+        v-for="item in about.social"
+        :key="item.name"
+        :href="item.link"
+        :aria-label="item.name"
+        :target="item.link.startsWith('http') ? '_blank' : undefined"
+        rel="noreferrer"
+        variant="text"
+        icon
+        size="small"
+        class="text-medium-emphasis"
+      >
+        <AppIcon :name="item.icon" :size="18" />
+      </v-btn>
     </div>
-  </footer>
+  </v-footer>
 </template>

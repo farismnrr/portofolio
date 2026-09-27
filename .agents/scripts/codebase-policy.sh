@@ -15,11 +15,12 @@ errors=()
 [[ -f scripts/content-plugin.ts ]] || errors+=("missing build-time Vite content plugin")
 [[ -f src/entry-server.ts ]] || errors+=("missing build-time Vue SSR entry used for prerendering")
 [[ -f src/entry-client.ts ]] || errors+=("missing Vue client entry")
+[[ -f src/plugins/vuetify.ts ]] || errors+=("missing Vuetify plugin")
 
-node - <<'NODE' || errors+=("package architecture must remain Vue + Vite without Next/Nuxt/React/UI frameworks")
+node - <<'NODE' || errors+=("package architecture must remain Vue + Vite + Vuetify without Next/Nuxt/React/Tailwind")
 const p = require('./package.json');
 const all = {...p.dependencies, ...p.devDependencies};
-const required = ['vue','vite','@vue/server-renderer'];
+const required = ['vue','vite','@vue/server-renderer','vuetify'];
 const forbidden = ['next','nuxt','react','react-dom','@once-ui-system/core','tailwindcss','@tailwindcss/vite'];
 if (!required.every((name) => all[name])) process.exit(1);
 if (forbidden.some((name) => all[name])) process.exit(1);
@@ -34,7 +35,7 @@ if rg -n --glob 'src/**/*.{ts,vue,js}' '(^|[^A-Za-z])fetch\(' src >/dev/null 2>&
 fi
 
 if rg -n --glob 'src/**/*.{vue,scss,css,ts}' '(tailwind|@once-ui|once-ui-system)' src >/dev/null 2>&1; then
-  errors+=("external UI framework reference found; portfolio UI must remain Vue + SCSS")
+  errors+=("unapproved UI framework reference found; portfolio UI uses Vuetify")
 fi
 
 while IFS= read -r path; do

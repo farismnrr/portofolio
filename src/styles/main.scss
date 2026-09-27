@@ -3,13 +3,10 @@
 @use 'components/layout/shell';
 @use 'components/layout/header';
 @use 'components/layout/footer';
-@use 'components/ui/buttons';
-@use 'components/ui/tags';
+@use 'components/ui/groups';
 @use 'components/project/project-card';
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/detail';
-@use 'pages/blog';
-@use 'pages/certifications';
 @use 'pages/gallery';
 @use 'pages/not-found';

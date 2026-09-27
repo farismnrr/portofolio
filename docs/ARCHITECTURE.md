@@ -38,7 +38,7 @@ Vuetify owns reusable interface primitives such as buttons, chips, cards, naviga
 
 Custom SCSS under `src/styles/` remains responsible for the site's visual identity: page composition, responsive layout, typography, ambient effects, image treatments, prose styling, and focused Vuetify overrides. Tailwind and additional UI frameworks are intentionally excluded.
 
-`src/plugins/vuetify.ts` creates a fresh Vuetify instance for client and build-time SSR usage so prerendering remains isolated and deterministic.
+`src/plugins/vuetify.ts` creates a fresh Vuetify instance for client and build-time SSR usage so prerendering remains isolated and deterministic. Vuetify is the single source of truth for light/dark palette colors; custom SCSS semantic tokens derive from Vuetify CSS theme variables instead of duplicating palette values.
 
 ## Content
 

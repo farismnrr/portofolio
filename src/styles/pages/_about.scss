@@ -1,39 +1,46 @@
-.about-page { width: min(820px, 100%); }
-.profile-rail { position: sticky; top: 92px; padding-top: 4px; }
-.profile-avatar.v-avatar { flex: 0 0 auto; }
-.profile-location { font-size: 14px; }
-.about-main { max-width: 650px; }
-.about-intro { min-height: 240px; padding-top: 4px; }
-.about-intro h1 { margin: 0; font-size: clamp(48px, 6vw, 72px); line-height: .98; letter-spacing: -.055em; }
-.about-role { margin-top: 4px; color: var(--muted); font-size: clamp(25px, 3vw, 32px); }
-.lead { margin: 0 0 58px; max-width: 610px; font-size: 16px; line-height: 1.55; }
-.resume-section { scroll-margin-top: 96px; margin-bottom: 58px; }
-.resume-section h2 { margin: 0 0 28px; font-size: 36px; line-height: 1.05; letter-spacing: -.045em; }
-.resume-item { margin-bottom: 48px; }
-.resume-item:last-child { margin-bottom: 0; }
-.resume-item--compact { margin-bottom: 34px; }
-.resume-item h3 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
-.resume-item time { flex: none; color: var(--muted); font-size: 13px; }
-.accent-text { display: block; margin-top: 4px; color: var(--brand); font-size: 12px; }
-.resume-item ul { margin: 25px 0 0; padding-left: 20px; }
-.resume-item li { margin: 0 0 14px; padding-left: 2px; font-size: 14px; line-height: 1.55; }
-.rich-copy { color: var(--muted); font-size: 14px; line-height: 1.65; }
-.rich-copy p { margin: 12px 0; }
-.about-toc { position: fixed; left: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 24px; z-index: 10; }
-.about-toc a { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--text); }
-.about-toc a span { display: block; width: 14px; height: 1px; background: var(--line-strong); }
-
-@media (max-width: 900px) {
-  .about-toc { display: none; }
+.about-overview {
+  margin-top: 0;
 }
 
-@media (max-width: 800px) {
-  .profile-rail { position: static; padding: 0 0 14px; }
-  .profile-avatar.v-avatar { width: 84px !important; height: 84px !important; }
-  .about-intro h1 { font-size: clamp(44px, 13vw, 64px); }
+.about-focus-title {
+  max-width: 720px;
+  margin: 12px 0 0;
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -.045em;
+}
+
+.about-list {
+  margin: 20px 0 0;
+  padding-left: 20px;
+}
+
+.about-list li {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.accent-text {
+  color: var(--brand);
+  font-size: 13px;
+}
+
+.rich-copy {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.rich-copy p {
+  margin: 0 0 12px;
 }
 
 @media print {
-  .about-toc, .about-actions { display: none !important; }
-  .profile-rail { position: static; }
+  .site-header,
+  .site-footer,
+  .page-intro .v-btn {
+    display: none !important;
+  }
 }

@@ -74,6 +74,7 @@
   left: -28px;
   bottom: -20px;
   width: min(290px, calc(100% - 24px));
+  border-color: var(--line);
   background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
   backdrop-filter: blur(16px);
 }
@@ -115,21 +116,6 @@
   height: 1px;
   margin-bottom: 48px;
   background: var(--line);
-}
-
-.section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 0 0 28px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-  font-size: 13px;
-}
-
-.section-heading > span {
-  font-weight: 700;
 }
 
 @media (max-width: 1263px) {

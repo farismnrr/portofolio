@@ -11,3 +11,85 @@
 .avatar-stack .v-avatar:first-child {
   margin-left: 0;
 }
+
+.page-intro {
+  max-width: 760px;
+  padding: 48px 0 72px;
+}
+
+.page-intro__eyebrow,
+.content-card__eyebrow {
+  color: color-mix(in srgb, var(--text) 68%, transparent);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.page-intro h1 {
+  margin: 16px 0 18px;
+  font-size: clamp(48px, 7vw, 82px);
+  line-height: .95;
+  letter-spacing: -.06em;
+}
+
+.page-intro p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.content-section {
+  margin-top: 72px;
+}
+
+.content-card.v-card {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
+}
+
+.content-card__title {
+  margin: 10px 0 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.08;
+  letter-spacing: -.04em;
+}
+
+.content-card__title--small {
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+.content-card__copy {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.section-heading > span {
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .page-intro {
+    padding: 32px 0 52px;
+  }
+
+  .content-section {
+    margin-top: 56px;
+  }
+}

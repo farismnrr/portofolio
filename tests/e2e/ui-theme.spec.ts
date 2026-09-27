@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const routes = ["/", "/about", "/projects", "/blog", "/certifications", "/gallery"];
+const introRoutes = ["/about", "/projects", "/blog", "/certifications", "/gallery"];
 
 async function themeSnapshot(page) {
   return page.evaluate(() => {
@@ -37,13 +38,10 @@ test.describe("portfolio visual theme", () => {
     await expect(page.getByText("Technology is more meaningful when it solves real problems.")).toBeVisible();
     await expect(page.getByText("Design. Code. Create.")).toHaveCount(0);
 
-    await page.screenshot({
-      path: testInfo.outputPath("home-full.png"),
-      fullPage: true,
-    });
+    await page.screenshot({ path: testInfo.outputPath("home-full.png"), fullPage: true });
   });
 
-  test("top-level routes share the same theme shell", async ({ page }, testInfo) => {
+  test("top-level routes share the same theme shell and page language", async ({ page }, testInfo) => {
     let baseline;
 
     for (const route of routes) {
@@ -58,6 +56,12 @@ test.describe("portfolio visual theme", () => {
 
       await expect(page.locator(".site-header")).toBeVisible();
       await expect(page.locator(".site-footer")).toBeVisible();
+
+      if (introRoutes.includes(route)) {
+        await expect(page.locator(".page-intro")).toBeVisible();
+        await expect(page.locator(".page-intro__eyebrow")).toBeVisible();
+        await expect(page.locator(".page-intro h1")).toBeVisible();
+      }
 
       const current = await themeSnapshot(page);
       baseline ??= current;
@@ -106,7 +110,9 @@ test.describe("portfolio visual theme", () => {
     }
   });
 
-  test("primary navigation reaches every portfolio section", async ({ page }) => {
+  test("desktop navigation reaches every portfolio section", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+
     const destinations = [
       ["Home", "/"],
       ["About", "/about"],
@@ -118,9 +124,9 @@ test.describe("portfolio visual theme", () => {
 
     for (const [label, path] of destinations) {
       await page.goto("/");
-      const link = page.getByRole("link", { name: label, exact: true });
-      if ((await link.count()) === 0) continue;
-      await link.first().click();
+      const link = page.getByRole("link", { name: label, exact: true }).first();
+      await expect(link).toBeVisible();
+      await link.click();
       await expect(page).toHaveURL(new RegExp(`${path.replace("/", "\\/")}/?$`));
     }
   });

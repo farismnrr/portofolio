@@ -25,6 +25,7 @@ const groups = computed(() => Object.groupBy([...certifications], (item) => item
             :src="item.image"
             :alt="item.title"
             aspect-ratio="4/3"
+            eager
             cover
           />
           <span>{{ item.title }}</span>

@@ -95,16 +95,20 @@ const locationLabel = "Jakarta, Indonesia";
         <div class="home-focus__social">
           <span class="home-focus__label">Let's connect</span>
           <div>
-            <a
+            <v-btn
               v-for="item in essentialSocial"
               :key="item.name"
+              class="home-focus__social-button"
               :href="item.link"
               :aria-label="item.name"
               :target="item.link.startsWith('http') ? '_blank' : undefined"
               rel="noreferrer"
+              variant="plain"
+              density="compact"
+              icon
             >
               <AppIcon :name="item.icon" :size="18" />
-            </a>
+            </v-btn>
           </div>
         </div>
       </aside>

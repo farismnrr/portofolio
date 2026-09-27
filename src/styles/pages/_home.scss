@@ -192,18 +192,20 @@
   gap: 12px;
 }
 
-.home-focus__social a {
+.home-focus__social-button.v-btn {
   display: grid;
   place-items: center;
+  min-width: 35px;
   width: 35px;
   height: 35px;
+  padding: 0;
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--text);
   transition: border-color .18s ease, transform .18s ease;
 }
 
-.home-focus__social a:hover {
+.home-focus__social-button.v-btn:hover {
   border-color: var(--line-strong);
   transform: translateY(-2px);
 }

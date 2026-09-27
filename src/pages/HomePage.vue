@@ -85,12 +85,18 @@ const locationLabel = "Jakarta, Indonesia";
       <aside class="home-focus" aria-label="Professional focus">
         <div>
           <span class="home-focus__label">Focused on</span>
-          <ul>
-            <li v-for="item in focusAreas" :key="item.label">
-              <span class="home-focus__icon"><AppIcon :name="item.icon" :size="16" /></span>
+          <v-list class="home-focus__list" density="compact">
+            <v-list-item
+              v-for="item in focusAreas"
+              :key="item.label"
+              class="home-focus__item"
+            >
+              <template #prepend>
+                <span class="home-focus__icon"><AppIcon :name="item.icon" :size="16" /></span>
+              </template>
               <span>{{ item.label }}</span>
-            </li>
-          </ul>
+            </v-list-item>
+          </v-list>
         </div>
         <div class="home-focus__social">
           <span class="home-focus__label">Let's connect</span>

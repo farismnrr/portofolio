@@ -3,6 +3,7 @@ import { VAvatar } from "vuetify/components/VAvatar";
 import { VBtn } from "vuetify/components/VBtn";
 import { VChip } from "vuetify/components/VChip";
 import { VImg } from "vuetify/components/VImg";
+import { VList, VListItem } from "vuetify/components/VList";
 
 export function createPortfolioVuetify() {
   return createVuetify({
@@ -13,6 +14,8 @@ export function createPortfolioVuetify() {
       VBtn,
       VChip,
       VImg,
+      VList,
+      VListItem,
     },
     defaults: {
       VBtn: { elevation: 0, ripple: false },

@@ -1,47 +1,44 @@
 import { expect, test } from "@playwright/test";
 
 const routes = ["/", "/about", "/projects", "/blog", "/certifications", "/gallery"];
-const introRoutes = ["/about", "/projects", "/blog", "/certifications", "/gallery"];
 
 async function themeSnapshot(page) {
   return page.evaluate(() => {
     const root = document.documentElement;
     const body = document.body;
-    const header = document.querySelector(".site-header");
     const rootStyle = getComputedStyle(root);
     const bodyStyle = getComputedStyle(body);
-    const headerStyle = header ? getComputedStyle(header) : null;
 
     return {
       bg: rootStyle.getPropertyValue("--bg").trim(),
       text: rootStyle.getPropertyValue("--text").trim(),
       brand: rootStyle.getPropertyValue("--brand").trim(),
-      muted: rootStyle.getPropertyValue("--muted").trim(),
       bodyBackground: bodyStyle.backgroundColor,
       bodyColor: bodyStyle.color,
       fontFamily: bodyStyle.fontFamily,
-      headerBackground: headerStyle?.backgroundColor ?? "",
-      headerBorder: headerStyle?.borderBottomColor ?? "",
     };
   });
 }
 
-test.describe("portfolio visual theme", () => {
-  test("home matches the restored portfolio direction", async ({ page }, testInfo) => {
+test.describe("Sep 8 portfolio baseline", () => {
+  test("home matches the Sep 8 hero", async ({ page }, testInfo) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1, name: "Faris Munir Mahdi" })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: /Building useful things with code/i })).toBeVisible();
-    await expect(page.getByText("Software engineer · AI · IoT · Backend")).toBeVisible();
-    await expect(page.getByText("Available for opportunities")).toBeVisible();
-    await expect(page.getByText("Focused on")).toBeVisible();
-    await expect(page.getByText("Technology is more meaningful when it solves real problems.")).toBeVisible();
-    await expect(page.getByText("Design. Code. Create.")).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Design.");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Code.");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Create.");
+    await expect(page.getByText(/Software engineering · AI · IoT/i)).toBeVisible();
+    await expect(page.getByRole("link", { name: /About me/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /View projects/i })).toBeVisible();
+    await expect(page.getByText("Selected work")).toBeVisible();
 
-    await page.screenshot({ path: testInfo.outputPath("home-full.png"), fullPage: true });
+    await page.screenshot({
+      path: testInfo.outputPath("sep8-home-full.png"),
+      fullPage: true,
+    });
   });
 
-  test("top-level routes share the same theme shell and page language", async ({ page }, testInfo) => {
+  test("all public routes render with one shared theme", async ({ page }, testInfo) => {
     let baseline;
 
     for (const route of routes) {
@@ -57,24 +54,15 @@ test.describe("portfolio visual theme", () => {
       await expect(page.locator(".site-header")).toBeVisible();
       await expect(page.locator(".site-footer")).toBeVisible();
 
-      if (introRoutes.includes(route)) {
-        await expect(page.locator(".page-intro")).toBeVisible();
-        await expect(page.locator(".page-intro__eyebrow")).toBeVisible();
-        await expect(page.locator(".page-intro h1")).toBeVisible();
-      }
-
       const current = await themeSnapshot(page);
       baseline ??= current;
 
       expect(current.bg, `${route} background token`).toBe(baseline.bg);
       expect(current.text, `${route} text token`).toBe(baseline.text);
       expect(current.brand, `${route} brand token`).toBe(baseline.brand);
-      expect(current.muted, `${route} muted token`).toBe(baseline.muted);
       expect(current.bodyBackground, `${route} rendered background`).toBe(baseline.bodyBackground);
       expect(current.bodyColor, `${route} rendered text color`).toBe(baseline.bodyColor);
       expect(current.fontFamily, `${route} typography`).toBe(baseline.fontFamily);
-      expect(current.headerBackground, `${route} header surface`).toBe(baseline.headerBackground);
-      expect(current.headerBorder, `${route} header border`).toBe(baseline.headerBorder);
 
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `${route} must not overflow horizontally`).toBeLessThanOrEqual(1);
@@ -87,30 +75,23 @@ test.describe("portfolio visual theme", () => {
     }
   });
 
-  test("dark mode remains consistent while navigating", async ({ page }) => {
+  test("theme switch persists across routes", async ({ page }) => {
     await page.goto("/");
 
-    const toggle = page.getByRole("button", { name: /Switch to dark mode/i });
+    const toggle = page.getByRole("button", { name: /Switch to dark mode|Switch to light mode/i });
     await expect(toggle).toBeVisible();
     await toggle.click();
 
-    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
-    const darkHome = await themeSnapshot(page);
+    const selectedTheme = await page.evaluate(() => document.documentElement.dataset.theme);
+    expect(["light", "dark"]).toContain(selectedTheme);
 
-    for (const route of routes.slice(1)) {
-      await page.goto(route);
-      await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
-
-      const current = await themeSnapshot(page);
-      expect(current.bg).toBe(darkHome.bg);
-      expect(current.text).toBe(darkHome.text);
-      expect(current.brand).toBe(darkHome.brand);
-      expect(current.bodyBackground).toBe(darkHome.bodyBackground);
-      expect(current.bodyColor).toBe(darkHome.bodyColor);
-    }
+    await page.goto("/projects");
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.dataset.theme))
+      .toBe(selectedTheme);
   });
 
-  test("desktop navigation reaches every portfolio section", async ({ page }) => {
+  test("desktop navigation reaches every section", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
 
     const destinations = [

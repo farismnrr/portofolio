@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 </script>
 
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer d-flex flex-column flex-sm-row align-start align-sm-center justify-center justify-sm-space-between ga-4 ga-sm-6">
     <div>© {{ year }} / <strong>{{ about.name }}</strong></div>
     <div class="d-flex align-center ga-1 site-footer__links">
       <v-btn

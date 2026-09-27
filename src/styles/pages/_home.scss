@@ -397,12 +397,21 @@
   gap: 6px;
 }
 
-.home-project-card__tags span {
+.home-project-card__tag.v-chip {
+  min-width: 0;
+  min-height: 0;
+  height: auto;
   padding: 4px 8px;
   border-radius: 999px;
   background: var(--line);
   color: var(--muted);
   font-size: 10px;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+.home-project-card__tag.v-chip .v-chip__content {
+  padding: 0;
 }
 
 .home-about {

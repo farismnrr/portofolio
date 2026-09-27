@@ -148,7 +148,15 @@ const locationLabel = "Jakarta, Indonesia";
             </div>
             <p>{{ project.summary }}</p>
             <div class="home-project-card__tags">
-              <span v-for="tag in project.tags.slice(0, 3)" :key="tag">{{ tag }}</span>
+              <v-chip
+                v-for="tag in project.tags.slice(0, 3)"
+                :key="tag"
+                class="home-project-card__tag"
+                size="x-small"
+                variant="plain"
+              >
+                {{ tag }}
+              </v-chip>
             </div>
           </div>
         </article>

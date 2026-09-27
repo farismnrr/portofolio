@@ -28,8 +28,10 @@ jobs:
       - name: Run maintainability ratchet
         run: python3 .agents/scripts/maintainability.py portfolio
 
-      - name: Install Chromium
-        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Install temporary browser test tooling
+        run: |
+          npm install --no-save --package-lock=false @playwright/test@1.55.0
+          npx playwright install --with-deps chromium
 
       - name: Start static preview
         run: |
@@ -122,7 +124,7 @@ jobs:
       - name: Run browser smoke test
         run: |
           mkdir -p visual-artifacts
-          npx --yes @playwright/test@1.55.0 test visual-smoke.spec.cjs --workers=1
+          npx playwright test visual-smoke.spec.cjs --workers=1
 
       - name: Upload visual artifacts
         if: always()

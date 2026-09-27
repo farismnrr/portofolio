@@ -137,7 +137,7 @@ const locationLabel = "Jakarta, Indonesia";
             <div class="experience-item__company">{{ item.company }}</div>
             <p>{{ item.achievements[0] }}</p>
           </div>
-        </article>
+        </v-card>
       </div>
     </section>
 
@@ -151,7 +151,7 @@ const locationLabel = "Jakarta, Indonesia";
       </div>
 
       <div class="home-project-grid">
-        <article v-for="project in featured" :key="project.slug" class="home-project-card">
+        <v-card v-for="project in featured" :key="project.slug" class="home-project-card" elevation="0">
           <RouterLink :to="`/projects/${project.slug}`" class="home-project-card__media">
             <v-img
               class="home-project-card__image"

@@ -1,6 +1,7 @@
 import { createVuetify } from "vuetify";
 import { VAvatar } from "vuetify/components/VAvatar";
 import { VBtn } from "vuetify/components/VBtn";
+import { VCard } from "vuetify/components/VCard";
 import { VChip } from "vuetify/components/VChip";
 import { VImg } from "vuetify/components/VImg";
 import { VList, VListItem } from "vuetify/components/VList";
@@ -12,6 +13,7 @@ export function createPortfolioVuetify() {
     components: {
       VAvatar,
       VBtn,
+      VCard,
       VChip,
       VImg,
       VList,

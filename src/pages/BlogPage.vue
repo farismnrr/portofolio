@@ -12,7 +12,7 @@ import blog from "virtual:content/blog";
           <time>{{ post.publishedAt }}</time>
           <h2>{{ post.title }}</h2>
           <p>{{ post.summary }}</p>
-          <div class="tag-row">
+          <div class="d-flex flex-wrap ga-2">
             <v-chip v-for="tag in post.tags" :key="tag" size="small" variant="outlined">{{ tag }}</v-chip>
           </div>
         </div>

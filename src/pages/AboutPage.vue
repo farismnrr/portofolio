@@ -24,7 +24,17 @@ function printPage() {
       <aside class="profile-rail">
         <img class="profile-avatar" :src="about.avatar" :alt="about.name" />
         <div class="profile-location"><AppIcon name="globe" :size="17" /> {{ about.location }}</div>
-        <div class="tag-row"><span v-for="language in about.languages" :key="language" class="tag">{{ language }}</span></div>
+        <div class="tag-row">
+          <v-chip
+            v-for="language in about.languages"
+            :key="language"
+            class="tag"
+            size="small"
+            variant="plain"
+          >
+            {{ language }}
+          </v-chip>
+        </div>
       </aside>
       <div class="about-main">
         <section id="introduction" class="about-intro">
@@ -79,7 +89,17 @@ function printPage() {
           <article v-for="item in skills" :key="item.title" class="resume-item resume-item--compact">
             <h3>{{ item.title }}</h3>
             <div class="rich-copy" v-html="item.descriptionHtml" />
-            <div class="tag-row"><span v-for="tag in item.tags" :key="tag.name" class="tag">{{ tag.name }}</span></div>
+            <div class="tag-row">
+              <v-chip
+                v-for="tag in item.tags"
+                :key="tag.name"
+                class="tag"
+                size="small"
+                variant="plain"
+              >
+                {{ tag.name }}
+              </v-chip>
+            </div>
           </article>
         </section>
       </div>

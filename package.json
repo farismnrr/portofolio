@@ -4,10 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 3006",
     "build": "node scripts/build.mjs",
-    "serve": "node scripts/serve-spa.mjs",
-    "preview": "npm run build && npm run serve",
+    "start": "node scripts/serve-spa.mjs",
     "typecheck": "vue-tsc --noEmit",
     "lint": "biome check src scripts vite.config.ts",
     "lint:fix": "biome check --write src scripts vite.config.ts",

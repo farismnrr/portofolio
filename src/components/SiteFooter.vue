@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
 <template>
   <footer class="site-footer">
     <div>© {{ year }} / <strong>{{ about.name }}</strong></div>
-    <div class="site-footer__links">
+    <div class="d-flex align-center ga-1 site-footer__links">
       <v-btn
         v-for="item in about.social"
         :key="item.name"

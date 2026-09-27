@@ -25,7 +25,7 @@ const featured = projects.slice(0, 3);
       <span>Selected work</span>
       <RouterLink to="/projects">All projects <AppIcon name="arrow" :size="14" /></RouterLink>
     </div>
-    <div class="project-list">
+    <div class="project-list d-flex flex-column">
       <ProjectCard v-for="(project, index) in featured" :key="project.slug" :project="project" :priority="index < 1" />
     </div>
   </section>

@@ -5,6 +5,9 @@ import { portfolioContent } from "./scripts/content-plugin";
 export default defineConfig({
   envDir: false,
   plugins: [portfolioContent(), vue()],
+  ssr: {
+    noExternal: ["vuetify"],
+  },
   build: {
     outDir: "dist",
     assetsDir: "assets",

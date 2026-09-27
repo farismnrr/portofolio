@@ -1,24 +1,40 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import type { Project } from "../content/types";
 import AppIcon from "./AppIcon.vue";
 
-defineProps<{ project: Project; priority?: boolean }>();
+const props = defineProps<{ project: Project; priority?: boolean }>();
 
-const isMobile = ref(false);
+const mediaElement = ref<HTMLElement | null>(null);
+const deferredVisible = ref(false);
+let mediaObserver: IntersectionObserver | undefined;
 
 onMounted(() => {
-  isMobile.value = window.matchMedia("(max-width: 800px)").matches;
+  if (props.priority || typeof IntersectionObserver === "undefined") {
+    deferredVisible.value = true;
+    return;
+  }
+
+  mediaObserver = new IntersectionObserver(([entry]) => {
+    if (!entry?.isIntersecting) return;
+    deferredVisible.value = true;
+    mediaObserver?.disconnect();
+  });
+
+  if (mediaElement.value) mediaObserver.observe(mediaElement.value);
 });
+
+onBeforeUnmount(() => mediaObserver?.disconnect());
 </script>
 <template>
   <v-card tag="article" class="project-card" variant="flat" color="transparent">
-    <RouterLink :to="`/projects/${project.slug}`" class="project-card__media">
+    <RouterLink ref="mediaElement" :to="`/projects/${project.slug}`" class="project-card__media">
       <v-img
         class="project-card__image"
+        :class="{ 'project-card__image--deferred': !priority && !deferredVisible }"
         :src="project.images[0]"
         :alt="project.title"
-        :eager="priority || isMobile"
+        eager
         aspect-ratio="16/9"
         cover
       />

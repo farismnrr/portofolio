@@ -4,7 +4,7 @@ SHELL := /bin/bash
 .PHONY: help dev install lint typecheck audit guard-fast guard-full guard-release build preview clean docker-build docker-run
 
 help: ## Show available commands
-	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\\n", $$1, $$2}'
 
 dev: ## Run the Vite development server on port 3006
 	npm run dev
@@ -37,7 +37,7 @@ preview: build ## Preview the static production build on port 3006
 	npm run preview
 
 clean: ## Remove generated output
-	rm -rf dist .ssr src/generated .tmp-ui-check
+	rm -rf dist .ssr .tmp-ui-check
 
 docker-build: ## Build static nginx image
 	docker build -t faris-portfolio-static .

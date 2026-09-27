@@ -1,26 +1,15 @@
 # Dependencies
 node_modules/
-.pnp/
-.pnp.*
-.yarn/
 
 # Static build output / temporary prerender output
 dist/
 .ssr/
-build/
-
-# Legacy framework output kept ignored during migrations
-.next/
-out/
-
-# Generated source
 
 # Test and tool artifacts
 coverage/
 playwright-report/
 test-results/
 .cache/
-.turbo/
 *.tsbuildinfo
 
 # Local environment / secrets
@@ -41,12 +30,6 @@ Thumbs.db
 
 # Package manager logs
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Hosting/tool state
-.vercel/
 
 # Local scratch / visual checks
 .tmp/

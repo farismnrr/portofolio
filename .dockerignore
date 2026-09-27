@@ -8,9 +8,6 @@ node_modules/
 # Generated output / local caches
 dist/
 .ssr/
-.next/
-out/
-build/
 coverage/
 playwright-report/
 test-results/

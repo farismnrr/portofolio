@@ -1,0 +1,133 @@
+name: Theme Visual Validation
+
+on:
+  push:
+    branches:
+      - feat/vuetify-ui
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run full engineering guard
+        run: ./.agents/scripts/engineering-guard.sh portfolio full
+
+      - name: Run maintainability ratchet
+        run: python3 .agents/scripts/maintainability.py portfolio
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Start static preview
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/portfolio-preview.log 2>&1 &
+          echo $! > /tmp/portfolio-preview.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3006/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/portfolio-preview.log
+          exit 1
+
+      - name: Create browser smoke test
+        run: |
+          cat > visual-smoke.spec.js <<'EOF'
+          const { test, expect } = require("@playwright/test");
+
+          async function collectHydrationErrors(page) {
+            const errors = [];
+            page.on("console", (message) => {
+              const text = message.text();
+              if (message.type() === "error" || /hydration|mismatch/i.test(text)) {
+                errors.push(text);
+              }
+            });
+            page.on("pageerror", (error) => errors.push(error.message));
+            return errors;
+          }
+
+          test("light desktop renders consistently", async ({ browser }) => {
+            const context = await browser.newContext({
+              colorScheme: "light",
+              viewport: { width: 1440, height: 1000 },
+            });
+            const page = await context.newPage();
+            const errors = await collectHydrationErrors(page);
+            await page.goto("http://127.0.0.1:3006/", { waitUntil: "networkidle" });
+            await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+            await expect(page.locator(".v-application")).toHaveClass(/v-theme--light/);
+            await page.screenshot({ path: "visual-artifacts/home-light-desktop.png", fullPage: true });
+            expect(errors).toEqual([]);
+            await context.close();
+          });
+
+          test("dark desktop renders consistently and toggle persists", async ({ browser }) => {
+            const context = await browser.newContext({
+              colorScheme: "dark",
+              viewport: { width: 1440, height: 1000 },
+            });
+            const page = await context.newPage();
+            const errors = await collectHydrationErrors(page);
+            await page.goto("http://127.0.0.1:3006/", { waitUntil: "networkidle" });
+            await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+            await expect(page.locator(".v-application")).toHaveClass(/v-theme--dark/);
+            await page.screenshot({ path: "visual-artifacts/home-dark-desktop.png", fullPage: true });
+
+            await page.getByRole("button", { name: "Switch to light mode" }).click();
+            await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+            await expect(page.locator(".v-application")).toHaveClass(/v-theme--light/);
+            expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("light");
+            expect(errors).toEqual([]);
+            await context.close();
+          });
+
+          test("mobile about and projects stay usable", async ({ browser }) => {
+            const context = await browser.newContext({
+              colorScheme: "dark",
+              viewport: { width: 390, height: 844 },
+              isMobile: true,
+            });
+            const page = await context.newPage();
+            const errors = await collectHydrationErrors(page);
+
+            await page.goto("http://127.0.0.1:3006/about", { waitUntil: "networkidle" });
+            await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+            await expect(page.locator(".v-application")).toHaveClass(/v-theme--dark/);
+            await expect(page.locator("body")).not.toHaveJSProperty("scrollWidth", 0);
+            await page.screenshot({ path: "visual-artifacts/about-dark-mobile.png", fullPage: true });
+
+            await page.goto("http://127.0.0.1:3006/projects", { waitUntil: "networkidle" });
+            await expect(page.locator(".project-card").first()).toBeVisible();
+            await page.screenshot({ path: "visual-artifacts/projects-dark-mobile.png", fullPage: true });
+            expect(errors).toEqual([]);
+            await context.close();
+          });
+          EOF
+
+      - name: Run browser smoke test
+        run: |
+          mkdir -p visual-artifacts
+          npx --yes @playwright/test@1.55.0 test visual-smoke.spec.js --workers=1
+
+      - name: Upload visual artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vuetify-theme-visuals
+          path: visual-artifacts
+          if-no-files-found: warn

@@ -5,6 +5,7 @@ import { renderToString } from "@vue/server-renderer";
 import { createSSRApp } from "vue";
 import { createMemoryHistory } from "vue-router";
 import App from "./App.vue";
+import { createPortfolioVuetify } from "./plugins/vuetify";
 import { createPortfolioRouter } from "./router";
 import "./styles/main.scss";
 
@@ -79,6 +80,7 @@ export async function render(url: string) {
   const app = createSSRApp(App);
   const router = createPortfolioRouter(createMemoryHistory());
   app.use(router);
+  app.use(createPortfolioVuetify());
   await router.push(url);
   await router.isReady();
   return { html: await renderToString(app), head: seoFor(url) };

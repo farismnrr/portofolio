@@ -5,7 +5,7 @@ import AppIcon from "./AppIcon.vue";
 
 const props = defineProps<{ project: Project; priority?: boolean }>();
 
-const mediaElement = ref<HTMLElement | null>(null);
+const mediaElement = ref<{ $el: Element } | null>(null);
 const deferredVisible = ref(false);
 let mediaObserver: IntersectionObserver | undefined;
 
@@ -21,7 +21,7 @@ onMounted(() => {
     mediaObserver?.disconnect();
   });
 
-  if (mediaElement.value) mediaObserver.observe(mediaElement.value);
+  if (mediaElement.value?.$el) mediaObserver.observe(mediaElement.value.$el);
 });
 
 onBeforeUnmount(() => mediaObserver?.disconnect());

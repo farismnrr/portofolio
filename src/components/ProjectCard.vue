@@ -11,7 +11,7 @@ defineProps<{ project: Project; priority?: boolean }>();
         class="project-card__image"
         :src="project.images[0]"
         :alt="project.title"
-        :eager="priority"
+        eager
         aspect-ratio="16/9"
         cover
       />

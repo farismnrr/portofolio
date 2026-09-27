@@ -108,12 +108,63 @@ jobs:
             const errors = await collectHydrationErrors(page);
 
             await page.goto("http://127.0.0.1:3006/about", { waitUntil: "networkidle" });
+            console.log("ABOUT_DEBUG", JSON.stringify(await page.evaluate(() => {
+              const row = document.querySelector(".about-page .v-row");
+              const cols = [...document.querySelectorAll(".about-page .v-col")];
+              return {
+                viewport: document.documentElement.clientWidth,
+                scrollWidth: document.documentElement.scrollWidth,
+                row: row ? {
+                  display: getComputedStyle(row).display,
+                  flexWrap: getComputedStyle(row).flexWrap,
+                  width: row.getBoundingClientRect().width,
+                } : null,
+                cols: cols.map((el) => ({
+                  className: el.className,
+                  width: el.getBoundingClientRect().width,
+                  left: el.getBoundingClientRect().left,
+                  flexBasis: getComputedStyle(el).flexBasis,
+                })),
+              };
+            })));
             await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
             await expect(page.locator(".v-application")).toHaveClass(/v-theme--dark/);
             expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
             await page.screenshot({ path: "visual-artifacts/about-dark-mobile.png", fullPage: true });
 
             await page.goto("http://127.0.0.1:3006/projects", { waitUntil: "networkidle" });
+            console.log("PROJECTS_DEBUG", JSON.stringify(await page.evaluate(() => {
+              const list = document.querySelector(".project-list");
+              const cards = [...document.querySelectorAll(".project-card")].slice(0, 3);
+              const firstRow = document.querySelector(".project-card .v-row");
+              const firstCols = [...document.querySelectorAll(".project-card .v-col")].slice(0, 2);
+              return {
+                viewport: document.documentElement.clientWidth,
+                scrollWidth: document.documentElement.scrollWidth,
+                list: list ? {
+                  className: list.className,
+                  display: getComputedStyle(list).display,
+                  flexDirection: getComputedStyle(list).flexDirection,
+                  width: list.getBoundingClientRect().width,
+                } : null,
+                cards: cards.map((el) => ({
+                  width: el.getBoundingClientRect().width,
+                  left: el.getBoundingClientRect().left,
+                })),
+                firstRow: firstRow ? {
+                  display: getComputedStyle(firstRow).display,
+                  flexWrap: getComputedStyle(firstRow).flexWrap,
+                  width: firstRow.getBoundingClientRect().width,
+                } : null,
+                firstCols: firstCols.map((el) => ({
+                  className: el.className,
+                  width: el.getBoundingClientRect().width,
+                  left: el.getBoundingClientRect().left,
+                  flexBasis: getComputedStyle(el).flexBasis,
+                })),
+              };
+            })));
+            console.log("HYDRATION_ERRORS", JSON.stringify(errors));
             await expect(page.locator(".project-card").first()).toBeVisible();
             await page.screenshot({ path: "visual-artifacts/projects-dark-mobile.png", fullPage: true });
             expect(errors).toEqual([]);

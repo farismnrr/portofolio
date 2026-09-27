@@ -5,9 +5,16 @@ import AppIcon from "./AppIcon.vue";
 defineProps<{ project: Project; priority?: boolean }>();
 </script>
 <template>
-  <article class="project-card">
+  <v-card tag="article" class="project-card" variant="flat" color="transparent">
     <RouterLink :to="`/projects/${project.slug}`" class="project-card__media">
-      <img :src="project.images[0]" :alt="project.title" :loading="priority ? 'eager' : 'lazy'" />
+      <v-img
+        class="project-card__image"
+        :src="project.images[0]"
+        :alt="project.title"
+        :eager="priority"
+        aspect-ratio="16/9"
+        cover
+      />
     </RouterLink>
     <div class="project-card__body">
       <div>
@@ -19,15 +26,38 @@ defineProps<{ project: Project; priority?: boolean }>();
         </div>
       </div>
       <div class="project-card__copy">
-        <div class="avatar-stack" v-if="project.team?.length">
-          <img v-for="member in project.team.slice(0, 3)" :key="member.name" :src="member.avatar" :alt="member.name" />
+        <div class="project-card__avatars" v-if="project.team?.length">
+          <v-avatar
+            v-for="member in project.team.slice(0, 3)"
+            :key="member.name"
+            :image="member.avatar"
+            :aria-label="member.name"
+            size="30"
+          />
         </div>
         <p>{{ project.summary }}</p>
         <div class="project-card__actions">
-          <RouterLink :to="`/projects/${project.slug}`">Read case study <AppIcon name="arrow" :size="15" /></RouterLink>
-          <a v-if="project.link" :href="project.link" target="_blank" rel="noreferrer">View project <AppIcon name="external" :size="15" /></a>
+          <v-btn
+            class="project-card__action"
+            :to="`/projects/${project.slug}`"
+            variant="plain"
+            density="compact"
+          >
+            Read case study <AppIcon name="arrow" :size="15" />
+          </v-btn>
+          <v-btn
+            v-if="project.link"
+            class="project-card__action"
+            :href="project.link"
+            target="_blank"
+            rel="noreferrer"
+            variant="plain"
+            density="compact"
+          >
+            View project <AppIcon name="external" :size="15" />
+          </v-btn>
         </div>
       </div>
     </div>
-  </article>
+  </v-card>
 </template>

@@ -1,6 +1,14 @@
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
-import { extname, join, normalize, resolve } from "node:path";
+import {
+  extname,
+  isAbsolute,
+  join,
+  normalize,
+  relative as relativePath,
+  resolve,
+  sep,
+} from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("../dist", import.meta.url)));
@@ -28,10 +36,11 @@ const contentTypes = new Map([
 
 function resolveStaticPath(pathname) {
   const decoded = decodeURIComponent(pathname);
-  const relative = normalize(decoded).replace(/^([/\\])+/, "");
-  const candidate = resolve(root, relative);
+  const requestedPath = normalize(decoded).replace(/^([/\\])+/, "");
+  const candidate = resolve(root, requestedPath);
+  const fromRoot = relativePath(root, candidate);
 
-  if (!candidate.startsWith(root)) {
+  if (fromRoot === ".." || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) {
     return null;
   }
 
@@ -49,7 +58,10 @@ function resolveStaticPath(pathname) {
 
 function sendFile(response, filePath, method) {
   response.statusCode = 200;
-  response.setHeader("Content-Type", contentTypes.get(extname(filePath).toLowerCase()) ?? "application/octet-stream");
+  response.setHeader(
+    "Content-Type",
+    contentTypes.get(extname(filePath).toLowerCase()) ?? "application/octet-stream",
+  );
 
   if (method === "HEAD") {
     response.end();

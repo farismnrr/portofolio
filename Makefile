@@ -1,15 +1,15 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev install lint typecheck audit guard-fast guard-full guard-release build preview clean docker-build docker-run
+IMAGE := ghcr.io/farismnrr/portofolio:latest
+CONTAINER := faris-portfolio
+
+.PHONY: help install lint typecheck audit guard-fast guard-full guard-release build clean image-pull recreate stop logs
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\\n", $$1, $$2}'
 
-dev: ## Run the Vite development server on port 3006
-	npm run dev
-
-install: ## Install dependencies from the lockfile
+install: ## Install dependencies for production build validation
 	npm ci
 
 lint: ## Run Biome checks
@@ -24,23 +24,27 @@ audit: ## Require zero known npm vulnerabilities
 guard-fast: ## Run policy, lint, and typecheck
 	./.agents/scripts/engineering-guard.sh portfolio fast
 
-guard-full: ## Run full static-site engineering guard
+guard-full: ## Run full production engineering guard
 	./.agents/scripts/engineering-guard.sh portfolio full
 
-guard-release: ## Run release static-site engineering guard
+guard-release: ## Run release production engineering guard
 	./.agents/scripts/engineering-guard.sh portfolio release
 
-build: ## Prerender the fully static site into ./dist
+build: ## Build the production static site into ./dist
 	npm run build
-
-preview: ## Build and serve the production SPA on port 3001
-	npm run preview
 
 clean: ## Remove generated output
 	rm -rf dist .ssr .tmp-ui-check
 
-docker-build: ## Build production SPA image
-	docker build -t faris-portfolio-static .
+image-pull: ## Pull the latest production image built by CI
+	docker pull $(IMAGE)
 
-docker-run: ## Serve the production SPA on http://localhost:3001
-	docker run --rm -p 3001:3001 faris-portfolio-static
+recreate: image-pull ## Recreate the local production container from the CI image
+	-docker rm -f $(CONTAINER)
+	docker run -d --name $(CONTAINER) --restart unless-stopped -p 3001:3001 $(IMAGE)
+
+stop: ## Stop and remove the local production container
+	-docker rm -f $(CONTAINER)
+
+logs: ## Follow local production container logs
+	docker logs -f $(CONTAINER)

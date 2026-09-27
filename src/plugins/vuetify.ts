@@ -1,4 +1,3 @@
-import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import { VAvatar } from "vuetify/components/VAvatar";
 import { VBtn } from "vuetify/components/VBtn";

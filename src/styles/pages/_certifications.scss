@@ -17,6 +17,11 @@
 }
 
 .cert-card__image.v-img .v-img__img { object-fit: cover; }
+
+@media (max-width: 520px) {
+  .cert-card__image--deferred.v-img .v-img__img { opacity: 0; }
+}
+
 .cert-card span { display: block; padding: 14px; font-size: 13px; line-height: 1.4; }
 
 @media (max-width: 800px) {

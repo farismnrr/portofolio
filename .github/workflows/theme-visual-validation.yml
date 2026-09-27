@@ -33,9 +33,9 @@ jobs:
           npm install --no-save --package-lock=false @playwright/test@1.55.0
           npx playwright install --with-deps chromium
 
-      - name: Start static preview
+      - name: Start prerendered static server
         run: |
-          npm run preview -- --host 127.0.0.1 > /tmp/portfolio-preview.log 2>&1 &
+          python3 -m http.server 3006 --bind 127.0.0.1 --directory dist > /tmp/portfolio-preview.log 2>&1 &
           echo $! > /tmp/portfolio-preview.pid
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:3006/ >/dev/null; then

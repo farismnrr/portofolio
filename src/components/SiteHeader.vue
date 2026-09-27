@@ -48,25 +48,10 @@ onMounted(() => {
     </nav>
 
     <div class="site-header__actions">
-      <v-btn
-        class="site-header__contact"
-        :href="`mailto:${about.email}`"
-        variant="plain"
-        density="compact"
-      >
-        Contact
-      </v-btn>
-      <v-btn
-        type="button"
-        class="site-header__theme"
-        variant="plain"
-        density="compact"
-        icon
-        :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
-        @click="toggleTheme"
-      >
+      <a class="site-header__contact" :href="`mailto:${about.email}`">Contact</a>
+      <button type="button" class="site-header__theme" :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`" @click="toggleTheme">
         <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="16" />
-      </v-btn>
+      </button>
     </div>
   </header>
 </template>

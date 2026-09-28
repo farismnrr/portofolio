@@ -1,8 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-IMAGE := ghcr.io/farismnrr/portofolio/portfolio-app:latest
-CONTAINER := portfolio-app
+COMPOSE := docker compose
 
 .PHONY: help install lint typecheck audit guard-fast guard-full guard-release build clean image-pull recreate stop logs
 
@@ -37,14 +36,13 @@ clean: ## Remove generated output
 	rm -rf dist .ssr .tmp-ui-check
 
 image-pull: ## Pull the latest production image built by CI
-	docker pull $(IMAGE)
+	$(COMPOSE) pull
 
-recreate: image-pull ## Recreate the local production container from the CI image
-	-docker rm -f $(CONTAINER)
-	docker run -d --name $(CONTAINER) --restart unless-stopped -p 3001:3001 $(IMAGE)
+recreate: image-pull ## Recreate the local production service from the CI image
+	$(COMPOSE) up -d --force-recreate --remove-orphans
 
-stop: ## Stop and remove the local production container
-	-docker rm -f $(CONTAINER)
+stop: ## Stop and remove the local production service
+	$(COMPOSE) down
 
-logs: ## Follow local production container logs
-	docker logs -f $(CONTAINER)
+logs: ## Follow local production service logs
+	$(COMPOSE) logs -f

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650">
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#cfd2cd"/><stop offset="1" stop-color="#aeb3af"/></linearGradient></defs>
+<rect width="900" height="650" fill="url(#g)"/><rect x="60" y="76" width="220" height="248" fill="#454945" opacity=".5"/><rect x="81" y="97" width="178" height="206" fill="#d9dbd7"/>
+<circle cx="570" cy="240" r="110" fill="#c2a88f"/><path d="M455 238c15-111 86-150 161-127 62 18 96 75 93 145-40-53-62-90-149-84-50 3-74 31-105 66z" fill="#232522"/>
+<path d="M390 615c25-172 78-270 182-270 121 0 185 92 214 270z" fill="#171917"/><rect x="744" y="130" width="125" height="370" rx="7" fill="#202521"/><rect x="760" y="150" width="93" height="302" fill="#0d1513"/>
+<circle cx="531" cy="238" r="32" fill="none" stroke="#2b2c2a" stroke-width="8"/><circle cx="615" cy="238" r="32" fill="none" stroke="#2b2c2a" stroke-width="8"/><path d="M563 238h20" stroke="#2b2c2a" stroke-width="8"/>
+<rect x="95" y="477" width="90" height="105" rx="12" fill="#4e5a4f"/><circle cx="139" cy="442" r="56" fill="#647561"/>
+</svg>

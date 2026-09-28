@@ -1,2 +1,69 @@
-<script lang="ts">import { ArrowLeft, MessageSquare, Clock3, Users, Database, Search, Cloud, GitBranch, Eye } from 'lucide-svelte'; import { navigate } from '../lib/router'; import TechChips from '../lib/ui/TechChips.svelte';</script>
-<main class="mx-auto max-w-7xl px-4 py-10 lg:px-8"><a class="link flex items-center gap-2 text-xs" href="/projects" on:click={(e)=>navigate(e,'/projects')}><ArrowLeft size={14}/>View all projects</a><section class="mt-8 grid gap-10 border-b border-base-300 pb-10 lg:grid-cols-[.7fr_1.3fr]"><div><p class="text-[10px] uppercase tracking-[.2em] text-base-content/50">2026</p><h1 class="mt-4 text-5xl font-semibold">Sensio Notes</h1><p class="mt-2 text-2xl font-light text-base-content/60">Meeting Intelligence Platform</p><p class="mt-3 text-sm text-base-content/55">Software Engineer · AI / Backend / Infrastructure</p><p class="mt-5 leading-7 text-base-content/60">An AI-powered meeting intelligence platform that transcribes, understands, and organizes conversations into actionable insights.</p><div class="mt-6 flex gap-3"><a class="btn btn-neutral rounded-none">Visit Product ↗</a><a class="btn btn-outline rounded-none">View Code</a></div></div><img class="aspect-[1.7] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Sensio Notes"/></section><section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="text-[10px] uppercase tracking-[.2em]">01 · Project overview</p><h2 class="mt-4 text-4xl font-light">Turn conversations<br/>into progress.</h2><p class="mt-4 leading-7 text-base-content/60">Sensio Notes transcribes conversations, extracts key insights, and helps teams stay aligned with searchable knowledge and action items.</p></div><img class="aspect-[1.7] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Product overview"/></section><section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="text-[10px] uppercase tracking-[.2em]">02 · The problem</p><h2 class="mt-4 text-4xl font-light">Unstructured conversations don’t scale.</h2><p class="mt-4 leading-7 text-base-content/60">Important information is often lost in unstructured meetings. Teams struggle to find decisions, track action items, and build on past discussions.</p></div><div class="grid md:grid-cols-3">{#each [[MessageSquare,'Unstructured data'],[Clock3,'Lost context'],[Users,'No continuity']] as x}<div class="card rounded-none border border-base-300 p-6 text-center"><svelte:component this={x[0]} class="mx-auto" size={28}/><h3 class="mt-4 font-semibold">{x[1]}</h3><p class="mt-2 text-sm text-base-content/55">Real-world product constraints need explicit systems and workflows.</p></div>{/each}</div></section><section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="text-[10px] uppercase tracking-[.2em]">03 · System architecture</p><h2 class="mt-4 text-4xl font-light">A scalable, event-driven architecture.</h2><p class="mt-4 leading-7 text-base-content/60">A modular architecture separates upload, transcription, AI processing, storage, and delivery so every stage can scale independently.</p></div><div class="grid gap-3 md:grid-cols-3">{#each [[Cloud,'API Server'],[GitBranch,'Background Workers'],[Database,'PostgreSQL'],[Search,'Vector Search'],[Eye,'Observability'],[Cloud,'Object Storage']] as x}<div class="card rounded-none border border-base-300 bg-base-100 p-5 text-center"><svelte:component this={x[0]} class="mx-auto" size={24}/><strong class="mt-3">{x[1]}</strong></div>{/each}</div></section><section class="grid gap-8 py-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="text-[10px] uppercase tracking-[.2em]">04 · AI & retrieval</p><h2 class="mt-4 text-4xl font-light">From audio to actionable insights.</h2><p class="mt-4 leading-7 text-base-content/60">Audio is transcribed, chunked, embedded, retrieved, and converted into structured outputs grounded in meeting content.</p></div><div class="grid gap-3 md:grid-cols-5">{#each ['1. Transcription','2. Chunking','3. Embeddings','4. Retrieval','5. Structured Generation'] as x}<div class="card rounded-none border border-base-300 p-4 text-sm font-semibold">{x}</div>{/each}</div></section><section class="border-t border-base-300 py-8"><p class="text-[10px] uppercase tracking-[.2em]">Tech stack</p><div class="mt-4"><TechChips items={['Svelte','Axum','PostgreSQL','pgvector','Redis','S3','LangGraph','OpenTelemetry']}/></div></section></main>
+<script lang="ts">
+  import { ArrowLeft } from 'lucide-svelte';
+  import { navigate } from '../lib/router';
+  import TechChips from '../lib/ui/TechChips.svelte';
+
+  const problemCards = [
+    ['01','Unstructured data'],
+    ['02','Lost context'],
+    ['03','No continuity']
+  ];
+
+  const architectureCards = [
+    ['01','API Server'],
+    ['02','Background Workers'],
+    ['03','PostgreSQL'],
+    ['04','Vector Search'],
+    ['05','Observability'],
+    ['06','Object Storage']
+  ];
+</script>
+
+<main class="mx-auto max-w-7xl px-4 py-10 lg:px-8">
+  <a class="link flex items-center gap-2 text-xs" href="/projects" on:click={(e)=>navigate(e,'/projects')}><ArrowLeft size={14}/>View all projects</a>
+
+  <section class="mt-8 grid gap-10 border-b border-base-300 pb-10 lg:grid-cols-[.7fr_1.3fr]">
+    <div>
+      <p class="text-[10px] uppercase tracking-[.2em] text-base-content/50">2026</p>
+      <h1 class="mt-4 text-5xl font-semibold">Sensio Notes</h1>
+      <p class="mt-2 text-2xl font-light text-base-content/60">Meeting Intelligence Platform</p>
+      <p class="mt-3 text-sm text-base-content/55">Software Engineer · AI / Backend / Infrastructure</p>
+      <p class="mt-5 leading-7 text-base-content/60">An AI-powered meeting intelligence platform that transcribes, understands, and organizes conversations into actionable insights.</p>
+      <div class="mt-6 flex gap-3">
+        <a class="btn btn-neutral rounded-none" href="https://example.com">Visit Product ↗</a>
+        <a class="btn btn-outline rounded-none" href="https://github.com">View Code</a>
+      </div>
+    </div>
+    <img class="aspect-[1.7] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Sensio Notes"/>
+  </section>
+
+  <section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]">
+    <div><p class="text-[10px] uppercase tracking-[.2em]">01 · Project overview</p><h2 class="mt-4 text-4xl font-light">Turn conversations<br/>into progress.</h2><p class="mt-4 leading-7 text-base-content/60">Sensio Notes transcribes conversations, extracts key insights, and helps teams stay aligned with searchable knowledge and action items.</p></div>
+    <img class="aspect-[1.7] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Product overview"/>
+  </section>
+
+  <section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]">
+    <div><p class="text-[10px] uppercase tracking-[.2em]">02 · The problem</p><h2 class="mt-4 text-4xl font-light">Unstructured conversations don’t scale.</h2><p class="mt-4 leading-7 text-base-content/60">Important information is often lost in unstructured meetings. Teams struggle to find decisions, track action items, and build on past discussions.</p></div>
+    <div class="grid md:grid-cols-3">
+      {#each problemCards as x}
+        <div class="card rounded-none border border-base-300 p-6 text-center"><span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-base-200 text-xs">{x[0]}</span><h3 class="mt-4 font-semibold">{x[1]}</h3><p class="mt-2 text-sm text-base-content/55">Real-world product constraints need explicit systems and workflows.</p></div>
+      {/each}
+    </div>
+  </section>
+
+  <section class="grid gap-8 border-b border-base-300 py-8 lg:grid-cols-[.7fr_1.3fr]">
+    <div><p class="text-[10px] uppercase tracking-[.2em]">03 · System architecture</p><h2 class="mt-4 text-4xl font-light">A scalable, event-driven architecture.</h2><p class="mt-4 leading-7 text-base-content/60">A modular architecture separates upload, transcription, AI processing, storage, and delivery so every stage can scale independently.</p></div>
+    <div class="grid gap-3 md:grid-cols-3">
+      {#each architectureCards as x}
+        <div class="card rounded-none border border-base-300 bg-base-100 p-5 text-center"><span class="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-base-200 text-xs">{x[0]}</span><strong class="mt-3">{x[1]}</strong></div>
+      {/each}
+    </div>
+  </section>
+
+  <section class="grid gap-8 py-8 lg:grid-cols-[.7fr_1.3fr]">
+    <div><p class="text-[10px] uppercase tracking-[.2em]">04 · AI & retrieval</p><h2 class="mt-4 text-4xl font-light">From audio to actionable insights.</h2><p class="mt-4 leading-7 text-base-content/60">Audio is transcribed, chunked, embedded, retrieved, and converted into structured outputs grounded in meeting content.</p></div>
+    <div class="grid gap-3 md:grid-cols-5">{#each ['1. Transcription','2. Chunking','3. Embeddings','4. Retrieval','5. Structured Generation'] as x}<div class="card rounded-none border border-base-300 p-4 text-sm font-semibold">{x}</div>{/each}</div>
+  </section>
+
+  <section class="border-t border-base-300 py-8"><p class="text-[10px] uppercase tracking-[.2em]">Tech stack</p><div class="mt-4"><TechChips items={['Svelte','Axum','PostgreSQL','pgvector','Redis','S3','LangGraph','OpenTelemetry']}/></div></section>
+</main>

@@ -13,7 +13,7 @@ app.use(router);
 app.use(vuetify);
 
 async function mountAgentation() {
-  if (import.meta.env.VITE_ENABLE_AGENTATION !== "true") {
+  if (window.__PORTFOLIO_RUNTIME__?.agentationEnabled !== true) {
     return;
   }
 

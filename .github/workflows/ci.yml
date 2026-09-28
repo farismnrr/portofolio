@@ -13,7 +13,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: farismnrr/portofolio/portfolio-app
 
 jobs:
   frontend:
@@ -33,11 +33,6 @@ jobs:
       - run: npm run check
       - run: npm run build
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
   rust:
     runs-on: ubuntu-latest
     defaults:
@@ -54,25 +49,9 @@ jobs:
       - run: cargo clippy --all-targets --all-features -- -D warnings
       - run: cargo build --release
 
-  integration-build:
-    runs-on: ubuntu-latest
-    needs: [frontend, rust]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
-      - uses: dtolnay/rust-toolchain@stable
-
-      - run: cargo build --release --manifest-path server/Cargo.toml
-      - run: test -f frontend/dist/index.html
-
   docker:
     runs-on: ubuntu-latest
-    needs: [frontend, rust, integration-build]
+    needs: [frontend, rust]
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
@@ -86,24 +65,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=sha-${{ github.sha }}
-            type=ref,event=branch
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-
-      - name: Build and push image
+      - name: Build and push latest
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -124,12 +92,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy image
+      - name: Deploy latest
         env:
-          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           PORTFOLIO_PORT: "3001"
         run: |
           docker compose -p portofolio pull
           docker compose -p portofolio up -d --remove-orphans
           docker compose -p portofolio ps
-          curl --fail --silent --show-error             --retry 10             --retry-delay 2             --retry-connrefused             http://127.0.0.1:3001/ > /dev/null
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null

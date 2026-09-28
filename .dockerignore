@@ -1,0 +1,9 @@
+.git
+.github
+.gitignore
+README.md
+frontend/node_modules
+frontend/dist
+server/target
+target
+.DS_Store

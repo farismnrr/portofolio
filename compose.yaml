@@ -1,6 +1,6 @@
 services:
   portfolio:
-    image: ${PORTFOLIO_IMAGE:-ghcr.io/farismnrr/portofolio:latest}
+    image: ${PORTFOLIO_IMAGE:-ghcr.io/farismnrr/portofolio/portfolio-app:latest}
     restart: unless-stopped
     ports:
       - "${PORTFOLIO_PORT:-3001}:3000"

@@ -4,7 +4,7 @@ A fully static personal portfolio built with **Vue 3, Vuetify 4, Vite, TypeScrip
 
 The repository has a production-only runtime model. There is no development server workflow, backend API, authentication service, dashboard, database, or production SSR server.
 
-GitHub Actions validates the repository, builds the production container image, and publishes it to GitHub Container Registry. Local machines do not rebuild the container image; they pull the CI-produced image and recreate the production container.
+GitHub Actions validates the repository, builds the production container image, and publishes it to GitHub Container Registry. Local machines do not rebuild the container image; they pull the CI-produced image and recreate the production service with Docker Compose.
 
 ## Production runtime
 
@@ -23,13 +23,8 @@ make recreate
 Equivalent commands:
 
 ```bash
-docker pull ghcr.io/farismnrr/portofolio/portfolio-app:latest
-docker rm -f portfolio-app 2>/dev/null || true
-docker run -d \
-  --name portfolio-app \
-  --restart unless-stopped \
-  -p 3001:3001 \
-  ghcr.io/farismnrr/portofolio/portfolio-app:latest
+docker compose pull
+docker compose up -d --force-recreate --remove-orphans
 ```
 
 The portfolio is then available at `http://localhost:3001`.

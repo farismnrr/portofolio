@@ -8,6 +8,30 @@ import "./styles/main.scss";
 const app = import.meta.env.DEV ? createApp(App) : createSSRApp(App);
 const router = createPortfolioRouter(createWebHistory());
 const vuetify = createPortfolioVuetify();
+
 app.use(router);
 app.use(vuetify);
-router.isReady().then(() => app.mount("#app"));
+
+async function mountAgentation() {
+  if (import.meta.env.VITE_ENABLE_AGENTATION !== "true") {
+    return;
+  }
+
+  const [{ AgentationVue, AgentationVuePlugin }] = await Promise.all([
+    import("agentation-vue"),
+    import("agentation-vue/style.css"),
+  ]);
+
+  const root = document.createElement("div");
+  root.id = "agentation-root";
+  document.body.appendChild(root);
+
+  const agentationApp = createApp(AgentationVue);
+  agentationApp.use(AgentationVuePlugin);
+  agentationApp.mount(root);
+}
+
+router.isReady().then(async () => {
+  app.mount("#app");
+  await mountAgentation();
+});

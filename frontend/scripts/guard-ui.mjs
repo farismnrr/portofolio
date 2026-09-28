@@ -33,7 +33,9 @@ for (const file of [
   'lib/ui/SectionHeader.svelte',
   'lib/ui/TechChips.svelte',
   'lib/ui/TimelineEntry.svelte',
-  'lib/ui/ProjectCard.svelte'
+  'lib/ui/ProjectCard.svelte',
+  'lib/ui/ArchitectureDiagram.svelte',
+  'lib/ui/ProcessFlow.svelte'
 ]) {
   try { await readFile(new URL(file, root), 'utf8'); }
   catch { failures.push(`Missing required shared UI primitive: ${file}`); }

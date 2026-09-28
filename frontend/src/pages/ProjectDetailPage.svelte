@@ -3,8 +3,28 @@
   import { navigate } from '../lib/router';
   import TechChips from '../lib/ui/TechChips.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+  import ArchitectureDiagram from '../lib/ui/ArchitectureDiagram.svelte';
+  import ProcessFlow from '../lib/ui/ProcessFlow.svelte';
   import { projects } from '../lib/data';
+
   const project = projects[0];
+
+  const architecture = [
+    { label:'Web Client', meta:'React' },
+    { label:'API Server', meta:'NestJS' },
+    { label:'Background Workers', meta:'LangGraph' },
+    { label:'PostgreSQL', meta:'Primary data' },
+    { label:'Vector Search', meta:'pgvector' },
+    { label:'Object Storage', meta:'S3 audio files' }
+  ];
+
+  const flow = [
+    { title:'Transcription', description:'Convert audio to text with timestamps and speaker context.' },
+    { title:'Chunking', description:'Split transcripts into semantically meaningful sections.' },
+    { title:'Embeddings', description:'Generate vector representations for semantic retrieval.' },
+    { title:'Retrieval', description:'Fetch relevant context for the current task.' },
+    { title:'Generation', description:'Produce summaries, decisions, and structured action items.' }
+  ];
 </script>
 
 <main>
@@ -30,27 +50,68 @@
 
     <section class="grid gap-10 border-b border-black/10 py-10 lg:grid-cols-[.72fr_1.28fr]">
       <div><p class="text-[11px] uppercase tracking-[.2em] text-black/45">02 · The problem</p><h2 class="mt-5 text-[36px] font-light leading-[1.1] tracking-[-0.035em]">Unstructured conversations don’t scale.</h2><p class="mt-5 text-[15px] leading-7 text-black/56">Important information from meetings is often lost. Teams struggle to find decisions, track action items, and build on past discussions.</p></div>
-      <div class="grid md:grid-cols-3">
-        {#each [['01','Unstructured data'],['02','Lost context'],['03','No continuity']] as x}
-          <div class="border border-black/10 p-7 text-center"><span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#eceee8] text-[11px]">{x[0]}</span><h3 class="mt-5 text-[15px] font-semibold">{x[1]}</h3><p class="mt-3 text-[13px] leading-5 text-black/50">Meeting context should stay searchable, structured, and useful after the call ends.</p></div>
-        {/each}
-      </div>
-    </section>
-
-    <section class="grid gap-10 border-b border-black/10 py-10 lg:grid-cols-[.72fr_1.28fr]">
-      <div><p class="text-[11px] uppercase tracking-[.2em] text-black/45">03 · System architecture</p><h2 class="mt-5 text-[36px] font-light leading-[1.1] tracking-[-0.035em]">A scalable, event-driven architecture.</h2><p class="mt-5 text-[15px] leading-7 text-black/56">A modular architecture separates upload, transcription, AI processing, storage, and delivery so each stage can scale independently.</p></div>
       <div class="grid gap-3 md:grid-cols-3">
-        {#each [['01','Web Client'],['02','API Server'],['03','Background Workers'],['04','PostgreSQL'],['05','Vector Search'],['06','Object Storage']] as x}
-          <div class="border border-black/10 bg-white/40 p-6 text-center"><span class="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#eceee8] text-[11px]">{x[0]}</span><strong class="mt-4 block text-[14px]">{x[1]}</strong></div>
+        {#each [
+          ['01','Unstructured data','Searchable context is scattered across long conversations.'],
+          ['02','Lost context','Decisions and rationale disappear after the meeting ends.'],
+          ['03','No continuity','Teams struggle to build on prior discussions consistently.']
+        ] as x}
+          <div class="border border-black/10 bg-white/35 p-7">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9ede5] text-[11px] text-black/60">{x[0]}</span>
+            <h3 class="mt-5 text-[15px] font-semibold">{x[1]}</h3>
+            <p class="mt-3 text-[13px] leading-5 text-black/50">{x[2]}</p>
+          </div>
         {/each}
       </div>
     </section>
 
-    <section class="grid gap-10 py-10 lg:grid-cols-[.72fr_1.28fr]">
-      <div><p class="text-[11px] uppercase tracking-[.2em] text-black/45">04 · AI & retrieval</p><h2 class="mt-5 text-[36px] font-light leading-[1.1] tracking-[-0.035em]">From audio to actionable insights.</h2><p class="mt-5 text-[15px] leading-7 text-black/56">Audio is transcribed, chunked, embedded, retrieved, and converted into structured outputs grounded in meeting content.</p></div>
-      <div class="grid gap-3 md:grid-cols-5">{#each ['1. Transcription','2. Chunking','3. Embeddings','4. Retrieval','5. Generation'] as x}<div class="border border-black/10 p-5 text-[13px] font-semibold">{x}</div>{/each}</div>
+    <section class="grid gap-10 border-b border-black/10 py-12 lg:grid-cols-[.72fr_1.28fr]">
+      <div>
+        <p class="text-[11px] uppercase tracking-[.2em] text-black/45">03 · System architecture</p>
+        <h2 class="mt-5 text-[36px] font-light leading-[1.08] tracking-[-0.035em]">A scalable, event-driven architecture.</h2>
+        <p class="mt-5 max-w-lg text-[15px] leading-7 text-black/56">The system separates request handling, background processing, retrieval, and storage so each workload can scale and fail independently.</p>
+        <p class="mt-5 max-w-lg text-[13px] leading-6 text-black/42">Upload and API paths stay responsive while long-running transcription and AI workloads are processed asynchronously.</p>
+      </div>
+      <ArchitectureDiagram nodes={architecture}/>
     </section>
 
-    <section class="border-t border-black/10 py-9"><p class="text-[11px] uppercase tracking-[.2em] text-black/45">Tech stack</p><div class="mt-5"><TechChips items={['React','NestJS','PostgreSQL','pgvector','Redis','S3','LangGraph','OpenTelemetry']} pills/></div></section>
+    <section class="grid gap-10 border-b border-black/10 py-12 lg:grid-cols-[.72fr_1.28fr]">
+      <div>
+        <p class="text-[11px] uppercase tracking-[.2em] text-black/45">04 · AI & retrieval</p>
+        <h2 class="mt-5 text-[36px] font-light leading-[1.08] tracking-[-0.035em]">From audio to actionable insights.</h2>
+        <p class="mt-5 max-w-lg text-[15px] leading-7 text-black/56">The AI pipeline turns raw meeting audio into grounded, searchable knowledge without hiding the intermediate reasoning steps.</p>
+        <p class="mt-5 max-w-lg text-[13px] leading-6 text-black/42">Every generated output is tied back to transcript context, making summaries and action items easier to verify.</p>
+      </div>
+      <ProcessFlow steps={flow}/>
+    </section>
+
+    <section class="py-10">
+      <div class="grid gap-6 lg:grid-cols-[.72fr_1.28fr]">
+        <div>
+          <p class="text-[11px] uppercase tracking-[.2em] text-black/45">05 · Reliability</p>
+          <h2 class="mt-5 text-[30px] font-light leading-[1.1] tracking-[-0.03em]">Built for real-world usage.</h2>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {#each [
+            ['Background processing','Async workers keep uploads and APIs responsive.'],
+            ['Retry behavior','Transient failures back off and retry safely.'],
+            ['Upload recovery','Interrupted uploads can resume without starting over.'],
+            ['Observability','Logs, metrics, and traces surface system health.']
+          ] as item}
+            <div class="border-t border-black/15 pt-4">
+              <h3 class="text-[13px] font-semibold">{item[0]}</h3>
+              <p class="mt-2 text-[12px] leading-5 text-black/48">{item[1]}</p>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-black/10 py-9">
+      <div class="grid gap-6 lg:grid-cols-[.72fr_1.28fr]">
+        <p class="text-[11px] uppercase tracking-[.2em] text-black/45">Tech stack</p>
+        <TechChips items={['React','NestJS','PostgreSQL','pgvector','Redis','S3','LangGraph','OpenTelemetry']} pills/>
+      </div>
+    </section>
   </PageShell>
 </main>

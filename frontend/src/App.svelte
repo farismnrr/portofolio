@@ -172,7 +172,10 @@
   <h2>Introduction</h2><p>Event-driven systems have become a foundational architecture for modern applications. They help decouple services, improve scalability, and enable real-time capabilities.</p><blockquote>“Event-driven architecture isn’t just about sending messages — it’s about designing for change, failure, and the long term.”</blockquote>
   <h2>Event Boundaries</h2><p>A good event starts with a well-defined boundary. Events should represent meaningful business occurrences that other services care about, not internal implementation details.</p><div class="diagram">Order Service → <b>Event Bus</b> → Inventory Service<br/>↳ Notification Service</div>
   <h2>Delivery Guarantees</h2><table><tbody><tr><th>Guarantee Level</th><th>Description</th><th>Common Use Cases</th></tr><tr><td>At most once</td><td>Messages may be lost.</td><td>Telemetry</td></tr><tr><td>At least once</td><td>Messages delivered one or more times.</td><td>Application events</td></tr><tr><td>Exactly once</td><td>Delivered exactly once.</td><td>Critical workflows</td></tr></tbody></table>
-  <h2>Idempotency</h2><p>Consumers must be able to process the same event multiple times without causing incorrect side effects.</p><pre>fn handle_order_created(event: Event) {\n  if already_processed(event.id) { return; }\n  process(event);\n}</pre>
+  <h2>Idempotency</h2><p>Consumers must be able to process the same event multiple times without causing incorrect side effects.</p><pre>{`fn handle_order_created(event: Event) {
+  if already_processed(event.id) { return; }
+  process(event);
+}`}</pre>
   <h2>Retries</h2><p>Use exponential backoff and a maximum number of attempts. Retries should be deliberate and observable.</p><pre>retry_with_backoff(job, max_attempts = 5);</pre>
   <h2>Dead Letter Queues</h2><p>A DLQ is not a solution — it’s a safety net. Monitor it and have a process to revisit failed messages.</p><h2>Observability</h2><ul><li>Track event throughput and latency</li><li>Include correlation IDs</li><li>Use tracing across service boundaries</li></ul><h2>Lessons Learned</h2><ul><li>Keep event schemas simple.</li><li>Invest in observability early.</li><li>Document contracts and versioning.</li></ul><h2>Conclusion</h2><p>Reliability comes from deliberate boundaries, failure handling, idempotency, retries, and observability.</p></article>
 </main>

@@ -32,8 +32,19 @@ onMounted(() => {
 <template>
   <header class="site-header">
     <RouterLink to="/" class="site-brand" aria-label="Faris Munir home">
-      <img class="site-brand__logo site-brand__logo--light" src="/images/brand/farismnrr-logo.svg" alt="farismnrr." />
-      <img class="site-brand__logo site-brand__logo--dark" src="/images/brand/farismnrr-logo-dark.svg" alt="" aria-hidden="true" />
+      <v-img
+        class="site-brand__logo site-brand__logo--light"
+        src="/images/brand/farismnrr-logo.svg"
+        alt="farismnrr."
+        eager
+      />
+      <v-img
+        class="site-brand__logo site-brand__logo--dark"
+        src="/images/brand/farismnrr-logo-dark.svg"
+        alt=""
+        aria-hidden="true"
+        eager
+      />
     </RouterLink>
 
     <nav class="site-nav" aria-label="Primary navigation">

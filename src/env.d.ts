@@ -1,11 +1,9 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_ENABLE_AGENTATION?: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+interface Window {
+  __PORTFOLIO_RUNTIME__?: {
+    agentationEnabled?: boolean;
+  };
 }
 
 declare module "virtual:content/about" {

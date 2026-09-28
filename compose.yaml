@@ -2,5 +2,7 @@ services:
   portfolio:
     image: ghcr.io/farismnrr/portofolio/portfolio-app:latest
     restart: unless-stopped
+    environment:
+      AGENTATION_ENABLED: ${AGENTATION_ENABLED:-false}
     ports:
       - "3001:3001"

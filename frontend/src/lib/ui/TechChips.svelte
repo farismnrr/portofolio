@@ -1,0 +1,1 @@
+<script lang="ts">export let items: string[] = [];</script><div class="flex flex-wrap gap-2">{#each items as item}<span class="badge badge-ghost badge-sm rounded-full px-3 py-3 text-[11px] font-normal">{item}</span>{/each}</div>

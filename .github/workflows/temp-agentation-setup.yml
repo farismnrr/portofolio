@@ -1,0 +1,65 @@
+name: Temporary Agentation Setup
+
+on:
+  push:
+    branches:
+      - fix/restore-new-ui
+    paths:
+      - package.json
+      - package-lock.json
+      - src/entry-client.ts
+      - src/env.d.ts
+      - .env.example
+      - .github/workflows/temp-agentation-setup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: fix/restore-new-ui
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Sync dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build with Agentation disabled
+        run: npm run build
+        env:
+          VITE_ENABLE_AGENTATION: "false"
+
+      - name: Build with Agentation enabled
+        run: npm run build
+        env:
+          VITE_ENABLE_AGENTATION: "true"
+
+      - name: Commit lockfile changes
+        run: |
+          if git diff --quiet -- package-lock.json package.json; then
+            echo "No dependency changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: sync agentation dependency lockfile"
+          git push origin HEAD:fix/restore-new-ui

@@ -91,7 +91,7 @@ The following are repository invariants:
 - Inspect `git diff --cached` before commit.
 - Do not commit local `.env` files, generated build output, caches, test artifacts, editor-local settings, or temporary SSR output.
 - Commit when requested; do not push unless explicitly requested.
-- Production deployment is image-based: CI publishes GHCR, and local machines pull and recreate the production container instead of building a local image.
+- Production deployment is image-based: CI publishes GHCR, and local machines use Docker Compose to pull and recreate the production service instead of building a local image.
 
 ## Completion Standard
 

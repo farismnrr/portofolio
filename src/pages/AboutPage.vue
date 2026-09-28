@@ -22,7 +22,13 @@ function printPage() {
     </aside>
     <div class="about-grid">
       <aside class="profile-rail">
-        <img class="profile-avatar" :src="about.avatar" :alt="about.name" />
+        <v-img
+          class="profile-avatar"
+          :src="about.avatar"
+          :alt="about.name"
+          eager
+          cover
+        />
         <div class="profile-location"><AppIcon name="globe" :size="17" /> {{ about.location }}</div>
         <div class="tag-row">
           <v-chip

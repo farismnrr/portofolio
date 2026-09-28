@@ -29,6 +29,15 @@ docker compose up -d --force-recreate --remove-orphans
 
 The portfolio is then available at `http://localhost:3001`.
 
+> Migrating from the old raw `docker run` deployment? Remove the legacy `portfolio-app` container once before the first Compose-managed recreate:
+>
+> ```bash
+> docker rm -f portfolio-app
+> make recreate
+> ```
+>
+> After that one-time migration, use Compose/Make targets only.
+
 ## Validation commands
 
 These commands exist for CI and repository verification, not as a development runtime:

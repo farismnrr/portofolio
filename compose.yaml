@@ -1,0 +1,10 @@
+services:
+  portfolio:
+    image: ${PORTFOLIO_IMAGE:-ghcr.io/farismnrr/portofolio:latest}
+    container_name: portfolio
+    restart: unless-stopped
+    ports:
+      - "${PORTFOLIO_PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      DIST_DIR: /app/frontend/dist

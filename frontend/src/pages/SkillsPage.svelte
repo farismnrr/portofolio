@@ -1,2 +1,57 @@
-<script lang="ts">import { education, skillGroups, principles } from '../lib/data'; import PageIntro from '../lib/ui/PageIntro.svelte'; import TechChips from '../lib/ui/TechChips.svelte'; import { navigate } from '../lib/router';</script>
-<main class="mx-auto max-w-7xl px-4 py-12 lg:px-8"><section class="grid gap-10 border-b border-base-300 pb-12 lg:grid-cols-[.7fr_1.3fr]"><PageIntro eyebrow="Education" title="Academic Foundation" subtitle="A strong foundation in computer science and electronics shaped how I solve real-world problems."/><div>{#each education as item}<article class="grid gap-4 border-b border-base-300 py-6 md:grid-cols-[130px_1fr]"><p class="text-base-content/50">{item[0]}</p><div><h3 class="text-xl font-semibold">{item[1]}</h3><p>{item[2]}</p><p class="mt-2 leading-6 text-base-content/60">{item[3]}</p></div></article>{/each}</div></section><section class="py-10"><PageIntro eyebrow="Technical skills" title="Tools and Technologies" description="A curated set of technologies I work with to design, build, and operate reliable systems across backend, AI, and connected devices."/><div class="mt-6 grid gap-x-10 md:grid-cols-2">{#each skillGroups as group}<div class="border-b border-base-300 py-6"><h3 class="text-xs font-semibold uppercase tracking-[0.18em]">{group[0]}</h3><p class="mt-2 text-sm text-base-content/55">{group[1]}</p><div class="mt-4"><TechChips items={group[2]}/></div></div>{/each}</div></section><section class="border-t border-base-300 py-10"><PageIntro eyebrow="Engineering principles" title="Principles I Work By" description="These principles guide how I approach problems, make trade-offs, and build systems that create lasting value."/><div class="mt-6 grid gap-x-10 md:grid-cols-2">{#each principles as p}<article class="grid grid-cols-[42px_1fr] gap-4 border-b border-base-300 py-6"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-base-200 text-xs">{p[0]}</span><div><h3 class="font-semibold">{p[1]}</h3><p class="mt-1 text-sm leading-6 text-base-content/60">{p[2]}</p></div></article>{/each}</div></section><section class="grid gap-8 border-t border-base-300 py-10 md:grid-cols-2"><div><p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-base-content/55">Let’s connect</p><h2 class="mt-3 text-4xl font-semibold">Interested in working together?</h2><p class="mt-3 max-w-xl text-base-content/60">I’m always open to discussing new opportunities, interesting projects, or just having a conversation about technology and ideas.</p><div class="mt-5 flex gap-3"><a class="btn btn-neutral rounded-none" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View Projects →</a><a class="btn btn-outline rounded-none" href="mailto:hello@example.com">Contact Me</a></div></div><img class="aspect-[2] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Workspace"/></section></main>
+<script lang="ts">
+  import { education, skillGroups, principles } from '../lib/data';
+  import PageIntro from '../lib/ui/PageIntro.svelte';
+  import TechChips from '../lib/ui/TechChips.svelte';
+  import { navigate } from '../lib/router';
+
+  const skills = skillGroups as [string, string, string[]][];
+</script>
+
+<main class="mx-auto max-w-7xl px-4 py-12 lg:px-8">
+  <section class="grid gap-10 border-b border-base-300 pb-12 lg:grid-cols-[.7fr_1.3fr]">
+    <PageIntro eyebrow="Education" title="Academic Foundation" subtitle="A strong foundation in computer science and electronics shaped how I solve real-world problems."/>
+    <div>
+      {#each education as item}
+        <article class="grid gap-4 border-b border-base-300 py-6 md:grid-cols-[130px_1fr]">
+          <p class="text-base-content/50">{item[0]}</p>
+          <div><h3 class="text-xl font-semibold">{item[1]}</h3><p>{item[2]}</p><p class="mt-2 leading-6 text-base-content/60">{item[3]}</p></div>
+        </article>
+      {/each}
+    </div>
+  </section>
+
+  <section class="py-10">
+    <PageIntro eyebrow="Technical skills" title="Tools and Technologies" description="A curated set of technologies I work with to design, build, and operate reliable systems across backend, AI, and connected devices."/>
+    <div class="mt-6 grid gap-x-10 md:grid-cols-2">
+      {#each skills as group}
+        <div class="border-b border-base-300 py-6">
+          <h3 class="text-xs font-semibold uppercase tracking-[0.18em]">{group[0]}</h3>
+          <p class="mt-2 text-sm text-base-content/55">{group[1]}</p>
+          <div class="mt-4"><TechChips items={group[2]}/></div>
+        </div>
+      {/each}
+    </div>
+  </section>
+
+  <section class="border-t border-base-300 py-10">
+    <PageIntro eyebrow="Engineering principles" title="Principles I Work By" description="These principles guide how I approach problems, make trade-offs, and build systems that create lasting value."/>
+    <div class="mt-6 grid gap-x-10 md:grid-cols-2">
+      {#each principles as p}
+        <article class="grid grid-cols-[42px_1fr] gap-4 border-b border-base-300 py-6">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-base-200 text-xs">{p[0]}</span>
+          <div><h3 class="font-semibold">{p[1]}</h3><p class="mt-1 text-sm leading-6 text-base-content/60">{p[2]}</p></div>
+        </article>
+      {/each}
+    </div>
+  </section>
+
+  <section class="grid gap-8 border-t border-base-300 py-10 md:grid-cols-2">
+    <div>
+      <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-base-content/55">Let’s connect</p>
+      <h2 class="mt-3 text-4xl font-semibold">Interested in working together?</h2>
+      <p class="mt-3 max-w-xl text-base-content/60">I’m always open to discussing new opportunities, interesting projects, or just having a conversation about technology and ideas.</p>
+      <div class="mt-5 flex gap-3"><a class="btn btn-neutral rounded-none" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View Projects →</a><a class="btn btn-outline rounded-none" href="mailto:hello@example.com">Contact Me</a></div>
+    </div>
+    <img class="aspect-[2] w-full bg-base-200 object-cover" src="/images/project-meeting.svg" alt="Workspace"/>
+  </section>
+</main>

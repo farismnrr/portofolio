@@ -1,2 +1,14 @@
-<script lang="ts">export let eyebrow=''; export let title=''; export let subtitle=''; export let description='';</script>
-<section class="border-b border-base-300 pb-10">{#if eyebrow}<p class="mb-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-base-content/55">{eyebrow}</p>{/if}<h1 class="max-w-5xl text-4xl font-semibold tracking-tight md:text-6xl">{title}</h1>{#if subtitle}<p class="mt-3 max-w-5xl text-3xl font-light leading-tight text-base-content/65 md:text-5xl">{subtitle}</p>{/if}{#if description}<p class="mt-5 max-w-3xl text-sm leading-7 text-base-content/60 md:text-base">{description}</p>{/if}</section>
+<script lang="ts">
+  export let eyebrow='';
+  export let title='';
+  export let subtitle='';
+  export let description='';
+  export let compact=false;
+</script>
+
+<section>
+  {#if eyebrow}<p class="mb-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-black/48">{eyebrow}</p>{/if}
+  <h1 class={compact ? "max-w-5xl text-[44px] font-semibold leading-[1.02] tracking-[-0.04em] md:text-[58px]" : "max-w-6xl text-[50px] font-semibold leading-[1.02] tracking-[-0.045em] md:text-[68px]"}>{title}</h1>
+  {#if subtitle}<p class="mt-3 max-w-6xl text-[30px] font-light leading-[1.08] tracking-[-0.03em] text-black/62 md:text-[46px]">{subtitle}</p>{/if}
+  {#if description}<p class="mt-5 max-w-3xl text-[15px] leading-7 text-black/56 md:text-[16px]">{description}</p>{/if}
+</section>

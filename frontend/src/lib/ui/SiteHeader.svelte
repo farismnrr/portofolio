@@ -2,13 +2,36 @@
   import { Github, Linkedin, Sun } from 'lucide-svelte';
   import { nav } from '../data';
   import { navigate } from '../router';
+  import PageShell from './PageShell.svelte';
+
   export let currentPath = '/';
 </script>
 
-<header class="sticky top-0 z-50 border-b border-base-300 bg-base-100/95 backdrop-blur">
-  <div class="navbar mx-auto max-w-7xl px-4 lg:px-8">
-    <div class="navbar-start"><a href="/" on:click={(e)=>navigate(e,'/')} class="btn btn-ghost px-0 text-lg font-semibold tracking-tight">AM</a></div>
-    <div class="navbar-center hidden lg:flex"><ul class="menu menu-horizontal gap-1 px-1 text-xs">{#each nav as item}<li><a class:font-semibold={currentPath===item[1]} class:border-b-2={currentPath===item[1]} class:border-neutral={currentPath===item[1]} href={item[1]} on:click={(e)=>navigate(e,item[1])}>{item[0]}</a></li>{/each}</ul></div>
-    <div class="navbar-end gap-1"><a class="btn btn-circle btn-ghost btn-sm" aria-label="GitHub" href="https://github.com"><Github size={17}/></a><a class="btn btn-circle btn-ghost btn-sm" aria-label="LinkedIn" href="https://linkedin.com"><Linkedin size={17}/></a><div class="divider divider-horizontal mx-1"></div><button class="btn btn-circle btn-ghost btn-sm" aria-label="Theme"><Sun size={17}/></button></div>
-  </div>
+<header class="sticky top-0 z-50 border-b border-black/10 bg-[#f8f8f6]/95 backdrop-blur-md">
+  <PageShell>
+    <div class="flex h-[74px] items-center justify-between">
+      <a href="/" on:click={(e)=>navigate(e,'/')} class="text-[22px] font-semibold tracking-[-0.04em]">AM</a>
+
+      <nav class="hidden h-full items-center lg:flex">
+        {#each nav as item}
+          <a
+            href={item[1]}
+            on:click={(e)=>navigate(e,item[1])}
+            class="relative flex h-full items-center px-[18px] text-[13px] text-black/65 transition hover:text-black"
+            class:text-black={currentPath===item[1]}
+          >
+            {item[0]}
+            {#if currentPath===item[1]}<span class="absolute inset-x-[14px] bottom-0 h-px bg-black"></span>{/if}
+          </a>
+        {/each}
+      </nav>
+
+      <div class="flex items-center gap-1">
+        <a class="btn btn-circle btn-ghost btn-sm" aria-label="GitHub" href="https://github.com"><Github size={19}/></a>
+        <a class="btn btn-circle btn-ghost btn-sm" aria-label="LinkedIn" href="https://linkedin.com"><Linkedin size={19}/></a>
+        <span class="mx-2 hidden h-6 w-px bg-black/12 sm:block"></span>
+        <button class="btn btn-circle btn-ghost btn-sm" aria-label="Theme"><Sun size={19}/></button>
+      </div>
+    </div>
+  </PageShell>
 </header>

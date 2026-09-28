@@ -1,2 +1,21 @@
-<script lang="ts">import TechChips from './TechChips.svelte'; import { navigate } from '../router'; export let project:any; export let featured=false;</script>
-<article class={featured?'grid gap-8 border-b border-base-300 pb-8 lg:grid-cols-[1.35fr_.65fr]':'card rounded-none border-b border-base-300 pb-8'}><a href="/projects/sensio-notes" on:click={(e)=>navigate(e,'/projects/sensio-notes')} class="block overflow-hidden bg-base-200"><img class="aspect-[1.75] w-full object-cover transition duration-300 hover:scale-[1.01]" src={project.image} alt={project.title}/></a><div class={featured?'py-2':'pt-4'}><p class="text-[10px] uppercase tracking-[0.2em] text-base-content/50">{project.id} / 08 · {project.year}</p><h2 class="mt-2 text-2xl font-semibold tracking-tight">{project.title}</h2><p class="text-lg text-base-content/60">{project.subtitle}</p><p class="mt-3 max-w-xl text-sm leading-6 text-base-content/60">{project.description}</p><div class="mt-4 text-xs text-base-content/55"><span class="mr-4">Role</span>{project.role}</div><div class="mt-4"><TechChips items={project.tech}/></div>{#if featured}<a class="btn btn-neutral btn-sm mt-6 rounded-none px-6" href="/projects/sensio-notes" on:click={(e)=>navigate(e,'/projects/sensio-notes')}>View project →</a>{/if}</div></article>
+<script lang="ts">
+  import TechChips from './TechChips.svelte';
+  import { navigate } from '../router';
+  export let project:any;
+  export let featured=false;
+</script>
+
+<article class={featured ? "grid gap-10 border-b border-black/10 pb-10 lg:grid-cols-[1.45fr_.65fr]" : "border-b border-black/10 pb-9"}>
+  <a href="/projects/meeting-intelligence-platform" on:click={(e)=>navigate(e,'/projects/meeting-intelligence-platform')} class="block overflow-hidden bg-black/5">
+    <img class={featured ? "aspect-[1.78] w-full object-cover transition duration-300 hover:scale-[1.01]" : "aspect-[1.78] w-full object-cover transition duration-300 hover:scale-[1.01]"} src={project.image} alt={project.title}/>
+  </a>
+  <div class={featured ? "self-center py-3" : "pt-4"}>
+    <p class="text-[11px] uppercase tracking-[0.18em] text-black/43">{project.id} / {project.year}</p>
+    <h2 class="mt-2 text-[25px] font-semibold leading-tight tracking-[-0.03em]">{project.title}</h2>
+    {#if project.subtitle}<p class="mt-1 text-[17px] text-black/55">{project.subtitle}</p>{/if}
+    <p class="mt-3 max-w-2xl text-[14px] leading-6 text-black/55">{project.description}</p>
+    <div class="mt-3 grid grid-cols-[48px_1fr] text-[11px]"><span class="text-black/35">Role</span><span class="text-black/55">{project.role}</span></div>
+    <div class="mt-2 grid grid-cols-[48px_1fr]"><span class="text-[11px] text-black/35">Tech</span><TechChips items={project.tech}/></div>
+    {#if featured}<a class="btn btn-neutral btn-sm mt-7 rounded-none border-0 bg-[#354536] px-7 font-normal text-white hover:bg-[#263427]" href="/projects/meeting-intelligence-platform" on:click={(e)=>navigate(e,'/projects/meeting-intelligence-platform')}>View project →</a>{/if}
+  </div>
+</article>

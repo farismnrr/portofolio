@@ -1,7 +1,46 @@
 <script lang="ts">
   import { Github, Linkedin, Mail, MapPin, Globe2, FileText } from 'lucide-svelte';
-  import { experiences } from '../lib/data';
+  import { experiences, profileImage } from '../lib/data';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
+  import PageShell from '../lib/ui/PageShell.svelte';
 </script>
-<main class="mx-auto grid max-w-7xl gap-10 px-4 py-12 lg:grid-cols-[250px_1fr] lg:px-8"><aside class="border-base-300 lg:border-r lg:pr-8"><img class="aspect-[.8] w-full object-cover" src="/images/profile.svg" alt="Alex Morgan"/><h2 class="mt-5 text-3xl font-semibold">Alex Morgan</h2><p class="text-base-content/60">Software Engineer</p><div class="mt-7 space-y-3 text-sm text-base-content/65"><p class="flex items-center gap-3"><MapPin size={16}/>Jakarta, Indonesia</p><p class="flex items-center gap-3"><Globe2 size={16}/>English, Bahasa Indonesia</p></div><div class="divider"></div><div class="space-y-3 text-sm"><a class="flex items-center gap-3" href="https://github.com"><Github size={17}/>GitHub</a><a class="flex items-center gap-3" href="https://linkedin.com"><Linkedin size={17}/>LinkedIn</a><a class="flex items-center gap-3" href="mailto:hello@example.com"><Mail size={17}/>Email</a><a class="flex items-center gap-3" href="/"><FileText size={17}/>Download Resume</a></div></aside><section><PageIntro eyebrow="About me" title="About" subtitle="I build systems that connect applications, infrastructure, intelligence, and real-world devices." description="I’m a software engineer focused on backend architecture, distributed systems, and applied AI. I enjoy building reliable, scalable systems that bridge the digital and physical world."/><div class="py-8"><p class="max-w-4xl leading-7 text-base-content/65">My work sits at the intersection of backend engineering, machine learning, and the Internet of Things. I’m motivated by complex, real-world problems and the opportunity to turn them into practical, maintainable solutions.</p></div><div class="border-t border-base-300 pt-5"><div class="flex items-center justify-between"><p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-base-content/55">Work experience</p><a class="link text-xs" href="/experience">View full experience →</a></div>{#each experiences.slice(0,2) as item}<TimelineEntry {item}/>{/each}</div></section></main>
+
+<main>
+  <PageShell className="py-14 lg:py-16">
+    <div class="grid gap-12 lg:grid-cols-[300px_1fr] lg:gap-16">
+      <aside class="lg:border-r lg:border-black/10 lg:pr-10">
+        <img class="aspect-[.8] w-full object-cover" src={profileImage} alt="Alex Morgan"/>
+        <h2 class="mt-6 text-[34px] font-semibold tracking-[-0.04em]">Alex Morgan</h2>
+        <p class="mt-1 text-[18px] text-black/55">Software Engineer</p>
+        <div class="mt-8 space-y-4 text-[14px] text-black/62">
+          <p class="flex items-center gap-3"><MapPin size={17}/>Jakarta, Indonesia</p>
+          <p class="flex items-center gap-3"><Globe2 size={17}/>English, Bahasa Indonesia</p>
+        </div>
+        <div class="my-8 h-px bg-black/10"></div>
+        <div class="space-y-4 text-[14px]">
+          <a class="flex items-center gap-3 hover:opacity-60" href="https://github.com"><Github size={18}/>GitHub</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="https://linkedin.com"><Linkedin size={18}/>LinkedIn</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="mailto:hello@example.com"><Mail size={18}/>Email</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="/"><FileText size={18}/>Download Resume</a>
+        </div>
+      </aside>
+
+      <section>
+        <PageIntro eyebrow="About me" title="About" subtitle="I build systems that connect applications, infrastructure, intelligence, and real-world devices."/>
+        <div class="mt-8 max-w-5xl space-y-5 text-[16px] leading-8 text-black/58">
+          <p>I’m a software engineer with a focus on backend architecture, distributed systems, and applied AI. I enjoy building reliable, scalable systems that bridge the digital and physical world — from cloud infrastructure and data pipelines to intelligent services and connected devices.</p>
+          <p>My work sits at the intersection of backend engineering, machine learning, and the Internet of Things. I’m motivated by complex, real-world problems and the opportunity to turn them into practical, maintainable solutions that create real value.</p>
+        </div>
+
+        <div class="mt-10 border-t border-black/10 pt-7">
+          <div class="flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">Work experience</p>
+            <a class="text-[12px] text-black/70 underline underline-offset-4" href="/experience">View full experience →</a>
+          </div>
+          {#each experiences.slice(0,2) as item, i}<TimelineEntry {item} first={i===0} last={i===1}/>{/each}
+        </div>
+      </section>
+    </div>
+  </PageShell>
+</main>

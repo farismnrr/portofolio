@@ -13,19 +13,26 @@
 
 html {
   scroll-behavior: smooth;
+  background: #f8f8f6;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  background: #f7f7f4;
+  background: #f8f8f6;
   color: #20211f;
   font-family: var(--font-sans);
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
 }
 
 img {
   display: block;
   max-width: 100%;
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {

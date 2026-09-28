@@ -19,12 +19,22 @@ async function walk(dir, rel = '') {
     if (!entry.name.endsWith('.svelte')) continue;
     const source = await readFile(next, 'utf8');
     if (source.includes('<style')) failures.push(`${nextRel}: local <style> blocks are not allowed; prefer DaisyUI/Tailwind utilities.`);
+    if (nextRel.startsWith('pages/') && source.includes('max-w-[1560px]')) failures.push(`${nextRel}: page shells must use the shared PageShell component instead of duplicating shell geometry.`);
   }
 }
 
 await walk(root);
 
-for (const file of ['lib/ui/SiteHeader.svelte','lib/ui/SiteFooter.svelte','lib/ui/PageIntro.svelte','lib/ui/TechChips.svelte','lib/ui/TimelineEntry.svelte','lib/ui/ProjectCard.svelte']) {
+for (const file of [
+  'lib/ui/PageShell.svelte',
+  'lib/ui/SiteHeader.svelte',
+  'lib/ui/SiteFooter.svelte',
+  'lib/ui/PageIntro.svelte',
+  'lib/ui/SectionHeader.svelte',
+  'lib/ui/TechChips.svelte',
+  'lib/ui/TimelineEntry.svelte',
+  'lib/ui/ProjectCard.svelte'
+]) {
   try { await readFile(new URL(file, root), 'utf8'); }
   catch { failures.push(`Missing required shared UI primitive: ${file}`); }
 }

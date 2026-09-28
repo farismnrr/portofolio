@@ -1,11 +1,77 @@
 <script lang="ts">
   import { Github, Linkedin, Mail, MapPin } from 'lucide-svelte';
-  import { experiences, projects } from '../lib/data';
+  import { experiences, projects, profileImage } from '../lib/data';
   import { navigate } from '../lib/router';
+  import PageShell from '../lib/ui/PageShell.svelte';
   import ProjectCard from '../lib/ui/ProjectCard.svelte';
   import SectionHeader from '../lib/ui/SectionHeader.svelte';
 </script>
-<main class="mx-auto max-w-7xl px-4 lg:px-8"><section class="grid gap-10 py-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-20 lg:py-16"><div><p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-base-content/55">Software Engineer · Backend · AI · IoT</p><h1 class="mt-5 text-5xl font-semibold tracking-tight md:text-6xl">Alex Morgan</h1><p class="mt-3 text-4xl font-light leading-tight text-base-content/65 md:text-5xl">Building reliable systems<br/>for complex problems.</p><p class="mt-5 max-w-xl leading-7 text-base-content/60">A software engineer working across backend architecture, intelligent systems, cloud infrastructure, and connected devices.</p><div class="mt-7 flex flex-wrap gap-3"><a class="btn btn-neutral rounded-none px-6" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View Projects →</a><a class="btn btn-outline rounded-none px-6" href="mailto:hello@example.com">Contact</a></div><div class="mt-7 flex flex-wrap gap-6 border-t border-base-300 pt-4 text-xs text-base-content/60"><span class="flex items-center gap-2"><MapPin size={14}/>Jakarta, Indonesia</span><span class="flex items-center gap-2"><span class="status status-success"></span>Available for selected opportunities</span></div><div class="mt-5 flex gap-5 text-xs"><a class="flex items-center gap-2" href="https://github.com"><Github size={15}/>GitHub</a><a class="flex items-center gap-2" href="https://linkedin.com"><Linkedin size={15}/>LinkedIn</a><a class="flex items-center gap-2" href="mailto:hello@example.com"><Mail size={15}/>Email</a></div></div><div><img class="aspect-[1.38] w-full bg-base-200 object-cover" src="/images/profile.svg" alt="Alex Morgan"/><blockquote class="ml-auto mt-5 w-fit border-l border-base-300 pl-4 text-right text-sm text-base-content/55">“Better systems create<br/>more possibilities.”</blockquote></div></section>
-<section class="border-t border-base-300 py-8"><SectionHeader eyebrow="Selected experience" action="View full experience" href="/experience"/>{#each experiences.slice(0,3) as item}<div class="grid gap-3 border-b border-base-300 py-5 md:grid-cols-[150px_1fr_1.4fr]"><p class="text-xs text-base-content/50">{item.year}</p><div><h3 class="font-semibold">{item.role}</h3><p class="text-xs text-base-content/50">{item.company}</p></div><p class="text-sm leading-6 text-base-content/55">{item.summary}</p></div>{/each}</section>
-<section class="border-t border-base-300 py-8"><SectionHeader eyebrow="Selected projects" action="View all projects" href="/projects"/><div class="grid gap-8 md:grid-cols-2">{#each projects.slice(0,4) as project}<ProjectCard {project}/>{/each}</div></section>
-<section class="grid gap-8 border-t border-base-300 py-9 md:grid-cols-2"><div><p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-base-content/55">About</p><h2 class="mt-4 text-3xl font-light leading-tight">I care about software that<br/>remains understandable<br/>after it grows.</h2></div><div class="self-end text-sm leading-6 text-base-content/60"><p>I enjoy building systems at the intersection of backend infrastructure, intelligent systems, and connected devices. I value clarity, long-term thinking, and maintainable solutions.</p><a class="link mt-4 inline-block" href="/about" on:click={(e)=>navigate(e,'/about')}>More about me →</a></div></section></main>
+
+<main>
+  <PageShell>
+    <section class="grid gap-12 py-16 lg:grid-cols-[1.04fr_.96fr] lg:gap-24 lg:py-20">
+      <div class="self-center">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/48">Software Engineer · Backend · AI · IoT</p>
+        <h1 class="mt-6 text-[54px] font-semibold leading-[.98] tracking-[-0.05em] md:text-[68px]">Alex Morgan</h1>
+        <p class="mt-4 max-w-[760px] text-[38px] font-light leading-[1.04] tracking-[-0.035em] text-black/64 md:text-[54px]">Building reliable systems<br/>for complex problems.</p>
+        <p class="mt-6 max-w-[680px] text-[16px] leading-7 text-black/56">A software engineer working across backend architecture, intelligent systems, cloud infrastructure, and connected devices.</p>
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a class="btn btn-neutral h-12 min-h-0 rounded-none border-0 bg-[#344534] px-7 text-[14px] font-normal text-white hover:bg-[#263526]" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View Projects <span class="ml-2">→</span></a>
+          <a class="btn btn-outline h-12 min-h-0 rounded-none border-black/20 px-8 text-[14px] font-normal hover:bg-black hover:text-white" href="mailto:hello@example.com">Contact</a>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-x-9 gap-y-3 border-t border-black/10 pt-5 text-[12px] text-black/55">
+          <span class="flex items-center gap-2"><MapPin size={15}/>Jakarta, Indonesia</span>
+          <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-[#45664a]"></span>Available for selected opportunities</span>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-6 text-[12px] text-black/72">
+          <a class="flex items-center gap-2 hover:text-black" href="https://github.com"><Github size={16}/>GitHub</a>
+          <a class="flex items-center gap-2 hover:text-black" href="https://linkedin.com"><Linkedin size={16}/>LinkedIn</a>
+          <a class="flex items-center gap-2 hover:text-black" href="mailto:hello@example.com"><Mail size={16}/>Email</a>
+        </div>
+      </div>
+
+      <div>
+        <img class="aspect-[1.36] w-full object-cover" src={profileImage} alt="Alex Morgan"/>
+        <blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“Better systems create<br/>more possibilities.”</blockquote>
+      </div>
+    </section>
+
+    <section class="border-t border-black/10 py-10">
+      <SectionHeader eyebrow="Selected experience" action="View full experience" href="/experience"/>
+      <div>
+        {#each experiences.slice(0,3) as item, i}
+          <article class="grid min-h-[108px] gap-4 border-b border-black/[0.08] py-6 md:grid-cols-[170px_44px_1fr_1.5fr]">
+            <p class="pt-1 text-[13px] text-black/43">{item.year}</p>
+            <div class="relative hidden md:block">
+              <span class={"absolute left-[6px] top-[6px] h-[9px] w-[9px] rounded-full border " + (i===0 ? "border-[#38503a] bg-[#38503a]" : "border-black/45 bg-[#f8f8f6]")}></span>
+              {#if i<2}<span class="absolute left-[10px] top-[15px] h-[116px] w-px bg-black/12"></span>{/if}
+            </div>
+            <div><h3 class="text-[17px] font-semibold">{item.role}</h3><p class="mt-1 text-[13px] text-black/45">{item.company}</p></div>
+            <p class="max-w-[650px] text-[14px] leading-6 text-black/52">{item.summary}</p>
+          </article>
+        {/each}
+      </div>
+    </section>
+
+    <section class="border-t border-black/10 py-10">
+      <SectionHeader eyebrow="Selected projects" action="View all projects" href="/projects"/>
+      <div class="grid gap-x-10 gap-y-12 md:grid-cols-2">
+        {#each projects.slice(0,4) as project}<ProjectCard {project}/>{/each}
+      </div>
+    </section>
+
+    <section class="grid gap-10 border-t border-black/10 py-10 md:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">About</p>
+        <h2 class="mt-5 text-[31px] font-light leading-[1.12] tracking-[-0.03em] text-black/78">I care about software that<br/>remains understandable<br/>after it grows.</h2>
+      </div>
+      <div class="max-w-2xl self-end text-[14px] leading-6 text-black/56">
+        <p>I’m a software engineer who enjoys building systems at the intersection of backend infrastructure, intelligent systems, and connected devices. I value clarity, long-term thinking, and maintainable solutions.</p>
+        <a class="mt-4 inline-block text-[12px] text-black/70 underline underline-offset-4" href="/about" on:click={(e)=>navigate(e,'/about')}>More about me →</a>
+      </div>
+    </section>
+  </PageShell>
+</main>

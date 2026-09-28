@@ -1,2 +1,28 @@
-<script lang="ts">import TechChips from './TechChips.svelte'; export let item:any; export let compact=false;</script>
-<article class="grid gap-4 border-b border-base-300 py-7 md:grid-cols-[130px_24px_1fr]"><p class="text-sm text-base-content/55">{item.year}</p><div class="relative hidden md:block"><span class="absolute left-1 top-2 h-2.5 w-2.5 rounded-full border border-neutral bg-base-100"></span><span class="absolute left-[8px] top-5 h-[calc(100%+2rem)] w-px bg-base-300"></span></div><div><h3 class="text-xl font-semibold">{item.company}</h3><p class="text-base text-base-content/70">{item.role}{item.location ? ' · '+item.location : ''}</p><p class="mt-4 max-w-3xl leading-7 text-base-content/65">{item.summary}</p>{#if !compact}<ul class="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-base-content/65">{#each item.bullets as bullet}<li>{bullet}</li>{/each}</ul><div class="mt-5"><TechChips items={item.tech}/></div>{/if}</div></article>
+<script lang="ts">
+  import TechChips from './TechChips.svelte';
+  export let item:any;
+  export let compact=false;
+  export let first=false;
+  export let last=false;
+</script>
+
+<article class="grid gap-5 border-b border-black/10 py-8 md:grid-cols-[170px_42px_1fr] lg:py-10">
+  <p class="pt-1 text-[14px] text-black/48">{item.year}</p>
+  <div class="relative hidden md:block">
+    {#if !first}<span class="absolute left-[9px] top-[-2.5rem] h-[2.8rem] w-px bg-black/12"></span>{/if}
+    <span class={"absolute left-[5px] top-[7px] h-[9px] w-[9px] rounded-full border " + (first ? "border-[#334734] bg-[#334734]" : "border-black/55 bg-[#f8f8f6]")}></span>
+    {#if !last}<span class="absolute left-[9px] top-[17px] h-[calc(100%+2.5rem)] w-px bg-black/12"></span>{/if}
+  </div>
+  <div class="max-w-4xl">
+    <h3 class="text-[22px] font-semibold tracking-[-0.025em]">{item.company}</h3>
+    <p class="mt-1 text-[16px] text-black/62">{item.role}</p>
+    {#if item.location}<p class="mt-1 text-[13px] text-black/42">{item.location}</p>{/if}
+    <p class="mt-5 text-[15px] leading-7 text-black/58">{item.summary}</p>
+    {#if !compact}
+      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58">
+        {#each item.bullets as bullet}<li>{bullet}</li>{/each}
+      </ul>
+      <div class="mt-5"><TechChips items={item.tech} pills/></div>
+    {/if}
+  </div>
+</article>

@@ -92,7 +92,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha,prefix=sha-
+            type=raw,value=sha-${{ github.sha }}
             type=ref,event=branch
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
@@ -106,3 +106,30 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: [self-hosted, Linux, X64]
+    needs: docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/refactor/ui-tech-stack-reset'
+    concurrency:
+      group: portfolio-self-hosted
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy image
+        env:
+          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          PORTFOLIO_PORT: "3001"
+        run: |
+          docker compose -p portofolio pull
+          docker compose -p portofolio up -d --remove-orphans
+          docker compose -p portofolio ps
+          curl --fail --silent --show-error             --retry 10             --retry-delay 2             --retry-connrefused             http://127.0.0.1:3001/ > /dev/null

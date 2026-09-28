@@ -1,0 +1,7 @@
+services:
+  portfolio:
+    image: ghcr.io/farismnrr/portofolio/portfolio-app:latest
+    container_name: portfolio-app
+    restart: unless-stopped
+    ports:
+      - "3001:3001"

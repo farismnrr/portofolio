@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - fix/restore-new-ui
   pull_request:
 
 permissions:
@@ -41,11 +42,14 @@ jobs:
         run: ./.agents/scripts/engineering-guard.sh portfolio full
 
   publish-image:
-    name: Publish container image
+    name: Publish latest container image
     needs: guard
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: portfolio-latest-image
+      cancel-in-progress: false
     permissions:
       contents: read
       packages: write
@@ -70,9 +74,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,event=branch
-            type=sha
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6

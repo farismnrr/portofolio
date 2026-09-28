@@ -3,6 +3,6 @@ services:
     image: ghcr.io/farismnrr/portofolio/portfolio-app:latest
     restart: unless-stopped
     environment:
-      AGENTATION_ENABLED: ${AGENTATION_ENABLED:-false}
+      AGENTATION_ENABLED: "true"
     ports:
       - "3001:3001"

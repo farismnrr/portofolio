@@ -8,107 +8,167 @@ cardTitle: "Sensio IoT"
 subtitle: "On-Prem Smart-Space Platform"
 role: "Software Engineer · Rust / IoT / Platform"
 category: "IoT · Rust"
-description: "A Rust-based on-prem smart-space platform built around explicit site membership, server-rendered control surfaces, PostgreSQL state, secure sessions, MQTT integration, and production-only container delivery."
+description: "An on-prem platform for organizing physical spaces, users, and connected-device control around explicit site boundaries."
 image: "/images/projects/featured/sensio-iot.png"
 tech: [Rust, Axum, Askama, SQLx, PostgreSQL, MQTT, OpenTelemetry, Docker]
 productUrl: ""
 repoUrl: ""
 ---
 
-## Overview
+## What It Is
 
-**Sensio IoT** is being rebuilt as a compact Rust application for on-prem smart-space management.
+**Sensio IoT** is a smart-space platform.
 
-The current generation intentionally moves away from a split frontend/backend runtime. Axum serves the HTTP application, Askama renders HTML, SQLx owns PostgreSQL access and migrations, and the same binary serves the interface and backend routes.
+The central idea is to model physical places first, then connect users, permissions, devices, and automation to those places.
 
-The current domain slice focuses on users, sites, site memberships, authentication, and the platform foundation required before expanding device control.
+Instead of treating IoT as a giant flat device list, the product starts from a more human model:
 
-## Why the Rewrite
+```text
+person
+→ site
+→ room or area
+→ device
+→ action
+```
 
-The earlier Sensio direction covered a wide set of device and automation features across multiple services. The new implementation starts from a smaller, stricter core:
+## Problem It Solves
 
-- one server runtime;
-- explicit **Site** boundaries rather than generic organization state;
-- server-rendered HTML;
-- administrator-controlled account provisioning;
-- production-only container delivery;
-- strong authentication and session primitives before broader device capability.
+Connected-device systems often become difficult to manage because hardware is organized around technical identifiers instead of real-world context.
 
-The result is easier to reason about as an on-prem system where identity, tenancy, runtime configuration, and deployment behavior matter as much as the UI.
+Users think in terms of:
 
-## Architecture
+- home;
+- office;
+- classroom;
+- store;
+- factory;
+- room;
+- equipment.
+
+The platform exists to map device control back to those real-world spaces.
+
+## Who It Is For
+
+The concept fits environments where physical access and device access need to stay aligned:
+
+- offices;
+- schools;
+- smart homes;
+- retail spaces;
+- factories;
+- meeting rooms.
+
+## Core Concept
+
+A **site** is the main trust and organization boundary.
 
 ```mermaid
 flowchart TD
-    B[Browser] --> A[Axum application]
-    A --> H[Askama templates]
-    A --> S[Application services]
-    S --> R[SQLx repositories]
-    R --> P[(PostgreSQL)]
-    S --> M[MQTT integration]
-    A --> O[OpenTelemetry]
-    C[CI] --> I[GHCR latest image]
-    I --> D[On-prem Docker runtime]
+    U[User] --> M[Site membership]
+    M --> S[Site]
+    S --> A[Areas / rooms]
+    A --> D[Devices]
+    D --> X[Actions and telemetry]
 ```
 
-Frontend and backend are intentionally one application. There is no React, Vite, or Node production runtime.
+A device action should make sense only inside the site and permission context that owns it.
 
-## Application Structure
+## General User Flow
 
-The UI is organized like a small server-rendered design system:
+```mermaid
+flowchart TD
+    L[Login] --> S[Choose site]
+    S --> V[View space state]
+    V --> A[Select device or scene]
+    A --> P[Permission check]
+    P -->|Allowed| C[Execute control]
+    P -->|Denied| D[Reject action]
+    C --> U[Update current state]
+```
 
-- layouts define the page shell;
-- reusable components own controls such as buttons, cards, badges, and inputs;
-- blocks compose larger UI sections;
-- route-specific templates assemble those primitives.
+## General Control Algorithm
 
-The CSS follows the same boundaries so server-rendered markup does not become one large page-specific stylesheet.
+A physical action should pass through a simple conceptual decision chain:
 
-## Identity and Session Security
+1. Who is requesting the action?
+2. Which site does the action belong to?
+3. Does the user belong to that site?
+4. Does the user have permission for the target?
+5. Is the device reachable?
+6. Execute the action.
+7. Record or return the resulting state.
 
-The authentication foundation is designed for a private on-prem dashboard rather than public self-service signup.
+```text
+identity
+→ scope
+→ permission
+→ availability
+→ action
+→ state
+```
 
-Provisioned users authenticate through the login surface. The session system uses:
-
-- Argon2id password hashes;
-- short-lived Ed25519 JWT access tokens;
-- opaque refresh tokens stored only as SHA-256 hashes;
-- refresh-token rotation;
-- family revocation on reuse;
-- HttpOnly browser sessions;
-- published JWKS for token verification.
-
-This puts session integrity in place before exposing broader control over physical devices.
-
-## Site Domain
-
-The domain uses **sites** for physical locations such as homes, schools, offices, stores, and factories.
+## General System Design
 
 ```mermaid
 flowchart LR
-    U[User] --> M[Site membership]
-    M --> S[Site]
-    S --> D[Future device/control domain]
+    H[Human interface] --> C[Control layer]
+    C --> D[Device integration]
+    D --> P[Physical devices]
+    P --> T[Telemetry]
+    T --> C
+    C --> H
 ```
 
-A site membership is the explicit relationship that will scope access to future device and automation capabilities. The model avoids treating all connected hardware as one global device collection.
+### Human interface
 
-## Runtime Configuration
+Shows spaces, devices, and current state in a human-readable structure.
 
-Local environment variables are bootstrap-only. At startup the application loads runtime configuration through Sensio Env for the `sensio / sensio-iot-new` project.
+### Control layer
 
-The application still owns its PostgreSQL schema and SQLx migration journal. Applied migration history is treated as immutable; schema evolution happens through new forward migrations rather than rewriting old ones.
+Owns permissions, orchestration, and action intent.
 
-## Delivery Model
+### Device integration
 
-Application images are built and published by CI. Runtime hosts pull `ghcr.io/farismnrr/sensio-iot-new:latest` and recreate the service.
+Translates product-level actions into device-level communication.
 
-That rule keeps the deployed artifact aligned with the validated CI output and avoids local image drift on the on-prem machine.
+## Why On-Prem Matters
+
+For physical infrastructure, local control can be important.
+
+The on-prem model can improve:
+
+- local availability;
+- latency;
+- privacy;
+- operational independence;
+- control over deployment.
+
+That makes the platform suitable for environments where device control should not depend entirely on a remote cloud service.
+
+## Important Product Decisions
+
+### Space is more important than device ID
+
+Users should navigate the physical world, not protocol identifiers.
+
+### Permission follows location context
+
+Access to devices should derive from site membership and role.
+
+### Control and telemetry belong together
+
+A system should not only send commands; it should also show the resulting state.
+
+## Tradeoffs
+
+- **local control vs centralized cloud convenience**;
+- **simple space model vs complex enterprise hierarchy**;
+- **fast device actions vs stronger authorization checks**.
+
+## Implementation Notes
+
+The current rewrite uses a single Rust application, PostgreSQL state, server-rendered UI, secure session handling, and MQTT-oriented device integration.
 
 ## Stack
 
-Rust, Axum, Askama, SQLx, PostgreSQL, Argon2, Ed25519/JWT, MQTT via rumqttc, Docker, GHCR, and OpenTelemetry-compatible telemetry.
-
-## Status
-
-The current rewrite has the platform, authentication, users, sites, site memberships, server-rendered UI, runtime configuration, database migration, and production delivery foundations in place. Device-control capability is intentionally being layered on top of that core rather than presented here as already complete.
+Rust, Axum, Askama, SQLx, PostgreSQL, MQTT, Docker, and OpenTelemetry.

@@ -8,115 +8,175 @@ cardTitle: "IoTNet"
 subtitle: "Device Management and Automation Platform"
 role: "Lead Engineer"
 category: "IoT · Platform"
-description: "A multi-service IoT platform combining a Nuxt control surface, TypeScript/Hapi backend, MQTT device messaging, PostgreSQL state, EMQX authentication, billing flows, and observability."
+description: "An IoT operations platform for organizing devices, users, automation, telemetry, and access into one operational system."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
 productUrl: "https://i-ot.net/"
 repoUrl: ""
 ---
 
-## Overview
+## What It Is
 
-**IoTNet** is an IoT operations platform for managing connected devices, users, telemetry, automation, and the infrastructure around them.
+**IoTNet** is an IoT operations platform.
 
-The current codebase is a multi-component system rather than a single Next.js dashboard. The main web frontend is built with Nuxt/Vue, the backend is a TypeScript/Hapi service running through Bun in development, device communication uses MQTT, and supporting plugins handle broker authentication, migrations, and embedded-device integration.
+Its purpose is to give people one place to manage connected devices, automation, telemetry, user access, and operational state.
 
-## Platform Architecture
+It is not just a dashboard. The concept is closer to a control plane for an IoT environment.
+
+## Problem It Solves
+
+IoT deployments often become fragmented.
+
+A typical setup may have:
+
+- devices;
+- MQTT topics;
+- broker credentials;
+- users;
+- automation rules;
+- dashboards;
+- telemetry;
+- billing or account logic;
+- embedded firmware.
+
+When these pieces are managed separately, the system becomes hard to operate.
+
+IoTNet tries to unify them into one model.
+
+## Who It Is For
+
+The platform is useful for:
+
+- IoT operators;
+- developers;
+- integrators;
+- organizations managing fleets of devices;
+- teams building connected products.
+
+## Core Concept
+
+The system sits between human intent and device behavior.
 
 ```mermaid
-flowchart TD
-    B[Browser] --> F[Nuxt frontend]
-    F --> A[TypeScript Hapi API]
-    A --> P[(PostgreSQL)]
-    A --> M[MQTT broker]
-    D[ESP32 / IoT devices] --> M
-    M --> D
-    E[EMQX auth service] --> M
-    A --> O[OpenTelemetry]
-    X[Migration tooling] --> P
+flowchart LR
+    U[User intent] --> P[Platform rules]
+    P --> M[Messaging layer]
+    M --> D[Device]
+    D --> T[Telemetry]
+    T --> P
+    P --> U
 ```
 
-The repository keeps frontend, backend, broker integrations, migration tools, and device-side libraries as separate components with explicit boundaries.
+The platform translates business-level actions into device-level communication, then converts device state back into human-readable information.
 
-## Frontend
-
-The current frontend is a Nuxt application using Vue, Pinia, Tailwind/UnoCSS utilities, MQTT browser integration, Chart.js, and PWA support.
-
-It owns the operator-facing experiences for device management, monitoring, account flows, and platform administration while keeping durable state in backend services.
-
-## Backend
-
-The backend is a TypeScript service built on Hapi with explicit controller, service, and repository-style boundaries.
-
-Its dependency rule is inward-facing: HTTP interfaces adapt requests, application services own use-case behavior, and persistence/integration details stay behind infrastructure boundaries.
-
-The backend also integrates:
-
-- PostgreSQL;
-- MQTT;
-- cloud object storage;
-- email delivery;
-- authentication and JWT handling;
-- OpenTelemetry tracing and metrics.
-
-## Device Communication
+## General Device Flow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant UI as Nuxt UI
-    participant API as Hapi API
-    participant Broker as MQTT / EMQX
+    participant Platform
+    participant Broker
     participant Device
 
-    User->>UI: Send device action
-    UI->>API: Authorized command
-    API->>Broker: Publish scoped message
+    User->>Platform: Request action
+    Platform->>Platform: Validate access and target
+    Platform->>Broker: Publish command
     Broker->>Device: Deliver command
-    Device->>Broker: Publish state / telemetry
-    Broker->>API: Receive update
-    API-->>UI: Updated device state
+    Device->>Broker: Publish resulting state
+    Broker->>Platform: Receive telemetry
+    Platform-->>User: Show updated state
 ```
 
-Broker access is not treated as a public message bus. EMQX authentication and authorization services participate in deciding who can connect and which topics they may use.
+## General Automation Algorithm
 
-## Multi-Tenant and Identity Foundation
+An automation is conceptually:
 
-IoTNet integrates with a dedicated user-management service for tenant-scoped identity and access. This keeps device operations connected to explicit account and tenant boundaries rather than relying on frontend-only filtering.
+```text
+event
+→ condition
+→ decision
+→ action
+```
 
-The wider platform also includes billing/payment migrations and schema compatibility checks, so deployment fails early when required order/payment fields are missing instead of producing late runtime errors.
+Example:
 
-## Device Ecosystem
+```text
+temperature rises
+→ room is occupied
+→ threshold exceeded
+→ turn cooling on
+```
 
-The project includes device-side and integration components beyond the web application:
+This simple pattern can support many IoT use cases.
 
-- ESP32/Arduino libraries for device integration;
-- broker authentication services;
-- migration tooling;
-- PWA/browser client;
-- backend APIs;
-- monitoring and observability support.
+## General System Design
 
-This makes IoTNet closer to an IoT platform than a standalone dashboard.
+```mermaid
+flowchart TD
+    H[Human operations] --> A[Application platform]
+    A --> I[Identity and access]
+    A --> R[Rules and automation]
+    A --> M[Messaging]
+    M --> D[Devices]
+    D --> M
+    M --> A
+    A --> H
+```
 
-## Engineering Decisions
+### Human operations
 
-### Separate device transport from product API
+Dashboards and user workflows.
 
-MQTT handles device messaging while the HTTP API owns product behavior and authorization. The browser does not become the source of truth for device permissions.
+### Application platform
 
-### Explicit migration compatibility
+Owns product rules and persistent state.
 
-Schema assumptions for features such as billing are checked at startup. Missing required columns fail fast.
+### Messaging
 
-### Component-specific validation
+Provides asynchronous communication with devices.
 
-Frontend, backend, and Go-based plugins have separate validation commands so each subsystem can enforce its own language and architecture rules.
+### Devices
+
+Produce telemetry and respond to actions.
+
+## Why Identity Matters in IoT
+
+Device control is not only a technical problem.
+
+The platform must also answer:
+
+- who owns this device?
+- who can control it?
+- which tenant does it belong to?
+- which operations are allowed?
+
+That is why identity and device management are part of the same platform concept.
+
+## Important Product Decisions
+
+### HTTP and MQTT have different jobs
+
+HTTP is good for application workflows. MQTT is good for device messaging.
+
+### Devices should not define business rules
+
+Product-level permissions and automation belong in the application layer.
+
+### Telemetry should close the loop
+
+The system should verify resulting state instead of assuming a command succeeded.
+
+## Tradeoffs
+
+- **real-time behavior vs system complexity**;
+- **centralized control vs device independence**;
+- **rich automation vs understandable rules**;
+- **multi-tenant flexibility vs stricter access logic**.
+
+## Implementation Notes
+
+The current platform uses a Nuxt frontend, a TypeScript backend, PostgreSQL, MQTT/EMQX, and supporting device and broker integrations.
 
 ## Stack
 
-Nuxt, Vue, TypeScript, Pinia, Hapi, Bun, PostgreSQL, MQTT, EMQX, Go plugins, ESP32/Arduino tooling, Docker, OpenTelemetry, Grafana/Jaeger/Prometheus-compatible observability, and GitHub Actions.
-
-## Status
-
-IoTNet is actively developed across the web application, backend APIs, broker/auth integration, device libraries, billing, and operational tooling.
+Nuxt, Vue, TypeScript, Hapi, PostgreSQL, MQTT, EMQX, Go plugins, and OpenTelemetry.

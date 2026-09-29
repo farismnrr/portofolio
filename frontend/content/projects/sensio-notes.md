@@ -8,123 +8,168 @@ cardTitle: "Sensio Notes"
 subtitle: "Meeting Intelligence Platform"
 role: "Software Engineer · AI / Backend / Infrastructure"
 category: "AI · Backend"
-description: "A cross-platform meeting intelligence platform built around resilient recording, chunked media ingestion, asynchronous transcription, grounded AI workflows, and structured meeting knowledge."
+description: "A meeting intelligence product that turns raw conversations into structured, searchable, evidence-aware knowledge."
 image: "/images/projects/featured/sensio-notes.png"
 tech: [React 19, Capacitor, NestJS 11, PostgreSQL, Drizzle, S3, LangChain, LangGraph, OpenTelemetry]
 productUrl: ""
 repoUrl: ""
 ---
 
-## Overview
+## What It Is
 
-**Sensio Notes** is a meeting intelligence platform spanning recording, media ingestion, asynchronous processing, structured AI generation, and searchable meeting knowledge.
+**Sensio Notes** is a meeting intelligence product.
 
-I worked across the client, backend orchestration, AI layer, storage flow, and infrastructure. The main engineering challenge was not simply summarizing a transcript. The product had to reliably capture long-running meetings on web and mobile, move large media files over unreliable networks, keep processing state observable, and produce outputs that stay tied to the underlying evidence.
+Its job is not just to record audio or generate a summary. The core idea is to turn a messy human conversation into a structured body of knowledge that can be searched, reviewed, and acted on later.
 
-## Problem
+A meeting starts as unstructured speech. Sensio Notes gradually converts that into:
 
-Meeting software has two failure-sensitive paths:
+- transcript
+- discussion structure
+- decisions
+- action items
+- key points
+- searchable meeting knowledge
 
-1. **capture and upload**, where an interrupted browser, locked phone, or unstable connection can lose valuable audio;
-2. **AI processing**, where a fluent model response is not useful if it cannot be traced back to the meeting.
+## Problem It Solves
 
-Sensio Notes treats those as one system rather than separate frontend and AI features.
+Meetings generate a lot of information, but humans are bad at preserving all of it.
 
-## System Architecture
+Typical problems are:
+
+- people forget decisions;
+- action items are not assigned clearly;
+- context gets lost after a few days;
+- recordings are too long to review manually;
+- summaries can be inaccurate or disconnected from the source.
+
+The product exists to reduce the gap between **what was said** and **what the organization remembers**.
+
+## Who It Is For
+
+The concept is useful for teams that depend on recurring conversations:
+
+- project teams;
+- operational teams;
+- engineering teams;
+- internal meetings;
+- client discussions;
+- planning and review sessions.
+
+The main user need is simple: **“I should not have to reconstruct the meeting from memory.”**
+
+## Core Concept
+
+The system treats a meeting as a transformation pipeline.
 
 ```mermaid
 flowchart LR
-    W[Web / PWA recorder] --> U[Chunk upload queue]
-    N[Native Capacitor recorder] --> U
-    U --> S3[(S3-compatible storage)]
-    U --> API[NestJS API]
-    API --> DB[(PostgreSQL)]
-    API --> Q[Async processing jobs]
-    Q --> T[Transcription]
-    T --> A[LangChain / LangGraph]
-    A --> K[Structured meeting knowledge]
-    K --> DB
-    API --> RT[Realtime progress]
-    RT --> W
-    RT --> N
+    A[Conversation] --> B[Recorded evidence]
+    B --> C[Transcript]
+    C --> D[Structured understanding]
+    D --> E[Decisions and action items]
+    D --> F[Searchable knowledge]
+    D --> G[Summary and key points]
 ```
 
-The frontend and backend are separate products, but the media and processing contracts are designed together. The backend coordinates upload state, meeting lifecycle, authentication, processing, and real-time progress. PostgreSQL remains the durable authority for meeting and processing state while object storage owns media artifacts.
+The important concept is that generated outputs should remain connected to the original meeting evidence.
 
-## Cross-Platform Recording
+That means AI is not treated as a free-form writer. It acts more like a processing layer over a durable meeting record.
 
-The client uses a unified recording abstraction with two platform-specific implementations.
-
-### Web and PWA
-
-The browser path uses HTML5 `MediaRecorder` and the Screen Wake Lock API so long-running captures are less likely to be throttled when the browser remains active.
-
-### Native mobile
-
-The Capacitor path bypasses normal browser recording limitations and uses a native audio-recorder plugin so recording can continue when the device screen is locked.
-
-After native recording stops, the file is sliced into **256 KB chunks** and fed into the same upload queue used by the web pipeline. That lets native recording reuse the existing backend ingestion contract instead of introducing a second upload architecture.
-
-## Media Processing Flow
+## General User Flow
 
 ```mermaid
-sequenceDiagram
-    participant Client
-    participant API as NestJS API
-    participant Store as S3 storage
-    participant Worker
-    participant AI as AI pipeline
-
-    Client->>API: Create meeting and upload session
-    API-->>Client: Upload metadata
-    Client->>Store: Upload ordered chunks
-    Client->>API: Finalize upload
-    API->>Worker: Queue transcription
-    Worker->>API: Processing callback
-    API->>AI: Run structured generation
-    AI->>API: Summary, decisions, action items
-    API-->>Client: Realtime progress and final state
+flowchart TD
+    U[Start meeting] --> R[Record conversation]
+    R --> X[Upload and process]
+    X --> T[Transcript becomes available]
+    T --> I[Meeting intelligence is generated]
+    I --> V[User reviews summary, decisions, action items]
+    V --> S[Meeting becomes searchable later]
 ```
 
-The system is designed so interrupted processing can be retried and reconciled without treating transient frontend state as authoritative.
+The product should feel simple to the user even though the internal processing is asynchronous.
 
-## Meeting Intelligence
+## General Processing Algorithm
 
-Finished transcripts are processed through stateful AI workflows rather than a single prompt. The platform uses LangChain and LangGraph to produce structured outputs such as:
+At a high level, the system behaves like this:
 
-- summaries and key discussion points;
-- decisions;
-- action items;
-- discussion timelines;
-- PPP-style progress, issues, and plans;
-- searchable meeting knowledge.
+1. Capture the meeting reliably.
+2. Preserve the source media.
+3. Convert speech into text.
+4. Break the transcript into useful context units.
+5. Extract structure from the conversation.
+6. Generate summaries, decisions, and action items.
+7. Keep generated outputs linked to source context.
+8. Store everything as reusable meeting knowledge.
 
-The backend also supports retrieval-oriented meeting context so generated answers and insights can remain connected to transcript evidence.
+Conceptually:
 
-## Reliability Decisions
+```text
+meeting
+→ evidence
+→ transcript
+→ context
+→ structured interpretation
+→ reusable knowledge
+```
 
-### Media state is durable
+## General System Design
 
-Meeting metadata and processing state live in the database; large audio artifacts live in object storage. Upload and processing state are not inferred from the UI.
+The system has four conceptual layers.
 
-### Native and web reuse one ingestion contract
+```mermaid
+flowchart TD
+    C[Capture layer] --> P[Processing layer]
+    P --> K[Knowledge layer]
+    K --> E[Experience layer]
 
-The native client adapts its full recording into chunks instead of forcing the backend to maintain a separate native upload pipeline.
+    C -->|audio| P
+    P -->|transcript and structure| K
+    K -->|search, summaries, decisions| E
+```
 
-### Processing is asynchronous
+### Capture layer
 
-Transcription and intelligence work run outside the request lifecycle. The client consumes progress rather than holding long HTTP requests open.
+Responsible for making sure a meeting is not lost.
 
-## Platform Boundaries
+### Processing layer
 
-The frontend is a React 19 application that can ship as PWA and native mobile through Capacitor. The backend is a NestJS 11 orchestration service with Drizzle-backed persistence, S3 coordination, real-time progress, and AI workflows.
+Turns raw audio into transcript and structured outputs.
 
-Operational behavior is instrumented through OpenTelemetry-compatible tracing and logs so long-running processing can be investigated outside the browser.
+### Knowledge layer
+
+Stores the durable meeting representation.
+
+### Experience layer
+
+Lets users review, search, and act on the resulting knowledge.
+
+## Important Product Decisions
+
+### Reliability comes before intelligence
+
+A perfect summary is useless if the original recording was lost.
+
+### Generated output should be reviewable
+
+The system should help users understand where important conclusions came from.
+
+### Meetings become reusable knowledge
+
+The product is more valuable when old meetings remain useful instead of becoming dead recordings.
+
+## Tradeoffs
+
+The product balances several tensions:
+
+- **speed vs accuracy** — users want quick results, but better interpretation may require more processing;
+- **automation vs trust** — AI can save time, but generated decisions should not silently replace human judgment;
+- **rich structure vs simplicity** — the system can extract many concepts, but the UI still needs to remain easy to scan.
+
+## Implementation Notes
+
+The current implementation uses a web/native recording client, asynchronous backend processing, durable database and object storage, and AI workflows for structured meeting intelligence.
 
 ## Stack
 
-React 19, Vite, Tailwind CSS, Capacitor, NestJS 11, TypeScript, Drizzle ORM, PostgreSQL, S3-compatible storage, LangChain, LangGraph, WebSockets/SSE-style realtime delivery, OpenTelemetry, and Playwright.
-
-## Status
-
-Sensio Notes is an active product with the recording, upload, transcription, structured intelligence, and cross-platform client foundations implemented.
+React, Capacitor, NestJS, PostgreSQL, object storage, LangChain/LangGraph, and OpenTelemetry.

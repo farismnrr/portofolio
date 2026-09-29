@@ -8,124 +8,177 @@ cardTitle: "Masih Awam AI Code"
 subtitle: "Agentic Coding Workspace"
 role: "Builder · AI Systems / Developer Tools"
 category: "Agentic AI · Developer Tools"
-description: "A self-hosted coding workspace that combines a Nuxt application with a sandboxed Rust execution relay, MCP tooling, approval boundaries, and multi-agent orchestration."
+description: "A coding workspace where AI can inspect, modify, test, and reason about real repositories under explicit execution and safety boundaries."
 image: "/images/projects/featured/masih-awam-ai-code.png"
 tech: [Nuxt 4, Vue, TypeScript, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, OpenTelemetry]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/agentic-ai-code"
 ---
 
-## Overview
+## What It Is
 
-**Masih Awam AI Code** is a self-hosted coding workspace designed around one idea: an AI assistant should be able to do real repository work without collapsing the boundary between model reasoning and trusted machine execution.
+**Masih Awam AI Code** is an agentic coding workspace.
 
-The product combines an authenticated Nuxt application with a native Rust relay. The web layer owns chat, workspaces, model providers, persistence, MCP configuration, orchestration, and activity views. The relay owns filesystem access, command execution, Git mutations, sandboxing, and the hard security boundary around the coding machine.
+The idea is to move beyond “AI that explains code” toward “AI that can actually work inside a codebase.”
 
-## Problem
+It can inspect repositories, search files, edit code, run commands, use tools, coordinate subagents, and return evidence of what changed.
 
-A useful coding agent needs more than a chat box. It needs to inspect files, search code, execute commands, mutate repositories, call remote tools, and coordinate delegated work. Giving a web application unrestricted shell access would make that convenience the security model.
+## Problem It Solves
 
-The architecture therefore separates **product orchestration** from **native authority**.
+Normal coding assistants often stop at suggestions.
 
-## Architecture
+That creates a gap:
+
+- the AI can describe a fix but cannot verify it;
+- it can propose a refactor but cannot inspect the whole repository;
+- it can write code but may not understand project-level rules;
+- it may execute powerful actions without clear boundaries;
+- users can struggle to tell what actually happened.
+
+The product tries to solve this by combining **reasoning, tools, execution, and evidence** in one workflow.
+
+## Who It Is For
+
+The product is designed for developers who want AI to help with real engineering work:
+
+- repository exploration;
+- debugging;
+- refactoring;
+- testing;
+- implementation;
+- code review;
+- repetitive maintenance;
+- multi-step technical tasks.
+
+## Core Concept
+
+The system separates **thinking** from **authority**.
+
+The model may decide what it wants to do, but a separate execution layer decides what it is actually allowed to do.
 
 ```mermaid
 flowchart LR
-    U[Browser] -->|HTTPS session| N[Nuxt / Nitro]
-    N --> P[(PostgreSQL)]
-    N --> M[Model providers]
-    N -->|MCP client| R[Public MCP resource]
-    C[External MCP clients] --> R
-    R -->|HTTPS tunnel| A[ai-tools Rust relay]
-    A -->|OAuth validation| O[Authorization boundary]
-    O -->|Bubblewrap sandbox| W[Owner coding workspaces]
-    A --> G[Bounded Git and process tools]
+    U[User goal] --> A[Agent reasoning]
+    A --> T[Structured tool request]
+    T --> P[Policy and approval]
+    P --> E[Execution boundary]
+    E --> W[Repository / machine]
+    W --> R[Evidence and result]
+    R --> A
+    A --> O[Final answer]
 ```
 
-The split is deliberate:
+This is the central design principle.
 
-- **Nuxt / Nitro** owns user sessions, conversations, workspaces, providers, MCP configuration, orchestration state, and telemetry.
-- **Rust relay** owns the native execution surface and independently enforces workspace and tool authorization.
-- **PostgreSQL + Drizzle** persist application state.
-- **MCP** is the contract between the application, the native relay, and compatible external clients.
+## General Agent Loop
 
-## Agent Execution Flow
+At a high level:
 
-A coding task moves through explicit boundaries rather than directly from a prompt to a shell.
+1. Understand the user goal.
+2. Inspect the relevant repository state.
+3. Decide the next useful action.
+4. Select a structured tool.
+5. Check whether that action is allowed.
+6. Execute it.
+7. Observe the result.
+8. Continue until the goal is complete.
+
+Conceptually:
+
+```text
+observe
+→ decide
+→ act
+→ verify
+→ repeat
+```
+
+## General System Design
+
+The product has three conceptual layers.
 
 ```mermaid
-sequenceDiagram
-    participant User
-    participant Web as Nuxt application
-    participant Agent
-    participant Relay as Rust relay
-    participant Workspace
+flowchart TD
+    I[Interaction layer] --> O[Orchestration layer]
+    O --> X[Execution layer]
 
-    User->>Web: Submit coding task
-    Web->>Agent: Build model context and tool catalog
-    Agent->>Web: Request structured tool
-    Web->>Web: Apply approval policy
-    Web->>Relay: MCP tool call
-    Relay->>Relay: Validate capability and workspace
-    Relay->>Workspace: Execute bounded operation
-    Workspace-->>Relay: Result and evidence
-    Relay-->>Web: Structured result
-    Web-->>Agent: Continue task
-    Web-->>User: Activity, diffs, and final result
+    I -->|user goals and review| O
+    O -->|tool intent| X
+    X -->|results and evidence| O
+    O -->|progress and outcome| I
 ```
 
-Dedicated workspace and Git capabilities are preferred over opaque terminal commands. Terminal execution remains the fallback for builds, package managers, scripts, interpreters, and operations not covered by a structured capability.
+### Interaction layer
 
-## Native Security Boundary
+Where the user communicates with the agent and reviews progress.
 
-The native relay is intentionally more restrictive than the UI:
+### Orchestration layer
 
-- refuses root execution in production;
-- binds the relay to loopback rather than a public interface;
-- uses **Bubblewrap** for filesystem and process containment on Linux;
-- protects credential-bearing paths such as SSH, cloud, Docker, Kubernetes, and package-manager configuration;
-- keeps ordinary terminal networking disabled unless explicitly enabled;
-- validates tool authorization server-side even when the UI has already shown an approval;
-- bounds process lifetime, output retention, cancellation, and concurrency.
+Turns goals into tasks, tool calls, approvals, subagents, and execution plans.
 
-Remote MCP access uses OAuth resource-server validation with issuer, audience, signature, expiry, owner subject, and required scope checks.
+### Execution layer
 
-## Multi-Agent Orchestration
+Performs filesystem, Git, process, and external-tool operations under explicit restrictions.
 
-Agent mode supports bounded dependency graphs for delegated work. Independent children can run concurrently, while writer tasks are isolated into worktrees so multiple agents do not mutate the same checkout blindly.
+## Multi-Agent Concept
 
-The parent owns reconciliation: evidence is deduplicated, reviewer disagreements are surfaced, high-severity blockers prevent delivery, and writer work is tracked through produced, reviewed, accepted, integrated, and delivered states.
+Some tasks can be decomposed into parallel work.
 
-The orchestration layer does **not** bypass Git delivery controls. Git and forge primitives remain the only path for branch integration and repository delivery.
+```mermaid
+flowchart TD
+    P[Parent task] --> A[Research child]
+    P --> B[Implementation child]
+    P --> C[Review child]
+    A --> R[Reconciliation]
+    B --> R
+    C --> R
+    R --> F[Integrated result]
+```
 
-## Activity and Evidence
+The parent should not accept child work blindly. It gathers evidence, resolves conflicts, and decides what becomes part of the final result.
 
-Execution history is treated as product data rather than hidden reasoning. The relay can record workspace operations into an encrypted owner-local journal before execution, then export them asynchronously into the web application's PostgreSQL read model.
+## Evidence Model
 
-Structured file mutations can carry exact before/after evidence. Terminal, Git, and opaque process operations remain bounded summaries unless the relay can prove a more exact diff.
+A key principle is that the UI should show **what the system did**, not pretend hidden reasoning is proof.
 
-## Engineering Decisions
+Useful evidence includes:
 
-### Two trust zones instead of one full-stack shell
+- changed files;
+- diffs;
+- command results;
+- test outcomes;
+- Git state;
+- tool activity;
+- subagent outputs.
 
-The web application can evolve quickly without becoming the authority over the host machine. Native security policy remains concentrated in one component.
+## Important Product Decisions
 
-### MCP as the execution contract
+### AI does not directly own the machine
 
-The same relay can serve the first-party application and compatible external MCP clients without creating separate execution implementations.
+Execution authority stays in a separate runtime boundary.
 
-### Structured capabilities before terminal
+### Structured tools are preferred
 
-Known operations get explicit schemas and policy. The terminal stays available, but it is not the default abstraction for every filesystem or Git action.
+Known actions should use explicit capabilities rather than arbitrary shell commands.
 
-### Evidence over hidden reasoning
+### Verification is part of the loop
 
-The UI surfaces tool calls, task state, child agents, approvals, activity, and supported diffs. It does not pretend hidden chain-of-thought is execution evidence.
+A code change is not considered complete just because it was written.
+
+### Agent work should be inspectable
+
+Users need to understand what changed and why.
+
+## Tradeoffs
+
+- **freedom vs safety** — more powerful tools make agents more useful but also harder to constrain;
+- **automation vs user control** — full autonomy is convenient, but approvals matter for sensitive actions;
+- **parallelism vs consistency** — subagents can speed work up, but their outputs must be reconciled carefully.
+
+## Implementation Notes
+
+The current system uses a web application for chat and orchestration, plus a native Rust execution relay for trusted machine operations.
 
 ## Stack
 
-Nuxt 4, Vue, TypeScript, Nitro, PostgreSQL, Drizzle ORM, Rust, MCP Streamable HTTP, Bubblewrap, OAuth/OIDC, OpenTelemetry, and provider integrations.
-
-## Status
-
-The project is actively developed as a self-hosted coding environment and native execution platform. Its current architecture is centered on the Nuxt/Rust trust split, MCP-based tool access, bounded orchestration, and explicit execution evidence.
+Nuxt, Vue, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, and OpenTelemetry.

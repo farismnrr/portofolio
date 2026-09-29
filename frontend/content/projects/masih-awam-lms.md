@@ -8,133 +8,153 @@ cardTitle: "Masih Awam LMS"
 subtitle: "Game-Based Learning Platform"
 role: "Builder · Product / Backend"
 category: "Learning · Rust"
-description: "A game-based LMS that combines story-driven learning with a Rust/Axum backend, PostgreSQL progress state, hybrid rendering, strong account security, and production observability."
+description: "A learning platform that turns courses into progression-based journeys using worlds, quests, lessons, and story-driven interaction."
 image: "/images/projects/featured/masih-awam-lms.png"
 tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus]
 productUrl: ""
 repoUrl: ""
 ---
 
-## Overview
+## What It Is
 
-**Masih Awam LMS** explores what an LMS looks like when progression, worlds, quests, and story are the primary interaction model instead of a conventional course catalog.
+**Masih Awam LMS** is a game-based learning platform.
 
-The browser remains intentionally lightweight: HTML, compiled SCSS, and vanilla JavaScript. The backend is a Rust/Axum application backed by PostgreSQL and responsible for authentication, course state, enrollments, progress, server rendering, and security-sensitive mutations.
+Instead of presenting learning as a list of courses and modules, the product frames it as a journey through worlds, quests, lessons, checkpoints, and progression.
 
-## Product Direction
+The goal is to make the experience feel closer to playing through a guided adventure than navigating a traditional LMS dashboard.
 
-The learning experience is structured around:
+## Problem It Solves
 
-- world-based course discovery;
-- levels, quests, checkpoints, and XP;
-- visual-novel scenes with characters, dialogue, and choices;
-- authenticated learner progress;
-- course modules and lessons backed by durable database state.
+Traditional LMS products are often functionally correct but emotionally flat.
 
-The goal is not to hide a traditional LMS behind game graphics. Progression is part of the product model itself.
+Common problems:
 
-## Domain Model
+- learners do not know what to do next;
+- progress feels abstract;
+- courses feel like disconnected content pages;
+- motivation drops between lessons;
+- dashboards expose information but do not create momentum.
+
+The product tries to solve this by giving learning a stronger sense of **direction, progression, and narrative**.
+
+## Who It Is For
+
+The concept is aimed at beginner learners who benefit from:
+
+- clear next steps;
+- visible progress;
+- small achievable goals;
+- story and character guidance;
+- reduced cognitive load.
+
+## Core Concept
+
+The learning model is built around progression.
 
 ```mermaid
 flowchart LR
-    C[Course] --> M[Modules]
-    M --> L[Lessons]
-    U[User] --> E[Enrollment]
-    E --> C
-    U --> P[Lesson progress]
-    P --> L
-    P --> G[Calculated course progress]
+    U[Learner] --> W[World]
+    W --> Q[Quest]
+    Q --> L[Lesson]
+    L --> C[Checkpoint]
+    C --> P[Progress]
+    P --> W
 ```
 
-Course progress is calculated from completed lessons rather than stored as an independent percentage. Enrollment and lesson-completion mutations are idempotent.
+A course is not just content. It is a structured sequence of goals.
 
-## Rendering Architecture
-
-The site uses different rendering strategies for different ownership boundaries.
+## General Learning Flow
 
 ```mermaid
 flowchart TD
-    R[Incoming route] --> Q{What owns initial state?}
-    Q -->|Build-time public content| SSG[Static / SSG]
-    Q -->|Database-backed public content| SSR[Cacheable SSR]
-    Q -->|Private request-specific state| PRIV[No-store SSR]
-    Q -->|Browser interaction| CSR[CSR]
+    A[Choose learning world] --> B[Enter current quest]
+    B --> C[Complete lesson]
+    C --> D[Record progress]
+    D --> E{More lessons?}
+    E -->|Yes| B
+    E -->|No| F[Unlock next stage]
 ```
 
-This keeps public course content fast and indexable while preserving server authority for private dashboard state, sessions, enrollment, and progress.
+The system should always make the learner's next meaningful action obvious.
 
-The landing page is pre-rendered. Private dashboard views can receive server-rendered initial state so the browser does not immediately repeat the same session and progress requests after boot.
+## General Progress Algorithm
 
-## Authentication and Security
+Course progress can be described very simply:
 
-The LMS includes a production-oriented account system rather than a demo login:
+```text
+completed lessons / total lessons = course progress
+```
 
-- Argon2id password hashing;
-- session tokens stored as hashes in PostgreSQL;
-- absolute and idle session expiry;
-- session limits per account;
-- fresh-auth requirements for sensitive actions;
-- email verification and recovery;
-- admin MFA using TOTP and single-use recovery codes;
-- encrypted MFA secrets;
-- breached-password screening through a k-anonymity range API;
-- same-origin protections on browser mutations;
-- persistent security-history events.
+But the experience layer adds meaning on top:
 
-Admin sessions have stricter boundaries than normal learner sessions.
+```text
+lesson completion
+→ quest progress
+→ world progress
+→ learner progression
+```
 
-## Learning Request Flow
+The product keeps the calculation simple while making the presentation richer.
+
+## General System Design
 
 ```mermaid
-sequenceDiagram
-    participant Browser
-    participant Axum
-    participant Service
-    participant Postgres
+flowchart TD
+    E[Experience layer] --> D[Learning domain]
+    D --> S[Progress state]
+    S --> E
 
-    Browser->>Axum: Open course
-    Axum->>Service: Load public course
-    Service->>Postgres: Query modules and lessons
-    Postgres-->>Service: Course graph
-    Service-->>Axum: View model
-    Axum-->>Browser: SSR course page
-
-    Browser->>Axum: Mark lesson complete
-    Axum->>Service: Validate session and same-origin
-    Service->>Postgres: Upsert lesson progress
-    Postgres-->>Service: Updated state
-    Service-->>Browser: Recalculated progress
+    E -->|worlds, quests, story| D
+    D -->|courses, modules, lessons| S
 ```
 
-## Backend Structure
+### Experience layer
 
-The Rust server follows one-way dependencies:
+Owns the story, worlds, quests, characters, and presentation.
 
-`repositories → services → handlers → routes → main`
+### Learning domain
 
-The repository guard enforces those architectural directions, keeps integration tests outside production source, and applies source-size and folder-density constraints so the codebase does not silently collapse into oversized modules.
+Owns courses, modules, lessons, and enrollment.
 
-## Observability
+### Progress state
 
-Logs and traces are exported over OTLP through Alloy, while Prometheus scrapes application metrics.
+Tracks what the learner has completed and what becomes available next.
 
-```mermaid
-flowchart LR
-    A[LMS] -->|logs and traces| O[Alloy]
-    O --> L[Loki]
-    O --> T[Tempo]
-    A -->|/metrics| P[Prometheus]
-    L --> G[Grafana]
-    T --> G
-    P --> G
-```
+## Why Hybrid Rendering Matters Conceptually
 
-The dashboard covers service health, request rate, error ratio, p95 latency, structured logs, and trace search.
+Not every page has the same type of data.
+
+- public content can be prepared ahead of time;
+- shared course pages can be rendered on request;
+- private learner state depends on the current user;
+- interactions such as dialogue choices belong in the browser.
+
+The rendering strategy follows data ownership rather than forcing the whole product into one model.
+
+## Important Product Decisions
+
+### Progress should be obvious
+
+The learner should always know where they are and what comes next.
+
+### Game mechanics support learning
+
+XP, quests, and worlds are useful only if they clarify progression rather than distract from content.
+
+### Security remains server-owned
+
+Authentication and progress rules should not depend on browser-side state.
+
+## Tradeoffs
+
+- **engagement vs distraction** — gamification can motivate, but too much can obscure learning;
+- **structure vs flexibility** — guided paths help beginners but may feel restrictive for advanced users;
+- **story vs speed** — narrative improves immersion but can slow users who want direct access.
+
+## Implementation Notes
+
+The current product uses a Rust backend with PostgreSQL and a lightweight browser experience, plus observability for production behavior.
 
 ## Stack
 
-Rust, Axum, SQLx, PostgreSQL, HTML, SCSS, vanilla JavaScript, OpenTelemetry, Prometheus, Loki, Tempo, Grafana, and Playwright.
-
-## Status
-
-The LMS has working authentication, course/catalog data, enrollment, lesson progress, learner dashboard foundations, hybrid rendering, observability, and the visual-novel/game-based presentation system. AI-driven adaptive characters remain a future direction rather than a shipped capability.
+Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.

@@ -8,125 +8,149 @@ cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
 role: "Lead Engineer"
 category: "Backend · Security"
-description: "A standalone Rust/Actix identity service for tenant-scoped authentication, JWT sessions, role-based access, SSO-style integration, PostgreSQL persistence, and RocksDB caching."
+description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
 image: "/images/projects/user-management/cover.png"
 tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
 
-## Overview
+## What It Is
 
-The **Multi-Tenant User Management Service** is a standalone authentication and identity service designed to be reused across applications instead of rebuilding account management inside every product.
+The **Multi-Tenant User Management Service** is a reusable identity platform.
 
-It provides tenant-scoped user and role management, JWT authentication, refresh sessions, SSO-style redirects, API-key protected bootstrap endpoints, and persistent caching.
+Its job is to answer four questions consistently:
 
-## Why a Separate Service
+1. Who is this user?
+2. Which tenant do they belong to?
+3. Which roles do they have?
+4. What are they allowed to do?
 
-Applications such as IoT platforms need identity rules that cut across multiple products:
+Instead of solving those questions separately inside every application, the service centralizes them.
 
-- the same account may belong to multiple tenants;
-- one account may have multiple roles inside a tenant;
-- tenant data must remain isolated;
-- authentication and token refresh must behave consistently across clients;
-- frontend applications should not implement security policy themselves.
+## Problem It Solves
 
-The service centralizes those rules behind HTTP contracts.
+Multi-tenant products often duplicate authentication and authorization logic.
 
-## Architecture
+That leads to:
 
-```mermaid
-flowchart LR
-    C[Client application] -->|Login / register| S[Actix-web identity service]
-    S --> P[(PostgreSQL)]
-    S --> R[(RocksDB cache)]
-    S -->|JWT| C
-    C -->|Bearer token| A[Application API]
-    A -->|Validate identity claims| S
-```
+- inconsistent session behavior;
+- duplicated user tables;
+- different role models across products;
+- harder security maintenance;
+- repeated frontend integration work.
 
-PostgreSQL owns durable identity and tenant state. RocksDB is a local persistent cache with TTL to reduce repeated database work for frequently accessed data.
+The service creates one shared identity model.
 
-## Authentication Boundaries
+## Who It Is For
 
-The HTTP surface is split into two scopes.
+It is designed for applications that need:
 
-### API-key protected bootstrap scope
+- multiple tenants;
+- shared accounts;
+- tenant-scoped roles;
+- centralized login;
+- reusable authentication APIs.
 
-The `/api` endpoints handle operations such as login, registration, and token refresh. They require application-level API keys or a tenant secret depending on the operation.
+## Core Concept
 
-### JWT protected scope
-
-User, tenant, profile, logout, verification, and password-management operations require bearer tokens.
-
-This split separates application bootstrap credentials from end-user session authority.
-
-## Multi-Tenant Access Model
+An account is global, while access is contextual.
 
 ```mermaid
 flowchart TD
-    A[Global account] --> T1[Tenant A membership]
-    A --> T2[Tenant B membership]
-    T1 --> R1[Role: user]
-    T1 --> R2[Role: admin]
-    T2 --> R3[Role: user]
+    A[Global account] --> T1[Tenant membership A]
+    A --> T2[Tenant membership B]
+    T1 --> R1[Roles in tenant A]
+    T2 --> R2[Roles in tenant B]
 ```
 
-Accounts are global rather than duplicated per tenant. A user can reuse the same credentials across tenant memberships while roles remain scoped to the relevant tenant.
+The same person can participate in multiple products or organizations without creating unrelated credentials each time.
 
-## SSO Flow
+## General Authentication Flow
 
 ```mermaid
 sequenceDiagram
-    participant App as Client app
-    participant SSO as Identity service
-    participant DB as PostgreSQL
+    participant User
+    participant App
+    participant Identity as Identity service
+    participant DB
 
-    App->>SSO: Redirect to login with tenant and return URI
-    SSO->>DB: Validate account and membership
-    DB-->>SSO: Identity and roles
-    SSO-->>App: Redirect with access token and state
-    App->>App: Validate state
-    App->>SSO: Authenticated API calls with bearer token
+    User->>App: Sign in
+    App->>Identity: Authenticate in tenant context
+    Identity->>DB: Load account and memberships
+    DB-->>Identity: Identity and roles
+    Identity-->>App: Access and session result
+    App-->>User: Authenticated experience
 ```
 
-The integration documentation uses redirect state and nonce values to protect the login handoff and sends the access token through the URL fragment rather than a query parameter so it is less likely to appear in server access logs.
+## General Authorization Algorithm
 
-## Security
+A permission decision can be reduced to:
 
-The service includes:
+```text
+identity
+→ tenant membership
+→ role
+→ requested action
+→ allow or deny
+```
 
-- Argon2 password hashing;
-- access and refresh JWT/session flows;
-- role-based access control;
-- tenant-scoped authorization;
-- API-key protection;
-- rate limiting;
-- soft deletes;
-- structured logging;
-- graceful shutdown;
-- integration and end-to-end tests.
+That logic is the heart of the system.
 
-## Caching Strategy
+## General System Design
 
-RocksDB stores local cache entries with TTL. Expired data is removed lazily when accessed. The cache is an optimization layer; PostgreSQL remains the durable source of truth.
+```mermaid
+flowchart LR
+    A[Client applications] --> I[Identity service]
+    I --> D[(Identity database)]
+    I --> S[Session and token layer]
+    I --> C[Authorization decisions]
+    S --> A
+    C --> A
+```
 
-## Integration Surface
+Client applications consume identity as a service rather than implementing it independently.
 
-The repository includes documented examples for Next.js, React, Vue, and vanilla JavaScript clients plus API contracts for:
+## SSO Concept
 
-- authentication;
-- tenant management;
-- user management;
-- profile operations;
-- MQTT-related identity and ACL checks.
+Single sign-on allows the same account to move between applications while keeping tenant and role context explicit.
 
-That documentation is part of the product because the main value of a standalone identity service is predictable integration.
+The goal is:
+
+```text
+authenticate once
+→ preserve identity
+→ apply application-specific tenant context
+```
+
+## Important Product Decisions
+
+### Accounts are global
+
+Identity belongs to the person, not to one tenant row.
+
+### Roles are contextual
+
+A user can have different roles in different tenants.
+
+### Authentication and authorization are separate
+
+Being logged in does not automatically mean every action is allowed.
+
+### Integration is part of the product
+
+A reusable identity service is only useful if applications can integrate it predictably.
+
+## Tradeoffs
+
+- **central consistency vs service dependency**;
+- **global accounts vs tenant isolation**;
+- **flexible role models vs more complex permission logic**.
+
+## Implementation Notes
+
+The current service uses Rust, PostgreSQL, JWT-based sessions, tenant-aware APIs, and a local cache for frequently accessed data.
 
 ## Stack
 
-Rust, Actix-web, PostgreSQL, RocksDB, SQLx migrations, JWT, Argon2, Docker, Docker Compose, Playwright, and Rust integration tests.
-
-## Status
-
-The service has the authentication, tenant, user, SSO integration, cache, migration, and test foundations needed to serve as a reusable identity component for other projects.
+Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, and Docker.

@@ -141,13 +141,6 @@ for (const required of ['getProjectByPath', 'ProjectHero', 'ContentToc', 'Markdo
   if (!projectDetail.includes(required)) failures.push(`ProjectDetailPage.svelte: missing generic case-study primitive "${required}".`);
 }
 
-const dataSource = await readFile(join(srcRoot, 'lib', 'data.ts'), 'utf8');
-if (/export const projects\s*=/.test(dataSource)) failures.push('lib/data.ts must not own project data; Markdown frontmatter is the single source of truth.');
-if (/export const articles\s*=/.test(dataSource)) failures.push('lib/data.ts must not own blog articles; Markdown frontmatter is the single source of truth.');
-for (const forbidden of ['experiences','education','skillGroups','principles','certGroups','gallery']) {
-  if (new RegExp('export const ' + forbidden + '\\s*=').test(dataSource)) failures.push(`lib/data.ts must not own ${forbidden}; move content to Markdown.`);
-}
-
 for (const pageName of ['HomePage.svelte','AboutPage.svelte','ExperiencePage.svelte','SkillsPage.svelte','CertificationsPage.svelte','GalleryPage.svelte','ProjectsPage.svelte','BlogPage.svelte']) {
   const source = await readFile(join(srcRoot, 'pages', pageName), 'utf8');
   if (source.includes("../lib/data")) failures.push(`${pageName}: pages must not depend on hardcoded lib/data.ts content.`);

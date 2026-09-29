@@ -1,9 +1,9 @@
 <script lang="ts">
   import { ArrowLeft, FileText, Globe2, Mail, MapPin, Sun } from '@lucide/svelte';
-  import SiGithub from '@icons-pack/svelte-simple-icons/icons/SiGithub.svelte';
-  import SiLinkedin from '@icons-pack/svelte-simple-icons/icons/SiLinkedin.svelte';
+  import SiGithub from '@icons-pack/svelte-simple-icons/icons/SiGithub';
+  import SiLinkedin from '@icons-pack/svelte-simple-icons/icons/SiLinkedin';
 
-  export type IconName = 'github' | 'linkedin' | 'sun' | 'mail' | 'map-pin' | 'globe' | 'file-text' | 'arrow-left';
+  type IconName = 'github' | 'linkedin' | 'sun' | 'mail' | 'map-pin' | 'globe' | 'file-text' | 'arrow-left';
 
   export let name: IconName;
   export let size = 18;

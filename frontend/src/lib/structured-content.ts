@@ -65,7 +65,7 @@ export const pageCopy: Record<string, PageCopy> = Object.fromEntries(Object.entr
   return [item.slug,item];
 }));
 
-export function latestExperiences(limit:number){ return experiences.slice(0,limit); }
+export function getLatestExperiences(limit:number){ return experiences.slice(0,limit); }
 
 const profileSource = Object.entries(profileModules)[0];
 if (!profileSource) throw new Error('content/profile must contain a profile Markdown document.');

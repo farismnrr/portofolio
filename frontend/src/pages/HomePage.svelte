@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Github, Linkedin, Mail, MapPin } from 'lucide-svelte';
+  import { Github, Linkedin, Mail, MapPin } from '@lucide/svelte';
   import { experiences, projects, profileImage } from '../lib/data';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
   import ProjectCard from '../lib/ui/ProjectCard.svelte';
   import SectionHeader from '../lib/ui/SectionHeader.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
 </script>
 
 <main>
@@ -34,7 +35,7 @@
       </div>
 
       <div>
-        <img class="aspect-[1.36] w-full object-cover" src={profileImage} alt="Alex Morgan"/>
+        <MediaImage className="aspect-[1.36] w-full" src={profileImage} alt="Alex Morgan" eager/>
         <blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“Better systems create<br/>more possibilities.”</blockquote>
       </div>
     </section>

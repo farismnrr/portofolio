@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { ArrowLeft } from 'lucide-svelte';
+  import { ArrowLeft } from '@lucide/svelte';
   import { navigate } from '../lib/router';
   import TechChips from '../lib/ui/TechChips.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import ArchitectureDiagram from '../lib/ui/ArchitectureDiagram.svelte';
   import ProcessFlow from '../lib/ui/ProcessFlow.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
   import { projects } from '../lib/data';
 
   const project = projects[0];
@@ -40,12 +41,12 @@
         <p class="mt-6 max-w-xl text-[15px] leading-7 text-black/57">An AI-powered meeting intelligence platform that transcribes, understands, and organizes conversations into actionable insights, helping teams move from discussion to decisions.</p>
         <div class="mt-7 flex gap-3"><a class="btn btn-neutral rounded-none border-0 bg-[#344534] px-7 font-normal" href="https://example.com">Visit Product ↗</a><a class="btn btn-outline rounded-none border-black/20 px-7 font-normal" href="https://github.com">View Code</a></div>
       </div>
-      <img class="aspect-[1.72] w-full object-cover" src={project.image} alt="Meeting intelligence platform"/>
+      <MediaImage className="aspect-[1.72] w-full" src={project.image} alt="Meeting intelligence platform" eager/>
     </section>
 
     <section class="grid gap-10 border-b border-black/10 py-10 lg:grid-cols-[.72fr_1.28fr]">
       <div><p class="text-[11px] uppercase tracking-[.2em] text-black/45">01 · Project overview</p><h2 class="mt-5 text-[38px] font-light leading-[1.1] tracking-[-0.035em]">Turn conversations<br/>into progress.</h2><p class="mt-5 max-w-lg text-[15px] leading-7 text-black/56">The platform transcribes conversations, extracts key insights, and generates summaries, action items, and searchable knowledge from meetings.</p></div>
-      <img class="aspect-[1.72] w-full object-cover" src={project.image} alt="Product overview"/>
+      <MediaImage className="aspect-[1.72] w-full" src={project.image} alt="Product overview"/>
     </section>
 
     <section class="grid gap-10 border-b border-black/10 py-10 lg:grid-cols-[.72fr_1.28fr]">

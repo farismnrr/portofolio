@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Github, Linkedin, Sun } from 'lucide-svelte';
+  import { Github, Linkedin, Sun } from '@lucide/svelte';
   import { nav } from '../data';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';

@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { Github, Linkedin, Mail, MapPin, Globe2, FileText } from 'lucide-svelte';
+  import { Github, Linkedin, Mail, MapPin, Globe2, FileText } from '@lucide/svelte';
   import { experiences, profileImage } from '../lib/data';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
 </script>
 
 <main>
   <PageShell className="py-14 lg:py-16">
     <div class="grid gap-12 lg:grid-cols-[300px_1fr] lg:gap-16">
       <aside class="lg:border-r lg:border-black/10 lg:pr-10">
-        <img class="aspect-[.8] w-full object-cover" src={profileImage} alt="Alex Morgan"/>
+        <MediaImage className="aspect-[.8] w-full" src={profileImage} alt="Alex Morgan"/>
         <h2 class="mt-6 text-[34px] font-semibold tracking-[-0.04em]">Alex Morgan</h2>
         <p class="mt-1 text-[18px] text-black/55">Software Engineer</p>
         <div class="mt-8 space-y-4 text-[14px] text-black/62">

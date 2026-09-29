@@ -2,6 +2,7 @@
   import { gallery } from '../lib/data';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
 </script>
 
 <main>
@@ -18,7 +19,7 @@
           i===11 ? "sm:col-span-2 lg:col-span-5 lg:row-span-3" :
           "lg:col-span-3 lg:row-span-2"
         }>
-          <img class="h-[calc(100%-22px)] min-h-[100px] w-full object-cover" src={g[0]} alt={g[1]}/>
+          <MediaImage className="h-[calc(100%-22px)] min-h-[100px] w-full" src={g[0]} alt={g[1]}/>
           <figcaption class="mt-2 text-[11px] text-black/45">{g[1]}</figcaption>
         </figure>
       {/each}

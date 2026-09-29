@@ -1,0 +1,63 @@
+import { parseFrontmatter, parseInlineList, requireKeys, unquote } from './content';
+
+export interface ExperienceEntry {
+  order: number; year: string; company: string; role: string; location: string; summary: string; tech: string[]; bullets: string[];
+}
+export interface EducationEntry { order: number; year: string; institution: string; program: string; description: string; }
+export interface SkillGroup { order: number; title: string; description: string; items: string[]; }
+export interface Principle { order: number; index: string; title: string; description: string; }
+export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; }
+export interface GalleryItem { order: number; image: string; caption: string; size: 'wide'|'tall'|'large'|'normal'; }
+export interface PageCopy { slug: string; eyebrow: string; title: string; subtitle: string; description: string; body: string; }
+
+const experienceModules = import.meta.glob('../../content/experience/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const educationModules = import.meta.glob('../../content/education/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const skillModules = import.meta.glob('../../content/skills/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const principleModules = import.meta.glob('../../content/principles/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const certModules = import.meta.glob('../../content/certifications/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const galleryModules = import.meta.glob('../../content/gallery/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const pageModules = import.meta.glob('../../content/pages/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+
+function int(path:string, value:string|undefined){ const n=Number(value); if(!Number.isInteger(n)) throw new Error(`${path}: order must be an integer`); return n; }
+function bullets(body:string){ return body.split(/\r?\n/).map(x=>x.trim()).filter(x=>x.startsWith('- ')).map(x=>x.slice(2)); }
+
+export const experiences: ExperienceEntry[] = Object.entries(experienceModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['order','year','company','role','location','summary','tech']);
+  return {order:int(path,values.get('order')),year:unquote(values.get('year')??''),company:unquote(values.get('company')??''),role:unquote(values.get('role')??''),location:unquote(values.get('location')??''),summary:unquote(values.get('summary')??''),tech:parseInlineList(values.get('tech')??''),bullets:bullets(body)};
+}).sort((a,b)=>a.order-b.order);
+
+export const education: EducationEntry[] = Object.entries(educationModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['order','year','institution','program']);
+  return {order:int(path,values.get('order')),year:unquote(values.get('year')??''),institution:unquote(values.get('institution')??''),program:unquote(values.get('program')??''),description:body};
+}).sort((a,b)=>a.order-b.order);
+
+export const skillGroups: SkillGroup[] = Object.entries(skillModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['order','title','items']);
+  return {order:int(path,values.get('order')),title:unquote(values.get('title')??''),description:body,items:parseInlineList(values.get('items')??'')};
+}).sort((a,b)=>a.order-b.order);
+
+export const principles: Principle[] = Object.entries(principleModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['order','index','title']);
+  return {order:int(path,values.get('order')),index:unquote(values.get('index')??''),title:unquote(values.get('title')??''),description:body};
+}).sort((a,b)=>a.order-b.order);
+
+export const certifications: Certification[] = Object.entries(certModules).map(([path,src])=>{
+  const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','group','issuer','title','year','credentialId','url']);
+  return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??'')};
+}).sort((a,b)=>a.order-b.order);
+
+export const certificationGroups = [...new Set(certifications.map(x=>x.group))].map(group=>({group,items:certifications.filter(x=>x.group===group)}));
+
+export const gallery: GalleryItem[] = Object.entries(galleryModules).map(([path,src])=>{
+  const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','image','caption','size']);
+  const size=unquote(values.get('size')??'normal') as GalleryItem['size'];
+  return {order:int(path,values.get('order')),image:unquote(values.get('image')??''),caption:unquote(values.get('caption')??''),size};
+}).sort((a,b)=>a.order-b.order);
+
+export const pageCopy: Record<string, PageCopy> = Object.fromEntries(Object.entries(pageModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['slug','eyebrow','title','subtitle','description']);
+  const item={slug:unquote(values.get('slug')??''),eyebrow:unquote(values.get('eyebrow')??''),title:unquote(values.get('title')??''),subtitle:unquote(values.get('subtitle')??''),description:unquote(values.get('description')??''),body};
+  return [item.slug,item];
+}));
+
+export function latestExperiences(limit:number){ return experiences.slice(0,limit); }

@@ -46,10 +46,21 @@ It should only know how to render a project.
 The content system decides what exists.
 
 ```mermaid
-flowchart LR
-    C[Content] --> M[Structured Markdown]
-    M --> U[Svelte presentation]
-    U --> V[Visitor]
+mindmap
+  root((Portfolio))
+    Content
+      Projects
+      Experience
+      Writing
+      Certifications
+      Gallery
+    Presentation
+      Lists
+      Cards
+      Detail pages
+    Publishing
+      Build
+      Deploy
 ```
 
 That sounds simple, but it changes how the whole site is maintained.
@@ -98,11 +109,23 @@ It can include code, diagrams, lists, links, and images.
 Most importantly, it keeps the source of truth close to the content itself.
 
 ```mermaid
-flowchart TD
-    A[Markdown file] --> B[Metadata]
-    A --> C[Long-form body]
-    B --> D[Lists, ordering, cards]
-    C --> E[Detail page]
+classDiagram
+    class MarkdownDocument {
+      metadata
+      longFormBody
+    }
+    class SummaryView {
+      cards
+      ordering
+      grouping
+    }
+    class DetailPage {
+      article
+      headings
+      diagrams
+    }
+    MarkdownDocument --> SummaryView : metadata
+    MarkdownDocument --> DetailPage : body
 ```
 
 The same file can power both a summary card and a full article.

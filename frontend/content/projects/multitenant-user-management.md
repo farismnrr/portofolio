@@ -46,11 +46,11 @@ That account can participate in multiple tenants.
 Each tenant membership can carry its own roles.
 
 ```mermaid
-flowchart TD
-    A[Global account] --> T1[Tenant A membership]
-    A --> T2[Tenant B membership]
-    T1 --> R1[Roles in tenant A]
-    T2 --> R2[Roles in tenant B]
+erDiagram
+    ACCOUNT ||--o{ TENANT_MEMBERSHIP : has
+    TENANT ||--o{ TENANT_MEMBERSHIP : contains
+    TENANT_MEMBERSHIP ||--o{ ROLE_ASSIGNMENT : receives
+    ROLE ||--o{ ROLE_ASSIGNMENT : defines
 ```
 
 That means the answer to “who are you?” stays stable, while the answer to “what can you do here?” depends on the tenant context.

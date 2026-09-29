@@ -48,13 +48,14 @@ The hardware understands protocol messages.
 IoTNet is the layer in the middle that applies identity, rules, messaging, and state.
 
 ```mermaid
-flowchart LR
-    U[User intent] --> P[Platform rules]
-    P --> M[Messaging]
-    M --> D[Device]
-    D --> T[Telemetry]
-    T --> P
-    P --> U
+stateDiagram-v2
+    [*] --> IntentReceived
+    IntentReceived --> Authorized
+    Authorized --> CommandPublished
+    CommandPublished --> WaitingForDevice
+    WaitingForDevice --> StateObserved
+    StateObserved --> ReflectedToUser
+    ReflectedToUser --> [*]
 ```
 
 That translation is the heart of the system.

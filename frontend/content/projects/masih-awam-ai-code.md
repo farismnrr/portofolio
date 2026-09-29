@@ -48,14 +48,19 @@ The AI can decide that a file should be edited or a command should be run, but i
 Instead, every real action goes through a controlled execution path.
 
 ```mermaid
-flowchart LR
-    U[User goal] --> A[Agent thinks]
-    A --> T[Agent requests a tool]
-    T --> P[Policy and approval]
-    P --> E[Execution layer]
-    E --> R[Repository or machine]
-    R --> V[Evidence]
-    V --> A
+sequenceDiagram
+    participant U as User
+    participant A as Agent
+    participant P as Policy
+    participant E as Executor
+    participant R as Repository
+    U->>A: Describe the goal
+    A->>P: Request a bounded capability
+    P->>E: Allow approved action
+    E->>R: Execute against real state
+    R-->>E: Result
+    E-->>A: Evidence
+    A-->>U: Progress or completed result
 ```
 
 That split is the most important concept in the application.
@@ -77,14 +82,14 @@ It inspects the repository, forms a hypothesis, checks the relevant files, makes
 The user sees the progress as work, not as hidden magic.
 
 ```mermaid
-flowchart TD
-    A[User describes goal] --> B[Agent inspects context]
-    B --> C[Agent chooses next action]
-    C --> D[Tool executes action]
-    D --> E[Result becomes evidence]
-    E --> F{Goal complete?}
-    F -->|No| C
-    F -->|Yes| G[Deliver result]
+stateDiagram-v2
+    [*] --> Observing
+    Observing --> Deciding
+    Deciding --> Acting
+    Acting --> Verifying
+    Verifying --> Deciding: more work needed
+    Verifying --> Complete: goal satisfied
+    Complete --> [*]
 ```
 
 ## The General Agent Algorithm

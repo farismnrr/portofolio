@@ -47,14 +47,17 @@ The product tries to transform that mess into a more durable memory:
 The important part is that the AI does not become the meeting itself. The original conversation remains the source of truth.
 
 ```mermaid
-flowchart LR
-    A[Conversation] --> B[Recorded evidence]
-    B --> C[Transcript]
-    C --> D[Structured understanding]
-    D --> E[Summary]
-    D --> F[Decisions]
-    D --> G[Action items]
-    D --> H[Searchable knowledge]
+mindmap
+  root((Meeting))
+    Evidence
+      Recording
+      Transcript
+    Understanding
+      Summary
+      Decisions
+      Action items
+    Memory
+      Searchable knowledge
 ```
 
 ## How It Feels to Use
@@ -66,13 +69,18 @@ You start a meeting, record it, end it, and wait while the system processes ever
 After that, instead of seeing only a media file, you get a useful representation of the meeting.
 
 ```mermaid
-flowchart TD
-    A[Start meeting] --> B[Record conversation]
-    B --> C[Meeting ends]
-    C --> D[System processes the recording]
-    D --> E[Transcript becomes available]
-    E --> F[Summary, decisions, and action items appear]
-    F --> G[Meeting can be searched later]
+journey
+    title A meeting becomes reusable knowledge
+    section Capture
+      Start the meeting: 5: User
+      Record the conversation: 5: User
+    section Processing
+      End the meeting: 5: User
+      Wait while it is processed: 3: User
+      Review the transcript: 4: User
+    section Reuse
+      Review decisions and actions: 5: User
+      Search the meeting later: 5: User
 ```
 
 The complexity belongs inside the system, not in the user's workflow.
@@ -113,16 +121,13 @@ The processing model is intentionally staged.
 8. Store the result so the meeting remains useful later.
 
 ```mermaid
-flowchart TD
-    R[Raw meeting] --> T[Transcript]
-    T --> C[Context segments]
-    C --> X[Extract structure]
-    X --> D[Decisions]
-    X --> A[Action items]
-    X --> S[Summary]
-    D --> K[Meeting knowledge]
-    A --> K
-    S --> K
+stateDiagram-v2
+    [*] --> Captured
+    Captured --> Transcribed
+    Transcribed --> Contextualized
+    Contextualized --> Interpreted
+    Interpreted --> MeetingKnowledge
+    MeetingKnowledge --> [*]
 ```
 
 The algorithm is less about “ask an LLM to summarize this” and more about building several smaller transformations that can be reasoned about independently.

@@ -42,13 +42,17 @@ Instead of only showing courses and completion percentages, the learner moves th
 The underlying learning material is still structured like a normal LMS, but the experience layer gives it direction and momentum.
 
 ```mermaid
-flowchart LR
-    U[Learner] --> W[World]
-    W --> Q[Quest]
-    Q --> L[Lesson]
-    L --> C[Checkpoint]
-    C --> P[Progress]
-    P --> W
+journey
+    title A learner moves through a world
+    section Discover
+      Enter a learning world: 5: Learner
+      Understand the current quest: 4: Learner
+    section Learn
+      Complete a lesson: 4: Learner
+      Reach a checkpoint: 5: Learner
+    section Progress
+      See progress update: 5: Learner
+      Unlock the next stage: 5: Learner
 ```
 
 The goal is not to make education look like a game.
@@ -64,13 +68,14 @@ A good learning system should reduce decision fatigue.
 The learner should not need to repeatedly figure out where they are, what they completed, and what comes next.
 
 ```mermaid
-flowchart TD
-    A[Choose a learning world] --> B[Enter current quest]
-    B --> C[Complete lesson]
-    C --> D[Record progress]
-    D --> E{Quest complete?}
-    E -->|No| B
-    E -->|Yes| F[Unlock next stage]
+stateDiagram-v2
+    [*] --> WorldSelected
+    WorldSelected --> QuestActive
+    QuestActive --> LessonInProgress
+    LessonInProgress --> ProgressRecorded
+    ProgressRecorded --> QuestActive: more lessons remain
+    ProgressRecorded --> StageUnlocked: quest complete
+    StageUnlocked --> [*]
 ```
 
 Progression becomes part of the product language.

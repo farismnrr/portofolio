@@ -48,12 +48,12 @@ Devices belong to spaces inside sites.
 Permissions are evaluated in that context.
 
 ```mermaid
-flowchart TD
-    U[User] --> M[Site membership]
-    M --> S[Site]
-    S --> R[Room / area]
-    R --> D[Device]
-    D --> A[Action and telemetry]
+erDiagram
+    USER ||--o{ SITE_MEMBERSHIP : has
+    SITE ||--o{ SITE_MEMBERSHIP : grants
+    SITE ||--o{ AREA : contains
+    AREA ||--o{ DEVICE : contains
+    DEVICE ||--o{ DEVICE_EVENT : produces
 ```
 
 This gives the system a model that matches how people naturally describe the real world.
@@ -69,15 +69,23 @@ They should see the spaces they are responsible for.
 They choose a site, enter a room, inspect current device state, and perform an action.
 
 ```mermaid
-flowchart TD
-    A[Login] --> B[Choose site]
-    B --> C[Open room or area]
-    C --> D[Inspect device state]
-    D --> E[Request action]
-    E --> F[Check permission]
-    F -->|Allowed| G[Execute]
-    F -->|Denied| H[Reject]
-    G --> I[Return updated state]
+sequenceDiagram
+    participant U as User
+    participant S as Smart-space platform
+    participant P as Permission boundary
+    participant D as Device
+    U->>S: Open a site and choose a device
+    U->>S: Request an action
+    S->>P: Check site membership and permission
+    alt Allowed
+        P-->>S: Permit
+        S->>D: Execute control
+        D-->>S: Return current state
+        S-->>U: Show updated state
+    else Denied
+        P-->>S: Reject
+        S-->>U: Explain that action is not allowed
+    end
 ```
 
 The technical details stay underneath the interaction.

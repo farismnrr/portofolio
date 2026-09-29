@@ -23,15 +23,6 @@ export const experiences = [
   { year:'2022 — 2023', company:'Studio North', role:'Technical SEO Engineer', location:'Remote', summary:'Worked on technical SEO, site performance, crawlability, and content-driven websites.', bullets:['Ran technical audits and infrastructure improvements.','Improved site architecture and structured data.','Monitored analytics and performance metrics.'], tech:['Analytics','Technical SEO','Site Architecture'] }
 ];
 
-export const articles = [
-  ['SEP 2026','Engineering','12 min read','Designing Reliable Event-Driven Systems','Patterns, trade-offs, and practical lessons from building event-driven systems at scale, including idempotency, ordering, failure handling, and operational considerations.'],
-  ['AUG 2026','AI','10 min read','Building AI Features That Stay Grounded','How to design AI features with reliable context, guardrails, and evaluation loops so they remain accurate and useful.'],
-  ['JUL 2026','Architecture','11 min read','Lessons from a Multi-Tenant Architecture','Key design decisions, challenges, and what I would do differently after building a multi-tenant platform.'],
-  ['MAY 2026','IoT','9 min read','Running IoT Systems in the Real World','Practical lessons from deploying and operating connected devices at scale.'],
-  ['APR 2026','Backend','8 min read','Why Background Jobs Fail','Common failure modes in background processing systems and patterns for building resilient job architectures.'],
-  ['MAR 2026','Observability','10 min read','Observability Beyond Logging','Moving from logs to meaningful observability with metrics, tracing, and structured context.']
-];
-
 export const certGroups = [
   ['Cloud Computing', [['Google Cloud','Cloud Computing Professional','2025'],['Alibaba Cloud','Cloud Native Developer','2023'],['AWS','AWS Certified Solutions Architect Associate','2023']]],
   ['Software Engineering', [['Dicoding','Backend Engineering Expert','2024'],['Meta','Back-End Developer Professional Certificate','2024']]],
@@ -67,3 +58,14 @@ export const principles = [
   ['05','AI outputs should remain grounded in evidence.','I value factual, traceable, and transparent AI systems that augment human judgment.'],
   ['06','Design around real-world constraints.','Cost, performance, security, and operational complexity all matter in practical systems.']
 ];
+
+export function getLatestExperiences(limit: number) {
+  const score = (value: string) =>
+    value.includes('Present')
+      ? Number.MAX_SAFE_INTEGER
+      : Number(value.match(/\d{4}(?!.*\d{4})/)?.[0] ?? 0);
+
+  return [...experiences]
+    .sort((a, b) => score(b.year) - score(a.year))
+    .slice(0, limit);
+}

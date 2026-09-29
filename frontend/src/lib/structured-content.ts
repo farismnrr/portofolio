@@ -9,6 +9,10 @@ export interface Principle { order: number; index: string; title: string; descri
 export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; }
 export interface GalleryItem { order: number; image: string; caption: string; size: 'wide'|'tall'|'large'|'normal'; }
 export interface PageCopy { slug: string; eyebrow: string; title: string; subtitle: string; description: string; body: string; }
+export interface ProfileContent {
+  name: string; role: string; location: string; languages: string; image: string;
+  github: string; linkedin: string; email: string; resume: string;
+}
 
 const experienceModules = import.meta.glob('../../content/experience/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const educationModules = import.meta.glob('../../content/education/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
@@ -17,6 +21,7 @@ const principleModules = import.meta.glob('../../content/principles/*.md', { eag
 const certModules = import.meta.glob('../../content/certifications/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const galleryModules = import.meta.glob('../../content/gallery/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const pageModules = import.meta.glob('../../content/pages/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const profileModules = import.meta.glob('../../content/profile/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 
 function int(path:string, value:string|undefined){ const n=Number(value); if(!Number.isInteger(n)) throw new Error(`${path}: order must be an integer`); return n; }
 function bullets(body:string){ return body.split(/\r?\n/).map(x=>x.trim()).filter(x=>x.startsWith('- ')).map(x=>x.slice(2)); }
@@ -61,3 +66,20 @@ export const pageCopy: Record<string, PageCopy> = Object.fromEntries(Object.entr
 }));
 
 export function latestExperiences(limit:number){ return experiences.slice(0,limit); }
+
+const profileSource = Object.entries(profileModules)[0];
+if (!profileSource) throw new Error('content/profile must contain a profile Markdown document.');
+const profileParsed = parseFrontmatter(profileSource[0], profileSource[1]);
+requireKeys(profileSource[0], profileParsed.values, ['name','role','location','languages','image','github','linkedin','email','resume']);
+
+export const profile: ProfileContent = {
+  name: unquote(profileParsed.values.get('name') ?? ''),
+  role: unquote(profileParsed.values.get('role') ?? ''),
+  location: unquote(profileParsed.values.get('location') ?? ''),
+  languages: unquote(profileParsed.values.get('languages') ?? ''),
+  image: unquote(profileParsed.values.get('image') ?? ''),
+  github: unquote(profileParsed.values.get('github') ?? ''),
+  linkedin: unquote(profileParsed.values.get('linkedin') ?? ''),
+  email: unquote(profileParsed.values.get('email') ?? ''),
+  resume: unquote(profileParsed.values.get('resume') ?? '')
+};

@@ -1,6 +1,5 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { profileImage } from '../lib/data';
   import { getLatestExperiences } from '../lib/structured-content';
   import { getLatestProjects } from '../lib/project-content';
   import { navigate } from '../lib/router';
@@ -11,6 +10,7 @@
 
   const selectedExperiences = getLatestExperiences(3);
   const latestProjects = getLatestProjects(4);
+  const profileImage = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1400&q=85';
 </script>
 
 <main>

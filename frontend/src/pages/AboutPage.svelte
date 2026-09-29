@@ -1,6 +1,6 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { experiences, pageCopy, profile } from '../lib/structured-content';
+  import { getLatestExperiences, pageCopy, profile } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
@@ -10,7 +10,7 @@
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
-  const selectedExperience = experiences.slice(0, 2);
+  const selectedExperience = getLatestExperiences(2);
 </script>
 
 <main>

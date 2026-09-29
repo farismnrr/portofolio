@@ -1,7 +1,7 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
   import { profileImage } from '../lib/data';
-  import { latestExperiences } from '../lib/structured-content';
+  import { getLatestExperiences } from '../lib/structured-content';
   import { getLatestProjects } from '../lib/project-content';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -9,7 +9,7 @@
   import SectionHeader from '../lib/ui/SectionHeader.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
-  const selectedExperiences = latestExperiences(3);
+  const selectedExperiences = getLatestExperiences(3);
   const latestProjects = getLatestProjects(4);
 </script>
 

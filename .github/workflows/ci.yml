@@ -155,7 +155,7 @@ jobs:
   deploy:
     runs-on: [self-hosted, Linux, X64]
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/refactor/ui-tech-stack-reset'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     concurrency:
       group: portfolio-self-hosted
       cancel-in-progress: true

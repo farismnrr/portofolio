@@ -15,58 +15,69 @@ productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
 
-## What It Is
+## The Story
 
-The **Multi-Tenant User Management Service** is a reusable identity platform.
+User management looks simple when an application is small.
 
-Its job is to answer four questions consistently:
+You create a users table, add login, store a role, and move on.
 
-1. Who is this user?
-2. Which tenant do they belong to?
-3. Which roles do they have?
-4. What are they allowed to do?
+Then the product grows.
 
-Instead of solving those questions separately inside every application, the service centralizes them.
+A second tenant appears.
 
-## Problem It Solves
+A user needs access to both tenants.
 
-Multi-tenant products often duplicate authentication and authorization logic.
+The same person is an admin in one organization and a normal user in another.
 
-That leads to:
+Another application needs the same login system.
 
-- inconsistent session behavior;
-- duplicated user tables;
-- different role models across products;
-- harder security maintenance;
-- repeated frontend integration work.
+Suddenly, “users” is no longer one table.
 
-The service creates one shared identity model.
+That is the problem this service was built to solve.
 
-## Who It Is For
+## The Core Idea
 
-It is designed for applications that need:
+The service separates **identity** from **context**.
 
-- multiple tenants;
-- shared accounts;
-- tenant-scoped roles;
-- centralized login;
-- reusable authentication APIs.
+A person has one global account.
 
-## Core Concept
+That account can participate in multiple tenants.
 
-An account is global, while access is contextual.
+Each tenant membership can carry its own roles.
 
 ```mermaid
 flowchart TD
-    A[Global account] --> T1[Tenant membership A]
-    A --> T2[Tenant membership B]
+    A[Global account] --> T1[Tenant A membership]
+    A --> T2[Tenant B membership]
     T1 --> R1[Roles in tenant A]
     T2 --> R2[Roles in tenant B]
 ```
 
-The same person can participate in multiple products or organizations without creating unrelated credentials each time.
+That means the answer to “who are you?” stays stable, while the answer to “what can you do here?” depends on the tenant context.
 
-## General Authentication Flow
+## Why This Matters
+
+Without this separation, applications often duplicate identity.
+
+The same person may end up with different user rows, different passwords, and different role logic across products.
+
+That creates security drift.
+
+One application rotates sessions correctly while another does not.
+
+One product uses tenant-scoped roles while another stores one global role field.
+
+Centralizing identity gives all consuming applications one consistent model.
+
+## The Authentication Story
+
+From the user's point of view, login should still feel ordinary.
+
+They enter credentials.
+
+The system identifies the account.
+
+Then the tenant context determines what that account is allowed to do.
 
 ```mermaid
 sequenceDiagram
@@ -76,26 +87,55 @@ sequenceDiagram
     participant DB
 
     User->>App: Sign in
-    App->>Identity: Authenticate in tenant context
+    App->>Identity: Authenticate
     Identity->>DB: Load account and memberships
-    DB-->>Identity: Identity and roles
-    Identity-->>App: Access and session result
-    App-->>User: Authenticated experience
+    DB-->>Identity: Identity, tenants, roles
+    Identity-->>App: Session and claims
+    App-->>User: Authorized experience
 ```
 
-## General Authorization Algorithm
+The extra complexity exists so the user does not have to think about it.
 
-A permission decision can be reduced to:
+## The General Authorization Algorithm
+
+Every protected action can be described with the same logic.
+
+```text
+Who is this?
+Which tenant are they acting in?
+Do they belong to that tenant?
+Which roles do they have there?
+Does one of those roles allow this action?
+```
+
+Or more compactly:
 
 ```text
 identity
-→ tenant membership
+→ tenant
+→ membership
 → role
-→ requested action
-→ allow or deny
+→ permission
+→ allow / deny
 ```
 
-That logic is the heart of the system.
+This is the heart of the system.
+
+## Why Authentication and Authorization Are Separate
+
+A successful login only proves identity.
+
+It does not prove permission.
+
+A user may be valid but still have no access to a specific tenant, resource, or action.
+
+That distinction prevents a common design mistake:
+
+```text
+logged in ≠ allowed to do everything
+```
+
+The service treats authorization as a separate decision.
 
 ## General System Design
 
@@ -103,49 +143,38 @@ That logic is the heart of the system.
 flowchart LR
     A[Client applications] --> I[Identity service]
     I --> D[(Identity database)]
-    I --> S[Session and token layer]
-    I --> C[Authorization decisions]
+    I --> S[Session layer]
+    I --> P[Permission decisions]
     S --> A
-    C --> A
+    P --> A
 ```
 
-Client applications consume identity as a service rather than implementing it independently.
+Applications do not need to reimplement the same account logic.
 
-## SSO Concept
+They ask one identity system for consistent answers.
 
-Single sign-on allows the same account to move between applications while keeping tenant and role context explicit.
+## The SSO Idea
 
-The goal is:
+Once identity is centralized, multiple applications can share the same account.
+
+The user authenticates once, then moves between products while the consuming application applies its own tenant context.
+
+The mental model is:
 
 ```text
-authenticate once
-→ preserve identity
-→ apply application-specific tenant context
+one person
+→ one identity
+→ many tenant contexts
+→ many applications
 ```
 
-## Important Product Decisions
+## Product Tradeoffs
 
-### Accounts are global
+**Central consistency vs dependency.** A shared identity service reduces duplication, but consuming applications now depend on it being available.
 
-Identity belongs to the person, not to one tenant row.
+**Global accounts vs strict isolation.** Reusing one identity is convenient, but tenant boundaries must remain explicit everywhere.
 
-### Roles are contextual
-
-A user can have different roles in different tenants.
-
-### Authentication and authorization are separate
-
-Being logged in does not automatically mean every action is allowed.
-
-### Integration is part of the product
-
-A reusable identity service is only useful if applications can integrate it predictably.
-
-## Tradeoffs
-
-- **central consistency vs service dependency**;
-- **global accounts vs tenant isolation**;
-- **flexible role models vs more complex permission logic**.
+**Flexible roles vs simple permissions.** Rich role models support more cases, but become harder to reason about if they are not kept disciplined.
 
 ## Implementation Notes
 

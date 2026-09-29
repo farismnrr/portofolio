@@ -15,41 +15,31 @@ productUrl: ""
 repoUrl: ""
 ---
 
-## What It Is
+## The Story
 
-**Masih Awam LMS** is a game-based learning platform.
+Traditional LMS products are good at organizing content.
 
-Instead of presenting learning as a list of courses and modules, the product frames it as a journey through worlds, quests, lessons, checkpoints, and progression.
+They are not always good at making people want to continue.
 
-The goal is to make the experience feel closer to playing through a guided adventure than navigating a traditional LMS dashboard.
+A learner logs in, sees a list of courses, opens one, finds another list of modules, then another list of lessons. Technically, everything is there. Emotionally, the experience can feel like navigating folders.
 
-## Problem It Solves
+**Masih Awam LMS** started from a different question:
 
-Traditional LMS products are often functionally correct but emotionally flat.
+> What if learning felt less like browsing a catalog and more like progressing through a game?
 
-Common problems:
+## The Core Idea
 
-- learners do not know what to do next;
-- progress feels abstract;
-- courses feel like disconnected content pages;
-- motivation drops between lessons;
-- dashboards expose information but do not create momentum.
+The product turns learning into a journey.
 
-The product tries to solve this by giving learning a stronger sense of **direction, progression, and narrative**.
+Instead of only showing courses and completion percentages, the learner moves through:
 
-## Who It Is For
+- worlds;
+- quests;
+- lessons;
+- checkpoints;
+- progression.
 
-The concept is aimed at beginner learners who benefit from:
-
-- clear next steps;
-- visible progress;
-- small achievable goals;
-- story and character guidance;
-- reduced cognitive load.
-
-## Core Concept
-
-The learning model is built around progression.
+The underlying learning material is still structured like a normal LMS, but the experience layer gives it direction and momentum.
 
 ```mermaid
 flowchart LR
@@ -61,95 +51,126 @@ flowchart LR
     P --> W
 ```
 
-A course is not just content. It is a structured sequence of goals.
+The goal is not to make education look like a game.
 
-## General Learning Flow
+The goal is to use game concepts to answer a very practical question:
+
+> “What should I do next?”
+
+## The Learner Experience
+
+A good learning system should reduce decision fatigue.
+
+The learner should not need to repeatedly figure out where they are, what they completed, and what comes next.
 
 ```mermaid
 flowchart TD
-    A[Choose learning world] --> B[Enter current quest]
+    A[Choose a learning world] --> B[Enter current quest]
     B --> C[Complete lesson]
     C --> D[Record progress]
-    D --> E{More lessons?}
-    E -->|Yes| B
-    E -->|No| F[Unlock next stage]
+    D --> E{Quest complete?}
+    E -->|No| B
+    E -->|Yes| F[Unlock next stage]
 ```
 
-The system should always make the learner's next meaningful action obvious.
+Progression becomes part of the product language.
 
-## General Progress Algorithm
+Instead of “Module 3, Lesson 4,” the system can frame progress as “you are here in this journey.”
 
-Course progress can be described very simply:
+## The General Progress Model
+
+The mathematics are intentionally simple.
 
 ```text
-completed lessons / total lessons = course progress
+completed lessons
+-----------------
+total lessons
+= progress
 ```
 
-But the experience layer adds meaning on top:
+The interesting part is how that progress is interpreted.
+
+A lesson completion contributes to a quest.
+
+A quest contributes to a world.
+
+A world contributes to the learner's broader progression.
 
 ```text
-lesson completion
-→ quest progress
-→ world progress
-→ learner progression
+lesson
+→ quest
+→ world
+→ overall journey
 ```
 
-The product keeps the calculation simple while making the presentation richer.
+The algorithm remains predictable while the experience feels more meaningful.
+
+## Why Storytelling Belongs in the Product
+
+A beginner often struggles with more than the technical material.
+
+They also struggle with uncertainty:
+
+- Am I doing this in the right order?
+- How much is left?
+- Why does this topic matter?
+- What should I learn after this?
+
+Narrative and characters can act as guidance.
+
+They give context to the next task and make transitions between lessons feel intentional instead of arbitrary.
+
+The story is not the source of truth for progress. It is the layer that makes the structure easier to follow.
 
 ## General System Design
 
+The product can be understood as three connected layers.
+
 ```mermaid
 flowchart TD
-    E[Experience layer] --> D[Learning domain]
-    D --> S[Progress state]
-    S --> E
-
-    E -->|worlds, quests, story| D
-    D -->|courses, modules, lessons| S
+    E[Experience layer] --> L[Learning domain]
+    L --> P[Progress state]
+    P --> E
 ```
 
-### Experience layer
+**Experience layer** contains the worlds, quests, visual-novel scenes, and presentation.
 
-Owns the story, worlds, quests, characters, and presentation.
+**Learning domain** contains courses, modules, lessons, and enrollment.
 
-### Learning domain
+**Progress state** records what the learner has actually completed.
 
-Owns courses, modules, lessons, and enrollment.
+This separation is important because a story can change without corrupting learning progress, and the learning structure can evolve without rewriting the entire experience layer.
 
-### Progress state
+## Why Different Pages Behave Differently
 
-Tracks what the learner has completed and what becomes available next.
+Not every page in the LMS has the same type of information.
 
-## Why Hybrid Rendering Matters Conceptually
+A public course page is different from a learner dashboard.
 
-Not every page has the same type of data.
+A course catalog can be shared by everyone. A dashboard contains private progress for one specific user.
 
-- public content can be prepared ahead of time;
-- shared course pages can be rendered on request;
-- private learner state depends on the current user;
-- interactions such as dialogue choices belong in the browser.
+So the product follows the data:
 
-The rendering strategy follows data ownership rather than forcing the whole product into one model.
+```mermaid
+flowchart TD
+    D[Page data] --> Q{Who owns it?}
+    Q -->|Public and stable| A[Pre-render]
+    Q -->|Public but dynamic| B[Server-render]
+    Q -->|Private user state| C[Private server render]
+    Q -->|Interaction state| E[Browser]
+```
 
-## Important Product Decisions
+The idea is not “use many rendering techniques.” The idea is that different data deserves different handling.
 
-### Progress should be obvious
+## Product Tradeoffs
 
-The learner should always know where they are and what comes next.
+**Engagement vs distraction.** Game mechanics should motivate learning, not become the main activity.
 
-### Game mechanics support learning
+**Guidance vs freedom.** Beginners benefit from a strong path, but advanced learners may want shortcuts.
 
-XP, quests, and worlds are useful only if they clarify progression rather than distract from content.
+**Story vs speed.** Some users enjoy narrative context; others want to move directly to the lesson.
 
-### Security remains server-owned
-
-Authentication and progress rules should not depend on browser-side state.
-
-## Tradeoffs
-
-- **engagement vs distraction** — gamification can motivate, but too much can obscure learning;
-- **structure vs flexibility** — guided paths help beginners but may feel restrictive for advanced users;
-- **story vs speed** — narrative improves immersion but can slow users who want direct access.
+The product has to make the experience richer without making it slower for users who already know where they want to go.
 
 ## Implementation Notes
 

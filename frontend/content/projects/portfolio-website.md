@@ -15,110 +15,188 @@ productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---
 
-## What It Is
+## The Story
 
-This portfolio is a personal publishing system for professional work.
+A portfolio usually starts simple.
 
-The main design goal is to keep content independent from presentation.
+You create a few project cards, hardcode some experience, add a gallery, and ship it.
 
-Projects, work experience, writing, certifications, gallery items, and profile information are all maintained as repository content rather than embedded into page components.
+Then real life happens.
 
-## Problem It Solves
+A new project is added.
 
-Portfolio sites often become difficult to maintain because every content update requires editing application code.
+A job changes.
 
-That creates unnecessary friction:
+A certificate arrives.
 
-- adding a project means changing components;
-- changing experience means touching layout code;
-- ordering sections becomes hardcoded;
-- content structure becomes coupled to UI structure.
+A project grows enough that one paragraph is no longer enough.
 
-This project tries to make portfolio maintenance behave more like editing a publication.
+At that point, the portfolio starts behaving like a small publishing system — except the codebase was never designed that way.
 
-## Core Concept
+This project was rebuilt around that realization.
+
+## The Core Idea
+
+The website is designed so content and presentation are separate.
+
+The UI should not know which projects exist.
+
+It should only know how to render a project.
+
+The content system decides what exists.
 
 ```mermaid
 flowchart LR
-    C[Content] --> M[Markdown model]
-    M --> P[Presentation]
-    P --> U[User experience]
+    C[Content] --> M[Structured Markdown]
+    M --> U[Svelte presentation]
+    U --> V[Visitor]
 ```
 
-The content model is the source of truth.
+That sounds simple, but it changes how the whole site is maintained.
 
-The UI reads from it.
+## What Editing the Portfolio Should Feel Like
 
-## General Content Flow
+Adding a project should feel like writing an article.
+
+Not like modifying application state.
+
+The intended workflow is:
+
+```text
+create Markdown
+→ add metadata
+→ write the story
+→ attach media
+→ build
+→ publish
+```
+
+No project-specific component should be required.
+
+That same model applies to:
+
+- projects;
+- blog posts;
+- experience;
+- education;
+- certifications;
+- gallery items;
+- profile copy.
+
+## Why Markdown Became the Center of the System
+
+Markdown fits this kind of site unusually well.
+
+It is readable without tooling.
+
+It works naturally with Git.
+
+It can carry both structured metadata and long-form writing.
+
+It can include code, diagrams, lists, links, and images.
+
+Most importantly, it keeps the source of truth close to the content itself.
 
 ```mermaid
 flowchart TD
-    A[Create or edit Markdown] --> B[Build-time parsing]
-    B --> C[Structured content model]
-    C --> D[Svelte pages]
-    D --> E[Production site]
+    A[Markdown file] --> B[Metadata]
+    A --> C[Long-form body]
+    B --> D[Lists, ordering, cards]
+    C --> E[Detail page]
 ```
 
-Adding a project should mostly mean adding one Markdown file.
+The same file can power both a summary card and a full article.
 
-## General Page Model
+## The General Content Algorithm
 
-Each content item has two parts:
+The site follows a simple pattern:
+
+1. Discover content files.
+2. Parse their metadata.
+3. Parse their Markdown body.
+4. Sort or group them where needed.
+5. Render summary views from metadata.
+6. Render detail views from the long-form body.
 
 ```text
-metadata
-+ long-form body
+files
+→ parse
+→ normalize
+→ sort
+→ render
 ```
 
-Metadata controls things such as title, date, image, category, and ordering.
+The important thing is that the list of content is derived from the repository.
 
-The Markdown body contains the human-readable content.
-
-That separation allows pages to stay flexible without growing large TypeScript data objects.
+There should not be a second hardcoded list somewhere in the UI.
 
 ## General System Design
 
 ```mermaid
 flowchart TD
-    M[Markdown collections] --> B[Build system]
-    U[Svelte interface] --> B
-    B --> S[Static frontend assets]
-    S --> R[Small runtime server]
-    R --> V[Visitor]
+    M[Markdown collections] --> B[Build process]
+    S[Svelte UI] --> B
+    B --> A[Static assets]
+    A --> R[Small runtime server]
+    R --> U[Visitor]
 ```
 
-The browser experience is fully content-driven, while deployment remains simple.
+The build process turns content and UI into a static frontend.
 
-## Why Markdown
+A small production server then serves that result.
 
-Markdown provides a useful middle ground:
+This keeps the runtime simple while still allowing the authoring experience to stay rich.
 
-- readable by humans;
-- version-controlled;
-- easy to diff;
-- flexible enough for long-form writing;
-- supports diagrams through Mermaid;
-- does not require a CMS.
+## Why Project Detail Pages Matter
 
-## Important Product Decisions
+A project is not only a screenshot and a stack list.
 
-### Content must not depend on page code
+A good project page should explain:
 
-The home page, project list, and detail pages should derive from content collections.
+- what problem existed;
+- what the product tries to solve;
+- how the system thinks about that problem;
+- what tradeoffs shaped the design;
+- what was learned while building it.
 
-### Long-form project pages should behave like articles
+That is why project details are treated more like articles than product cards.
 
-A project detail page should be able to evolve freely without needing a new component every time a new section is added.
+Mermaid is useful here because some ideas are easier to understand as relationships and flows than as paragraphs.
 
-### Assets should remain repository-owned
+## Why the Homepage Stays Dynamic
 
-Images, certificates, and gallery media live beside the project and are referenced through stable paths.
+The homepage should reflect the current portfolio automatically.
 
-## Tradeoffs
+When a new project is added, recent projects can change without editing the homepage component.
 
-- **Markdown simplicity vs CMS convenience**;
-- **repository ownership vs non-technical editing**;
-- **static content model vs highly dynamic authoring tools**.
+When experience changes, the site can derive the latest items from content order.
+
+The concept is:
+
+```text
+content changes
+→ views update
+```
+
+not:
+
+```text
+content changes
+→ update content
+→ update homepage
+→ update project list
+→ update navigation
+```
+
+That removes duplication.
+
+## Product Tradeoffs
+
+**Markdown simplicity vs CMS convenience.** Markdown is excellent for a technical author, but less friendly for non-technical editors.
+
+**Repository ownership vs instant editing.** Git gives history and reviewability, but content updates still go through a build and deployment.
+
+**Flexible long-form content vs rigid schemas.** Markdown bodies are flexible, but too much freedom can make consistency harder if there are no editorial conventions.
 
 ## Implementation Notes
 

@@ -15,75 +15,81 @@ productUrl: ""
 repoUrl: "https://github.com/farismnrr/agentic-ai-code"
 ---
 
-## What It Is
+## The Story
 
-**Masih Awam AI Code** is an agentic coding workspace.
+Most AI coding tools are very good at telling you what code *should* look like.
 
-The idea is to move beyond “AI that explains code” toward “AI that can actually work inside a codebase.”
+The problem starts when the task stops being local.
 
-It can inspect repositories, search files, edit code, run commands, use tools, coordinate subagents, and return evidence of what changed.
+A real engineering task is rarely just “write this function.” It is usually closer to:
 
-## Problem It Solves
+- inspect the repository;
+- understand existing rules;
+- find the real source of the bug;
+- edit several files;
+- run checks;
+- read the failures;
+- fix them;
+- verify Git state;
+- then explain what changed.
 
-Normal coding assistants often stop at suggestions.
+At that point, a chat assistant that only generates code becomes limited.
 
-That creates a gap:
+**Masih Awam AI Code** was built around a different question:
 
-- the AI can describe a fix but cannot verify it;
-- it can propose a refactor but cannot inspect the whole repository;
-- it can write code but may not understand project-level rules;
-- it may execute powerful actions without clear boundaries;
-- users can struggle to tell what actually happened.
+> What would an AI coding assistant look like if it could actually work inside a real repository, but still had clear boundaries around what it is allowed to do?
 
-The product tries to solve this by combining **reasoning, tools, execution, and evidence** in one workflow.
+## The Core Idea
 
-## Who It Is For
+The product separates **reasoning** from **authority**.
 
-The product is designed for developers who want AI to help with real engineering work:
+The AI can decide that a file should be edited or a command should be run, but it does not automatically own the machine.
 
-- repository exploration;
-- debugging;
-- refactoring;
-- testing;
-- implementation;
-- code review;
-- repetitive maintenance;
-- multi-step technical tasks.
-
-## Core Concept
-
-The system separates **thinking** from **authority**.
-
-The model may decide what it wants to do, but a separate execution layer decides what it is actually allowed to do.
+Instead, every real action goes through a controlled execution path.
 
 ```mermaid
 flowchart LR
-    U[User goal] --> A[Agent reasoning]
-    A --> T[Structured tool request]
+    U[User goal] --> A[Agent thinks]
+    A --> T[Agent requests a tool]
     T --> P[Policy and approval]
-    P --> E[Execution boundary]
-    E --> W[Repository / machine]
-    W --> R[Evidence and result]
-    R --> A
-    A --> O[Final answer]
+    P --> E[Execution layer]
+    E --> R[Repository or machine]
+    R --> V[Evidence]
+    V --> A
 ```
 
-This is the central design principle.
+That split is the most important concept in the application.
 
-## General Agent Loop
+It allows the agent to be useful without treating unrestricted shell access as the default trust model.
 
-At a high level:
+## What the User Experiences
 
-1. Understand the user goal.
-2. Inspect the relevant repository state.
-3. Decide the next useful action.
-4. Select a structured tool.
-5. Check whether that action is allowed.
-6. Execute it.
-7. Observe the result.
-8. Continue until the goal is complete.
+The user gives the system a goal, not a sequence of commands.
 
-Conceptually:
+For example:
+
+> “Find why this build fails and fix it.”
+
+The system then tries to work the way an engineer would.
+
+It inspects the repository, forms a hypothesis, checks the relevant files, makes a change, runs validation, and keeps going until the evidence supports the result.
+
+The user sees the progress as work, not as hidden magic.
+
+```mermaid
+flowchart TD
+    A[User describes goal] --> B[Agent inspects context]
+    B --> C[Agent chooses next action]
+    C --> D[Tool executes action]
+    D --> E[Result becomes evidence]
+    E --> F{Goal complete?}
+    F -->|No| C
+    F -->|Yes| G[Deliver result]
+```
+
+## The General Agent Algorithm
+
+At a high level, the agent loop is simple:
 
 ```text
 observe
@@ -93,87 +99,108 @@ observe
 → repeat
 ```
 
+But each step matters.
+
+**Observe** means reading actual repository state instead of guessing.
+
+**Decide** means choosing the smallest useful next action.
+
+**Act** means using a bounded capability.
+
+**Verify** means checking whether the previous action actually improved the state.
+
+Without verification, an agent is just an automated code generator.
+
+## Why Structured Tools Matter
+
+A terminal can do almost anything.
+
+That is exactly why it is a poor default abstraction for every action.
+
+If the system already knows the intent is “read a file,” “search the repository,” “edit a file,” or “inspect Git state,” then using a structured tool gives the system more context and creates better evidence.
+
+The terminal remains useful for things that are genuinely command-oriented:
+
+- builds;
+- package managers;
+- scripts;
+- interpreters;
+- project-specific tooling.
+
+The philosophy is:
+
+```text
+use the narrowest capability that can solve the task
+```
+
+## Multi-Agent Work
+
+Some tasks are easier to solve when they are decomposed.
+
+One agent may research the problem while another prepares an implementation and another reviews the result.
+
+```mermaid
+flowchart TD
+    P[Parent task] --> R[Research]
+    P --> I[Implementation]
+    P --> V[Review]
+    R --> M[Reconcile evidence]
+    I --> M
+    V --> M
+    M --> F[Final integrated result]
+```
+
+The interesting part is not spawning multiple agents.
+
+The interesting part is deciding how their work becomes one reliable result.
+
+The parent must reconcile disagreements, reject weak evidence, and avoid merging competing changes blindly.
+
 ## General System Design
 
-The product has three conceptual layers.
+The product has three conceptual zones.
 
 ```mermaid
 flowchart TD
-    I[Interaction layer] --> O[Orchestration layer]
-    O --> X[Execution layer]
-
-    I -->|user goals and review| O
-    O -->|tool intent| X
-    X -->|results and evidence| O
-    O -->|progress and outcome| I
+    X[Interaction] --> O[Orchestration]
+    O --> E[Execution]
+    E --> O
+    O --> X
 ```
 
-### Interaction layer
+**Interaction** is where the user gives goals and reviews outcomes.
 
-Where the user communicates with the agent and reviews progress.
+**Orchestration** decides how to break the task down and which tools to use.
 
-### Orchestration layer
+**Execution** touches the real machine and therefore carries the strongest safety rules.
 
-Turns goals into tasks, tool calls, approvals, subagents, and execution plans.
+This separation keeps product logic away from native authority.
 
-### Execution layer
+## Why Evidence Matters
 
-Performs filesystem, Git, process, and external-tool operations under explicit restrictions.
+An AI saying “I fixed it” is not enough.
 
-## Multi-Agent Concept
+The system should be able to show what supports that claim:
 
-Some tasks can be decomposed into parallel work.
+- which files changed;
+- what the diff looks like;
+- which checks ran;
+- whether tests passed;
+- what Git state remains;
+- which child tasks completed;
+- which actions required approval.
 
-```mermaid
-flowchart TD
-    P[Parent task] --> A[Research child]
-    P --> B[Implementation child]
-    P --> C[Review child]
-    A --> R[Reconciliation]
-    B --> R
-    C --> R
-    R --> F[Integrated result]
-```
+That makes the assistant easier to trust because the result is attached to observable work.
 
-The parent should not accept child work blindly. It gathers evidence, resolves conflicts, and decides what becomes part of the final result.
+## Product Tradeoffs
 
-## Evidence Model
+**Freedom vs safety.** A more powerful agent can solve more tasks, but every new capability expands the risk surface.
 
-A key principle is that the UI should show **what the system did**, not pretend hidden reasoning is proof.
+**Automation vs control.** Too many approvals make the experience tedious, but no approvals can make powerful actions dangerous.
 
-Useful evidence includes:
+**Parallelism vs consistency.** Multiple agents can move faster, but coordinating them introduces merge and reasoning complexity.
 
-- changed files;
-- diffs;
-- command results;
-- test outcomes;
-- Git state;
-- tool activity;
-- subagent outputs.
-
-## Important Product Decisions
-
-### AI does not directly own the machine
-
-Execution authority stays in a separate runtime boundary.
-
-### Structured tools are preferred
-
-Known actions should use explicit capabilities rather than arbitrary shell commands.
-
-### Verification is part of the loop
-
-A code change is not considered complete just because it was written.
-
-### Agent work should be inspectable
-
-Users need to understand what changed and why.
-
-## Tradeoffs
-
-- **freedom vs safety** — more powerful tools make agents more useful but also harder to constrain;
-- **automation vs user control** — full autonomy is convenient, but approvals matter for sensitive actions;
-- **parallelism vs consistency** — subagents can speed work up, but their outputs must be reconciled carefully.
+The product is built around managing those tradeoffs explicitly instead of hiding them.
 
 ## Implementation Notes
 

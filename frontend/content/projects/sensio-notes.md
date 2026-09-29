@@ -15,160 +15,168 @@ productUrl: ""
 repoUrl: ""
 ---
 
-## What It Is
+## The Story
 
-**Sensio Notes** is a meeting intelligence product.
+A meeting usually feels productive while it is happening.
 
-Its job is not just to record audio or generate a summary. The core idea is to turn a messy human conversation into a structured body of knowledge that can be searched, reviewed, and acted on later.
+People talk, decisions are made, responsibilities are mentioned, ideas appear, and everyone leaves with the feeling that the important things were understood.
 
-A meeting starts as unstructured speech. Sensio Notes gradually converts that into:
+A few days later, that confidence starts to disappear.
 
-- transcript
-- discussion structure
-- decisions
-- action items
-- key points
-- searchable meeting knowledge
+Someone asks, “Who was supposed to handle that?” Another person remembers the decision differently. The recording exists, but nobody wants to listen to an hour of audio just to recover one sentence.
 
-## Problem It Solves
+That gap is the reason **Sensio Notes** exists.
 
-Meetings generate a lot of information, but humans are bad at preserving all of it.
+The goal is not simply to record a meeting. The goal is to make the meeting remain useful after it ends.
 
-Typical problems are:
+## What the Product Is Really Trying to Do
 
-- people forget decisions;
-- action items are not assigned clearly;
-- context gets lost after a few days;
-- recordings are too long to review manually;
-- summaries can be inaccurate or disconnected from the source.
+Sensio Notes treats every meeting as raw information that needs to be turned into something reusable.
 
-The product exists to reduce the gap between **what was said** and **what the organization remembers**.
+A conversation starts messy. People interrupt each other, jump between topics, return to older points, and make decisions without saying the words “this is a decision.”
 
-## Who It Is For
+The product tries to transform that mess into a more durable memory:
 
-The concept is useful for teams that depend on recurring conversations:
+- what was discussed;
+- what was decided;
+- what needs to happen next;
+- who is responsible;
+- what context matters later;
+- where those conclusions came from.
 
-- project teams;
-- operational teams;
-- engineering teams;
-- internal meetings;
-- client discussions;
-- planning and review sessions.
-
-The main user need is simple: **“I should not have to reconstruct the meeting from memory.”**
-
-## Core Concept
-
-The system treats a meeting as a transformation pipeline.
+The important part is that the AI does not become the meeting itself. The original conversation remains the source of truth.
 
 ```mermaid
 flowchart LR
     A[Conversation] --> B[Recorded evidence]
     B --> C[Transcript]
     C --> D[Structured understanding]
-    D --> E[Decisions and action items]
-    D --> F[Searchable knowledge]
-    D --> G[Summary and key points]
+    D --> E[Summary]
+    D --> F[Decisions]
+    D --> G[Action items]
+    D --> H[Searchable knowledge]
 ```
 
-The important concept is that generated outputs should remain connected to the original meeting evidence.
+## How It Feels to Use
 
-That means AI is not treated as a free-form writer. It acts more like a processing layer over a durable meeting record.
+From the user's perspective, the flow should feel boringly simple.
 
-## General User Flow
+You start a meeting, record it, end it, and wait while the system processes everything in the background.
+
+After that, instead of seeing only a media file, you get a useful representation of the meeting.
 
 ```mermaid
 flowchart TD
-    U[Start meeting] --> R[Record conversation]
-    R --> X[Upload and process]
-    X --> T[Transcript becomes available]
-    T --> I[Meeting intelligence is generated]
-    I --> V[User reviews summary, decisions, action items]
-    V --> S[Meeting becomes searchable later]
+    A[Start meeting] --> B[Record conversation]
+    B --> C[Meeting ends]
+    C --> D[System processes the recording]
+    D --> E[Transcript becomes available]
+    E --> F[Summary, decisions, and action items appear]
+    F --> G[Meeting can be searched later]
 ```
 
-The product should feel simple to the user even though the internal processing is asynchronous.
+The complexity belongs inside the system, not in the user's workflow.
 
-## General Processing Algorithm
+## The Main Problem Behind the Scenes
 
-At a high level, the system behaves like this:
+There are actually two separate problems.
 
-1. Capture the meeting reliably.
-2. Preserve the source media.
-3. Convert speech into text.
-4. Break the transcript into useful context units.
-5. Extract structure from the conversation.
-6. Generate summaries, decisions, and action items.
-7. Keep generated outputs linked to source context.
-8. Store everything as reusable meeting knowledge.
+The first is **capture reliability**.
 
-Conceptually:
+If a meeting lasts an hour and the network drops near the end, the system should not behave as if nothing happened. The product has to assume that devices sleep, connections disappear, browsers throttle background activity, and mobile operating systems behave differently from desktop browsers.
+
+The second is **interpretation reliability**.
+
+An AI can produce a very convincing paragraph that sounds correct while quietly inventing meaning that was never actually present.
+
+So the product has to solve both:
 
 ```text
-meeting
-→ evidence
-→ transcript
-→ context
-→ structured interpretation
-→ reusable knowledge
+preserve the evidence
+then
+interpret the evidence carefully
 ```
+
+That ordering matters.
+
+## General Processing Logic
+
+The processing model is intentionally staged.
+
+1. Preserve the meeting first.
+2. Turn speech into text.
+3. Break the transcript into useful context.
+4. Detect important discussion structure.
+5. Extract decisions and actions.
+6. Generate higher-level summaries.
+7. Keep the outputs connected to the original evidence.
+8. Store the result so the meeting remains useful later.
+
+```mermaid
+flowchart TD
+    R[Raw meeting] --> T[Transcript]
+    T --> C[Context segments]
+    C --> X[Extract structure]
+    X --> D[Decisions]
+    X --> A[Action items]
+    X --> S[Summary]
+    D --> K[Meeting knowledge]
+    A --> K
+    S --> K
+```
+
+The algorithm is less about “ask an LLM to summarize this” and more about building several smaller transformations that can be reasoned about independently.
 
 ## General System Design
 
-The system has four conceptual layers.
+The system can be understood as four layers.
 
 ```mermaid
 flowchart TD
-    C[Capture layer] --> P[Processing layer]
-    P --> K[Knowledge layer]
-    K --> E[Experience layer]
-
-    C -->|audio| P
-    P -->|transcript and structure| K
-    K -->|search, summaries, decisions| E
+    C[Capture] --> P[Processing]
+    P --> K[Knowledge]
+    K --> E[Experience]
 ```
 
-### Capture layer
+**Capture** is responsible for not losing the meeting.
 
-Responsible for making sure a meeting is not lost.
+**Processing** turns media into transcript and structured interpretation.
 
-### Processing layer
+**Knowledge** stores the useful long-term representation.
 
-Turns raw audio into transcript and structured outputs.
+**Experience** is what the user interacts with: summaries, action items, search, and review.
 
-### Knowledge layer
+The layers matter because each one has a different failure mode. A capture failure is not the same kind of problem as a bad summary. Keeping them conceptually separate makes the whole product easier to trust.
 
-Stores the durable meeting representation.
+## Why This Product Is More Than a Meeting Recorder
 
-### Experience layer
+The real value appears weeks later.
 
-Lets users review, search, and act on the resulting knowledge.
+A normal recorder answers:
 
-## Important Product Decisions
+> “What happened in this meeting?”
 
-### Reliability comes before intelligence
+Sensio Notes tries to answer:
 
-A perfect summary is useless if the original recording was lost.
+> “What did we decide, what should happen next, and what context from past meetings matters now?”
 
-### Generated output should be reviewable
+That shift is what turns a recording tool into a knowledge tool.
 
-The system should help users understand where important conclusions came from.
+## Product Tradeoffs
 
-### Meetings become reusable knowledge
+There are a few unavoidable tensions.
 
-The product is more valuable when old meetings remain useful instead of becoming dead recordings.
+**Speed vs accuracy.** Users want results quickly, but better interpretation may require more processing.
 
-## Tradeoffs
+**Automation vs trust.** AI can save time, but a user still needs confidence that important outputs came from real evidence.
 
-The product balances several tensions:
+**Rich output vs clarity.** The system can extract many structures, but too much information can make a meeting harder to understand instead of easier.
 
-- **speed vs accuracy** — users want quick results, but better interpretation may require more processing;
-- **automation vs trust** — AI can save time, but generated decisions should not silently replace human judgment;
-- **rich structure vs simplicity** — the system can extract many concepts, but the UI still needs to remain easy to scan.
+The product has to stay useful without becoming noisy.
 
 ## Implementation Notes
 
-The current implementation uses a web/native recording client, asynchronous backend processing, durable database and object storage, and AI workflows for structured meeting intelligence.
+The current implementation uses a web/native recording client, asynchronous backend processing, durable media storage, structured AI workflows, and real-time progress updates.
 
 ## Stack
 

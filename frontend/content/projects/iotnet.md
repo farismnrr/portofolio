@@ -15,61 +15,67 @@ productUrl: "https://i-ot.net/"
 repoUrl: ""
 ---
 
-## What It Is
+## The Story
 
-**IoTNet** is an IoT operations platform.
+Building one IoT device is relatively easy.
 
-Its purpose is to give people one place to manage connected devices, automation, telemetry, user access, and operational state.
+Operating hundreds of devices is a different problem.
 
-It is not just a dashboard. The concept is closer to a control plane for an IoT environment.
+The moment a project grows, new questions appear:
 
-## Problem It Solves
+- Who owns this device?
+- Who is allowed to control it?
+- What happens when it goes offline?
+- How do we know its current state?
+- How do automation rules work?
+- How do multiple users share the same environment?
+- How do we keep all of this understandable?
 
-IoT deployments often become fragmented.
+**IoTNet** was built around that operational layer.
 
-A typical setup may have:
+It is not only a dashboard for devices. It is a platform that sits between people and a fleet of connected hardware.
 
-- devices;
-- MQTT topics;
-- broker credentials;
-- users;
-- automation rules;
-- dashboards;
-- telemetry;
-- billing or account logic;
-- embedded firmware.
+## The Core Idea
 
-When these pieces are managed separately, the system becomes hard to operate.
+The platform translates **human intent** into **device behavior**.
 
-IoTNet tries to unify them into one model.
+A user thinks in product terms:
 
-## Who It Is For
+> “Turn this device on.”
 
-The platform is useful for:
+The hardware understands protocol messages.
 
-- IoT operators;
-- developers;
-- integrators;
-- organizations managing fleets of devices;
-- teams building connected products.
-
-## Core Concept
-
-The system sits between human intent and device behavior.
+IoTNet is the layer in the middle that applies identity, rules, messaging, and state.
 
 ```mermaid
 flowchart LR
     U[User intent] --> P[Platform rules]
-    P --> M[Messaging layer]
+    P --> M[Messaging]
     M --> D[Device]
     D --> T[Telemetry]
     T --> P
     P --> U
 ```
 
-The platform translates business-level actions into device-level communication, then converts device state back into human-readable information.
+That translation is the heart of the system.
 
-## General Device Flow
+## The Device Control Story
+
+Imagine a user clicking “turn on.”
+
+The system should not immediately publish a raw command.
+
+It first needs to understand the context.
+
+Who is the user?
+
+Which tenant owns the device?
+
+Is this action allowed?
+
+What target should receive the command?
+
+Once the action is sent, the system should wait for state or telemetry to confirm what happened.
 
 ```mermaid
 sequenceDiagram
@@ -78,18 +84,22 @@ sequenceDiagram
     participant Broker
     participant Device
 
-    User->>Platform: Request action
-    Platform->>Platform: Validate access and target
+    User->>Platform: Request device action
+    Platform->>Platform: Check identity and target
     Platform->>Broker: Publish command
-    Broker->>Device: Deliver command
-    Device->>Broker: Publish resulting state
+    Broker->>Device: Deliver message
+    Device->>Broker: Return state
     Broker->>Platform: Receive telemetry
     Platform-->>User: Show updated state
 ```
 
-## General Automation Algorithm
+The system does not assume that “command sent” means “device changed.”
 
-An automation is conceptually:
+That distinction is important in the physical world.
+
+## The Automation Model
+
+Automation sounds complicated, but the core model is simple.
 
 ```text
 event
@@ -98,7 +108,7 @@ event
 → action
 ```
 
-Example:
+For example:
 
 ```text
 temperature rises
@@ -107,7 +117,40 @@ temperature rises
 → turn cooling on
 ```
 
-This simple pattern can support many IoT use cases.
+or:
+
+```text
+door opens
+→ outside office hours
+→ security rule matches
+→ send alert
+```
+
+This pattern is intentionally generic because many IoT use cases can be expressed with the same building blocks.
+
+## Why Identity Is Part of an IoT Platform
+
+It is tempting to think IoT is mostly about devices.
+
+In practice, access control becomes just as important.
+
+A device usually belongs to someone or something:
+
+- a tenant;
+- an organization;
+- a site;
+- a project;
+- a user group.
+
+The platform therefore has to answer both sides:
+
+```text
+what can this device do?
+and
+who is allowed to ask it to do that?
+```
+
+That is why identity, device ownership, and messaging belong in one larger system concept.
 
 ## General System Design
 
@@ -116,62 +159,41 @@ flowchart TD
     H[Human operations] --> A[Application platform]
     A --> I[Identity and access]
     A --> R[Rules and automation]
-    A --> M[Messaging]
-    M --> D[Devices]
+    A --> M[Messaging layer]
+    M --> D[Connected devices]
     D --> M
     M --> A
     A --> H
 ```
 
-### Human operations
+The platform becomes the coordination point.
 
-Dashboards and user workflows.
+It owns the product meaning of the action, while the messaging layer handles device communication.
 
-### Application platform
+## Why HTTP and MQTT Both Exist
 
-Owns product rules and persistent state.
+These two protocols solve different problems.
 
-### Messaging
+HTTP is good for user-driven application workflows.
 
-Provides asynchronous communication with devices.
+MQTT is good for asynchronous communication with devices that may connect, disconnect, or publish state independently.
 
-### Devices
+The conceptual split is:
 
-Produce telemetry and respond to actions.
+```text
+human workflow → application API
+device workflow → messaging
+```
 
-## Why Identity Matters in IoT
+Trying to use one model for both makes the system harder to reason about.
 
-Device control is not only a technical problem.
+## Product Tradeoffs
 
-The platform must also answer:
+**Real-time behavior vs complexity.** Faster feedback usually means more event-driven state to manage.
 
-- who owns this device?
-- who can control it?
-- which tenant does it belong to?
-- which operations are allowed?
+**Central control vs device independence.** Central orchestration is easier to govern, but devices should still tolerate temporary disconnection.
 
-That is why identity and device management are part of the same platform concept.
-
-## Important Product Decisions
-
-### HTTP and MQTT have different jobs
-
-HTTP is good for application workflows. MQTT is good for device messaging.
-
-### Devices should not define business rules
-
-Product-level permissions and automation belong in the application layer.
-
-### Telemetry should close the loop
-
-The system should verify resulting state instead of assuming a command succeeded.
-
-## Tradeoffs
-
-- **real-time behavior vs system complexity**;
-- **centralized control vs device independence**;
-- **rich automation vs understandable rules**;
-- **multi-tenant flexibility vs stricter access logic**.
+**Powerful automation vs understandable rules.** The more expressive the automation engine becomes, the harder it is for users to predict behavior.
 
 ## Implementation Notes
 

@@ -15,88 +15,88 @@ productUrl: ""
 repoUrl: ""
 ---
 
-## What It Is
+## The Story
 
-**Sensio IoT** is a smart-space platform.
+IoT systems often look clean in a technical diagram and confusing in real life.
 
-The central idea is to model physical places first, then connect users, permissions, devices, and automation to those places.
+A device has an ID. A broker has a topic. A controller has an address. A database has another identifier.
 
-Instead of treating IoT as a giant flat device list, the product starts from a more human model:
+But the person using the system does not think like that.
 
-```text
-person
-→ site
-→ room or area
-→ device
-→ action
-```
+They think:
 
-## Problem It Solves
+> “Turn off the lights in Meeting Room A.”
 
-Connected-device systems often become difficult to manage because hardware is organized around technical identifiers instead of real-world context.
+or:
 
-Users think in terms of:
+> “Give this employee access to devices in the Jakarta office.”
 
-- home;
-- office;
-- classroom;
-- store;
-- factory;
-- room;
-- equipment.
+That difference is where **Sensio IoT** begins.
 
-The platform exists to map device control back to those real-world spaces.
+The product is designed around the physical world first, not around protocol identifiers.
 
-## Who It Is For
+## The Core Idea
 
-The concept fits environments where physical access and device access need to stay aligned:
+The main concept is **site-oriented control**.
 
-- offices;
-- schools;
-- smart homes;
-- retail spaces;
-- factories;
-- meeting rooms.
+A site represents a real place: an office, school, home, store, factory, or other physical environment.
 
-## Core Concept
+Users become members of sites.
 
-A **site** is the main trust and organization boundary.
+Devices belong to spaces inside sites.
+
+Permissions are evaluated in that context.
 
 ```mermaid
 flowchart TD
     U[User] --> M[Site membership]
     M --> S[Site]
-    S --> A[Areas / rooms]
-    A --> D[Devices]
-    D --> X[Actions and telemetry]
+    S --> R[Room / area]
+    R --> D[Device]
+    D --> A[Action and telemetry]
 ```
 
-A device action should make sense only inside the site and permission context that owns it.
+This gives the system a model that matches how people naturally describe the real world.
 
-## General User Flow
+## The User Experience
+
+Imagine a building operator opening the application.
+
+They should not see a wall of device IDs.
+
+They should see the spaces they are responsible for.
+
+They choose a site, enter a room, inspect current device state, and perform an action.
 
 ```mermaid
 flowchart TD
-    L[Login] --> S[Choose site]
-    S --> V[View space state]
-    V --> A[Select device or scene]
-    A --> P[Permission check]
-    P -->|Allowed| C[Execute control]
-    P -->|Denied| D[Reject action]
-    C --> U[Update current state]
+    A[Login] --> B[Choose site]
+    B --> C[Open room or area]
+    C --> D[Inspect device state]
+    D --> E[Request action]
+    E --> F[Check permission]
+    F -->|Allowed| G[Execute]
+    F -->|Denied| H[Reject]
+    G --> I[Return updated state]
 ```
 
-## General Control Algorithm
+The technical details stay underneath the interaction.
 
-A physical action should pass through a simple conceptual decision chain:
+## The General Control Algorithm
 
-1. Who is requesting the action?
-2. Which site does the action belong to?
-3. Does the user belong to that site?
-4. Does the user have permission for the target?
-5. Is the device reachable?
-6. Execute the action.
-7. Record or return the resulting state.
+Every device action can be reduced to a sequence of questions.
+
+```text
+Who is asking?
+Where does this action belong?
+Is this person a member of that site?
+Are they allowed to control this target?
+Is the device available?
+Execute the action.
+Observe the resulting state.
+```
+
+Conceptually:
 
 ```text
 identity
@@ -107,63 +107,68 @@ identity
 → state
 ```
 
+This algorithm is more important than the protocol used to talk to the device.
+
+## Why Space Matters More Than Device IDs
+
+A flat device list works when there are ten devices.
+
+It becomes painful when there are hundreds.
+
+Humans need grouping, context, and ownership.
+
+The physical hierarchy gives the system a natural way to answer questions like:
+
+- Which devices belong to this office?
+- Which room is this sensor in?
+- Who is allowed to control these lights?
+- Which telemetry belongs to this site?
+- Which automation should apply here?
+
+That structure becomes the backbone for more advanced features later.
+
 ## General System Design
 
 ```mermaid
 flowchart LR
-    H[Human interface] --> C[Control layer]
-    C --> D[Device integration]
-    D --> P[Physical devices]
+    H[Human intent] --> C[Control layer]
+    C --> I[Device integration]
+    I --> P[Physical devices]
     P --> T[Telemetry]
     T --> C
     C --> H
 ```
 
-### Human interface
+**Human intent** is expressed in product terms: rooms, devices, scenes, and actions.
 
-Shows spaces, devices, and current state in a human-readable structure.
+**Control layer** applies identity, scope, and permission.
 
-### Control layer
+**Device integration** translates those product-level actions into whatever protocol the hardware understands.
 
-Owns permissions, orchestration, and action intent.
+**Telemetry** closes the loop by showing what actually happened.
 
-### Device integration
+## Why On-Prem Is Part of the Concept
 
-Translates product-level actions into device-level communication.
+For physical infrastructure, local availability matters.
 
-## Why On-Prem Matters
+If a smart-space system controls lights, environmental systems, or meeting rooms, users may still expect it to work even when the internet is unreliable.
 
-For physical infrastructure, local control can be important.
+That makes local deployment useful for:
 
-The on-prem model can improve:
-
-- local availability;
-- latency;
+- lower latency;
+- predictable availability;
 - privacy;
-- operational independence;
-- control over deployment.
+- local operational control.
 
-That makes the platform suitable for environments where device control should not depend entirely on a remote cloud service.
+The product is therefore not only about IoT features. It is also about where control should live.
 
-## Important Product Decisions
+## Product Tradeoffs
 
-### Space is more important than device ID
+**Local control vs cloud convenience.** On-prem systems give operators more control, but require more responsibility for deployment and maintenance.
 
-Users should navigate the physical world, not protocol identifiers.
+**Simple hierarchy vs enterprise complexity.** A clean site/room/device model is easy to understand, but very large organizations may need more levels.
 
-### Permission follows location context
-
-Access to devices should derive from site membership and role.
-
-### Control and telemetry belong together
-
-A system should not only send commands; it should also show the resulting state.
-
-## Tradeoffs
-
-- **local control vs centralized cloud convenience**;
-- **simple space model vs complex enterprise hierarchy**;
-- **fast device actions vs stronger authorization checks**.
+**Immediate control vs stronger checks.** Every permission check adds a little work, but skipping them creates the wrong trust model.
 
 ## Implementation Notes
 

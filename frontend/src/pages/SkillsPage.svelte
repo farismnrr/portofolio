@@ -4,6 +4,7 @@
   import TechChips from '../lib/ui/TechChips.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import { navigate } from '../lib/router';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
   const skills = skillGroups as [string,string,string[]][];
 </script>
 
@@ -56,7 +57,7 @@
         <p class="mt-4 max-w-xl text-[15px] leading-7 text-black/55">I’m always open to discussing new opportunities, interesting projects, or just having a conversation about technology and ideas.</p>
         <div class="mt-6 flex gap-3"><a class="btn btn-neutral rounded-none border-0 bg-[#344534] px-6 font-normal" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View Projects →</a><a class="btn btn-outline rounded-none border-black/20 px-6 font-normal" href="mailto:hello@example.com">Contact Me</a></div>
       </div>
-      <img class="aspect-[2.05] w-full object-cover" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=85" alt="Workspace"/>
+      <MediaImage className="aspect-[2.05] w-full" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=85" alt="Workspace"/>
     </section>
   </PageShell>
 </main>

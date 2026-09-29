@@ -3,6 +3,7 @@
   import { navigate } from '../lib/router';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
 </script>
 
 <main>
@@ -19,7 +20,7 @@
         <p class="mt-4 max-w-xl text-[15px] leading-7 text-black/56">Patterns, trade-offs, and practical lessons from building event-driven systems at scale, including idempotency, ordering, failure handling, and operational considerations.</p>
         <a class="btn btn-neutral mt-7 rounded-none border-0 bg-[#344534] px-7 font-normal" href="/blog/event-driven-systems" on:click={(e)=>navigate(e,'/blog/event-driven-systems')}>Read article →</a>
       </div>
-      <img class="aspect-[1.7] w-full object-cover" src={projects[0].image} alt="Event-driven systems"/>
+      <MediaImage className="aspect-[1.7] w-full" src={projects[0].image} alt="Event-driven systems" eager/>
     </section>
 
     <section class="pt-8">

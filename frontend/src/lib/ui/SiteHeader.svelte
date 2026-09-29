@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from './Icon.svelte';
+  import AppIcon from './AppIcon.svelte';
   import { nav } from '../data';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';
@@ -20,10 +20,10 @@
         {/each}
       </nav>
       <div class="flex items-center gap-1">
-        <a class="btn btn-circle btn-ghost btn-sm" aria-label="GitHub" href="https://github.com"><Icon name="github" size={19}/></a>
-        <a class="btn btn-circle btn-ghost btn-sm" aria-label="LinkedIn" href="https://linkedin.com"><Icon name="linkedin" size={19}/></a>
+        <a class="btn btn-circle btn-ghost btn-sm" aria-label="GitHub" href="https://github.com"><AppIcon name="github" size={19}/></a>
+        <a class="btn btn-circle btn-ghost btn-sm" aria-label="LinkedIn" href="https://linkedin.com"><AppIcon name="linkedin" size={19}/></a>
         <span class="mx-2 hidden h-6 w-px bg-black/12 sm:block"></span>
-        <button class="btn btn-circle btn-ghost btn-sm" aria-label="Theme"><Icon name="sun" size={19}/></button>
+        <button class="btn btn-circle btn-ghost btn-sm" aria-label="Theme"><AppIcon name="sun" size={19}/></button>
       </div>
     </div>
   </PageShell>

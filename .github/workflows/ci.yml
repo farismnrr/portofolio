@@ -21,8 +21,22 @@ env:
   RUST_TARGET: x86_64-unknown-linux-musl
 
 jobs:
+  guardrail:
+    name: guardrail
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Architecture / SOLID / DRY guard
+        working-directory: frontend
+        run: npm run guard
+
   frontend:
     runs-on: ubuntu-24.04
+    needs: guardrail
     defaults:
       run:
         working-directory: frontend
@@ -34,8 +48,15 @@ jobs:
           node-version: 24
           package-manager-cache: false
 
-      - name: Generate npm lockfile
-        run: npm install --package-lock-only
+      - name: Generate npm lockfile without warnings
+        shell: bash
+        run: |
+          set -o pipefail
+          npm install --package-lock-only 2>&1 | tee /tmp/npm-lock.log
+          if grep -Eiq '(^|[[:space:]])(npm warn|warning)([[:space:]:]|$)' /tmp/npm-lock.log; then
+            echo "Dependency resolution emitted a warning; warnings are CI failures."
+            exit 1
+          fi
 
       - name: Restore npm cache
         uses: actions/cache@v6
@@ -45,10 +66,29 @@ jobs:
           restore-keys: |
             npm-${{ runner.os }}-node24-
 
-      - run: npm ci
-      - run: npm run guard
-      - run: npm run check
-      - run: npm run build
+      - name: Install dependencies without warnings
+        shell: bash
+        run: |
+          set -o pipefail
+          npm ci 2>&1 | tee /tmp/npm-ci.log
+          if grep -Eiq '(^|[[:space:]])(npm warn|warning)([[:space:]:]|$)' /tmp/npm-ci.log; then
+            echo "npm ci emitted a warning; warnings are CI failures."
+            exit 1
+          fi
+
+      - name: Strict Svelte / TypeScript diagnostics
+        run: npm run check
+
+      - name: Build frontend with stderr treated as failure
+        shell: bash
+        run: |
+          set -o pipefail
+          : > /tmp/frontend-build.stderr
+          npm run build 2> >(tee /tmp/frontend-build.stderr >&2)
+          if [ -s /tmp/frontend-build.stderr ]; then
+            echo "Frontend build wrote to stderr; warnings/errors are CI failures."
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v7
         with:
@@ -59,6 +99,8 @@ jobs:
   rust:
     runs-on: ubuntu-24.04
     needs: frontend
+    env:
+      RUSTFLAGS: -D warnings
     steps:
       - uses: actions/checkout@v7
 

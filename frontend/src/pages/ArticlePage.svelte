@@ -1,5 +1,6 @@
 <script lang="ts">
   import PageShell from '../lib/ui/PageShell.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
   import { projects } from '../lib/data';
   const sections=['Introduction','Event Boundaries','Delivery Guarantees','Idempotency','Retries','Dead Letter Queues','Observability','Lessons Learned','Conclusion'];
   const idempotencyExample='if already_processed(event.id) { return; }';
@@ -14,7 +15,7 @@
         <p class="text-[11px] font-semibold uppercase tracking-[.18em] text-black/45">Architecture · Apr 12, 2024 · 12 min read</p>
         <h1 class="mt-4 text-[48px] font-semibold leading-[1.02] tracking-[-0.045em] md:text-[62px]">Designing Reliable<br/>Event-Driven Systems</h1>
         <p class="mt-4 max-w-4xl text-[20px] leading-8 text-black/56">Key principles, patterns, and practical lessons for building event-driven systems that are scalable, observable, and resilient in the real world.</p>
-        <img class="mt-8 aspect-[2.45] w-full object-cover" src={projects[0].image} alt="Event-driven system"/>
+        <MediaImage className="mt-8 aspect-[2.45] w-full" src={projects[0].image} alt="Event-driven system" eager/>
 
         <h2 id="introduction" class="mt-8 text-[30px] font-semibold tracking-[-0.03em]">Introduction</h2>
         <p class="mt-3 text-[15px] leading-7 text-black/60">Event-driven systems have become a foundational architecture for modern applications. They help decouple services, improve scalability, and enable real-time capabilities. But they also introduce new challenges around reliability, consistency, and observability.</p>

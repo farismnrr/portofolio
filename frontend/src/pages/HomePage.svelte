@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from '../lib/ui/Icon.svelte';
+  import AppIcon from '../lib/ui/AppIcon.svelte';
   import { experiences, projects, profileImage } from '../lib/data';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -23,14 +23,14 @@
         </div>
 
         <div class="mt-8 flex flex-wrap gap-x-9 gap-y-3 border-t border-black/10 pt-5 text-[12px] text-black/55">
-          <span class="flex items-center gap-2"><Icon name="map-pin" size={15}/>Jakarta, Indonesia</span>
+          <span class="flex items-center gap-2"><AppIcon name="map-pin" size={15}/>Jakarta, Indonesia</span>
           <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-[#45664a]"></span>Available for selected opportunities</span>
         </div>
 
         <div class="mt-6 flex flex-wrap gap-6 text-[12px] text-black/72">
-          <a class="flex items-center gap-2 hover:text-black" href="https://github.com"><Icon name="github" size={16}/>GitHub</a>
-          <a class="flex items-center gap-2 hover:text-black" href="https://linkedin.com"><Icon name="linkedin" size={16}/>LinkedIn</a>
-          <a class="flex items-center gap-2 hover:text-black" href="mailto:hello@example.com"><Icon name="mail" size={16}/>Email</a>
+          <a class="flex items-center gap-2 hover:text-black" href="https://github.com"><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex items-center gap-2 hover:text-black" href="https://linkedin.com"><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex items-center gap-2 hover:text-black" href="mailto:hello@example.com"><AppIcon name="mail" size={16}/>Email</a>
         </div>
       </div>
 

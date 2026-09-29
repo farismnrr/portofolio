@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from '../lib/ui/Icon.svelte';
+  import AppIcon from '../lib/ui/AppIcon.svelte';
   import { navigate } from '../lib/router';
   import TechChips from '../lib/ui/TechChips.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -30,7 +30,7 @@
 
 <main>
   <PageShell className="py-12">
-    <a class="flex items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/projects" on:click={(e)=>navigate(e,'/projects')}><Icon name="arrow-left" size={14}/>View all projects</a>
+    <a class="flex items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/projects" on:click={(e)=>navigate(e,'/projects')}><AppIcon name="arrow-left" size={14}/>View all projects</a>
 
     <section class="mt-8 grid gap-12 border-b border-black/10 pb-12 lg:grid-cols-[.72fr_1.28fr]">
       <div>

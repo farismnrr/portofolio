@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from './Icon.svelte';
+  import AppIcon from './AppIcon.svelte';
   import { nav } from '../data';
   import { navigate } from '../router';
   import PageShell from './PageShell.svelte';
@@ -16,7 +16,7 @@
         {#each nav as item}<a class="hover:text-black" href={item[1]} on:click={(e)=>navigate(e,item[1])}>{item[0]}</a>{/each}
       </nav>
       <div class="flex items-center gap-4 lg:justify-self-end">
-        <Icon name="github" size={15}/><Icon name="linkedin" size={15}/><Icon name="sun" size={15}/>
+        <AppIcon name="github" size={15}/><AppIcon name="linkedin" size={15}/><AppIcon name="sun" size={15}/>
         <span class="ml-2">© 2026 Alex Morgan. All rights reserved.</span>
       </div>
     </div>

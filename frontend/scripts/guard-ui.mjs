@@ -34,9 +34,8 @@ for (const entry of requiredTopLevel) {
 
 const packageJson = JSON.parse(await readFile(join(frontendRoot, 'package.json'), 'utf8'));
 const deps = { ...(packageJson.dependencies ?? {}), ...(packageJson.devDependencies ?? {}) };
-if (deps['lucide-svelte']) failures.push('Deprecated lucide-svelte dependency is forbidden; use @lucide/svelte.');
-if (!deps['@lucide/svelte']) failures.push('Missing @lucide/svelte icon dependency.');
-if (!deps['@icons-pack/svelte-simple-icons']) failures.push('Missing Simple Icons Svelte package for brand icons.');
+if (deps['lucide-svelte'] || deps['@lucide/svelte'] || deps['@icons-pack/svelte-simple-icons']) failures.push('Multiple/legacy icon stacks are forbidden; use the single Tabler Svelte 5 icon library.');
+if (!deps['@tabler/icons-svelte-runes']) failures.push('Missing @tabler/icons-svelte-runes icon dependency.');
 
 const files = await collectFiles(srcRoot);
 for (const absolute of files) {
@@ -54,7 +53,7 @@ for (const absolute of files) {
   if (/\bconsole\.(?:log|warn|error)\s*\(/.test(source)) failures.push(`${rel}: console logging is forbidden in production UI code.`);
 
   const directIconImport = imports.some((specifier) =>
-    specifier.startsWith('@lucide/svelte') || specifier.startsWith('@icons-pack/svelte-simple-icons')
+    specifier.startsWith('@tabler/icons-svelte-runes')
   );
   if (directIconImport && rel !== 'lib/ui/AppIcon.svelte') {
     failures.push(`${rel}: icon libraries may only be imported by lib/ui/AppIcon.svelte (dependency inversion / single icon boundary).`);

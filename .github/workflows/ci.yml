@@ -11,6 +11,10 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: farismnrr/portofolio/portfolio-app
@@ -133,8 +137,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   deploy:
     runs-on: [self-hosted, Linux, X64]

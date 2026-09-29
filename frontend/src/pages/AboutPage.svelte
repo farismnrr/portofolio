@@ -29,7 +29,7 @@
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.github}><AppIcon name="github" size={18}/>GitHub</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={18}/>LinkedIn</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={18}/>Email</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href={profile.resume}><AppIcon name="file-text" size={18}/>Download Resume</a>
+          {#if profile.resume}<a class="flex items-center gap-3 hover:opacity-60" href={profile.resume}><AppIcon name="file-text" size={18}/>Download Resume</a>{/if}
         </div>
       </aside>
 

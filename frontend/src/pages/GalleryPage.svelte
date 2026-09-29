@@ -20,7 +20,7 @@
       {#each gallery as item}
         <figure class={sizeClass[item.size]}>
           <MediaImage className="h-[calc(100%-22px)] min-h-[100px] w-full" src={item.image} alt={item.caption}/>
-          <figcaption class="mt-2 text-[11px] text-black/45">{item.caption}</figcaption>
+          {#if item.caption}<figcaption class="mt-2 text-[11px] text-black/45">{item.caption}</figcaption>{/if}
         </figure>
       {/each}
     </div>

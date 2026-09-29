@@ -1,7 +1,7 @@
 ---
 order: 3
 title: Frontend
-items: [Svelte, React, Vue, Next.js]
+items: [Next.js, Nuxt, React, Vue]
 ---
 
-Libraries and frameworks for modern web applications.
+Developing modern, responsive web applications with a focus on component reusability, server-side rendering, and optimal user experience.

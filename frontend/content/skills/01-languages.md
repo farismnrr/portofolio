@@ -4,4 +4,4 @@ title: Languages
 items: [Go, Rust, TypeScript, Python, C++]
 ---
 
-Core programming languages I use regularly.
+Proficient in writing high-performance, memory-safe code for system-level applications and ensuring type safety across the entire stack.

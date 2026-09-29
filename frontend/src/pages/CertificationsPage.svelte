@@ -20,13 +20,17 @@
         <div class="mt-7 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {#each group.items as cert}
             <article>
-              <div class="flex aspect-[1.78] items-center border border-black/12 bg-white/55 p-7 shadow-[0_1px_8px_rgba(0,0,0,.035)]">
-                <div><p class="text-[16px] font-semibold text-black/65">{cert.issuer}</p><h3 class="mt-5 text-[24px] font-semibold leading-tight tracking-[-0.025em]">{cert.title}</h3><p class="mt-4 text-[10px] uppercase tracking-[.16em] text-black/35">Professional Certificate</p></div>
+              <div class="aspect-[1.78] overflow-hidden border border-black/12 bg-white/55 shadow-[0_1px_8px_rgba(0,0,0,.035)]">
+                <img class="h-full w-full object-contain" src={cert.image} alt={cert.title} loading="lazy"/>
               </div>
               <h3 class="mt-4 text-[16px] font-semibold">{cert.title}</h3>
               <p class="mt-1 text-[13px] text-black/52">{cert.issuer}</p>
-              <p class="mt-1 text-[12px] text-black/42">{cert.year} · Credential ID: {cert.credentialId}</p>
-              <a class="mt-3 inline-block text-[12px] text-black/68 underline underline-offset-4" href={cert.url}>View Credential →</a>
+              {#if cert.year || cert.credentialId}
+                <p class="mt-1 text-[12px] text-black/42">
+                  {cert.year}{#if cert.year && cert.credentialId} · {/if}{#if cert.credentialId}Credential ID: {cert.credentialId}{/if}
+                </p>
+              {/if}
+              {#if cert.url}<a class="mt-3 inline-block text-[12px] text-black/68 underline underline-offset-4" href={cert.url}>View Credential →</a>{/if}
             </article>
           {/each}
         </div>

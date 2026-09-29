@@ -1,7 +1,7 @@
 ---
 order: 2
 title: Backend
-items: [Axum, Actix, Node.js, REST, gRPC]
+items: [NestJS, Hapi, Gin, Actix]
 ---
 
-Frameworks and protocols for building scalable services.
+Architecting scalable microservices and high-throughput RESTful/gRPC APIs, focusing on concurrency and low-latency performance.

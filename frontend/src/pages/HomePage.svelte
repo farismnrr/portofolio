@@ -32,7 +32,7 @@
 
         <div class="mt-8 flex flex-wrap gap-x-9 gap-y-3 border-t border-black/10 pt-5 text-[12px] text-black/55">
           <span class="flex items-center gap-2"><AppIcon name="map-pin" size={15}/>{profile.location}</span>
-          <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-[#45664a]"></span>{profile.availability}</span>
+          {#if profile.availability}<span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-[#45664a]"></span>{profile.availability}</span>{/if}
         </div>
 
         <div class="mt-6 flex flex-wrap gap-6 text-[12px] text-black/72">
@@ -44,7 +44,7 @@
 
       <div>
         <MediaImage className="aspect-[1.36] w-full" src={profile.image} alt={profile.name} eager/>
-        <blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“{profile.quote}”</blockquote>
+        {#if profile.quote}<blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“{profile.quote}”</blockquote>{/if}
       </div>
     </section>
 

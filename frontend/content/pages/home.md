@@ -2,8 +2,8 @@
 slug: home
 eyebrow: Portfolio
 title: Home
-subtitle: I care about software that remains understandable after it grows.
-description: Selected work, experience, and engineering notes.
+subtitle: I build systems that connect applications, infrastructure, intelligence, and real-world devices.
+description: Selected work, projects, and engineering notes by Faris Munir Mahdi.
 primaryAction: View Projects
 secondaryAction: Contact
 experienceLabel: Selected experience
@@ -14,4 +14,4 @@ aboutLabel: About
 aboutAction: More about me
 ---
 
-I’m a software engineer who enjoys building systems at the intersection of backend infrastructure, intelligent systems, and connected devices. I value clarity, long-term thinking, and maintainable solutions.
+I am a Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems. I focus on engineering scalable, high-performance solutions that integrate intelligent hardware with robust software ecosystems.

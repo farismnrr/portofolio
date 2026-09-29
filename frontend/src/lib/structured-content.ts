@@ -6,7 +6,7 @@ export interface ExperienceEntry {
 export interface EducationEntry { order: number; year: string; institution: string; program: string; description: string; }
 export interface SkillGroup { order: number; title: string; description: string; items: string[]; }
 export interface Principle { order: number; index: string; title: string; description: string; }
-export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; }
+export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; image: string; }
 export interface GalleryItem { order: number; image: string; caption: string; size: 'wide'|'tall'|'large'|'normal'; }
 export interface PageCopy {
   slug: string; eyebrow: string; title: string; subtitle: string; description: string; body: string;
@@ -54,8 +54,8 @@ export const principles: Principle[] = Object.entries(principleModules).map(([pa
 }).sort((a,b)=>a.order-b.order);
 
 export const certifications: Certification[] = Object.entries(certModules).map(([path,src])=>{
-  const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','group','issuer','title','year','credentialId','url']);
-  return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??'')};
+  const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','group','issuer','title','year','credentialId','url','image']);
+  return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??''),image:unquote(values.get('image')??'')};
 }).sort((a,b)=>a.order-b.order);
 
 export const certificationGroups = [...new Set(certifications.map(x=>x.group))].map(group=>({group,items:certifications.filter(x=>x.group===group)}));

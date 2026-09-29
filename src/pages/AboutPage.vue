@@ -78,7 +78,7 @@ function printPage() {
           <h2>Work Experience</h2>
           <article v-for="item in work" :key="`${item.company}-${item.role}`" class="resume-item">
             <div class="resume-item__head"><div><h3>{{ item.company }}</h3><span class="accent-text">{{ item.role }}</span></div><time>{{ item.timeframe }}</time></div>
-            <ul><li v-for="achievement in item.achievements" :key="achievement">{{ achievement }}</li></ul>
+            <div class="rich-copy" v-html="item.html" />
           </article>
         </section>
 

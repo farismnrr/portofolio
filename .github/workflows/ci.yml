@@ -21,23 +21,9 @@ env:
   RUST_TARGET: x86_64-unknown-linux-musl
 
 jobs:
-  guardrail:
-    name: guardrail
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          package-manager-cache: false
-      - name: Architecture / SOLID / DRY guard
-        working-directory: frontend
-        run: npm run guard
-
   build:
     name: build
     runs-on: ubuntu-24.04
-    needs: guardrail
     env:
       RUSTFLAGS: -D warnings
     steps:
@@ -47,6 +33,10 @@ jobs:
         with:
           node-version: 24
           package-manager-cache: false
+
+      - name: Architecture / SOLID / DRY guard
+        working-directory: frontend
+        run: npm run guard
 
       - name: Generate npm lockfile without warnings
         working-directory: frontend

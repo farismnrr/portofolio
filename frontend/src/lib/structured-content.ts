@@ -87,7 +87,12 @@ export const pageCopy: Record<string, PageCopy> = Object.fromEntries(Object.entr
   return [item.slug,item];
 }));
 
-export function getLatestExperiences(limit:number){ return experiences.slice(0,limit); }
+export function getLatestExperiences(limit:number){
+  const score=(value:string)=>value.includes('Present')
+    ? Number.MAX_SAFE_INTEGER
+    : Number(value.match(/\d{4}(?!.*\d{4})/)?.[0] ?? 0);
+  return [...experiences].sort((a,b)=>score(b.year)-score(a.year) || a.order-b.order).slice(0,limit);
+}
 
 const profileSource = Object.entries(profileModules)[0];
 if (!profileSource) throw new Error('content/profile must contain a profile Markdown document.');

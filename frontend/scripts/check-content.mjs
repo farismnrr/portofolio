@@ -21,7 +21,8 @@ const contentRoots = [
   resolve(new URL('../content/certifications', import.meta.url).pathname),
   resolve(new URL('../content/gallery', import.meta.url).pathname),
   resolve(new URL('../content/pages', import.meta.url).pathname),
-  resolve(new URL('../content/profile', import.meta.url).pathname)
+  resolve(new URL('../content/profile', import.meta.url).pathname),
+  resolve(new URL('../content/navigation', import.meta.url).pathname)
 ];
 const files = [];
 for (const root of contentRoots) {

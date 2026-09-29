@@ -5,6 +5,7 @@ const frontendRoot = resolve(new URL('..', import.meta.url).pathname);
 const srcRoot = join(frontendRoot, 'src');
 const contentRoot = join(frontendRoot, 'content', 'projects');
 const blogRoot = join(frontendRoot, 'content', 'blog');
+const navigationRoot = join(frontendRoot, 'content', 'navigation');
 const publicRoot = join(frontendRoot, 'public');
 const failures = [];
 
@@ -117,7 +118,7 @@ const requiredShared = [
   'lib/mermaid.ts',
   'lib/routes.ts',
   'lib/router.ts',
-  'lib/data.ts'
+  'lib/router.ts'
 ];
 
 for (const file of requiredShared) {
@@ -147,9 +148,9 @@ for (const forbidden of ['experiences','education','skillGroups','principles','c
   if (new RegExp('export const ' + forbidden + '\\s*=').test(dataSource)) failures.push(`lib/data.ts must not own ${forbidden}; move content to Markdown.`);
 }
 
-for (const pageName of ['AboutPage.svelte','ExperiencePage.svelte','SkillsPage.svelte','CertificationsPage.svelte','GalleryPage.svelte','ProjectsPage.svelte','BlogPage.svelte']) {
+for (const pageName of ['HomePage.svelte','AboutPage.svelte','ExperiencePage.svelte','SkillsPage.svelte','CertificationsPage.svelte','GalleryPage.svelte','ProjectsPage.svelte','BlogPage.svelte']) {
   const source = await readFile(join(srcRoot, 'pages', pageName), 'utf8');
-  if (source.includes("../lib/data")) failures.push(`${pageName}: non-home pages must not depend on hardcoded lib/data.ts content.`);
+  if (source.includes("../lib/data")) failures.push(`${pageName}: pages must not depend on hardcoded lib/data.ts content.`);
 }
 
 const contentFiles = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
@@ -238,6 +239,14 @@ for (const file of blogFiles) {
 }
 
 if (featuredCount > 1) failures.push('content/blog may contain at most one featured: true article.');
+
+const navigationFiles = (await readdir(navigationRoot)).filter((file) => file.endsWith('.md')).sort();
+if (!navigationFiles.length) failures.push('content/navigation must contain Markdown navigation items.');
+
+try {
+  await access(join(srcRoot, 'lib', 'data.ts'));
+  failures.push('src/lib/data.ts is forbidden; portfolio content/config must come from repository Markdown.');
+} catch {}
 
 const homeSource = await readFile(join(srcRoot, 'pages', 'HomePage.svelte'), 'utf8');
 if (homeSource.includes('projects.slice(0')) failures.push('HomePage must use getLatestProjects() rather than positional project slices.');

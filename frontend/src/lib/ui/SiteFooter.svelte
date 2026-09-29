@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Github, Linkedin, Sun } from '@lucide/svelte';
+  import Github from '@lucide/svelte/icons/github';
+  import Linkedin from '@lucide/svelte/icons/linkedin';
+  import Sun from '@lucide/svelte/icons/sun';
   import { nav } from '../data';
   import { navigate } from '../router';
   import PageShell from './PageShell.svelte';

@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Github, Linkedin, Mail, MapPin, Globe2, FileText } from '@lucide/svelte';
+  import Github from '@lucide/svelte/icons/github';
+  import Linkedin from '@lucide/svelte/icons/linkedin';
+  import Mail from '@lucide/svelte/icons/mail';
+  import MapPin from '@lucide/svelte/icons/map-pin';
+  import Globe2 from '@lucide/svelte/icons/globe-2';
+  import FileText from '@lucide/svelte/icons/file-text';
   import { experiences, profileImage } from '../lib/data';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';

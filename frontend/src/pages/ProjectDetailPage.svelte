@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ArrowLeft } from '@lucide/svelte';
+  import ArrowLeft from '@lucide/svelte/icons/arrow-left';
   import { navigate } from '../lib/router';
   import TechChips from '../lib/ui/TechChips.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';

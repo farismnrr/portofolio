@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { Github, Linkedin, Mail, MapPin } from '@lucide/svelte';
+  import Github from '@lucide/svelte/icons/github';
+  import Linkedin from '@lucide/svelte/icons/linkedin';
+  import Mail from '@lucide/svelte/icons/mail';
+  import MapPin from '@lucide/svelte/icons/map-pin';
   import { experiences, projects, profileImage } from '../lib/data';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';

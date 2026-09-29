@@ -248,6 +248,13 @@ try {
   failures.push('src/lib/data.ts is forbidden; portfolio content/config must come from repository Markdown.');
 } catch {}
 
+const appSource = await readFile(join(srcRoot, 'App.svelte'), 'utf8');
+if (!appSource.includes('resolveActiveNavigation') || !appSource.includes('profile.name')) failures.push('App.svelte must derive site title and active navigation from Markdown-backed structured content.');
+for (const chrome of ['SiteHeader.svelte','SiteFooter.svelte']) {
+  const source = await readFile(join(srcRoot, 'lib', 'ui', chrome), 'utf8');
+  if (source.includes("../data")) failures.push(`${chrome}: shared site chrome must not import hardcoded data.ts.`);
+}
+
 const homeSource = await readFile(join(srcRoot, 'pages', 'HomePage.svelte'), 'utf8');
 if (homeSource.includes('projects.slice(0')) failures.push('HomePage must use getLatestProjects() rather than positional project slices.');
 if (homeSource.includes('experiences.slice(0')) failures.push('HomePage must use getLatestExperiences() rather than positional experience slices.');

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { path } from './lib/router';
   import { loadRoute } from './lib/routes';
+  import { profile, resolveActiveNavigation } from './lib/structured-content';
   import SiteHeader from './lib/ui/SiteHeader.svelte';
   import SiteFooter from './lib/ui/SiteFooter.svelte';
   import RouteLoading from './lib/ui/RouteLoading.svelte';
@@ -10,13 +11,7 @@
   let requestId = 0;
 
   $: current = $path;
-  $: active = current.startsWith('/projects') ? '/projects'
-    : current.startsWith('/blog') ? '/blog'
-    : current.startsWith('/certifications') ? '/certifications'
-    : current.startsWith('/gallery') ? '/gallery'
-    : current.startsWith('/about') || current.startsWith('/experience') || current.startsWith('/skills') ? '/about'
-    : '/';
-
+  $: active = resolveActiveNavigation(current);
   $: void resolvePage(current);
 
   async function resolvePage(currentPath: string) {
@@ -29,7 +24,7 @@
   }
 </script>
 
-<svelte:head><title>Alex Morgan — Software Engineer</title></svelte:head>
+<svelte:head><title>{profile.name} — {profile.role}</title></svelte:head>
 <SiteHeader currentPath={active}/>
 {#if loading || !Page}
   <RouteLoading/>

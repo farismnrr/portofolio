@@ -18,7 +18,7 @@ export interface ProfileContent {
   github: string; linkedin: string; email: string; resume: string;
   specialties: string; headline: string; intro: string; availability: string; quote: string;
 }
-export interface NavigationItem { order: number; label: string; href: string; }
+export interface NavigationItem { order: number; label: string; href: string; matches: string[]; }
 
 const experienceModules = import.meta.glob('../../content/experience/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const educationModules = import.meta.glob('../../content/education/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
@@ -118,10 +118,16 @@ export const profile: ProfileContent = {
 
 export const navigation: NavigationItem[] = Object.entries(navigationModules).map(([path,src])=>{
   const {values}=parseFrontmatter(path,src);
-  requireKeys(path,values,['order','label','href']);
+  requireKeys(path,values,['order','label','href','matches']);
   return {
     order:int(path,values.get('order')),
     label:unquote(values.get('label')??''),
-    href:unquote(values.get('href')??'')
+    href:unquote(values.get('href')??''),
+    matches:parseInlineList(values.get('matches')??'')
   };
 }).sort((a,b)=>a.order-b.order);
+
+export function resolveActiveNavigation(path:string){
+  if(path==='/') return navigation.find(item=>item.href==='/')?.href ?? '/';
+  return navigation.find(item=>item.matches.filter(prefix=>prefix!=='/').some(prefix=>path===prefix || path.startsWith(prefix + '/')))?.href ?? '/';
+}

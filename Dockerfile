@@ -2,7 +2,7 @@
 
 FROM scratch
 
-COPY release/portfolio-server /portfolio-server
+COPY --chmod=755 release/portfolio-server /portfolio-server
 
 ENV PORT=3000
 EXPOSE 3000

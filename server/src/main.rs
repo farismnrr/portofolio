@@ -33,7 +33,11 @@ fn asset_response(path: &str, bytes: Vec<u8>) -> Response {
 
 async fn embedded_asset(uri: Uri) -> Response {
     let requested = uri.path().trim_start_matches('/');
-    let path = if requested.is_empty() { "index.html" } else { requested };
+    let path = if requested.is_empty() {
+        "index.html"
+    } else {
+        requested
+    };
 
     if let Some(asset) = Assets::get(path) {
         return asset_response(path, asset.data.into_owned());
@@ -43,7 +47,11 @@ async fn embedded_asset(uri: Uri) -> Response {
         return asset_response("index.html", index.data.into_owned());
     }
 
-    (StatusCode::INTERNAL_SERVER_ERROR, "embedded frontend is missing index.html").into_response()
+    (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "embedded frontend is missing index.html",
+    )
+        .into_response()
 }
 
 #[tokio::main]
@@ -59,9 +67,15 @@ async fn main() {
         .fallback(embedded_asset)
         .layer(TraceLayer::new_for_http());
 
-    let port = env::var("PORT").ok().and_then(|value| value.parse::<u16>().ok()).unwrap_or(3000);
+    let port = env::var("PORT")
+        .ok()
+        .and_then(|value| value.parse::<u16>().ok())
+        .unwrap_or(3000);
+
     let address = SocketAddr::from(([0, 0, 0, 0], port));
-    let listener = tokio::net::TcpListener::bind(address).await.expect("failed to bind server");
+    let listener = tokio::net::TcpListener::bind(address)
+        .await
+        .expect("failed to bind server");
 
     tracing::info!("serving embedded portfolio on http://{address}");
     axum::serve(listener, app).await.expect("server error");

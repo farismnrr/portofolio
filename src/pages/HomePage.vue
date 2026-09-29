@@ -5,10 +5,7 @@ import work from "virtual:content/work";
 import AppIcon from "../components/AppIcon.vue";
 import type { SocialLink } from "../content/types";
 
-const featuredProjectSlugs = ["sensio-notes", "masih-awam-ai-code", "sensio-iot", "masih-awam-lms"];
-const featured = featuredProjectSlugs
-  .map((slug) => projects.find((project) => project.slug === slug))
-  .filter((project): project is (typeof projects)[number] => Boolean(project));
+const featured = projects.slice(0, 4);
 const recentWork = work.slice(0, 3);
 const essentialSocial = about.social.filter((item: SocialLink) => item.essential);
 

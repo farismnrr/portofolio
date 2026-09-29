@@ -22,7 +22,7 @@
           {#each group.items as cert}
             <article>
               <div class="aspect-[1.78] overflow-hidden border border-black/12 bg-white/55 shadow-[0_1px_8px_rgba(0,0,0,.035)]">
-                <MediaImage className="h-full w-full bg-white" src={cert.image} alt={cert.title} fit="contain"/>
+                <MediaImage className="h-full w-full bg-[#fff]" src={cert.image} alt={cert.title} fit="contain"/>
               </div>
               <h3 class="mt-4 text-[16px] font-semibold">{cert.title}</h3>
               <p class="mt-1 text-[13px] text-black/52">{cert.issuer}</p>

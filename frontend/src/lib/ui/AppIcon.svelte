@@ -10,6 +10,7 @@
     IconHome2,
     IconMail,
     IconMapPin,
+    IconMoon,
     IconPhoto,
     IconSun,
     IconUser,
@@ -20,6 +21,7 @@
     | 'github'
     | 'linkedin'
     | 'sun'
+    | 'moon'
     | 'mail'
     | 'map-pin'
     | 'globe'
@@ -43,6 +45,8 @@
   <IconBrandLinkedin {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'sun'}
   <IconSun {size} stroke={strokeWidth} aria-hidden="true" />
+{:else if name === 'moon'}
+  <IconMoon {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'mail'}
   <IconMail {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'map-pin'}

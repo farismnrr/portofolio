@@ -1,6 +1,6 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { experiences, pageCopy, profile } from '../lib/structured-content';
+  import { education, experiences, pageCopy, profile } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
@@ -43,6 +43,24 @@
           </div>
           {#each selectedExperience as item, i}<TimelineEntry {item} first={i===0} last={i===selectedExperience.length-1}/>{/each}
         </div>
+
+        <section class="mt-12 border-t border-black/10 pt-10">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">{pageCopy.education.eyebrow}</p>
+          <h2 class="mt-3 text-[30px] font-semibold tracking-[-0.035em]">{pageCopy.education.title}</h2>
+          <p class="mt-2 max-w-3xl text-[15px] leading-7 text-black/55">{pageCopy.education.description}</p>
+          <div class="mt-6">
+            {#each education as item}
+              <article class="grid gap-5 border-b border-black/10 py-7 md:grid-cols-[170px_1fr]">
+                <p class="text-[14px] text-black/45">{item.year}</p>
+                <div>
+                  <h3 class="text-[21px] font-semibold tracking-[-0.02em]">{item.institution}</h3>
+                  <p class="mt-1 text-[16px] text-black/62">{item.program}</p>
+                  {#if item.description}<div class="mt-3 max-w-3xl text-[14px] leading-6 text-black/55"><MarkdownArticle html={renderMarkdown(item.description).html}/></div>{/if}
+                </div>
+              </article>
+            {/each}
+          </div>
+        </section>
       </section>
     </div>
   </PageShell>

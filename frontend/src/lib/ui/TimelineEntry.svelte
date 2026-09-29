@@ -10,7 +10,7 @@
   <p class="pt-1 text-[14px] text-black/48">{item.year}</p>
   <div class="relative hidden md:block">
     {#if !first}<span class="absolute left-[9px] top-[-2.5rem] h-[2.8rem] w-px bg-black/12"></span>{/if}
-    <span class={"absolute left-[5px] top-[7px] h-[9px] w-[9px] rounded-full border " + (first ? "border-[#334734] bg-[#334734]" : "border-black/55 bg-[#f8f8f6]")}></span>
+    <span class={"absolute left-[5px] top-[7px] h-[9px] w-[9px] rounded-full border " + (first ? "border-[#334734] bg-[#334734]" : "border-black/55 bg-[var(--page-bg)]")}></span>
     {#if !last}<span class="absolute left-[9px] top-[17px] h-[calc(100%+2.5rem)] w-px bg-black/12"></span>{/if}
   </div>
   <div class="max-w-4xl">

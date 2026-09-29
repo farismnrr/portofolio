@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { path } from './lib/router';
   import { loadRoute } from './lib/routes';
   import { profile, resolveActiveNavigation } from './lib/structured-content';
@@ -6,10 +7,13 @@
   import SiteFooter from './lib/ui/SiteFooter.svelte';
   import RouteLoading from './lib/ui/RouteLoading.svelte';
   import MobileNavigation from './lib/ui/MobileNavigation.svelte';
+  import { initializeTheme } from './lib/theme';
 
   let Page: any = null;
   let loading = true;
   let requestId = 0;
+
+  onMount(() => initializeTheme());
 
   $: current = $path;
   $: active = resolveActiveNavigation(current);

@@ -1,18 +1,18 @@
 <script lang="ts">
   import AppIcon from './AppIcon.svelte';
+  import BrandLogo from './BrandLogo.svelte';
   import { navigation, profile } from '../structured-content';
   import { navigate } from '../router';
   import PageShell from './PageShell.svelte';
 
-  const initials = profile.name.split(/\s+/).map((part)=>part[0]).join('').slice(0,2).toUpperCase();
   const year = new Date().getFullYear();
 </script>
 
-<footer class="border-t border-black/10 bg-[#f8f8f6]">
+<footer class="border-t border-black/10 bg-[var(--page-bg)]">
   <PageShell>
     <div class="grid min-h-[90px] items-center gap-6 py-6 text-[11px] text-black/48 lg:grid-cols-[1fr_auto_1fr]">
       <div class="flex items-center gap-6">
-        <strong class="text-[20px] font-semibold tracking-tight text-black">{initials}</strong>
+        <BrandLogo className="h-[20px] w-[105px] shrink-0"/>
         <span class="leading-4">{profile.name}<br/>{profile.role}</span>
       </div>
       <nav class="hidden items-center gap-5 lg:flex">

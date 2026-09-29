@@ -21,7 +21,7 @@
   }
 </script>
 
-<nav class="fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-[#f8f8f6]/95 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur-md lg:hidden" aria-label="Mobile navigation">
+<nav class="fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-[var(--page-bg)]/95 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur-md lg:hidden" aria-label="Mobile navigation">
   <div class="mx-auto grid max-w-[640px] grid-cols-6 px-2">
     {#each navigation as item}
       <a

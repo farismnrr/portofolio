@@ -13,7 +13,15 @@ globalThis.SVGElement = dom.window.SVGElement;
 const { default: mermaid } = await import('mermaid');
 const contentRoots = [
   resolve(new URL('../content/projects', import.meta.url).pathname),
-  resolve(new URL('../content/blog', import.meta.url).pathname)
+  resolve(new URL('../content/blog', import.meta.url).pathname),
+  resolve(new URL('../content/experience', import.meta.url).pathname),
+  resolve(new URL('../content/education', import.meta.url).pathname),
+  resolve(new URL('../content/skills', import.meta.url).pathname),
+  resolve(new URL('../content/principles', import.meta.url).pathname),
+  resolve(new URL('../content/certifications', import.meta.url).pathname),
+  resolve(new URL('../content/gallery', import.meta.url).pathname),
+  resolve(new URL('../content/pages', import.meta.url).pathname),
+  resolve(new URL('../content/profile', import.meta.url).pathname)
 ];
 const files = [];
 for (const root of contentRoots) {

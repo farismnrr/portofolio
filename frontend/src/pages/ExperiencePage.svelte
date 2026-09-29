@@ -25,7 +25,7 @@
     </section>
 
     <section class="mt-12 border-t border-black/10 pt-10">
-      <PageIntro eyebrow="Education" title="Education" subtitle="A strong foundation for continuous growth." compact/>
+      <PageIntro eyebrow={pageCopy.education.eyebrow} title={pageCopy.education.title} subtitle={pageCopy.education.subtitle} description={pageCopy.education.description} compact/>
       <div class="mt-8">
         {#each education as item}
           <article class="grid gap-6 border-b border-black/10 py-8 md:grid-cols-[180px_1fr]">

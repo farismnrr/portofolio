@@ -1,6 +1,7 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { getLatestExperiences, profileImage } from '../lib/data';
+  import { profileImage } from '../lib/data';
+  import { latestExperiences } from '../lib/structured-content';
   import { getLatestProjects } from '../lib/project-content';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -8,7 +9,7 @@
   import SectionHeader from '../lib/ui/SectionHeader.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
-  const latestExperiences = getLatestExperiences(3);
+  const selectedExperiences = latestExperiences(3);
   const latestProjects = getLatestProjects(4);
 </script>
 
@@ -47,12 +48,12 @@
     <section class="border-t border-black/10 py-10">
       <SectionHeader eyebrow="Selected experience" action="View full experience" href="/experience"/>
       <div>
-        {#each latestExperiences as item, i}
+        {#each selectedExperiences as item, i}
           <article class="grid min-h-[108px] gap-4 border-b border-black/[0.08] py-6 md:grid-cols-[170px_44px_1fr_1.5fr]">
             <p class="pt-1 text-[13px] text-black/43">{item.year}</p>
             <div class="relative hidden md:block">
               <span class={"absolute left-[6px] top-[6px] h-[9px] w-[9px] rounded-full border " + (i===0 ? "border-[#38503a] bg-[#38503a]" : "border-black/45 bg-[#f8f8f6]")}></span>
-              {#if i<latestExperiences.length-1}<span class="absolute left-[10px] top-[15px] h-[116px] w-px bg-black/12"></span>{/if}
+              {#if i<selectedExperiences.length-1}<span class="absolute left-[10px] top-[15px] h-[116px] w-px bg-black/12"></span>{/if}
             </div>
             <div><h3 class="text-[17px] font-semibold">{item.role}</h3><p class="mt-1 text-[13px] text-black/45">{item.company}</p></div>
             <p class="max-w-[650px] text-[14px] leading-6 text-black/52">{item.summary}</p>

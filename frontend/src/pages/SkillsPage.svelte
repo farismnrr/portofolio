@@ -25,7 +25,7 @@
     </section>
 
     <section class="py-12">
-      <PageIntro eyebrow="Technical skills" title="Tools and Technologies" description={pageCopy.skills.body} compact/>
+      <PageIntro eyebrow={pageCopy["technical-skills"].eyebrow} title={pageCopy["technical-skills"].title} subtitle={pageCopy["technical-skills"].subtitle} description={pageCopy["technical-skills"].description} compact/>
       <div class="mt-8 grid gap-x-12 md:grid-cols-2">
         {#each skillGroups as group}
           <div class="border-b border-black/10 py-7">
@@ -38,7 +38,7 @@
     </section>
 
     <section class="border-t border-black/10 py-12">
-      <PageIntro eyebrow="Engineering principles" title="Principles I Work By" description="How I approach trade-offs and long-term system design." compact/>
+      <PageIntro eyebrow={pageCopy.principles.eyebrow} title={pageCopy.principles.title} subtitle={pageCopy.principles.subtitle} description={pageCopy.principles.description} compact/>
       <div class="mt-8 grid gap-x-12 md:grid-cols-2">
         {#each principles as principle}
           <article class="grid grid-cols-[48px_1fr] gap-5 border-b border-black/10 py-7">

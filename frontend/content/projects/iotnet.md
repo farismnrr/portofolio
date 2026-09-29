@@ -3,86 +3,120 @@ id: "05"
 order: 5
 slug: iotnet
 year: "2026"
-title: "IoTNet: Web Dashboard for IoT Device Management"
+title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
-subtitle: "IoT Device Management Dashboard"
+subtitle: "Device Management and Automation Platform"
 role: "Lead Engineer"
-category: "IoT · Web"
-description: "A Next.js web application for managing IoT devices, automation rules, monitoring, and user administration."
+category: "IoT · Platform"
+description: "A multi-service IoT platform combining a Nuxt control surface, TypeScript/Hapi backend, MQTT device messaging, PostgreSQL state, EMQX authentication, billing flows, and observability."
 image: "/images/projects/iotnet/cover.png"
-tech: [Next.js, React, TypeScript, PostgreSQL, Docker]
+tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
 productUrl: "https://i-ot.net/"
-repoUrl: "https://github.com/i-otnet/iotnet"
+repoUrl: ""
 ---
 
 ## Overview
 
-**IoTNet** is a Next.js web application designed to manage Internet of Things (IoT) devices and automation rules. The application provides a comprehensive dashboard for monitoring devices, configuring automations, and administrating users.
+**IoTNet** is an IoT operations platform for managing connected devices, users, telemetry, automation, and the infrastructure around them.
 
-## Solution
+The current codebase is a multi-component system rather than a single Next.js dashboard. The main web frontend is built with Nuxt/Vue, the backend is a TypeScript/Hapi service running through Bun in development, device communication uses MQTT, and supporting plugins handle broker authentication, migrations, and embedded-device integration.
 
-IoTNet provides a centralized IoT operations hub that unifies device control, automation workflows, and real-time monitoring in one dashboard, helping teams reduce operational overhead while improving reliability and response time.
+## Platform Architecture
 
-## Who This Is For
+```mermaid
+flowchart TD
+    B[Browser] --> F[Nuxt frontend]
+    F --> A[TypeScript Hapi API]
+    A --> P[(PostgreSQL)]
+    A --> M[MQTT broker]
+    D[ESP32 / IoT devices] --> M
+    M --> D
+    E[EMQX auth service] --> M
+    A --> O[OpenTelemetry]
+    X[Migration tooling] --> P
+```
 
-- **End Users**: A web dashboard to view and control IoT devices with an intuitive interface
-- **Developers and Integrators**: A codebase designed for extension, local testing, and deployment
+The repository keeps frontend, backend, broker integrations, migration tools, and device-side libraries as separate components with explicit boundaries.
 
-## Key Features
+## Frontend
 
-- **Device Management**: Monitor and control IoT devices from a centralized dashboard
-- **Automation Rules**: Configure and manage automation workflows for connected devices
-- **User Administration**: Manage user access and permissions
-- **Real-time Monitoring**: Live device status updates and data visualization
-- **Responsive Design**: Optimized for desktop and mobile devices
+The current frontend is a Nuxt application using Vue, Pinia, Tailwind/UnoCSS utilities, MQTT browser integration, Chart.js, and PWA support.
 
-## Tech Stack
+It owns the operator-facing experiences for device management, monitoring, account flows, and platform administration while keeping durable state in backend services.
 
-### Frontend
-- **Framework**: Next.js 16.1.1 with Turbopack
-- **UI Library**: React 19.2.3
-- **Styling**: Tailwind CSS 4
-- **Components**: Shadcn UI (Radix UI primitives)
-- **Icons**: Lucide React
+## Backend
 
-### State Management and Data
-- **State**: Zustand 5.0.9
-- **Data Fetching**: TanStack React Query 5.90.16
-- **Forms**: React Hook Form 7.69.0
-- **Validation**: Zod 4.2.1
+The backend is a TypeScript service built on Hapi with explicit controller, service, and repository-style boundaries.
 
-### Visualization
-- **Charts**: Chart.js 4.5.1 with React Chart.js 2
+Its dependency rule is inward-facing: HTTP interfaces adapt requests, application services own use-case behavior, and persistence/integration details stay behind infrastructure boundaries.
 
-### Backend Services
-- **API**: .NET Core
-- **Database**: PostgreSQL
+The backend also integrates:
 
-### Developer Experience
-- **Language**: TypeScript 5
-- **Linting**: ESLint 9
-- **Containerization**: Docker with auto-build scripts
+- PostgreSQL;
+- MQTT;
+- cloud object storage;
+- email delivery;
+- authentication and JWT handling;
+- OpenTelemetry tracing and metrics.
 
-## Architecture
+## Device Communication
 
-The application follows a modern Next.js architecture with:
-- Server-side rendering for optimal performance
-- Client-side state management with Zustand
-- API integration via React Query for efficient data fetching
-- Component-based UI with Shadcn UI for consistency
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Nuxt UI
+    participant API as Hapi API
+    participant Broker as MQTT / EMQX
+    participant Device
 
-### Backend Integration
+    User->>UI: Send device action
+    UI->>API: Authorized command
+    API->>Broker: Publish scoped message
+    Broker->>Device: Deliver command
+    Device->>Broker: Publish state / telemetry
+    Broker->>API: Receive update
+    API-->>UI: Updated device state
+```
 
-IoTNet integrates with a custom [Multi-Tenant User Management Service](/projects/multitenant-user-management) for authentication, authorization, and multi-tenancy support.
+Broker access is not treated as a public message bus. EMQX authentication and authorization services participate in deciding who can connect and which topics they may use.
 
-## Deployment
+## Multi-Tenant and Identity Foundation
 
-Multiple deployment options available:
-- **Production**: [https://i-ot.net/](https://i-ot.net/)
-- **Development/Demo**: [https://app.iotunnel.my.id](https://app.iotunnel.my.id)
-- **Local Development**: Standard Next.js dev server
-- **Docker**: Automated build and deployment scripts
+IoTNet integrates with a dedicated user-management service for tenant-scoped identity and access. This keeps device operations connected to explicit account and tenant boundaries rather than relying on frontend-only filtering.
+
+The wider platform also includes billing/payment migrations and schema compatibility checks, so deployment fails early when required order/payment fields are missing instead of producing late runtime errors.
+
+## Device Ecosystem
+
+The project includes device-side and integration components beyond the web application:
+
+- ESP32/Arduino libraries for device integration;
+- broker authentication services;
+- migration tooling;
+- PWA/browser client;
+- backend APIs;
+- monitoring and observability support.
+
+This makes IoTNet closer to an IoT platform than a standalone dashboard.
+
+## Engineering Decisions
+
+### Separate device transport from product API
+
+MQTT handles device messaging while the HTTP API owns product behavior and authorization. The browser does not become the source of truth for device permissions.
+
+### Explicit migration compatibility
+
+Schema assumptions for features such as billing are checked at startup. Missing required columns fail fast.
+
+### Component-specific validation
+
+Frontend, backend, and Go-based plugins have separate validation commands so each subsystem can enforce its own language and architecture rules.
+
+## Stack
+
+Nuxt, Vue, TypeScript, Pinia, Hapi, Bun, PostgreSQL, MQTT, EMQX, Go plugins, ESP32/Arduino tooling, Docker, OpenTelemetry, Grafana/Jaeger/Prometheus-compatible observability, and GitHub Actions.
 
 ## Status
 
-This project is under active development, representing a production-ready IoT management solution with continuous improvements and feature additions.
+IoTNet is actively developed across the web application, backend APIs, broker/auth integration, device libraries, billing, and operational tooling.

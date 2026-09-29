@@ -12,10 +12,12 @@
     <p class="mt-3 text-[27px] font-light leading-tight text-black/58">{project.subtitle}</p>
     <p class="mt-4 text-[13px] text-black/48">{project.role}</p>
     <p class="mt-6 max-w-xl text-[15px] leading-7 text-black/57">{project.description}</p>
-    <div class="mt-7 flex flex-wrap gap-3">
-      <a class="btn btn-neutral rounded-none border-0 bg-[#344534] px-7 font-normal" href={project.productUrl}>Visit Product ↗</a>
-      <a class="btn btn-outline rounded-none border-black/20 px-7 font-normal" href={project.repoUrl}>View Code ↗</a>
-    </div>
+    {#if project.productUrl || project.repoUrl}
+      <div class="mt-7 flex flex-wrap gap-3">
+        {#if project.productUrl}<a class="btn btn-neutral rounded-none border-0 bg-[#344534] px-7 font-normal" href={project.productUrl}>Visit Product ↗</a>{/if}
+        {#if project.repoUrl}<a class="btn btn-outline rounded-none border-black/20 px-7 font-normal" href={project.repoUrl}>View Code ↗</a>{/if}
+      </div>
+    {/if}
     <div class="mt-7 border-t border-black/10 pt-5"><TechChips items={project.tech} pills/></div>
   </div>
   <MediaImage className="aspect-[1.72] w-full" src={project.image} alt={project.cardTitle} eager/>

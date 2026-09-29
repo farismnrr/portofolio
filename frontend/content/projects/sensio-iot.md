@@ -5,62 +5,110 @@ slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
-subtitle: "Smart-Space Platform"
-role: "Software Engineer · IoT / Backend / AI"
-category: "IoT · AI"
-description: "An end-to-end smart-space platform for controlling real Tasmota and Tuya devices across rooms and organizations, with telemetry, scenes, automations, and agentic AI control."
+subtitle: "On-Prem Smart-Space Platform"
+role: "Software Engineer · Rust / IoT / Platform"
+category: "IoT · Rust"
+description: "A Rust-based on-prem smart-space platform built around explicit site membership, server-rendered control surfaces, PostgreSQL state, secure sessions, MQTT integration, and production-only container delivery."
 image: "/images/projects/featured/sensio-iot.png"
-tech: [React, NestJS, PostgreSQL, Redis, Tasmota, Tuya, MQTT, OpenTelemetry]
+tech: [Rust, Axum, Askama, SQLx, PostgreSQL, MQTT, OpenTelemetry, Docker]
 productUrl: ""
 repoUrl: ""
 ---
 
 ## Overview
 
-**Sensio IoT** is a smart-space platform I worked on end to end across frontend, backend services, AI tooling, IoT integrations, and runtime infrastructure.
+**Sensio IoT** is being rebuilt as a compact Rust application for on-prem smart-space management.
 
-The system controls and monitors real devices across explicit organization and room boundaries. Rather than treating IoT as a flat list of switches, Sensio keeps device actions connected to people, rooms, permissions, telemetry, and the operational services behind them.
+The current generation intentionally moves away from a split frontend/backend runtime. Axum serves the HTTP application, Askama renders HTML, SQLx owns PostgreSQL access and migrations, and the same binary serves the interface and backend routes.
 
-## Device and Space Control
+The current domain slice focuses on users, sites, site memberships, authentication, and the platform foundation required before expanding device control.
 
-The product brings together the main workflows required to operate connected spaces:
+## Why the Rewrite
 
-- **room- and organization-scoped device control**
-- **live telemetry** for connected devices and spaces
-- **Tasmota and Tuya device integration**
-- **scenes and automations** for coordinated behavior
-- **device mapping and lifecycle management**
-- **guest and role-scoped access** for shared environments
-- **MQTT-backed communication** with explicit broker authorization
+The earlier Sensio direction covered a wide set of device and automation features across multiple services. The new implementation starts from a smaller, stricter core:
 
-Organization and room context stay explicit throughout the frontend and backend so device actions remain scoped and attributable.
+- one server runtime;
+- explicit **Site** boundaries rather than generic organization state;
+- server-rendered HTML;
+- administrator-controlled account provisioning;
+- production-only container delivery;
+- strong authentication and session primitives before broader device capability.
 
-## Agentic AI Control
+The result is easier to reason about as an on-prem system where identity, tenancy, runtime configuration, and deployment behavior matter as much as the UI.
 
-Sensio also includes an AI control layer that can reason over user intent and live device context, then call structured tools to operate supported devices and services.
+## Architecture
 
-The backend keeps AI access bounded by the same room and authorization context as direct device operations. The result is an assistant that can participate in physical control without bypassing the product's tenancy and permission model.
+```mermaid
+flowchart TD
+    B[Browser] --> A[Axum application]
+    A --> H[Askama templates]
+    A --> S[Application services]
+    S --> R[SQLx repositories]
+    R --> P[(PostgreSQL)]
+    S --> M[MQTT integration]
+    A --> O[OpenTelemetry]
+    C[CI] --> I[GHCR latest image]
+    I --> D[On-prem Docker runtime]
+```
 
-## Platform Architecture
+Frontend and backend are intentionally one application. There is no React, Vite, or Node production runtime.
 
-The system spans more than a dashboard:
+## Application Structure
 
-- **React 19 + Vite frontend** for room control, telemetry, guest flows, and AI chat/voice
-- **NestJS backend** owning HTTP, SSE/WebSocket APIs, organization/room authorization, persistence, and AI tooling
-- **PostgreSQL + Drizzle** for durable application data
-- **Redis** for ephemeral coordination
-- **Tuya Manager** for Tuya Cloud synchronization and local device helpers
-- **broker-auth** for MQTT/AMQP authentication and topic-level ACL decisions
-- **plugin supervisor** for constrained supporting-service lifecycle management
+The UI is organized like a small server-rendered design system:
 
-Operational telemetry and environment configuration are treated as first-class parts of the platform rather than separate afterthoughts.
+- layouts define the page shell;
+- reusable components own controls such as buttons, cards, badges, and inputs;
+- blocks compose larger UI sections;
+- route-specific templates assemble those primitives.
 
-## Real-World Safety Boundaries
+The CSS follows the same boundaries so server-rendered markup does not become one large page-specific stylesheet.
 
-Physical actions have a higher cost than updating a UI. Sensio therefore keeps control paths explicit around organization membership, room access, guest scope, broker permissions, and purpose-bound streaming/ticket flows.
+## Identity and Session Security
 
-Native delivery also uses fail-closed OTA verification so an update cannot silently weaken the device-control surface.
+The authentication foundation is designed for a private on-prem dashboard rather than public self-service signup.
+
+Provisioned users authenticate through the login surface. The session system uses:
+
+- Argon2id password hashes;
+- short-lived Ed25519 JWT access tokens;
+- opaque refresh tokens stored only as SHA-256 hashes;
+- refresh-token rotation;
+- family revocation on reuse;
+- HttpOnly browser sessions;
+- published JWKS for token verification.
+
+This puts session integrity in place before exposing broader control over physical devices.
+
+## Site Domain
+
+The domain uses **sites** for physical locations such as homes, schools, offices, stores, and factories.
+
+```mermaid
+flowchart LR
+    U[User] --> M[Site membership]
+    M --> S[Site]
+    S --> D[Future device/control domain]
+```
+
+A site membership is the explicit relationship that will scope access to future device and automation capabilities. The model avoids treating all connected hardware as one global device collection.
+
+## Runtime Configuration
+
+Local environment variables are bootstrap-only. At startup the application loads runtime configuration through Sensio Env for the `sensio / sensio-iot-new` project.
+
+The application still owns its PostgreSQL schema and SQLx migration journal. Applied migration history is treated as immutable; schema evolution happens through new forward migrations rather than rewriting old ones.
+
+## Delivery Model
+
+Application images are built and published by CI. Runtime hosts pull `ghcr.io/farismnrr/sensio-iot-new:latest` and recreate the service.
+
+That rule keeps the deployed artifact aligned with the validated CI output and avoids local image drift on the on-prem machine.
 
 ## Stack
 
-React 19, Vite, NestJS 11, TypeScript, PostgreSQL, Drizzle, Redis, Tasmota, Tuya, MQTT/RabbitMQ, SSE/WebSocket, Capacitor, Docker, Go services, Rust services, and OpenTelemetry-compatible observability.
+Rust, Axum, Askama, SQLx, PostgreSQL, Argon2, Ed25519/JWT, MQTT via rumqttc, Docker, GHCR, and OpenTelemetry-compatible telemetry.
+
+## Status
+
+The current rewrite has the platform, authentication, users, sites, site memberships, server-rendered UI, runtime configuration, database migration, and production delivery foundations in place. Device-control capability is intentionally being layered on top of that core rather than presented here as already complete.

@@ -5,92 +5,128 @@ slug: multitenant-user-management
 year: "2026"
 title: "Multi-Tenant User Management Service"
 cardTitle: "User Management"
-subtitle: "Multi-Tenant Authentication Service"
+subtitle: "Authentication and Tenant Identity Service"
 role: "Lead Engineer"
 category: "Backend · Security"
-description: "A production-ready user authentication and management service built with Rust and Actix-web, featuring JWT authentication, RBAC, and multi-tenancy support."
+description: "A standalone Rust/Actix identity service for tenant-scoped authentication, JWT sessions, role-based access, SSO-style integration, PostgreSQL persistence, and RocksDB caching."
 image: "/images/projects/user-management/cover.png"
-tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Docker]
+tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
 
 ## Overview
 
-A **production-ready** user authentication and management service designed to be easily plugged into any application. Built with Rust for performance and safety, this service provides secure user management, JWT authentication, and role-based access control with multi-tenancy support.
+The **Multi-Tenant User Management Service** is a standalone authentication and identity service designed to be reused across applications instead of rebuilding account management inside every product.
 
-## The Challenge
+It provides tenant-scoped user and role management, JWT authentication, refresh sessions, SSO-style redirects, API-key protected bootstrap endpoints, and persistent caching.
 
-Modern applications require robust authentication systems that can:
-- Handle multiple tenants with isolated data
-- Provide secure token-based authentication
-- Scale efficiently under load
-- Maintain high security standards
+## Why a Separate Service
 
-Traditional solutions often lack flexibility or require significant integration effort.
+Applications such as IoT platforms need identity rules that cut across multiple products:
 
-## Solution
+- the same account may belong to multiple tenants;
+- one account may have multiple roles inside a tenant;
+- tenant data must remain isolated;
+- authentication and token refresh must behave consistently across clients;
+- frontend applications should not implement security policy themselves.
 
-This service provides a **standalone authentication microservice** that can be integrated into any application stack. It handles all user management complexity while exposing clean REST APIs for seamless integration.
-
-## Key Features
-
-- **Authentication**: JWT-based auth with access and refresh tokens, session management
-- **Multi-Tenancy**: Tenant-scoped users with complete data isolation
-- **Security**: Argon2 password hashing, rate limiting, API key protection
-- **Performance**: RocksDB local caching with TTL for reduced database load
-- **Operations**: Structured logging, health checks, graceful shutdown, soft deletes
-- **Testing**: Comprehensive E2E and integration test suites
+The service centralizes those rules behind HTTP contracts.
 
 ## Architecture
 
-The service exposes two API scopes:
+```mermaid
+flowchart LR
+    C[Client application] -->|Login / register| S[Actix-web identity service]
+    S --> P[(PostgreSQL)]
+    S --> R[(RocksDB cache)]
+    S -->|JWT| C
+    C -->|Bearer token| A[Application API]
+    A -->|Validate identity claims| S
+```
 
-### Public API (/api prefix)
-- Protected by API Key (X-API-Key header)
-- Endpoints: Login, Register, Token Refresh
-- Used for initial authentication
+PostgreSQL owns durable identity and tenant state. RocksDB is a local persistent cache with TTL to reduce repeated database work for frequently accessed data.
 
-### Protected API (root scope)
-- Protected by JWT Bearer tokens
-- Endpoints: User management, Tenant operations, Profile updates
-- Full CRUD operations with RBAC
+## Authentication Boundaries
 
-## Tech Stack
+The HTTP surface is split into two scopes.
 
-### Frontend
-- **Framework**: Vue
-- **Build Tool**: Vite
+### API-key protected bootstrap scope
 
-### Backend
-- **Language**: Rust
-- **Framework**: Actix-web (high-performance async web framework)
-- **Database**: PostgreSQL
-- **Caching**: RocksDB (local persistent cache with TTL)
-- **Authentication**: JWT (jsonwebtoken crate)
-- **Password Hashing**: Argon2
+The `/api` endpoints handle operations such as login, registration, and token refresh. They require application-level API keys or a tenant secret depending on the operation.
 
-### DevOps
-- **Containerization**: Docker and Docker Compose
-- **CI/CD**: GitHub Actions
-- **Migrations**: SQLx migrations
-- **Testing**: Playwright (E2E), Rust integration tests
+### JWT protected scope
 
-## API Structure
+User, tenant, profile, logout, verification, and password-management operations require bearer tokens.
 
-The service provides comprehensive REST APIs for:
-- User authentication (login, register, refresh, logout)
-- User management (CRUD operations)
-- Tenant management (multi-tenancy support)
-- Profile management (password changes, user details)
+This split separates application bootstrap credentials from end-user session authority.
 
-All endpoints support proper error handling with structured JSON responses.
+## Multi-Tenant Access Model
 
-## Documentation
+```mermaid
+flowchart TD
+    A[Global account] --> T1[Tenant A membership]
+    A --> T2[Tenant B membership]
+    T1 --> R1[Role: user]
+    T1 --> R2[Role: admin]
+    T2 --> R3[Role: user]
+```
 
-Complete integration guides available for multiple frontend frameworks:
-- SSO Integration guide
-- Frontend implementation examples (Next.js, React, Vue.js, vanilla JS)
-- Token handling and storage
-- API reference with examples
-- Troubleshooting common issues
+Accounts are global rather than duplicated per tenant. A user can reuse the same credentials across tenant memberships while roles remain scoped to the relevant tenant.
+
+## SSO Flow
+
+```mermaid
+sequenceDiagram
+    participant App as Client app
+    participant SSO as Identity service
+    participant DB as PostgreSQL
+
+    App->>SSO: Redirect to login with tenant and return URI
+    SSO->>DB: Validate account and membership
+    DB-->>SSO: Identity and roles
+    SSO-->>App: Redirect with access token and state
+    App->>App: Validate state
+    App->>SSO: Authenticated API calls with bearer token
+```
+
+The integration documentation uses redirect state and nonce values to protect the login handoff and sends the access token through the URL fragment rather than a query parameter so it is less likely to appear in server access logs.
+
+## Security
+
+The service includes:
+
+- Argon2 password hashing;
+- access and refresh JWT/session flows;
+- role-based access control;
+- tenant-scoped authorization;
+- API-key protection;
+- rate limiting;
+- soft deletes;
+- structured logging;
+- graceful shutdown;
+- integration and end-to-end tests.
+
+## Caching Strategy
+
+RocksDB stores local cache entries with TTL. Expired data is removed lazily when accessed. The cache is an optimization layer; PostgreSQL remains the durable source of truth.
+
+## Integration Surface
+
+The repository includes documented examples for Next.js, React, Vue, and vanilla JavaScript clients plus API contracts for:
+
+- authentication;
+- tenant management;
+- user management;
+- profile operations;
+- MQTT-related identity and ACL checks.
+
+That documentation is part of the product because the main value of a standalone identity service is predictable integration.
+
+## Stack
+
+Rust, Actix-web, PostgreSQL, RocksDB, SQLx migrations, JWT, Argon2, Docker, Docker Compose, Playwright, and Rust integration tests.
+
+## Status
+
+The service has the authentication, tenant, user, SSO integration, cache, migration, and test foundations needed to serve as a reusable identity component for other projects.

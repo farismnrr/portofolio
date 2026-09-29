@@ -56,7 +56,7 @@ The build has four stages:
 1. Repository content is normalized into generated TypeScript data.
 2. Vite produces the browser bundle.
 3. Vite produces a temporary server-render bundle used only by the build script.
-4. Every root and content-derived route is rendered to `dist/<route>/index.html`; the temporary SSR bundle is then removed.
+4. Every root and content-derived route is rendered to `dist/{route}/index.html`; the temporary SSR bundle is then removed.
 
 The deployed artifact contains no Node server and no Vue SSR runtime service.
 

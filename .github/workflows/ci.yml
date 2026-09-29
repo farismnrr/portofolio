@@ -14,62 +14,119 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: farismnrr/portofolio/portfolio-app
+  RUST_TARGET: x86_64-unknown-linux-musl
 
 jobs:
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
-      - run: npm install --package-lock-only
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Generate npm lockfile
+        run: npm install --package-lock-only
+
+      - name: Restore npm cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-node24-
+
       - run: npm ci
       - run: npm run guard
       - run: npm run check
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+
+      - uses: actions/upload-artifact@v7
         with:
           name: frontend-dist
           path: frontend/dist
           retention-days: 1
 
   rust:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: frontend
-    defaults:
-      run:
-        working-directory: server
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v7
         with:
           name: frontend-dist
           path: frontend/dist
+
+      - name: Install musl toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends musl-tools
+
       - uses: dtolnay/rust-toolchain@stable
         with:
+          targets: ${{ env.RUST_TARGET }}
           components: rustfmt, clippy
-      - run: cargo fmt --check
-      - run: cargo clippy --all-targets --all-features -- -D warnings
-      - run: cargo build --release
+
+      - name: Restore Rust dependency cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server -> target
+          shared-key: portfolio-musl-release
+          cache-targets: true
+          cache-on-failure: true
+
+      - name: Rust format
+        working-directory: server
+        run: cargo fmt --check
+
+      - name: Rust clippy
+        working-directory: server
+        run: cargo clippy --release --target ${{ env.RUST_TARGET }} --all-targets --all-features -- -D warnings
+
+      - name: Build embedded single binary
+        working-directory: server
+        run: cargo build --release --target ${{ env.RUST_TARGET }}
+
+      - name: Stage runtime binary
+        run: |
+          mkdir -p release
+          cp "server/target/${RUST_TARGET}/release/portfolio-server" release/portfolio-server
+          chmod +x release/portfolio-server
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: portfolio-runtime
+          path: release/portfolio-server
+          retention-days: 1
 
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: rust
     if: github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: portfolio-runtime
+          path: release
+
       - uses: docker/setup-buildx-action@v3
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push single-binary runtime
+
+      - name: Package and push prebuilt Rust runtime
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -87,13 +144,15 @@ jobs:
       group: portfolio-self-hosted
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy latest
         env:
           PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest

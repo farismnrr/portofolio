@@ -13,11 +13,11 @@
 
     {#each certificationGroups as group}
       <section class="border-b border-black/10 py-9">
-        <div class="grid gap-4 md:grid-cols-[1fr_1.35fr_auto]">
+        <div class="flex items-baseline justify-between gap-6">
           <h2 class="text-[28px] font-semibold tracking-[-0.03em]">{group.group}</h2>
-          <p class="max-w-xl text-[14px] leading-6 text-black/52">{pageCopy.certifications.body}</p>
-          <span class="text-[13px] text-black/45">{group.items.length} credentials</span>
+          <span class="shrink-0 text-[13px] text-black/45">{group.items.length} credentials</span>
         </div>
+        <p class="mt-3 max-w-2xl text-[14px] leading-6 text-black/52">{pageCopy.certifications.body}</p>
         <div class="mt-7 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {#each group.items as cert}
             <article>

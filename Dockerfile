@@ -2,33 +2,22 @@
 
 FROM node:22-bookworm-slim AS frontend-builder
 WORKDIR /app/frontend
-
 COPY frontend/package.json ./
 RUN npm install --package-lock-only && npm ci
-
 COPY frontend/ ./
-RUN npm run check && npm run build
+RUN npm run guard && npm run check && npm run build
 
-FROM rust:1-bookworm AS rust-builder
+FROM rust:1-alpine AS rust-builder
+RUN apk add --no-cache musl-dev
 WORKDIR /app
-
 COPY server/Cargo.toml ./server/Cargo.toml
 COPY server/src ./server/src
-
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 RUN cargo build --release --manifest-path server/Cargo.toml
 
-FROM debian:bookworm-slim AS runtime
-WORKDIR /app
-
-RUN useradd --create-home --uid 10001 portfolio
-
-COPY --from=rust-builder /app/server/target/release/portfolio-server /app/portfolio-server
-COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
-
-ENV DIST_DIR=/app/frontend/dist
+FROM scratch
+COPY --from=rust-builder /app/server/target/release/portfolio-server /portfolio-server
 ENV PORT=3000
 EXPOSE 3000
-
-USER portfolio
-
-CMD ["/app/portfolio-server"]
+USER 10001:10001
+ENTRYPOINT ["/portfolio-server"]

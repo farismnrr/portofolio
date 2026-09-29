@@ -6,4 +6,3 @@ services:
       - "${PORTFOLIO_PORT:-3001}:3000"
     environment:
       PORT: "3000"
-      DIST_DIR: /app/frontend/dist

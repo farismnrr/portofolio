@@ -8,4 +8,9 @@ github: https://github.com
 linkedin: https://linkedin.com
 email: mailto:hello@example.com
 resume: /
+specialties: Software Engineer · Backend · AI · IoT
+headline: Building reliable systems for complex problems.
+intro: A software engineer working across backend architecture, intelligent systems, cloud infrastructure, and connected devices.
+availability: Available for selected opportunities
+quote: Better systems create more possibilities.
 ---

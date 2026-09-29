@@ -1,6 +1,7 @@
 <script lang="ts">
   import { articles, featuredArticle, formatArticleDate } from '../lib/blog-content';
   import { navigate } from '../lib/router';
+  import { pageCopy } from '../lib/structured-content';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -11,7 +12,7 @@
 <main>
   <PageShell className="py-14 lg:py-16">
     <div class="border-b border-black/10 pb-10">
-      <PageIntro eyebrow="Engineering journal" title="Notes on software, systems, and things" subtitle="I learn while building them." description="Practical notes, technical deep dives, and lessons from building and operating real systems across backend, AI, cloud infrastructure, and connected devices." compact/>
+      <PageIntro eyebrow={pageCopy.blog.eyebrow} title={pageCopy.blog.title} subtitle={pageCopy.blog.subtitle} description={pageCopy.blog.description} compact/>
     </div>
 
     {#if featuredArticle}

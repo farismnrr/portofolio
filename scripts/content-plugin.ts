@@ -7,13 +7,21 @@ import type { Plugin } from "vite";
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
 const PREFIX = "\0virtual:content/";
 
-function walk(dir: string, exts = [".md", ".mdx"]): string[] {
+function walk(dir: string, exts = [".md"]): string[] {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const file = path.join(dir, entry.name);
     if (entry.isDirectory()) return walk(file, exts);
     return exts.includes(path.extname(entry.name).toLowerCase()) ? [file] : [];
   });
+}
+
+function directMarkdownFiles(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && path.extname(entry.name).toLowerCase() === ".md")
+    .map((entry) => path.join(dir, entry.name));
 }
 
 function readMarkdown(file: string) {
@@ -36,12 +44,22 @@ function contentFor(root: string, domain: string) {
   }
 
   if (domain === "work") {
-    return sortByOrder(walk(path.join(contentRoot, "work")).map((file) => readMarkdown(file).data));
+    return sortByOrder(
+      directMarkdownFiles(path.join(contentRoot, "work")).map((file) => {
+        const { data, body, html } = readMarkdown(file);
+        return {
+          ...data,
+          summary: data.summary ?? "",
+          body,
+          html,
+        };
+      }),
+    );
   }
 
   if (domain === "studies") {
     return sortByOrder(
-      walk(path.join(contentRoot, "studies")).map((file) => {
+      directMarkdownFiles(path.join(contentRoot, "studies")).map((file) => {
         const { data, body, html } = readMarkdown(file);
         return { ...data, description: body, descriptionHtml: html };
       }),
@@ -50,7 +68,7 @@ function contentFor(root: string, domain: string) {
 
   if (domain === "skills") {
     return sortByOrder(
-      walk(path.join(contentRoot, "skills")).map((file) => {
+      directMarkdownFiles(path.join(contentRoot, "skills")).map((file) => {
         const { data, body, html } = readMarkdown(file);
         return { ...data, description: body, descriptionHtml: html };
       }),
@@ -58,10 +76,10 @@ function contentFor(root: string, domain: string) {
   }
 
   if (domain === "projects") {
-    return walk(path.join(contentRoot, "projects"), [".mdx"])
+    return directMarkdownFiles(path.join(contentRoot, "projects"))
       .map((file) => {
         const { data, body, html } = readMarkdown(file);
-        const slug = path.basename(file, path.extname(file));
+        const slug = path.basename(file, ".md");
         return {
           slug,
           title: data.title ?? slug,
@@ -90,11 +108,11 @@ function contentFor(root: string, domain: string) {
   }
 
   if (domain === "blog") {
-    return walk(path.join(contentRoot, "blog"), [".mdx"])
+    return directMarkdownFiles(path.join(contentRoot, "blog"))
       .map((file) => {
         const { data, body, html } = readMarkdown(file);
         return {
-          slug: path.basename(file, path.extname(file)),
+          slug: path.basename(file, ".md"),
           title: data.title ?? "",
           publishedAt: data.publishedAt ?? "",
           summary: data.summary ?? "",

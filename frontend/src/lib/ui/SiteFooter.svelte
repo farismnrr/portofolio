@@ -1,7 +1,5 @@
 <script lang="ts">
-  import Github from '@lucide/svelte/icons/github';
-  import Linkedin from '@lucide/svelte/icons/linkedin';
-  import Sun from '@lucide/svelte/icons/sun';
+  import Icon from './Icon.svelte';
   import { nav } from '../data';
   import { navigate } from '../router';
   import PageShell from './PageShell.svelte';
@@ -18,7 +16,7 @@
         {#each nav as item}<a class="hover:text-black" href={item[1]} on:click={(e)=>navigate(e,item[1])}>{item[0]}</a>{/each}
       </nav>
       <div class="flex items-center gap-4 lg:justify-self-end">
-        <Github size={15}/><Linkedin size={15}/><Sun size={15}/>
+        <Icon name="github" size={15}/><Icon name="linkedin" size={15}/><Icon name="sun" size={15}/>
         <span class="ml-2">© 2026 Alex Morgan. All rights reserved.</span>
       </div>
     </div>

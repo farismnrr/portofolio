@@ -1,10 +1,5 @@
 <script lang="ts">
-  import Github from '@lucide/svelte/icons/github';
-  import Linkedin from '@lucide/svelte/icons/linkedin';
-  import Mail from '@lucide/svelte/icons/mail';
-  import MapPin from '@lucide/svelte/icons/map-pin';
-  import Globe2 from '@lucide/svelte/icons/globe-2';
-  import FileText from '@lucide/svelte/icons/file-text';
+  import Icon from '../lib/ui/Icon.svelte';
   import { experiences, profileImage } from '../lib/data';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
@@ -20,15 +15,15 @@
         <h2 class="mt-6 text-[34px] font-semibold tracking-[-0.04em]">Alex Morgan</h2>
         <p class="mt-1 text-[18px] text-black/55">Software Engineer</p>
         <div class="mt-8 space-y-4 text-[14px] text-black/62">
-          <p class="flex items-center gap-3"><MapPin size={17}/>Jakarta, Indonesia</p>
-          <p class="flex items-center gap-3"><Globe2 size={17}/>English, Bahasa Indonesia</p>
+          <p class="flex items-center gap-3"><Icon name="map-pin" size={17}/>Jakarta, Indonesia</p>
+          <p class="flex items-center gap-3"><Icon name="globe" size={17}/>English, Bahasa Indonesia</p>
         </div>
         <div class="my-8 h-px bg-black/10"></div>
         <div class="space-y-4 text-[14px]">
-          <a class="flex items-center gap-3 hover:opacity-60" href="https://github.com"><Github size={18}/>GitHub</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href="https://linkedin.com"><Linkedin size={18}/>LinkedIn</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href="mailto:hello@example.com"><Mail size={18}/>Email</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href="/"><FileText size={18}/>Download Resume</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="https://github.com"><Icon name="github" size={18}/>GitHub</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="https://linkedin.com"><Icon name="linkedin" size={18}/>LinkedIn</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="mailto:hello@example.com"><Icon name="mail" size={18}/>Email</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href="/"><Icon name="file-text" size={18}/>Download Resume</a>
         </div>
       </aside>
 

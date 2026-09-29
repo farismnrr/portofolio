@@ -34,12 +34,12 @@ jobs:
         working-directory: frontend
         run: npm run guard
 
-  frontend:
+  build:
+    name: build
     runs-on: ubuntu-24.04
     needs: guardrail
-    defaults:
-      run:
-        working-directory: frontend
+    env:
+      RUSTFLAGS: -D warnings
     steps:
       - uses: actions/checkout@v7
 
@@ -49,6 +49,7 @@ jobs:
           package-manager-cache: false
 
       - name: Generate npm lockfile without warnings
+        working-directory: frontend
         shell: bash
         run: |
           set -o pipefail
@@ -66,7 +67,8 @@ jobs:
           restore-keys: |
             npm-${{ runner.os }}-node24-
 
-      - name: Install dependencies without warnings
+      - name: Install frontend dependencies without warnings
+        working-directory: frontend
         shell: bash
         run: |
           set -o pipefail
@@ -77,9 +79,11 @@ jobs:
           fi
 
       - name: Strict Svelte / TypeScript diagnostics
+        working-directory: frontend
         run: npm run check
 
       - name: Build frontend with stderr treated as failure
+        working-directory: frontend
         shell: bash
         run: |
           set -o pipefail
@@ -89,25 +93,6 @@ jobs:
             echo "Frontend build wrote to stderr; warnings/errors are CI failures."
             exit 1
           fi
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: frontend-dist
-          path: frontend/dist
-          retention-days: 1
-
-  rust:
-    runs-on: ubuntu-24.04
-    needs: frontend
-    env:
-      RUSTFLAGS: -D warnings
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/download-artifact@v7
-        with:
-          name: frontend-dist
-          path: frontend/dist
 
       - name: Install musl toolchain
         run: |
@@ -145,27 +130,11 @@ jobs:
           cp "server/target/${RUST_TARGET}/release/portfolio-server" release/portfolio-server
           chmod +x release/portfolio-server
 
-      - uses: actions/upload-artifact@v7
-        with:
-          name: portfolio-runtime
-          path: release/portfolio-server
-          retention-days: 1
-
-  docker:
-    runs-on: ubuntu-24.04
-    needs: rust
-    if: github.event_name == 'push'
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/download-artifact@v7
-        with:
-          name: portfolio-runtime
-          path: release
-
       - uses: docker/setup-buildx-action@v4
+        if: github.event_name == 'push'
 
       - name: Log in to GHCR
+        if: github.event_name == 'push'
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
@@ -173,6 +142,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package and push prebuilt Rust runtime
+        if: github.event_name == 'push'
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -182,13 +152,15 @@ jobs:
 
   deploy:
     runs-on: [self-hosted, Linux, X64]
-    needs: docker
+    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/refactor/ui-tech-stack-reset'
     concurrency:
       group: portfolio-self-hosted
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Log in to GHCR
         uses: docker/login-action@v4

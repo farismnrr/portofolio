@@ -5,6 +5,6 @@ issuer: Coursera
 title: "Technical Support Fundamentals"
 year: ""
 credentialId: ""
-url: "/images/certifications/coursera/Technical Support Fundamentals.pdf"
-image: "/images/certifications/coursera/Technical Support Fundamentals.jpg"
+url: "/images/certifications/coursera/technical-support-fundamentals.pdf"
+image: "/images/certifications/coursera/technical-support-fundamentals.jpg"
 ---

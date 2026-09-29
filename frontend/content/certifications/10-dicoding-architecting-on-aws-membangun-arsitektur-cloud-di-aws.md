@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Architecting on AWS (Membangun Arsitektur Cloud di AWS)"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/Architecting on AWS (Membangun Arsitektur Cloud di AWS).pdf"
-image: "/images/certifications/dicoding/Architecting on AWS (Membangun Arsitektur Cloud di AWS).jpg"
+url: "/images/certifications/dicoding/architecting-on-aws-membangun-arsitektur-cloud-di-aws.pdf"
+image: "/images/certifications/dicoding/architecting-on-aws-membangun-arsitektur-cloud-di-aws.jpg"
 ---

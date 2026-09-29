@@ -3,6 +3,7 @@
   export let alt = '';
   export let className = '';
   export let eager = false;
+  export let fit: 'cover' | 'contain' = 'cover';
   let loaded = false;
 </script>
 
@@ -11,7 +12,7 @@
     <div class="absolute inset-0 animate-pulse bg-gradient-to-br from-black/[0.035] via-black/[0.075] to-black/[0.035]"></div>
   {/if}
   <img
-    class={"h-full w-full object-cover transition-[opacity,transform] duration-500 ease-out " + (loaded ? "scale-100 opacity-100" : "scale-[1.015] opacity-0")}
+    class={"h-full w-full " + (fit === 'contain' ? 'object-contain' : 'object-cover') + " transition-[opacity,transform] duration-500 ease-out " + (loaded ? "scale-100 opacity-100" : "scale-[1.015] opacity-0")}
     {src}
     {alt}
     loading={eager ? 'eager' : 'lazy'}

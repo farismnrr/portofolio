@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Menjadi Google Cloud Architect"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/Menjadi Google Cloud Architect.pdf"
-image: "/images/certifications/dicoding/Menjadi Google Cloud Architect.jpg"
+url: "/images/certifications/dicoding/menjadi-google-cloud-architect.pdf"
+image: "/images/certifications/dicoding/menjadi-google-cloud-architect.jpg"
 ---

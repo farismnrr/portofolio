@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Memulai Pemrograman dengan Python"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/Memulai Pemrograman dengan Python.pdf"
-image: "/images/certifications/dicoding/Memulai Pemrograman dengan Python.jpg"
+url: "/images/certifications/dicoding/memulai-pemrograman-dengan-python.pdf"
+image: "/images/certifications/dicoding/memulai-pemrograman-dengan-python.jpg"
 ---

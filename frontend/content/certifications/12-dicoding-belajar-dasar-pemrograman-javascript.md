@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Belajar Dasar Pemrograman JavaScript"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/Belajar Dasar Pemrograman JavaScript.pdf"
-image: "/images/certifications/dicoding/Belajar Dasar Pemrograman JavaScript.jpg"
+url: "/images/certifications/dicoding/belajar-dasar-pemrograman-javascript.pdf"
+image: "/images/certifications/dicoding/belajar-dasar-pemrograman-javascript.jpg"
 ---

@@ -1,6 +1,6 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { getLatestExperiences, pageCopy, profile } from '../lib/structured-content';
+  import { experiences, pageCopy, profile } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
@@ -10,7 +10,7 @@
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
-  const selectedExperience = getLatestExperiences(2);
+  const selectedExperience = experiences;
 </script>
 
 <main>
@@ -40,7 +40,6 @@
         <div class="mt-10 border-t border-black/10 pt-7">
           <div class="flex items-center justify-between">
             <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">Work experience</p>
-            <a class="text-[12px] text-black/70 underline underline-offset-4" href="/experience">View full experience →</a>
           </div>
           {#each selectedExperience as item, i}<TimelineEntry {item} first={i===0} last={i===selectedExperience.length-1}/>{/each}
         </div>

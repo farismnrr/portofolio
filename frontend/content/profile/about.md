@@ -9,7 +9,7 @@ linkedin: https://www.linkedin.com/in/farismnrr
 email: mailto:farismunir@farismnrr.com
 resume: ""
 specialties: Software Engineer · Backend · Cloud · IoT
-headline: Building scalable software systems that connect cloud infrastructure, intelligent services, and real-world devices.
+headline: Building reliable systems across backend, cloud, and IoT.
 intro: I am a Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems. I focus on engineering scalable, high-performance solutions that integrate intelligent hardware with robust software ecosystems.
 availability: ""
 quote: ""

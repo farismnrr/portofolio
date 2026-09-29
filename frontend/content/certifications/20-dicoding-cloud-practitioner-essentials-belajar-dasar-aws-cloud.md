@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Cloud Practitioner Essentials (Belajar Dasar AWS Cloud)"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/Cloud Practitioner Essentials (Belajar Dasar AWS Cloud).pdf"
-image: "/images/certifications/dicoding/Cloud Practitioner Essentials (Belajar Dasar AWS Cloud).jpg"
+url: "/images/certifications/dicoding/cloud-practitioner-essentials-belajar-dasar-aws-cloud.pdf"
+image: "/images/certifications/dicoding/cloud-practitioner-essentials-belajar-dasar-aws-cloud.jpg"
 ---

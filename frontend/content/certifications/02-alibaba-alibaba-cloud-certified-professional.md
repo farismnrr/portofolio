@@ -5,6 +5,6 @@ issuer: Alibaba Cloud
 title: "Alibaba Cloud Certified Professional"
 year: ""
 credentialId: ""
-url: "/images/certifications/alibaba/Alibaba Cloud Certified Professional.pdf"
-image: "/images/certifications/alibaba/Alibaba Cloud Certified Professional.jpg"
+url: "/images/certifications/alibaba/alibaba-cloud-certified-professional.pdf"
+image: "/images/certifications/alibaba/alibaba-cloud-certified-professional.jpg"
 ---

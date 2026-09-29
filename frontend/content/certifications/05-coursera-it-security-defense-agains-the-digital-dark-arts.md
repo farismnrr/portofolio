@@ -5,6 +5,6 @@ issuer: Coursera
 title: "IT Security Defense Agains the Digital Dark Arts"
 year: ""
 credentialId: ""
-url: "/images/certifications/coursera/IT Security Defense Agains the Digital Dark Arts.pdf"
-image: "/images/certifications/coursera/IT Security Defense Agains the Digital Dark Arts.jpg"
+url: "/images/certifications/coursera/it-security-defense-agains-the-digital-dark-arts.pdf"
+image: "/images/certifications/coursera/it-security-defense-agains-the-digital-dark-arts.jpg"
 ---

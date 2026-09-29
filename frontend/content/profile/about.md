@@ -6,7 +6,7 @@ languages: English, Bahasa
 image: /images/profile/faris-munir.png
 github: https://github.com/farismnrr
 linkedin: https://www.linkedin.com/in/farismnrr
-email: mailto:farismunir@farismnrr.com
+email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: Software Engineer · Backend · Cloud · IoT
 headline: Building reliable systems across backend, cloud, and IoT.

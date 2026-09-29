@@ -1,6 +1,6 @@
 # Faris Munir Mahdi — Portfolio
 
-A fully static personal portfolio built with **Vue 3, Vuetify 4, Vite, TypeScript, SCSS, and repository-local Markdown/MDX content**.
+A fully static personal portfolio built with **Vue 3, Vuetify 4, Vite, TypeScript, SCSS, and repository-local Markdown content**.
 
 The repository has a production-only runtime model. There is no development server workflow, backend API, authentication service, dashboard, database, or production SSR server.
 
@@ -53,7 +53,7 @@ npm run audit
 
 ## Static build pipeline
 
-1. `scripts/content-plugin.ts` reads repository-local Markdown/MDX and asset indexes during the production build.
+1. `scripts/content-plugin.ts` reads repository-local Markdown and asset indexes during the production build.
 2. Content domains are exposed as in-memory `virtual:content/*` modules.
 3. Vite creates the browser bundle and a temporary SSR bundle used only at build time.
 4. `scripts/build.mjs` prerenders known routes into `dist/<route>/index.html`.
@@ -69,7 +69,7 @@ The content source of truth remains under `src/content/`:
 - `projects/`
 - `blog/`
 
-Images and certification/gallery assets live under `public/`.
+See [`src/content/README.md`](./src/content/README.md) for the content model, naming rules, frontmatter examples, and where each domain is consumed.\n\nImages and certification/gallery assets live under `public/`.
 
 ## Architecture rules
 

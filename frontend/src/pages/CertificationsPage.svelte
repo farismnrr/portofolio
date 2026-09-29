@@ -2,6 +2,7 @@
   import { certificationGroups, pageCopy } from '../lib/structured-content';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+  import MediaImage from '../lib/ui/MediaImage.svelte';
 </script>
 
 <main>
@@ -21,7 +22,7 @@
           {#each group.items as cert}
             <article>
               <div class="aspect-[1.78] overflow-hidden border border-black/12 bg-white/55 shadow-[0_1px_8px_rgba(0,0,0,.035)]">
-                <img class="h-full w-full object-contain" src={cert.image} alt={cert.title} loading="lazy"/>
+                <MediaImage className="h-full w-full object-contain" src={cert.image} alt={cert.title}/>
               </div>
               <h3 class="mt-4 text-[16px] font-semibold">{cert.title}</h3>
               <p class="mt-1 text-[13px] text-black/52">{cert.issuer}</p>

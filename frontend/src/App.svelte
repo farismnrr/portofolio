@@ -5,6 +5,7 @@
   import SiteHeader from './lib/ui/SiteHeader.svelte';
   import SiteFooter from './lib/ui/SiteFooter.svelte';
   import RouteLoading from './lib/ui/RouteLoading.svelte';
+  import MobileNavigation from './lib/ui/MobileNavigation.svelte';
 
   let Page: any = null;
   let loading = true;
@@ -26,9 +27,12 @@
 
 <svelte:head><title>{profile.name} — {profile.role}</title></svelte:head>
 <SiteHeader currentPath={active}/>
-{#if loading || !Page}
-  <RouteLoading/>
-{:else}
-  <svelte:component this={Page}/>
-{/if}
-<SiteFooter/>
+<div class="pb-[76px] lg:pb-0">
+  {#if loading || !Page}
+    <RouteLoading/>
+  {:else}
+    <svelte:component this={Page}/>
+  {/if}
+  <SiteFooter/>
+</div>
+<MobileNavigation currentPath={active}/>

@@ -99,6 +99,7 @@ const requiredShared = [
   'lib/ui/PageShell.svelte',
   'lib/ui/SiteHeader.svelte',
   'lib/ui/SiteFooter.svelte',
+  'lib/ui/MobileNavigation.svelte',
   'lib/ui/PageIntro.svelte',
   'lib/ui/SectionHeader.svelte',
   'lib/ui/TechChips.svelte',
@@ -242,6 +243,7 @@ try {
 } catch {}
 
 const appSource = await readFile(join(srcRoot, 'App.svelte'), 'utf8');
+if (!appSource.includes('MobileNavigation')) failures.push('App.svelte must mount the shared mobile navigation.');
 if (!appSource.includes('resolveActiveNavigation') || !appSource.includes('profile.name')) failures.push('App.svelte must derive site title and active navigation from Markdown-backed structured content.');
 for (const chrome of ['SiteHeader.svelte','SiteFooter.svelte']) {
   const source = await readFile(join(srcRoot, 'lib', 'ui', chrome), 'utf8');

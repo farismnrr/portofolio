@@ -11,12 +11,20 @@ globalThis.HTMLElement = dom.window.HTMLElement;
 globalThis.SVGElement = dom.window.SVGElement;
 
 const { default: mermaid } = await import('mermaid');
-const contentRoot = resolve(new URL('../content/projects', import.meta.url).pathname);
-const files = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
+const contentRoots = [
+  resolve(new URL('../content/projects', import.meta.url).pathname),
+  resolve(new URL('../content/blog', import.meta.url).pathname)
+];
+const files = [];
+for (const root of contentRoots) {
+  for (const file of (await readdir(root)).filter((entry) => entry.endsWith('.md')).sort()) {
+    files.push({ root, file });
+  }
+}
 let diagrams = 0;
 mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', logLevel: 'fatal' });
-for (const file of files) {
-  const source = await readFile(join(contentRoot, file), 'utf8');
+for (const { root, file } of files) {
+  const source = await readFile(join(root, file), 'utf8');
   for (const match of source.matchAll(/```mermaid\s*\r?\n([\s\S]*?)```/g)) {
     diagrams += 1;
     try { await mermaid.parse(match[1]); }
@@ -24,4 +32,4 @@ for (const file of files) {
   }
 }
 dom.window.close();
-process.stdout.write(`Content validation passed: ${files.length} project case studies, ${diagrams} Mermaid diagrams.\n`);
+process.stdout.write(`Content validation passed: ${files.length} Markdown documents, ${diagrams} Mermaid diagrams.\n`);

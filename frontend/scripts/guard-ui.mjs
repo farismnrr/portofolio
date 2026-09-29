@@ -4,6 +4,7 @@ import { extname, join, relative, resolve, sep } from 'node:path';
 const frontendRoot = resolve(new URL('..', import.meta.url).pathname);
 const srcRoot = join(frontendRoot, 'src');
 const contentRoot = join(frontendRoot, 'content', 'projects');
+const blogRoot = join(frontendRoot, 'content', 'blog');
 const publicRoot = join(frontendRoot, 'public');
 const failures = [];
 
@@ -103,12 +104,14 @@ const requiredShared = [
   'lib/ui/TimelineEntry.svelte',
   'lib/ui/ProjectCard.svelte',
   'lib/ui/ProjectHero.svelte',
-  'lib/ui/ProjectToc.svelte',
+  'lib/ui/ContentToc.svelte',
   'lib/ui/MarkdownArticle.svelte',
   'lib/ui/MediaImage.svelte',
   'lib/ui/RouteLoading.svelte',
   'lib/ui/AppIcon.svelte',
+  'lib/content.ts',
   'lib/project-content.ts',
+  'lib/blog-content.ts',
   'lib/markdown.ts',
   'lib/mermaid.ts',
   'lib/routes.ts',
@@ -132,12 +135,13 @@ const projectDetail = await readFile(join(srcRoot, 'pages', 'ProjectDetailPage.s
 for (const forbidden of ['Sensio Notes', 'ArchitectureDiagram', 'ProcessFlow', 'const architecture', 'const flow']) {
   if (projectDetail.includes(forbidden)) failures.push(`ProjectDetailPage.svelte: project-specific hardcode "${forbidden}" is forbidden; content belongs in Markdown.`);
 }
-for (const required of ['getProjectByPath', 'ProjectHero', 'ProjectToc', 'MarkdownArticle']) {
+for (const required of ['getProjectByPath', 'ProjectHero', 'ContentToc', 'MarkdownArticle']) {
   if (!projectDetail.includes(required)) failures.push(`ProjectDetailPage.svelte: missing generic case-study primitive "${required}".`);
 }
 
 const dataSource = await readFile(join(srcRoot, 'lib', 'data.ts'), 'utf8');
 if (/export const projects\s*=/.test(dataSource)) failures.push('lib/data.ts must not own project data; Markdown frontmatter is the single source of truth.');
+if (/export const articles\s*=/.test(dataSource)) failures.push('lib/data.ts must not own blog articles; Markdown frontmatter is the single source of truth.');
 
 const contentFiles = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
 if (!contentFiles.length) failures.push('content/projects must contain at least one Markdown case study.');
@@ -184,6 +188,53 @@ for (const file of contentFiles) {
   const mermaidStarts = [...body.matchAll(/```mermaid\s*$/gm)].length;
   const mermaidBlocks = [...body.matchAll(/```mermaid\s*\r?\n([\s\S]*?)```/g)];
   if (mermaidStarts !== mermaidBlocks.length) failures.push(`${file}: unclosed Mermaid code fence.`);
+}
+
+const blogFiles = (await readdir(blogRoot)).filter((file) => file.endsWith('.md')).sort();
+if (!blogFiles.length) failures.push('content/blog must contain at least one Markdown article.');
+const blogKeys = new Set(['slug','title','excerpt','category','published','readTime','cover','featured']);
+const blogSlugs = new Set();
+let featuredCount = 0;
+
+for (const file of blogFiles) {
+  const source = await readFile(join(blogRoot, file), 'utf8');
+  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) { failures.push(`${file}: missing --- frontmatter block.`); continue; }
+
+  const values = new Map();
+  for (const line of match[1].split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    const separator = line.indexOf(':');
+    if (separator < 1) { failures.push(`${file}: malformed frontmatter line "${line}".`); continue; }
+    values.set(line.slice(0, separator).trim(), line.slice(separator + 1).trim());
+  }
+
+  for (const key of values.keys()) if (!blogKeys.has(key)) failures.push(`${file}: unknown blog frontmatter key "${key}".`);
+  for (const key of blogKeys) if (!values.has(key)) failures.push(`${file}: missing required blog frontmatter key "${key}".`);
+
+  const rawSlug = (values.get('slug') ?? '').trim();
+  const slug = ((rawSlug.startsWith('"') && rawSlug.endsWith('"')) || (rawSlug.startsWith("'") && rawSlug.endsWith("'"))) ? rawSlug.slice(1, -1) : rawSlug;
+  if (slug !== file.replace(/\.md$/, '')) failures.push(`${file}: blog slug must match filename.`);
+  if (blogSlugs.has(slug)) failures.push(`${file}: duplicate blog slug "${slug}".`);
+  blogSlugs.add(slug);
+
+  const published = (values.get('published') ?? '').trim();
+  if (Number.isNaN(Date.parse(published))) failures.push(`${file}: published must be a valid ISO date.`);
+  if ((values.get('featured') ?? '').trim() === 'true') featuredCount += 1;
+
+  const body = match[2];
+  if (/^#\s+/m.test(body)) failures.push(`${file}: blog Markdown body must start at ## because ArticlePage owns H1.`);
+  const headings = [...body.matchAll(/^(#{2,6})\s+(.+)$/gm)];
+  if (headings.filter((heading) => heading[1].length === 2).length < 3) failures.push(`${file}: article needs at least three ## sections.`);
+}
+
+if (featuredCount > 1) failures.push('content/blog may contain at most one featured: true article.');
+
+const homeSource = await readFile(join(srcRoot, 'pages', 'HomePage.svelte'), 'utf8');
+if (homeSource.includes('projects.slice(0')) failures.push('HomePage must use getLatestProjects() rather than positional project slices.');
+if (homeSource.includes('experiences.slice(0')) failures.push('HomePage must use getLatestExperiences() rather than positional experience slices.');
+if (!homeSource.includes('getLatestProjects') || !homeSource.includes('getLatestExperiences')) {
+  failures.push('HomePage must derive visible project and experience content from latest-content selectors.');
 }
 
 if (failures.length) {

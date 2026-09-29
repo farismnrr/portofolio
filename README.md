@@ -1,40 +1,26 @@
 # Portfolio
 
-Clean minimal portfolio UI implemented with Svelte and served as a SPA by Rust + Axum.
+Personal portfolio implemented with Svelte and served by a Rust + Axum application.
 
 ## Stack
 
 - Svelte + Vite
 - Rust + Axum
+- Repository-local Markdown content
 - Docker
 - GitHub Actions
 - GitHub Container Registry (GHCR)
 
-The frontend builds to `frontend/dist`. The Axum server serves that directory with SPA fallback.
+Portfolio data lives under `frontend/content/`. Profile, experience, education, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
 
-## Container image
+Static media lives under `frontend/public/`.
 
-On every push to `main` or `refactor/ui-tech-stack-reset`, CI validates the frontend and Rust server, then builds and pushes a container image to:
+## CI / deployment
 
-`ghcr.io/farismnrr/portofolio`
+Every push to `main` validates the frontend content and Svelte/TypeScript application, validates and builds the Rust server, publishes the runtime image to GHCR, and deploys through the configured self-hosted runner.
 
-Published tags include:
+Container image:
 
-- `sha-<commit>`
-- the branch name
-- `latest` for `main`
+`ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-## Docker Compose
-
-The repository includes a deployment-ready `compose.yaml`.
-
-By default it uses:
-
-`ghcr.io/farismnrr/portofolio:latest`
-
-You can override the image and exposed port with:
-
-- `PORTFOLIO_IMAGE`
-- `PORTFOLIO_PORT`
-
-Self-hosted runner deployment is intentionally not wired yet. The runner can later pull the CI-built image and recreate the Compose service without compiling anything on the host.
+The application is exposed on port `3001` by the repository Compose configuration.

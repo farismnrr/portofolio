@@ -141,7 +141,7 @@ const locationLabel = "Jakarta, Indonesia";
           <div class="experience-item__body">
             <h3>{{ item.role }}</h3>
             <div class="experience-item__company">{{ item.company }}</div>
-            <p>{{ item.achievements[0] }}</p>
+            <p>{{ item.summary }}</p>
           </div>
         </article>
       </div>

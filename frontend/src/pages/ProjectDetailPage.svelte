@@ -3,10 +3,11 @@
   import { getProjectByPath } from '../lib/project-content';
   import { renderMarkdown } from '../lib/markdown';
   import AppIcon from '../lib/ui/AppIcon.svelte';
+  import ContentToc from '../lib/ui/ContentToc.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import ProjectHero from '../lib/ui/ProjectHero.svelte';
-  import ProjectToc from '../lib/ui/ProjectToc.svelte';
+
   $: project = getProjectByPath($path);
   $: rendered = project ? renderMarkdown(project.markdown) : null;
 </script>
@@ -17,7 +18,7 @@
     {#if project && rendered}
       <div class="mt-8"><ProjectHero {project}/></div>
       <section class="grid gap-12 py-10 lg:grid-cols-[190px_minmax(0,1fr)] xl:gap-16">
-        <ProjectToc items={rendered.toc}/>
+        <ContentToc items={rendered.toc}/>
         <div class="min-w-0">{#key project.slug}<MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>{/key}</div>
       </section>
     {:else}

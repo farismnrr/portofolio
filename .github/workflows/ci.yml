@@ -78,6 +78,18 @@ jobs:
             exit 1
           fi
 
+      - name: Validate Markdown and Mermaid content
+        working-directory: frontend
+        shell: bash
+        run: |
+          set -o pipefail
+          : > /tmp/content-check.stderr
+          npm run content:check 2> >(tee /tmp/content-check.stderr >&2)
+          if [ -s /tmp/content-check.stderr ]; then
+            echo "Content validation wrote to stderr; warnings/errors are CI failures."
+            exit 1
+          fi
+
       - name: Strict Svelte / TypeScript diagnostics
         working-directory: frontend
         run: npm run check

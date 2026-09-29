@@ -1,6 +1,7 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { experiences, projects, profileImage } from '../lib/data';
+  import { experiences, profileImage } from '../lib/data';
+  import { projects } from '../lib/project-content';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
   import ProjectCard from '../lib/ui/ProjectCard.svelte';

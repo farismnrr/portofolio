@@ -1,7 +1,7 @@
 <script lang="ts">
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
-  import { projects } from '../lib/data';
+  import { projects } from '../lib/project-content';
   const sections=['Introduction','Event Boundaries','Delivery Guarantees','Idempotency','Retries','Dead Letter Queues','Observability','Lessons Learned','Conclusion'];
   const idempotencyExample='if already_processed(event.id) { return; }';
 </script>

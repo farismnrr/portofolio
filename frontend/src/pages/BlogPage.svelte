@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { articles, projects } from '../lib/data';
+  import { articles } from '../lib/data';
+  import { projects } from '../lib/project-content';
   import { navigate } from '../lib/router';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';

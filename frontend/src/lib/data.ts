@@ -23,15 +23,6 @@ export const experiences = [
   { year:'2022 — 2023', company:'Studio North', role:'Technical SEO Engineer', location:'Remote', summary:'Worked on technical SEO, site performance, crawlability, and content-driven websites.', bullets:['Ran technical audits and infrastructure improvements.','Improved site architecture and structured data.','Monitored analytics and performance metrics.'], tech:['Analytics','Technical SEO','Site Architecture'] }
 ];
 
-export const projects = [
-  { id:'01', year:'2025', title:'Meeting Intelligence Platform', subtitle:'', image:photos.meeting, role:'Lead Engineer', category:'AI · Productivity', tech:['Python','FastAPI','OpenAI','PostgreSQL','React'], description:'AI-powered meeting transcription, summarization, and action item tracking for modern teams.' },
-  { id:'02', year:'2024', title:'Smart Space IoT Platform', subtitle:'', image:photos.iot, role:'Full Stack Engineer', category:'IoT · Infrastructure', tech:['Python','MQTT','AWS','InfluxDB','React'], description:'End-to-end platform for connected spaces, from device firmware to cloud infrastructure and real-time dashboards.' },
-  { id:'03', year:'2024', title:'Agentic Coding Workspace', subtitle:'', image:photos.agent, role:'Core Developer', category:'Developer Tools · AI', tech:['TypeScript','Node.js','LangChain','PostgreSQL','React'], description:'An AI-native development environment with autonomous agents for code generation, testing, and project understanding.' },
-  { id:'04', year:'2023', title:'Game-Based Learning Platform', subtitle:'', image:photos.game, role:'Software Engineer', category:'EdTech · Gaming', tech:['Next.js','Python','PostgreSQL','WebRTC','Three.js'], description:'Interactive learning platform using game mechanics to teach programming and problem-solving.' },
-  { id:'05', year:'2023', title:'Tenant Core', subtitle:'Multi-tenant identity service', image:photos.workspace, role:'Backend Engineer', category:'Infrastructure · Security', tech:['Go','PostgreSQL','Redis','Kubernetes'], description:'Scalable identity and access management with fine-grained permissions.' },
-  { id:'06', year:'2024', title:'Observability Stack', subtitle:'Infrastructure monitoring platform', image:photos.agent, role:'Backend Engineer', category:'Developer Tools · DevOps', tech:['Go','Prometheus','Grafana','ClickHouse'], description:'Distributed tracing, metrics, and logging for cloud-native services.' }
-];
-
 export const articles = [
   ['SEP 2026','Engineering','12 min read','Designing Reliable Event-Driven Systems','Patterns, trade-offs, and practical lessons from building event-driven systems at scale, including idempotency, ordering, failure handling, and operational considerations.'],
   ['AUG 2026','AI','10 min read','Building AI Features That Stay Grounded','How to design AI features with reliable context, guardrails, and evaluation loops so they remain accurate and useful.'],

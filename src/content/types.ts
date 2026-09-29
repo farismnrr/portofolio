@@ -24,7 +24,9 @@ export interface WorkItem {
   role: string;
   timeframe: string;
   order: number;
-  achievements: string[];
+  summary: string;
+  body: string;
+  html: string;
 }
 
 export interface StudyItem {

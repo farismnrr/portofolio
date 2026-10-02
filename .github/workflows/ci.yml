@@ -196,6 +196,14 @@ jobs:
       group: portfolio-self-hosted
       cancel-in-progress: true
     steps:
+      - name: Repair self-hosted workspace ownership
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -227,6 +235,14 @@ jobs:
       group: portfolio-self-hosted
       cancel-in-progress: true
     steps:
+      - name: Repair self-hosted workspace ownership
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
       - uses: actions/checkout@v7
 
       - name: Run Playwright against deployed production container
@@ -235,8 +251,11 @@ jobs:
           set -euo pipefail
           docker run --rm \
             --network host \
+            --user "$(id -u):$(id -g)" \
             -v "$PWD/frontend:/work" \
             -w /work \
+            -e HOME=/tmp \
             -e E2E_BASE_URL=http://127.0.0.1:3001 \
+            -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
             mcr.microsoft.com/playwright:v1.63.0-noble \
             bash -lc 'npm install --package-lock-only && npm ci && npm run test:e2e'

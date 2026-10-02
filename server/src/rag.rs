@@ -256,6 +256,37 @@ impl RagState {
             .collect())
     }
 
+    fn enrich_grounding_context(&self, mut evidence: Vec<Evidence>) -> Vec<Evidence> {
+        let mut seen = evidence
+            .iter()
+            .map(|item| item.id.clone())
+            .collect::<std::collections::HashSet<_>>();
+
+        for source_type in ["profile", "experience", "skill", "education"] {
+            for chunk in self
+                .corpus
+                .iter()
+                .filter(|chunk| chunk.source_type == source_type && chunk.section == "summary")
+            {
+                if seen.insert(chunk.id.clone()) {
+                    evidence.push(Evidence {
+                        id: chunk.id.clone(),
+                        source_type: chunk.source_type.clone(),
+                        source_id: chunk.source_id.clone(),
+                        section: chunk.section.clone(),
+                        company: chunk.company.clone(),
+                        skills: chunk.skills.clone(),
+                        role_tags: chunk.role_tags.clone(),
+                        content: chunk.content.clone(),
+                        score: 0.0,
+                    });
+                }
+            }
+        }
+
+        evidence
+    }
+
     fn search_memory(&self, query: &str, limit: usize) -> Vec<Evidence> {
         let query_vector = fallback_embedding(query);
         let mut scored = self
@@ -307,7 +338,7 @@ pub async fn retrieve(
         Ok(evidence) => (
             StatusCode::OK,
             Json(RetrieveResponse {
-                evidence,
+                evidence: state.enrich_grounding_context(evidence),
                 backend: "pgvector+postgres-fts",
             }),
         ),
@@ -316,7 +347,9 @@ pub async fn retrieve(
             (
                 StatusCode::OK,
                 Json(RetrieveResponse {
-                    evidence: state.search_memory(query, limit as usize),
+                    evidence: state.enrich_grounding_context(
+                        state.search_memory(query, limit as usize),
+                    ),
                     backend: "memory-fallback",
                 }),
             )

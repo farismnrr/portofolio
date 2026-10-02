@@ -262,7 +262,7 @@ impl RagState {
             .map(|item| item.id.clone())
             .collect::<std::collections::HashSet<_>>();
 
-        for source_type in ["profile", "experience", "skill", "education"] {
+        for source_type in ["profile", "experience", "skill", "education", "certification"] {
             for chunk in self
                 .corpus
                 .iter()
@@ -325,7 +325,7 @@ pub async fn retrieve(
         "ai-engineer" => "AI engineer RAG retrieval embeddings LangGraph agents MCP LLM inference machine learning Python pgvector",
         "devops" => "DevOps platform infrastructure Docker Linux CI CD observability OpenTelemetry deployment cloud backend reliability",
         "software-engineer" => "software engineer backend frontend APIs distributed systems PostgreSQL Rust Go TypeScript product engineering",
-        _ => "software engineer backend AI systems RAG agents infrastructure IoT product engineering Rust Go TypeScript PostgreSQL Docker",
+        _ => "software engineer backend frontend APIs databases cloud infrastructure CI CD security product engineering distributed systems IoT reliability Rust Go TypeScript PostgreSQL Docker",
     };
     let query = payload
         .query

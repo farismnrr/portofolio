@@ -9,5 +9,5 @@ services:
     environment:
       PORT: "3000"
       NINE_ROUTER_BASE_URL: "http://host.docker.internal:20128/v1"
-      NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-sk_9router}"
+      NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-}"
       AI_MODEL: "gpt-6-luna"

@@ -6,6 +6,7 @@ role: Backend Developer
 location: ""
 summary: Built backend, IoT, and AI-control systems for smart-room and connected-device products.
 tech: [Go, Tuya, RS-485, MQTT, RAG, Whisper.cpp]
+projects: [sensio-notes, sensio-iot]
 ---
 
 - Engineered a robust backend system using Golang for Smart Meeting Room projects, effectively bridging physical IoT hardware with Genexus low-code applications.

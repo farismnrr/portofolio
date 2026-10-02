@@ -4,10 +4,13 @@ use axum::{
     body::Body,
     http::{header, StatusCode, Uri},
     response::{IntoResponse, Response},
+    routing::post,
     Router,
 };
 use rust_embed::RustEmbed;
 use tower_http::trace::TraceLayer;
+
+mod ai;
 
 #[derive(RustEmbed)]
 #[folder = "../frontend/dist/"]
@@ -63,7 +66,11 @@ async fn main() {
         )
         .init();
 
+    let ai_state = ai::AiState::from_env();
+
     let app = Router::new()
+        .route("/api/ai/chat", post(ai::chat))
+        .with_state(ai_state)
         .fallback(embedded_asset)
         .layer(TraceLayer::new_for_http());
 

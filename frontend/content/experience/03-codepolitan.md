@@ -6,6 +6,7 @@ role: Full Stack Web Developer
 location: ""
 summary: Built REST APIs, MongoDB-backed services, and responsive Vue interfaces.
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
+projects: []
 ---
 
 - Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.

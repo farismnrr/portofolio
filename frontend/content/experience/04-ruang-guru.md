@@ -6,6 +6,7 @@ role: Back End Developer
 location: ""
 summary: Built Golang APIs, integrated ML-backed features, and optimized PostgreSQL workloads.
 tech: [Go, PostgreSQL, Machine Learning]
+projects: []
 ---
 
 - Designed and implemented efficient RESTful APIs using Golang, prioritizing performance and concurrency.

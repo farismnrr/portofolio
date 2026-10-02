@@ -367,10 +367,10 @@ pub async fn retrieve(
     State(state): State<RagState>,
     Json(payload): Json<RetrieveRequest>,
 ) -> impl IntoResponse {
-    let limit = payload.limit.unwrap_or(MAX_SEMANTIC_EVIDENCE as i64).clamp(
-        6,
-        MAX_SEMANTIC_EVIDENCE as i64,
-    );
+    let limit = payload
+        .limit
+        .unwrap_or(MAX_SEMANTIC_EVIDENCE as i64)
+        .clamp(6, MAX_SEMANTIC_EVIDENCE as i64);
     let target = payload.target.trim().to_lowercase();
     let default_query = match target.as_str() {
         "ai-engineer" => "AI engineer RAG retrieval embeddings LangGraph agents MCP LLM inference machine learning Python pgvector",

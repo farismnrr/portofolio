@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { readFile, stat } from 'node:fs/promises';
 
 test('production can generate and download grounded general CV', async ({ page }) => {
-  await page.goto('/about', { waitUntil: 'networkidle' });
+  await page.goto('/about', { waitUntil: 'domcontentloaded', timeout: 30_000 });
 
   await expect(page.getByRole('heading', { name: 'Faris Munir Mahdi' })).toBeVisible();
 

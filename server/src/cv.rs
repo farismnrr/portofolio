@@ -39,6 +39,7 @@ pub struct ProjectSection {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ExperienceSection {
     title: String,
     meta: String,
@@ -634,4 +635,58 @@ fn escape(value: &str) -> String {
         .replace('>', "&gt;")
         .replace('"', "&quot;")
         .replace('\'', "&#39;")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::CvRenderRequest;
+
+    #[test]
+    fn accepts_frontend_camel_case_render_payload() {
+        let payload = serde_json::json!({
+            "name": "Faris Munir Mahdi",
+            "headline": "Software Engineer",
+            "contact": "farismnrr.com",
+            "profileSummary": "General software engineering profile.",
+            "technicalScope": [
+                { "label": "Software Engineering", "text": "Rust, Go, TypeScript" }
+            ],
+            "projects": [
+                {
+                    "title": "Sensio Notes",
+                    "meta": "PT Perkasa Pilar Utama | 2026",
+                    "narrative": "Grounded project narrative.",
+                    "url": "https://farismnrr.com/projects/sensio-notes"
+                }
+            ],
+            "experiences": [
+                {
+                    "title": "Backend Developer | PT Perkasa Pilar Utama",
+                    "meta": "July 2025 - Present | Jakarta",
+                    "summary": "Backend, IoT, and product engineering.",
+                    "relatedProjects": [
+                        {
+                            "title": "Sensio Notes",
+                            "url": "https://farismnrr.com/projects/sensio-notes"
+                        }
+                    ],
+                    "bullets": []
+                }
+            ],
+            "certifications": [
+                {
+                    "title": "Example Certification",
+                    "meta": "Example Issuer | 2026",
+                    "url": "https://farismnrr.com/certifications/example"
+                }
+            ],
+            "educationLines": [
+                "UPN Veteran East Java | Bachelor of Computer Science | 2020 - 2024"
+            ],
+            "maxPages": 2
+        });
+
+        serde_json::from_value::<CvRenderRequest>(payload)
+            .expect("frontend CV render payload should deserialize");
+    }
 }

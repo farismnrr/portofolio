@@ -93,7 +93,7 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
                 .header(header::CONTENT_TYPE, "application/pdf")
                 .header(
                     header::CONTENT_DISPOSITION,
-                    "attachment; filename="Faris_Munir_Mahdi_CV.pdf"",
+                    "attachment; filename=\"Faris_Munir_Mahdi_CV.pdf\"",
                 )
                 .header(header::CACHE_CONTROL, "no-store")
                 .body(Body::from(bytes))

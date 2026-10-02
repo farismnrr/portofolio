@@ -1,10 +1,35 @@
 services:
+  cv-db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: portfolio
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - portfolio-cv-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d portfolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   portfolio:
     image: ${PORTFOLIO_IMAGE:-ghcr.io/farismnrr/portofolio/portfolio-app:latest}
     restart: unless-stopped
     network_mode: host
+    depends_on:
+      cv-db:
+        condition: service_healthy
     environment:
       PORT: "${PORTFOLIO_PORT:-3001}"
       NINE_ROUTER_BASE_URL: "http://127.0.0.1:20128/v1"
       NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-}"
       AI_MODEL: "gpt-6-luna"
+      AI_EMBEDDING_MODEL: "${AI_EMBEDDING_MODEL:-}"
+      DATABASE_URL: "postgresql://portfolio@127.0.0.1:5433/portfolio"
+
+volumes:
+  portfolio-cv-pgdata:

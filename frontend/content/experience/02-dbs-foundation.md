@@ -6,6 +6,7 @@ role: Machine Learning Engineer
 location: ""
 summary: Built machine-learning models and data pipelines with Python and TensorFlow.
 tech: [Python, TensorFlow, Machine Learning]
+projects: []
 ---
 
 - Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.

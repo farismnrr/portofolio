@@ -237,3 +237,78 @@ jobs:
           docker compose -p portofolio up -d --remove-orphans
           docker compose -p portofolio ps
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null
+
+  e2e:
+    name: production CV pagination e2e
+    runs-on: [self-hosted, Linux, X64]
+    needs: deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    concurrency:
+      group: portfolio-self-hosted
+      cancel-in-progress: true
+    env:
+      PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+    steps:
+      - name: Repair self-hosted workspace ownership
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
+      - uses: actions/checkout@v7
+
+      - name: Run production CV generation E2E
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            --network host \
+            --user "$(id -u):$(id -g)" \
+            -v "$PWD/frontend:/work" \
+            -w /work \
+            -e HOME=/tmp \
+            -e E2E_BASE_URL=http://127.0.0.1:3001 \
+            -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+            mcr.microsoft.com/playwright:v1.63.0-noble \
+            bash -lc 'npm install --package-lock-only && npm ci && npm run test:e2e'
+
+      - name: Inspect generated PDF structure and completeness
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -s frontend/test-results/generated-cv.pdf
+
+          docker run --rm \
+            --entrypoint sh \
+            -v "$PWD/frontend/test-results:/data:ro" \
+            "$PORTFOLIO_IMAGE" \
+            -lc '
+              set -eu
+              pages="$(pdfinfo /data/generated-cv.pdf | awk "/^Pages:/ { print \$2 }")"
+              test "$pages" = "2"
+
+              pdftotext /data/generated-cv.pdf /tmp/cv.txt
+
+              for required in \
+                "PROFESSIONAL SUMMARY" \
+                "SKILLS" \
+                "WORK EXPERIENCE" \
+                "PROJECTS" \
+                "CERTIFICATIONS" \
+                "EDUCATION" \
+                "UPN Veteran East Java"
+              do
+                grep -Fqi "$required" /tmp/cv.txt || {
+                  echo "Missing required PDF content: $required"
+                  exit 1
+                }
+              done
+            '
+
+      - name: Show portfolio logs on E2E failure
+        if: failure()
+        shell: bash
+        run: docker compose -p portofolio logs --no-color --tail=250 portfolio

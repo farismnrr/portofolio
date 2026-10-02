@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1.7
 
-FROM scratch
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends chromium ca-certificates fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --chmod=755 release/portfolio-server /portfolio-server
 

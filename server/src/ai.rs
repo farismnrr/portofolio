@@ -1,7 +1,7 @@
 use std::env;
 
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use reqwest::Client;
+use reqwest::{Client, RequestBuilder};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone)]
@@ -10,6 +10,7 @@ pub struct AiState {
     base_url: String,
     api_key: Option<String>,
     model: String,
+    embedding_model: Option<String>,
 }
 
 impl AiState {
@@ -28,7 +29,74 @@ impl AiState {
                 .ok()
                 .filter(|value| !value.trim().is_empty()),
             model: env::var("AI_MODEL").unwrap_or_else(|_| "gpt-6-luna".to_string()),
+            embedding_model: env::var("AI_EMBEDDING_MODEL")
+                .ok()
+                .filter(|value| !value.trim().is_empty()),
         }
+    }
+
+    fn auth(&self, builder: RequestBuilder) -> RequestBuilder {
+        match &self.api_key {
+            Some(api_key) => builder.bearer_auth(api_key),
+            None => builder,
+        }
+    }
+
+    async fn discover_embedding_model(&self) -> Option<String> {
+        if let Some(model) = &self.embedding_model {
+            return Some(model.clone());
+        }
+
+        let response = self
+            .auth(
+                self.client
+                    .get(format!("{}/models/embedding", self.base_url)),
+            )
+            .send()
+            .await
+            .ok()?;
+
+        if !response.status().is_success() {
+            return None;
+        }
+
+        let payload = response.json::<ModelList>().await.ok()?;
+        payload.data.into_iter().next().map(|model| model.id)
+    }
+
+    pub async fn embeddings(&self, input: &[String]) -> Option<Vec<Vec<f32>>> {
+        if input.is_empty() {
+            return Some(Vec::new());
+        }
+
+        let model = self.discover_embedding_model().await?;
+        let request = EmbeddingRequest {
+            model: &model,
+            input,
+        };
+        let response = self
+            .auth(
+                self.client
+                    .post(format!("{}/embeddings", self.base_url))
+                    .json(&request),
+            )
+            .send()
+            .await
+            .ok()?;
+
+        if !response.status().is_success() {
+            return None;
+        }
+
+        let mut payload = response.json::<EmbeddingResponse>().await.ok()?;
+        payload.data.sort_by_key(|item| item.index);
+        let embeddings = payload
+            .data
+            .into_iter()
+            .map(|item| item.embedding)
+            .collect::<Vec<_>>();
+
+        (embeddings.len() == input.len()).then_some(embeddings)
     }
 }
 
@@ -71,6 +139,33 @@ struct NineRouterResponseMessage {
     content: String,
 }
 
+#[derive(Deserialize)]
+struct ModelList {
+    data: Vec<ModelItem>,
+}
+
+#[derive(Deserialize)]
+struct ModelItem {
+    id: String,
+}
+
+#[derive(Serialize)]
+struct EmbeddingRequest<'a> {
+    model: &'a str,
+    input: &'a [String],
+}
+
+#[derive(Deserialize)]
+struct EmbeddingResponse {
+    data: Vec<EmbeddingItem>,
+}
+
+#[derive(Deserialize)]
+struct EmbeddingItem {
+    index: usize,
+    embedding: Vec<f32>,
+}
+
 fn normalized_reasoning_effort(value: Option<&str>) -> &'static str {
     match value {
         Some("medium") => "medium",
@@ -103,16 +198,16 @@ pub async fn chat(
         reasoning_effort: normalized_reasoning_effort(payload.reasoning_effort.as_deref()),
     };
 
-    let mut request_builder = state
-        .client
-        .post(format!("{}/chat/completions", state.base_url))
-        .json(&request);
-
-    if let Some(api_key) = &state.api_key {
-        request_builder = request_builder.bearer_auth(api_key);
-    }
-
-    let response = match request_builder.send().await {
+    let response = match state
+        .auth(
+            state
+                .client
+                .post(format!("{}/chat/completions", state.base_url))
+                .json(&request),
+        )
+        .send()
+        .await
+    {
         Ok(response) => response,
         Err(error) => {
             tracing::error!(%error, "failed to reach 9router");
@@ -129,7 +224,6 @@ pub async fn chat(
         let status = response.status();
         let body = response.text().await.unwrap_or_default();
         tracing::error!(%status, %body, "9router returned an error");
-
         return (
             StatusCode::BAD_GATEWAY,
             Json(ChatResponse {

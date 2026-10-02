@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 pub struct AiState {
     client: Client,
     base_url: String,
-    api_key: String,
+    api_key: Option<String>,
     model: String,
 }
 
@@ -26,7 +26,8 @@ impl AiState {
                 .trim_end_matches('/')
                 .to_string(),
             api_key: env::var("NINE_ROUTER_API_KEY")
-                .unwrap_or_else(|_| "sk_9router".to_string()),
+                .ok()
+                .filter(|value| !value.trim().is_empty()),
             model: env::var("AI_MODEL").unwrap_or_else(|_| "gpt-6-luna".to_string()),
         }
     }
@@ -94,14 +95,16 @@ pub async fn chat(
         reasoning_effort: "low",
     };
 
-    let response = match state
+    let mut request_builder = state
         .client
         .post(format!("{}/chat/completions", state.base_url))
-        .bearer_auth(&state.api_key)
-        .json(&request)
-        .send()
-        .await
-    {
+        .json(&request);
+
+    if let Some(api_key) = &state.api_key {
+        request_builder = request_builder.bearer_auth(api_key);
+    }
+
+    let response = match request_builder.send().await {
         Ok(response) => response,
         Err(error) => {
             tracing::error!(%error, "failed to reach 9router");

@@ -159,6 +159,8 @@ jobs:
     env:
       NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
       NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
+      NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
+      NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
       NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
     steps:
       - name: Check configured 9router model
@@ -166,7 +168,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_API_KEY; do
+          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_CONNECT_TIMEOUT_SECONDS NINE_ROUTER_TIMEOUT_SECONDS NINE_ROUTER_API_KEY; do
             if [ -z "${!name:-}" ]; then
               echo "${name} is not available on the self-hosted runner."
               exit 1
@@ -223,6 +225,8 @@ jobs:
           PORTFOLIO_PORT: "3001"
           NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
           NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
+          NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
+          NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
           NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
         run: |
           docker compose -p portofolio pull

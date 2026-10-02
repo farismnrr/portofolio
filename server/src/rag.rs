@@ -13,6 +13,9 @@ use sqlx::{postgres::PgPoolOptions, PgPool, Row};
 use crate::ai::AiState;
 
 const VECTOR_DIM: usize = 256;
+const MAX_SEMANTIC_EVIDENCE: usize = 10;
+const MAX_PROJECT_CHUNKS_PER_SOURCE: usize = 3;
+const MAX_TOTAL_EVIDENCE: usize = 25;
 
 #[derive(Clone)]
 pub struct RagState {
@@ -256,24 +259,58 @@ impl RagState {
             .collect())
     }
 
-    fn enrich_grounding_context(&self, mut evidence: Vec<Evidence>) -> Vec<Evidence> {
+    fn budget_semantic_evidence(&self, evidence: Vec<Evidence>) -> Vec<Evidence> {
+        let mut project_counts = HashMap::<String, usize>::new();
+        let mut budgeted = Vec::new();
+
+        for item in evidence {
+            if item.source_type == "project" {
+                let count = project_counts.entry(item.source_id.clone()).or_default();
+                if *count >= MAX_PROJECT_CHUNKS_PER_SOURCE {
+                    continue;
+                }
+                *count += 1;
+            }
+
+            budgeted.push(item);
+            if budgeted.len() >= MAX_SEMANTIC_EVIDENCE {
+                break;
+            }
+        }
+
+        budgeted
+    }
+
+    fn enrich_grounding_context(&self, query: &str, evidence: Vec<Evidence>) -> Vec<Evidence> {
+        let mut evidence = self.budget_semantic_evidence(evidence);
         let mut seen = evidence
             .iter()
             .map(|item| item.id.clone())
             .collect::<std::collections::HashSet<_>>();
+        let query_vector = fallback_embedding(query);
 
-        for source_type in [
-            "profile",
-            "experience",
-            "skill",
-            "education",
-            "certification",
+        for (source_type, cap) in [
+            ("profile", 1_usize),
+            ("experience", 5),
+            ("skill", 4),
+            ("education", 1),
+            ("certification", 4),
         ] {
-            for chunk in self
+            let mut candidates = self
                 .corpus
                 .iter()
                 .filter(|chunk| chunk.source_type == source_type && chunk.section == "summary")
-            {
+                .map(|chunk| {
+                    let vector = fallback_embedding(&chunk.content);
+                    let score = cosine(&query_vector, &vector) * 0.68
+                        + lexical_score(query, &chunk.content) * 0.32;
+                    (score, chunk)
+                })
+                .collect::<Vec<_>>();
+
+            candidates.sort_by(|left, right| right.0.total_cmp(&left.0));
+
+            for (score, chunk) in candidates.into_iter().take(cap) {
                 if seen.insert(chunk.id.clone()) {
                     evidence.push(Evidence {
                         id: chunk.id.clone(),
@@ -284,12 +321,17 @@ impl RagState {
                         skills: chunk.skills.clone(),
                         role_tags: chunk.role_tags.clone(),
                         content: chunk.content.clone(),
-                        score: 0.0,
+                        score,
                     });
+                }
+
+                if evidence.len() >= MAX_TOTAL_EVIDENCE {
+                    return evidence;
                 }
             }
         }
 
+        evidence.truncate(MAX_TOTAL_EVIDENCE);
         evidence
     }
 
@@ -325,7 +367,10 @@ pub async fn retrieve(
     State(state): State<RagState>,
     Json(payload): Json<RetrieveRequest>,
 ) -> impl IntoResponse {
-    let limit = payload.limit.unwrap_or(16).clamp(6, 32);
+    let limit = payload
+        .limit
+        .unwrap_or(MAX_SEMANTIC_EVIDENCE as i64)
+        .clamp(6, MAX_SEMANTIC_EVIDENCE as i64);
     let target = payload.target.trim().to_lowercase();
     let default_query = match target.as_str() {
         "ai-engineer" => "AI engineer RAG retrieval embeddings LangGraph agents MCP LLM inference machine learning Python pgvector",
@@ -344,7 +389,7 @@ pub async fn retrieve(
         Ok(evidence) => (
             StatusCode::OK,
             Json(RetrieveResponse {
-                evidence: state.enrich_grounding_context(evidence),
+                evidence: state.enrich_grounding_context(query, evidence),
                 backend: "pgvector+postgres-fts",
             }),
         ),
@@ -353,8 +398,10 @@ pub async fn retrieve(
             (
                 StatusCode::OK,
                 Json(RetrieveResponse {
-                    evidence: state
-                        .enrich_grounding_context(state.search_memory(query, limit as usize)),
+                    evidence: state.enrich_grounding_context(
+                        query,
+                        state.search_memory(query, limit as usize),
+                    ),
                     backend: "memory-fallback",
                 }),
             )

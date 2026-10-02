@@ -34,6 +34,12 @@ interface RetrieveResponse {
 
 interface AiResponse {
   message: string;
+  requestId: string;
+}
+
+interface AiErrorResponse {
+  error?: string;
+  requestId?: string;
 }
 
 interface GroundedText {
@@ -96,7 +102,7 @@ async function retrieveNode(state: CvStateType) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       target: state.target,
-      limit: state.target === 'general' ? 30 : 24
+      limit: 10
     })
   });
 
@@ -289,12 +295,19 @@ async function draftNode(state: CvStateType) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       message: draftPrompt(state.target, state.evidence),
-      reasoning_effort: 'medium'
+      reasoning_effort: 'medium',
+      metadata: {
+        target: state.target,
+        evidenceCount: state.evidence.length
+      }
     })
   });
 
   if (!response.ok) {
-    throw new Error(`AI CV writer failed with status ${response.status}`);
+    const errorPayload = (await response.json().catch(() => ({}))) as AiErrorResponse;
+    const errorCode = errorPayload.error ?? `http_${response.status}`;
+    const requestId = errorPayload.requestId ? ` [${errorPayload.requestId}]` : '';
+    throw new Error(`AI CV writer failed: ${errorCode}${requestId}`);
   }
 
   const payload = (await response.json()) as AiResponse;

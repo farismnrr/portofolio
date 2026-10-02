@@ -270,19 +270,12 @@ fn error_response(status: StatusCode, request_id: &str, error: &str) -> Response
         .into_response()
 }
 
-pub async fn chat(
-    State(state): State<AiState>,
-    Json(payload): Json<ChatRequest>,
-) -> Response {
+pub async fn chat(State(state): State<AiState>, Json(payload): Json<ChatRequest>) -> Response {
     let message = payload.message.trim();
     let request_id = request_id();
 
     if message.is_empty() {
-        return error_response(
-            StatusCode::BAD_REQUEST,
-            &request_id,
-            "ai_invalid_request",
-        );
+        return error_response(StatusCode::BAD_REQUEST, &request_id, "ai_invalid_request");
     }
 
     let reasoning_effort = normalized_reasoning_effort(payload.reasoning_effort.as_deref());

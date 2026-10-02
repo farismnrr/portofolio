@@ -2,12 +2,9 @@ services:
   portfolio:
     image: ${PORTFOLIO_IMAGE:-ghcr.io/farismnrr/portofolio/portfolio-app:latest}
     restart: unless-stopped
-    ports:
-      - "${PORTFOLIO_PORT:-3001}:3000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: host
     environment:
-      PORT: "3000"
-      NINE_ROUTER_BASE_URL: "http://host.docker.internal:20128/v1"
+      PORT: "${PORTFOLIO_PORT:-3001}"
+      NINE_ROUTER_BASE_URL: "http://127.0.0.1:20128/v1"
       NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-}"
       AI_MODEL: "gpt-6-luna"

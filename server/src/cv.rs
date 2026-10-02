@@ -347,7 +347,7 @@ fn render_html(document: &CvRenderRequest) -> String {
     font-family: Arial, "Liberation Sans", sans-serif;
     color: var(--text);
     font-size: var(--page-font-size);
-    line-height: 1.38;
+    line-height: 1.46;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }}
@@ -380,21 +380,21 @@ fn render_html(document: &CvRenderRequest) -> String {
   }}
 
   .headline {{
-    margin-top: 6px;
-    font-size: 10.8pt;
-    line-height: 1.22;
+    margin-top: 7px;
+    font-size: 11pt;
+    line-height: 1.28;
     font-weight: 700;
   }}
 
   .contact {{
-    margin-top: 5px;
+    margin-top: 7px;
     color: var(--muted);
     font-size: 8.6pt;
-    line-height: 1.3;
+    line-height: 1.38;
   }}
 
   .section {{
-    margin-top: 13px;
+    margin-top: 17px;
   }}
 
   .first-section {{
@@ -407,9 +407,9 @@ fn render_html(document: &CvRenderRequest) -> String {
     font-weight: 700;
     letter-spacing: 0.015em;
     text-transform: uppercase;
-    padding-bottom: 3px;
+    padding-bottom: 4px;
     border-bottom: 0.8px solid var(--rule);
-    margin-bottom: 7px;
+    margin-bottom: 10px;
   }}
 
   p {{
@@ -418,24 +418,27 @@ fn render_html(document: &CvRenderRequest) -> String {
 
   .profile {{
     font-size: 9.15pt;
-    line-height: 1.46;
+    line-height: 1.55;
+    text-align: justify;
+    text-justify: inter-word;
   }}
 
   .scope {{
-    margin: 3px 0;
+    margin: 5px 0;
     font-size: 8.95pt;
-    line-height: 1.4;
+    line-height: 1.46;
   }}
 
   .project,
   .experience {{
-    margin: 0 0 10px;
+    margin: 0 0 15px;
     break-inside: avoid;
     page-break-inside: avoid;
   }}
 
   .item-heading {{
-    line-height: 1.22;
+    line-height: 1.3;
+    margin-bottom: 4px;
   }}
 
   .item-title,
@@ -465,23 +468,26 @@ fn render_html(document: &CvRenderRequest) -> String {
 
   .project p,
   .experience p {{
-    margin-top: 3px;
+    margin-top: 5px;
     font-size: 8.95pt;
-    line-height: 1.43;
+    line-height: 1.52;
+    text-align: justify;
+    text-justify: inter-word;
   }}
 
   .cert-list {{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 18px;
-    row-gap: 7px;
+    column-gap: 22px;
+    row-gap: 10px;
   }}
 
   .certification {{
     break-inside: avoid;
     page-break-inside: avoid;
     font-size: 8.75pt;
-    line-height: 1.32;
+    line-height: 1.42;
+    padding-bottom: 2px;
   }}
 
   .cert-meta {{
@@ -495,8 +501,8 @@ fn render_html(document: &CvRenderRequest) -> String {
 
   .education {{
     font-size: 8.9pt;
-    line-height: 1.4;
-    margin-bottom: 4px;
+    line-height: 1.48;
+    margin-bottom: 7px;
   }}
 </style>
 </head>

@@ -6,6 +6,7 @@ role: Cloud Computing
 location: ""
 summary: Orchestrated scalable cloud architectures and backend systems on Google Cloud Platform.
 tech: [Google Cloud, Docker]
+projects: []
 ---
 
 - Orchestrated the development of scalable cloud architectures and backend systems, focusing on performance optimization using Google Cloud Platform.

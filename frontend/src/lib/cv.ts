@@ -1,11 +1,23 @@
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
-import { profile } from './structured-content';
+import {
+  certifications,
+  education,
+  experiences,
+  profile
+} from './structured-content';
+import { projects } from './project-content';
 
 export type CvTarget = 'general' | 'software-engineer' | 'ai-engineer' | 'devops';
 
 interface Evidence {
   id: string;
-  sourceType: 'project' | 'experience' | 'skill' | 'education' | 'profile';
+  sourceType:
+    | 'project'
+    | 'experience'
+    | 'skill'
+    | 'education'
+    | 'profile'
+    | 'certification';
   sourceId: string;
   section: string;
   company: string;
@@ -35,16 +47,18 @@ interface ScopeDraft extends GroundedText {
 
 interface ProjectDraft {
   sourceId: string;
-  title: string;
-  meta: string;
   narrative: string;
   evidenceIds: string[];
 }
 
 interface ExperienceDraft {
   sourceId: string;
-  title: string;
   narrative: string;
+  evidenceIds: string[];
+}
+
+interface CertificationDraft {
+  sourceId: string;
   evidenceIds: string[];
 }
 
@@ -52,9 +66,8 @@ interface CvDraft {
   profileSummary: GroundedText;
   technicalScope: ScopeDraft[];
   projects: ProjectDraft[];
-  primaryExperience: ExperienceDraft;
-  earlierExperience: GroundedText;
-  educationLine: GroundedText;
+  experiences: ExperienceDraft[];
+  certifications: CertificationDraft[];
 }
 
 const CvState = Annotation.Root({
@@ -83,7 +96,7 @@ async function retrieveNode(state: CvStateType) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       target: state.target,
-      limit: 24
+      limit: state.target === 'general' ? 30 : 24
     })
   });
 
@@ -99,63 +112,78 @@ async function retrieveNode(state: CvStateType) {
 }
 
 function draftPrompt(target: CvTarget, evidence: Evidence[]) {
-  const targetLabel =
-    target === 'general'
-      ? 'general Software Engineer'
-      : target
-          .split('-')
-          .map((part) => part[0]?.toUpperCase() + part.slice(1))
-          .join(' ');
+  const isGeneral = target === 'general';
+  const targetLabel = isGeneral
+    ? 'general software engineering CV'
+    : target
+        .split('-')
+        .map((part) => part[0]?.toUpperCase() + part.slice(1))
+        .join(' ');
 
   return [
-    'You are writing a one-page ATS-friendly CV for Faris Munir Mahdi.',
+    `You are writing content for a ${isGeneral ? 'maximum two-page' : 'one-page'} ATS-friendly CV for Faris Munir Mahdi.`,
     `Target: ${targetLabel}.`,
     '',
-    'The visual template is already fixed. Your job is content selection and concise grounded writing.',
-    'Use ONLY the EVIDENCE records below. Never invent employers, projects, dates, technologies, metrics, responsibilities, or outcomes.',
-    'Every generated section must cite the exact evidence IDs it used.',
+    'Use ONLY the EVIDENCE records below.',
+    'Never invent employers, dates, projects, credentials, technologies, metrics, responsibilities, or outcomes.',
+    'Every generated narrative must cite the exact evidence IDs it used.',
+    '',
+    ...(isGeneral
+      ? [
+          'GENERAL CV BALANCE RULES:',
+          '- This is NOT an AI Engineer CV. Present Faris first as a broad Software Engineer.',
+          '- Balance backend engineering, APIs and databases, product/full-stack work, cloud/platform/DevOps, IoT/system integration, and applied AI.',
+          '- AI/RAG/agents may appear as one capability among several, never as the dominant identity.',
+          '- Prefer breadth and evidence of end-to-end engineering ownership over specialization.',
+          '- Use the available two-page budget for readable spacing and useful detail. Do not compress everything into one dense page.'
+        ]
+      : []),
     '',
     'Return ONLY valid JSON matching this schema:',
     JSON.stringify({
-      profileSummary: { text: '45-65 word professional summary', evidenceIds: ['id'] },
+      profileSummary: {
+        text: isGeneral
+          ? '70-100 word balanced software engineering summary'
+          : '45-65 word role-focused professional summary',
+        evidenceIds: ['id']
+      },
       technicalScope: [
-        { label: 'Engineering', text: 'comma-separated scope', evidenceIds: ['id'] },
-        { label: 'AI & retrieval', text: 'comma-separated scope', evidenceIds: ['id'] },
-        { label: 'Inference, IoT & platform', text: 'comma-separated scope', evidenceIds: ['id'] }
+        { label: 'Software Engineering', text: 'broad engineering capabilities', evidenceIds: ['id'] },
+        { label: 'Backend & Data', text: 'backend, API, database capabilities', evidenceIds: ['id'] },
+        { label: 'Cloud & Platform', text: 'cloud, CI/CD, observability, infrastructure capabilities', evidenceIds: ['id'] },
+        { label: 'Applied Systems', text: 'IoT and AI only where supported', evidenceIds: ['id'] }
       ],
       projects: [
         {
-          sourceId: 'real-project-slug',
-          title: 'Project Name - concise descriptor',
-          meta: 'Company if evidenced | Year if evidenced',
-          narrative: '45-75 word narrative explaining ownership, system, and concrete engineering evidence',
+          sourceId: 'real project slug',
+          narrative: isGeneral
+            ? '60-95 word narrative explaining problem, ownership, architecture, and engineering evidence'
+            : '45-75 word role-focused narrative',
           evidenceIds: ['project evidence id']
         }
       ],
-      primaryExperience: {
-        sourceId: 'real experience source id',
-        title: 'Role | Company | Date range',
-        narrative: 'one compact sentence, ideally referring to selected work above',
-        evidenceIds: ['experience evidence id']
-      },
-      earlierExperience: {
-        text: 'one compact sentence covering only earlier roles supported by evidence',
-        evidenceIds: ['experience evidence id']
-      },
-      educationLine: {
-        text: 'Institution | Degree | Years | honors only if evidenced',
-        evidenceIds: ['education evidence id']
-      }
+      experiences: [
+        {
+          sourceId: 'real experience source id',
+          narrative: '1-2 concise sentences grounded only in that experience evidence',
+          evidenceIds: ['experience evidence id']
+        }
+      ],
+      certifications: [
+        {
+          sourceId: 'real certification source id',
+          evidenceIds: ['certification evidence id']
+        }
+      ]
     }),
     '',
     'Writing rules:',
-    '- Match a dense, polished engineering CV, not a database export.',
-    '- Prefer 4 selected projects. Use at most 4.',
-    '- Project narrative is the main proof of work. Do NOT output separate Stack lines or raw project URLs.',
-    '- Prefer end-to-end ownership, architecture, RAG/agents, backend, infrastructure, IoT, reliability, and product evidence when supported.',
-    '- Keep Technical Scope to exactly 3 compact lines.',
-    '- Primary Experience should be the most recent/current relevant role when evidence supports it.',
-    '- Earlier Experience must stay compact and must not invent project linkage.',
+    `- Select ${isGeneral ? '4-5' : '3-4'} projects.`,
+    `- Select ${isGeneral ? '4-5' : '2-3'} experience entries when evidence exists.`,
+    `- Select ${isGeneral ? '4' : '2-3'} certifications that best support the target.`,
+    '- Do not invent titles, companies, dates, certificate names, or URLs; those are attached deterministically later.',
+    '- Project narrative is the main proof of work. Do NOT output Stack lines or URLs.',
+    `- Technical Scope must contain exactly ${isGeneral ? '4' : '3'} lines.`,
     '- Avoid generic filler such as passionate, results-driven, hardworking, cutting-edge, innovative.',
     '- No markdown, no comments, no prose outside JSON.',
     '',
@@ -197,10 +225,12 @@ function groundedText(value: unknown): GroundedText {
   };
 }
 
-function normalizeDraft(value: unknown): CvDraft {
+function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
   const item = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
+  const expectedScopes = target === 'general' ? 4 : 3;
+
   const technicalScope = Array.isArray(item.technicalScope)
-    ? item.technicalScope.slice(0, 3).map((raw) => {
+    ? item.technicalScope.slice(0, expectedScopes).map((raw) => {
         const scope = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
           label: typeof scope.label === 'string' ? scope.label.trim() : '',
@@ -210,36 +240,46 @@ function normalizeDraft(value: unknown): CvDraft {
       })
     : [];
 
-  const projects = Array.isArray(item.projects)
-    ? item.projects.slice(0, 4).map((raw) => {
+  const projectsDraft = Array.isArray(item.projects)
+    ? item.projects.slice(0, target === 'general' ? 5 : 4).map((raw) => {
         const project = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
           sourceId: typeof project.sourceId === 'string' ? project.sourceId.trim() : '',
-          title: typeof project.title === 'string' ? project.title.trim() : '',
-          meta: typeof project.meta === 'string' ? project.meta.trim() : '',
           narrative: typeof project.narrative === 'string' ? project.narrative.trim() : '',
           evidenceIds: stringArray(project.evidenceIds)
         };
       })
     : [];
 
-  const primary =
-    item.primaryExperience && typeof item.primaryExperience === 'object'
-      ? (item.primaryExperience as Record<string, unknown>)
-      : {};
+  const experiencesDraft = Array.isArray(item.experiences)
+    ? item.experiences.slice(0, target === 'general' ? 5 : 3).map((raw) => {
+        const experience = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+        return {
+          sourceId: typeof experience.sourceId === 'string' ? experience.sourceId.trim() : '',
+          narrative: typeof experience.narrative === 'string' ? experience.narrative.trim() : '',
+          evidenceIds: stringArray(experience.evidenceIds)
+        };
+      })
+    : [];
+
+  const certificationDraft = Array.isArray(item.certifications)
+    ? item.certifications.slice(0, target === 'general' ? 4 : 3).map((raw) => {
+        const certification =
+          raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+        return {
+          sourceId:
+            typeof certification.sourceId === 'string' ? certification.sourceId.trim() : '',
+          evidenceIds: stringArray(certification.evidenceIds)
+        };
+      })
+    : [];
 
   return {
     profileSummary: groundedText(item.profileSummary),
     technicalScope,
-    projects,
-    primaryExperience: {
-      sourceId: typeof primary.sourceId === 'string' ? primary.sourceId.trim() : '',
-      title: typeof primary.title === 'string' ? primary.title.trim() : '',
-      narrative: typeof primary.narrative === 'string' ? primary.narrative.trim() : '',
-      evidenceIds: stringArray(primary.evidenceIds)
-    },
-    earlierExperience: groundedText(item.earlierExperience),
-    educationLine: groundedText(item.educationLine)
+    projects: projectsDraft,
+    experiences: experiencesDraft,
+    certifications: certificationDraft
   };
 }
 
@@ -259,7 +299,7 @@ async function draftNode(state: CvStateType) {
 
   const payload = (await response.json()) as AiResponse;
   return {
-    draft: normalizeDraft(parseAiJson(payload.message))
+    draft: normalizeDraft(parseAiJson(payload.message), state.target)
   };
 }
 
@@ -273,6 +313,7 @@ function validateEvidenceIds(
     errors.push(`${label} has no evidence IDs`);
     return;
   }
+
   for (const id of ids) {
     if (!evidenceMap.has(id)) errors.push(`${label} references unknown evidence: ${id}`);
   }
@@ -281,6 +322,7 @@ function validateEvidenceIds(
 function validateNode(state: CvStateType) {
   const errors: string[] = [];
   const evidenceMap = new Map(state.evidence.map((item) => [item.id, item]));
+  const expectedScopes = state.target === 'general' ? 4 : 3;
 
   validateEvidenceIds(
     state.draft.profileSummary.evidenceIds,
@@ -289,9 +331,10 @@ function validateNode(state: CvStateType) {
     errors
   );
 
-  if (state.draft.technicalScope.length !== 3) {
-    errors.push('technical scope must contain exactly 3 lines');
+  if (state.draft.technicalScope.length !== expectedScopes) {
+    errors.push(`technical scope must contain exactly ${expectedScopes} lines`);
   }
+
   for (const [index, scope] of state.draft.technicalScope.entries()) {
     if (!scope.label || !scope.text) errors.push(`technical scope ${index + 1} is incomplete`);
     validateEvidenceIds(scope.evidenceIds, evidenceMap, `technical scope ${index + 1}`, errors);
@@ -299,11 +342,12 @@ function validateNode(state: CvStateType) {
 
   if (!state.draft.projects.length) errors.push('no grounded projects selected');
   for (const project of state.draft.projects) {
-    if (!project.sourceId || !project.title || !project.narrative) {
-      errors.push('a selected project is incomplete');
-      continue;
+    if (!projects.some((item) => item.slug === project.sourceId)) {
+      errors.push(`unknown project source: ${project.sourceId}`);
     }
+    if (!project.narrative) errors.push(`project ${project.sourceId} has no narrative`);
     validateEvidenceIds(project.evidenceIds, evidenceMap, `project ${project.sourceId}`, errors);
+
     for (const id of project.evidenceIds) {
       const source = evidenceMap.get(id);
       if (source && (source.sourceType !== 'project' || source.sourceId !== project.sourceId)) {
@@ -312,39 +356,49 @@ function validateNode(state: CvStateType) {
     }
   }
 
-  validateEvidenceIds(
-    state.draft.primaryExperience.evidenceIds,
-    evidenceMap,
-    'primary experience',
-    errors
-  );
-  for (const id of state.draft.primaryExperience.evidenceIds) {
-    const source = evidenceMap.get(id);
-    if (
-      source &&
-      (source.sourceType !== 'experience' ||
-        source.sourceId !== state.draft.primaryExperience.sourceId)
-    ) {
-      errors.push(`primary experience cites unrelated evidence ${id}`);
+  if (!state.draft.experiences.length) errors.push('no grounded experiences selected');
+  for (const experience of state.draft.experiences) {
+    if (!experiences.some((item) => String(item.order) === experience.sourceId)) {
+      errors.push(`unknown experience source: ${experience.sourceId}`);
+    }
+    validateEvidenceIds(
+      experience.evidenceIds,
+      evidenceMap,
+      `experience ${experience.sourceId}`,
+      errors
+    );
+
+    for (const id of experience.evidenceIds) {
+      const source = evidenceMap.get(id);
+      if (
+        source &&
+        (source.sourceType !== 'experience' || source.sourceId !== experience.sourceId)
+      ) {
+        errors.push(`experience ${experience.sourceId} cites unrelated evidence ${id}`);
+      }
     }
   }
 
-  validateEvidenceIds(
-    state.draft.earlierExperience.evidenceIds,
-    evidenceMap,
-    'earlier experience',
-    errors
-  );
-  validateEvidenceIds(
-    state.draft.educationLine.evidenceIds,
-    evidenceMap,
-    'education',
-    errors
-  );
-  for (const id of state.draft.educationLine.evidenceIds) {
-    const source = evidenceMap.get(id);
-    if (source && source.sourceType !== 'education') {
-      errors.push(`education cites unrelated evidence ${id}`);
+  if (!state.draft.certifications.length) errors.push('no grounded certifications selected');
+  for (const certification of state.draft.certifications) {
+    if (!certifications.some((item) => String(item.order) === certification.sourceId)) {
+      errors.push(`unknown certification source: ${certification.sourceId}`);
+    }
+    validateEvidenceIds(
+      certification.evidenceIds,
+      evidenceMap,
+      `certification ${certification.sourceId}`,
+      errors
+    );
+
+    for (const id of certification.evidenceIds) {
+      const source = evidenceMap.get(id);
+      if (
+        source &&
+        (source.sourceType !== 'certification' || source.sourceId !== certification.sourceId)
+      ) {
+        errors.push(`certification ${certification.sourceId} cites unrelated evidence ${id}`);
+      }
     }
   }
 
@@ -361,14 +415,83 @@ const workflow = new StateGraph(CvState)
   .addEdge('validate', END)
   .compile();
 
+function absolutePortfolioUrl(value: string) {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://farismnrr.com${value.startsWith('/') ? value : `/${value}`}`;
+}
+
+function projectWebUrl(slug: string) {
+  const project = projects.find((item) => item.slug === slug);
+  if (!project) return '';
+  return (
+    project.productUrl ||
+    project.repoUrl ||
+    `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`
+  );
+}
+
+function projectMeta(slug: string) {
+  const project = projects.find((item) => item.slug === slug);
+  if (!project) return '';
+  const company = experiences.find((item) => item.projects.includes(slug))?.company;
+  return [company, project.year].filter(Boolean).join(' | ');
+}
+
 async function renderPdf(draft: CvDraft, target: CvTarget) {
   const headline =
     target === 'general'
-      ? 'Software Engineer | AI Systems, Product Engineering & IoT'
+      ? 'Software Engineer | Backend, Product, Cloud & Connected Systems'
       : target
           .split('-')
           .map((part) => part[0]?.toUpperCase() + part.slice(1))
           .join(' ');
+
+  const selectedProjects = draft.projects
+    .map((item) => {
+      const source = projects.find((project) => project.slug === item.sourceId);
+      if (!source) return null;
+
+      return {
+        title: source.title,
+        meta: projectMeta(source.slug),
+        narrative: item.narrative,
+        url: projectWebUrl(source.slug)
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  const selectedExperiences = draft.experiences
+    .map((item) => {
+      const source = experiences.find((experience) => String(experience.order) === item.sourceId);
+      if (!source) return null;
+
+      return {
+        title: `${source.role} | ${source.company}`,
+        meta: [source.year, source.location].filter(Boolean).join(' | '),
+        narrative: item.narrative
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  const selectedCertifications = draft.certifications
+    .map((item) => {
+      const source = certifications.find(
+        (certification) => String(certification.order) === item.sourceId
+      );
+      if (!source) return null;
+
+      return {
+        title: source.title,
+        meta: [source.issuer, source.year].filter(Boolean).join(' | '),
+        url: absolutePortfolioUrl(source.url)
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  const educationLines = education.map((item) =>
+    [item.institution, item.program, item.year].filter(Boolean).join(' | ')
+  );
 
   const response = await fetch('/api/cv/render', {
     method: 'POST',
@@ -379,17 +502,11 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
       contact: contactLine(),
       profileSummary: draft.profileSummary.text,
       technicalScope: draft.technicalScope.map(({ label, text }) => ({ label, text })),
-      projects: draft.projects.map(({ title, meta, narrative }) => ({
-        title,
-        meta,
-        narrative
-      })),
-      primaryExperience: {
-        title: draft.primaryExperience.title,
-        narrative: draft.primaryExperience.narrative
-      },
-      earlierExperience: draft.earlierExperience.text,
-      educationLine: draft.educationLine.text
+      projects: selectedProjects,
+      experiences: selectedExperiences,
+      certifications: selectedCertifications,
+      educationLines,
+      maxPages: target === 'general' ? 2 : 1
     })
   });
 

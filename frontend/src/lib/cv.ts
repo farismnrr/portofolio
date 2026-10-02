@@ -441,7 +441,7 @@ function projectMeta(slug: string) {
 async function renderPdf(draft: CvDraft, target: CvTarget) {
   const headline =
     target === 'general'
-      ? 'Software Engineer | Backend, Product, Cloud & Connected Systems'
+      ? 'Software Engineer'
       : target
           .split('-')
           .map((part) => part[0]?.toUpperCase() + part.slice(1))

@@ -15,7 +15,11 @@ pub struct AiState {
 impl AiState {
     pub fn from_env() -> Self {
         Self {
-            client: Client::new(),
+            client: Client::builder()
+                .connect_timeout(std::time::Duration::from_secs(5))
+                .timeout(std::time::Duration::from_secs(60))
+                .build()
+                .expect("valid AI HTTP client"),
             base_url: env::var("NINE_ROUTER_BASE_URL")
                 .unwrap_or_else(|_| "http://127.0.0.1:20128/v1".to_string())
                 .trim_end_matches('/')

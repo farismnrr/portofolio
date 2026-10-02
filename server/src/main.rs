@@ -68,7 +68,7 @@ async fn main() {
         )
         .init();
 
-    let ai_state = ai::AiState::from_env();
+    let ai_state = ai::AiState::from_env().expect("valid 9router configuration");
     let corpus = Assets::get("cv-corpus.json").expect("frontend build must include cv-corpus.json");
     let rag_state = rag::RagState::from_env(ai_state.clone(), corpus.data.as_ref())
         .expect("valid CV retrieval configuration");

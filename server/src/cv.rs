@@ -1,7 +1,4 @@
-use std::{
-    path::Path,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use axum::{
     body::Body,
@@ -418,7 +415,8 @@ fn ensure_text_present(normalized_pdf: &str, value: &str, label: &str) -> Result
 
 fn normalize_text(value: &str) -> String {
     value
-        .replace(['—', '–'], "-")
+        .replace('—', "-")
+        .replace('–', "-")
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")

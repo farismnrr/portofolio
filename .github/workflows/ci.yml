@@ -157,27 +157,35 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     if: github.event_name == 'pull_request'
     env:
+      NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
+      NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
       NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
     steps:
-      - name: Check local 9router with GPT-6 Luna
+      - name: Check configured 9router model
         shell: bash
         run: |
           set -euo pipefail
 
-          if [ -z "${NINE_ROUTER_API_KEY:-}" ]; then
-            echo "NINE_ROUTER_API_KEY is not available on the self-hosted runner."
-            exit 1
-          fi
+          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_API_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "${name} is not available on the self-hosted runner."
+              exit 1
+            fi
+          done
 
           response="$(curl --fail --silent --show-error \
-            http://127.0.0.1:20128/v1/chat/completions \
+            "${NINE_ROUTER_URL%/}/chat/completions" \
             -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
             -H 'Content-Type: application/json' \
-            -d '{
-              "model": "gpt-6-luna",
-              "reasoning_effort": "low",
-              "messages": [{"role": "user", "content": "hi"}]
-            }')"
+            --data "$(python3 - <<'PY'
+import json, os
+print(json.dumps({
+    "model": os.environ["NINE_ROUTER_MODEL"],
+    "reasoning_effort": "low",
+    "messages": [{"role": "user", "content": "hi"}],
+}))
+PY
+)")"
 
           answer="$(printf '%s' "$response" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["choices"][0]["message"]["content"].strip())')"
 
@@ -186,7 +194,7 @@ jobs:
             exit 1
           fi
 
-          echo "9router GPT-6 Luna smoke test returned a non-empty answer."
+          echo "Configured 9router model smoke test returned a non-empty answer."
 
   deploy:
     runs-on: [self-hosted, Linux, X64]
@@ -219,6 +227,8 @@ jobs:
         env:
           PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           PORTFOLIO_PORT: "3001"
+          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
+          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
           NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
         run: |
           docker compose -p portofolio pull
@@ -248,17 +258,23 @@ jobs:
       - name: Check existing host 9router
         shell: bash
         env:
+          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
+          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
           NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
         run: |
           set -euo pipefail
+          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_API_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "${name} is not available on the self-hosted runner."
+              exit 1
+            fi
+          done
+
           if ! curl --fail --silent --show-error --connect-timeout 5 --max-time 15 \
-            http://127.0.0.1:20128/v1/models \
+            "${NINE_ROUTER_URL%/}/models" \
             -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
             >/tmp/9router-models.json; then
-            echo "Existing 9router is not reachable on host loopback."
-            ss -ltnp | grep 20128 || true
-            ps aux | grep -i '[9]router' || true
-            docker ps -a --format '{{.Names}} {{.Status}} {{.Ports}}' | grep -i 9router || true
+            echo "Configured 9router is not reachable."
             exit 1
           fi
           python3 - <<'PY'

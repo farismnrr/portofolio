@@ -403,6 +403,16 @@ function validateNode(state: CvStateType) {
     }
   }
 
+  const selectedProjectIds = new Set(state.draft.projects.map((project) => project.sourceId));
+  for (const experience of state.draft.experiences) {
+    const source = experiences.find((item) => String(item.order) === experience.sourceId);
+    if (source?.projects.length && !source.projects.some((slug) => selectedProjectIds.has(slug))) {
+      errors.push(
+        `experience ${experience.sourceId} must be explained by at least one linked project`
+      );
+    }
+  }
+
   if (!state.draft.certifications.length) errors.push('no grounded certifications selected');
   for (const certification of state.draft.certifications) {
     if (!certifications.some((item) => String(item.order) === certification.sourceId)) {
@@ -505,12 +515,12 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   const linkedSelectedProjectSlugs = new Set(
-    selectedExperiences.flatMap((experience) =>
-      experience.projects.map((project) => {
-        const source = projects.find((candidate) => candidate.title === project.title);
-        return source?.slug ?? '';
-      })
-    )
+    draft.experiences.flatMap((item) => {
+      const source = experiences.find(
+        (experience) => String(experience.order) === item.sourceId
+      );
+      return source?.projects ?? [];
+    })
   );
 
   const selectedProjects = draft.projects

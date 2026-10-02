@@ -14,16 +14,19 @@
 
   let generatingCv = false;
   let cvError = '';
+  let cvGenerated = false;
 
   async function handleSaveCv() {
     if (generatingCv) return;
 
     generatingCv = true;
     cvError = '';
+    cvGenerated = false;
 
     try {
       const { generateGeneralCv } = await import('../lib/cv');
       await generateGeneralCv();
+      cvGenerated = true;
     } catch (error) {
       cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
     } finally {
@@ -55,8 +58,37 @@
             on:click={handleSaveCv}
           >
             <AppIcon name="file-text" size={18}/>
-            {generatingCv ? 'Generating CV…' : 'Save CV'}
+            {generatingCv ? 'Generating CV with AI…' : 'Generate CV with AI'}
           </button>
+
+          {#if generatingCv}
+            <div
+              class="rounded-2xl border border-black/10 bg-black/[0.025] p-4"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="flex items-start gap-3">
+                <span
+                  class="mt-0.5 block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-black/15 border-t-black/70"
+                  aria-hidden="true"
+                ></span>
+                <div>
+                  <p class="text-[13px] font-semibold text-black/78">Generating CV with AI</p>
+                  <p class="mt-1 text-[12px] leading-5 text-black/50">
+                    Selecting verified portfolio evidence, writing the CV, and preparing the PDF.
+                  </p>
+                </div>
+              </div>
+            </div>
+          {:else if cvGenerated}
+            <div class="rounded-2xl border border-black/10 bg-black/[0.025] p-4" role="status">
+              <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
+              <p class="mt-1 text-[12px] leading-5 text-black/50">
+                Your PDF was generated from verified portfolio content and downloaded.
+              </p>
+            </div>
+          {/if}
+
           {#if cvError}<p class="text-[12px] leading-5 text-red-700">{cvError}</p>{/if}
         </div>
       </aside>

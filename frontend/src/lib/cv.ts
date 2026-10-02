@@ -162,7 +162,7 @@ async function callAiSelector(facts: CvFacts, target: CvTarget) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       message: selectionPrompt(facts, target),
-      reasoning_effort: target === 'general' ? 'medium' : 'low'
+      reasoning_effort: 'low'
     })
   });
 

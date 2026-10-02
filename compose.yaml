@@ -25,9 +25,9 @@ services:
         condition: service_healthy
     environment:
       PORT: "${PORTFOLIO_PORT:-3001}"
-      NINE_ROUTER_BASE_URL: "http://127.0.0.1:20128/v1"
+      NINE_ROUTER_URL: "${NINE_ROUTER_URL:?NINE_ROUTER_URL is required}"
+      NINE_ROUTER_MODEL: "${NINE_ROUTER_MODEL:?NINE_ROUTER_MODEL is required}"
       NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-}"
-      AI_MODEL: "gpt-6-luna"
       AI_EMBEDDING_MODEL: "${AI_EMBEDDING_MODEL:-}"
       DATABASE_URL: "postgresql://portfolio@127.0.0.1:5433/portfolio"
 

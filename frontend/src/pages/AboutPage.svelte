@@ -7,10 +7,29 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
+  import { generateGeneralCv } from '../lib/cv';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
   const selectedExperience = experiences;
+
+  let generatingCv = false;
+  let cvError = '';
+
+  async function handleSaveCv() {
+    if (generatingCv) return;
+
+    generatingCv = true;
+    cvError = '';
+
+    try {
+      await generateGeneralCv();
+    } catch (error) {
+      cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
+    } finally {
+      generatingCv = false;
+    }
+  }
 </script>
 
 <main>
@@ -29,7 +48,16 @@
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.github}><AppIcon name="github" size={18}/>GitHub</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={18}/>LinkedIn</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={18}/>Email</a>
-          {#if profile.resume}<a class="flex items-center gap-3 hover:opacity-60" href={profile.resume}><AppIcon name="file-text" size={18}/>Download Resume</a>{/if}
+          <button
+            class="flex items-center gap-3 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
+            type="button"
+            disabled={generatingCv}
+            on:click={handleSaveCv}
+          >
+            <AppIcon name="file-text" size={18}/>
+            {generatingCv ? 'Generating CV…' : 'Save CV'}
+          </button>
+          {#if cvError}<p class="text-[12px] leading-5 text-red-700">{cvError}</p>{/if}
         </div>
       </aside>
 

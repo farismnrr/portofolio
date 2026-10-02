@@ -347,9 +347,8 @@ pub async fn retrieve(
             (
                 StatusCode::OK,
                 Json(RetrieveResponse {
-                    evidence: state.enrich_grounding_context(
-                        state.search_memory(query, limit as usize),
-                    ),
+                    evidence: state
+                        .enrich_grounding_context(state.search_memory(query, limit as usize)),
                     backend: "memory-fallback",
                 }),
             )

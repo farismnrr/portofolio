@@ -7,7 +7,6 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
-  import { generateGeneralCv } from '../lib/cv';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
@@ -23,6 +22,7 @@
     cvError = '';
 
     try {
+      const { generateGeneralCv } = await import('../lib/cv');
       await generateGeneralCv();
     } catch (error) {
       cvError = error instanceof Error ? error.message : 'Unable to generate CV.';

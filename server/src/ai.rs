@@ -14,25 +14,25 @@ pub struct AiState {
 }
 
 impl AiState {
-    pub fn from_env() -> Self {
-        Self {
+    pub fn from_env() -> Result<Self, String> {
+        let base_url = required_env("NINE_ROUTER_URL")?;
+        let model = required_env("NINE_ROUTER_MODEL")?;
+
+        Ok(Self {
             client: Client::builder()
                 .connect_timeout(std::time::Duration::from_secs(5))
                 .timeout(std::time::Duration::from_secs(60))
                 .build()
                 .expect("valid AI HTTP client"),
-            base_url: env::var("NINE_ROUTER_BASE_URL")
-                .unwrap_or_else(|_| "http://127.0.0.1:20128/v1".to_string())
-                .trim_end_matches('/')
-                .to_string(),
+            base_url: base_url.trim_end_matches('/').to_string(),
             api_key: env::var("NINE_ROUTER_API_KEY")
                 .ok()
                 .filter(|value| !value.trim().is_empty()),
-            model: env::var("AI_MODEL").unwrap_or_else(|_| "gpt-6-luna".to_string()),
+            model,
             embedding_model: env::var("AI_EMBEDDING_MODEL")
                 .ok()
                 .filter(|value| !value.trim().is_empty()),
-        }
+        })
     }
 
     fn auth(&self, builder: RequestBuilder) -> RequestBuilder {
@@ -164,6 +164,17 @@ struct EmbeddingResponse {
 struct EmbeddingItem {
     index: usize,
     embedding: Vec<f32>,
+}
+
+fn required_env(name: &str) -> Result<String, String> {
+    let value = env::var(name).map_err(|_| format!("{name} is required"))?;
+    let value = value.trim();
+
+    if value.is_empty() {
+        return Err(format!("{name} cannot be empty"));
+    }
+
+    Ok(value.to_string())
 }
 
 fn normalized_reasoning_effort(value: Option<&str>) -> &'static str {

@@ -326,7 +326,10 @@ fn render_html(document: &CvRenderRequest) -> String {
         contact = escape(&document.contact),
         summary_section = section(
             "Professional Summary",
-            &format!(r#"<p class="summary">{}</p>"#, escape(&document.profile_summary)),
+            &format!(
+                r#"<p class="summary">{}</p>"#,
+                escape(&document.profile_summary)
+            ),
             false,
         ),
         skills_section = section("Skills", &scopes, false),

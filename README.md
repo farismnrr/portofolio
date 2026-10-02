@@ -24,3 +24,17 @@ Container image:
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
 The application is exposed on port `3001` by the repository Compose configuration.
+
+
+## AI runtime configuration
+
+AI runtime configuration is supplied by GitHub Actions Repository Variables and deployment secrets. The server intentionally has no URL, model, or timeout fallback.
+
+Required repository variables:
+
+- `NINE_ROUTER_URL`
+- `NINE_ROUTER_MODEL`
+- `NINE_ROUTER_CONNECT_TIMEOUT_SECONDS`
+- `NINE_ROUTER_TIMEOUT_SECONDS`
+
+The 9router API key remains a repository secret.

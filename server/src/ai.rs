@@ -237,9 +237,9 @@ fn request_id() -> String {
 }
 
 fn retry_delay(request_id: &str) -> Duration {
-    let jitter_seed = request_id
-        .bytes()
-        .fold(0_u64, |value, byte| value.wrapping_mul(31).wrapping_add(u64::from(byte)));
+    let jitter_seed = request_id.bytes().fold(0_u64, |value, byte| {
+        value.wrapping_mul(31).wrapping_add(u64::from(byte))
+    });
     Duration::from_millis(750 + (jitter_seed % 751))
 }
 

@@ -151,6 +151,41 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
+
+  ai-smoke:
+    name: ai smoke
+    runs-on: [self-hosted, Linux, X64]
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check local 9router with GPT-6 Luna
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${NINE_ROUTER_API_KEY:-}" ]; then
+            echo "NINE_ROUTER_API_KEY is not available on the self-hosted runner."
+            exit 1
+          fi
+
+          response="$(curl --fail --silent --show-error \
+            http://127.0.0.1:20128/v1/chat/completions \
+            -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "model": "gpt-6-luna",
+              "reasoning_effort": "low",
+              "messages": [{"role": "user", "content": "hi"}]
+            }')"
+
+          answer="$(printf '%s' "$response" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["choices"][0]["message"]["content"].strip())')"
+
+          if [ -z "$answer" ]; then
+            echo "9router returned an empty answer."
+            exit 1
+          fi
+
+          echo "9router GPT-6 Luna smoke test returned a non-empty answer."
+
   deploy:
     runs-on: [self-hosted, Linux, X64]
     needs: build

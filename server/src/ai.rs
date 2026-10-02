@@ -120,6 +120,14 @@ impl AiState {
 pub struct ChatRequest {
     message: String,
     reasoning_effort: Option<String>,
+    metadata: Option<ChatMetadata>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ChatMetadata {
+    target: Option<String>,
+    evidence_count: Option<usize>,
 }
 
 #[derive(Serialize)]
@@ -279,6 +287,16 @@ pub async fn chat(
 
     let reasoning_effort = normalized_reasoning_effort(payload.reasoning_effort.as_deref());
     let prompt_bytes = message.len();
+    let target = payload
+        .metadata
+        .as_ref()
+        .and_then(|metadata| metadata.target.as_deref())
+        .unwrap_or("unspecified");
+    let evidence_count = payload
+        .metadata
+        .as_ref()
+        .and_then(|metadata| metadata.evidence_count)
+        .unwrap_or_default();
 
     for attempt in 1..=MAX_CHAT_ATTEMPTS {
         let started = Instant::now();
@@ -296,6 +314,8 @@ pub async fn chat(
             model = %state.model,
             reasoning_effort,
             prompt_bytes,
+            target,
+            evidence_count,
             attempt,
             max_attempts = MAX_CHAT_ATTEMPTS,
             "sending AI chat request"

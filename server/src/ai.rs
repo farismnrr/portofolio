@@ -48,7 +48,10 @@ impl AiState {
         }
 
         let response = self
-            .auth(self.client.get(format!("{}/models/embedding", self.base_url)))
+            .auth(
+                self.client
+                    .get(format!("{}/models/embedding", self.base_url)),
+            )
             .send()
             .await
             .ok()?;
@@ -67,7 +70,10 @@ impl AiState {
         }
 
         let model = self.discover_embedding_model().await?;
-        let request = EmbeddingRequest { model: &model, input };
+        let request = EmbeddingRequest {
+            model: &model,
+            input,
+        };
         let response = self
             .auth(
                 self.client

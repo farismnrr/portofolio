@@ -245,6 +245,28 @@ jobs:
 
       - uses: actions/checkout@v7
 
+      - name: Check existing host 9router
+        shell: bash
+        env:
+          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if ! curl --fail --silent --show-error --connect-timeout 5 --max-time 15 \
+            http://127.0.0.1:20128/v1/models \
+            -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
+            >/tmp/9router-models.json; then
+            echo "Existing 9router is not reachable on host loopback."
+            ss -ltnp | grep 20128 || true
+            ps aux | grep -i '[9]router' || true
+            docker ps -a --format '{{.Names}} {{.Status}} {{.Ports}}' | grep -i 9router || true
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/9router-models.json'))
+          print('9router reachable; models payload received.')
+          PY
+
       - name: Run general CV production E2E
         shell: bash
         run: |

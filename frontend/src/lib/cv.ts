@@ -140,7 +140,9 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
           '- Balance backend engineering, APIs and databases, product/full-stack work, cloud/platform/DevOps, IoT/system integration, and applied AI.',
           '- AI/RAG/agents may appear as one capability among several, never as the dominant identity.',
           '- Prefer breadth and evidence of end-to-end engineering ownership over specialization.',
-          '- Use the available two-page budget for readable spacing and useful detail. Do not compress everything into one dense page.'
+          '- Target two visually full pages with readable spacing.',
+          '- Select only the strongest, most representative evidence. Do not include everything just because it exists.',
+          '- Order projects, experience, and certifications by importance because lower-priority items may be trimmed to satisfy the final two-page layout.'
         ]
       : []),
     '',
@@ -187,9 +189,9 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
     '- Work Experience should stay concise and factual; linked projects are only referenced by name when a real mapping exists.',
     '- Do not force a project relationship for experiences that have no linked projects.',
     '- Experience summaries and bullets are attached deterministically from source Markdown, not written by the model.',
-    `- Select ${isGeneral ? '4-5' : '3-4'} projects.`,
-    `- Select ${isGeneral ? '4-5' : '2-3'} experience entries when evidence exists.`,
-    `- Select ${isGeneral ? '4' : '2-3'} certifications that best support the target.`,
+    `- Select ${isGeneral ? '5' : '3-4'} projects at most, ordered strongest first.`,
+    `- Select ${isGeneral ? '4' : '2-3'} experience entries at most, ordered most relevant/recent first.`,
+    `- Select ${isGeneral ? '4' : '2-3'} certifications at most, ordered strongest first.`,
     '- Do not invent titles, companies, dates, certificate names, or URLs; those are attached deterministically later.',
     '- Project narrative is the main proof of work. Do NOT output Stack lines or URLs.',
     `- Technical Scope must contain exactly ${isGeneral ? '4' : '3'} lines.`,
@@ -528,9 +530,9 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  const educationLines = education.map((item) =>
-    [item.institution, item.program, item.year].filter(Boolean).join(' | ')
-  );
+  const educationLines = education
+    .slice(0, 1)
+    .map((item) => [item.institution, item.program, item.year].filter(Boolean).join(' | '));
 
   const response = await fetch('/api/cv/render', {
     method: 'POST',

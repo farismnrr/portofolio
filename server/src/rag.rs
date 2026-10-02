@@ -173,7 +173,7 @@ impl RagState {
             }
         };
 
-        for ((chunk, hash), vector) in changed.into_iter().zip(vectors.into_iter()) {
+        for ((chunk, hash), vector) in changed.into_iter().zip(vectors) {
             let vector = vector_literal(&vector);
             sqlx::query(
                 r#"

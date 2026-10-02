@@ -317,6 +317,7 @@ fn render_html(document: &CvRenderRequest) -> String {
             {summary_section}
             {skills_section}
             {experience_section}
+            {one_page_tail}
           </div>
         </main>
         "#,
@@ -330,6 +331,16 @@ fn render_html(document: &CvRenderRequest) -> String {
         ),
         skills_section = section("Skills", &scopes, false),
         experience_section = section("Work Experience", &first_experiences, false),
+        one_page_tail = if document.max_pages <= 1 {
+            format!(
+                "{}{}{}",
+                section("Projects", &projects, false),
+                section("Certifications", &certifications, false),
+                section("Education", &education, false),
+            )
+        } else {
+            String::new()
+        },
     );
 
     let page_two = if document.max_pages > 1 {
@@ -356,17 +367,6 @@ fn render_html(document: &CvRenderRequest) -> String {
                 &education,
                 second_experiences.is_empty() && projects.is_empty() && certifications.is_empty(),
             ),
-        )
-    } else {
-        String::new()
-    };
-
-    let one_page_tail = if document.max_pages <= 1 {
-        format!(
-            "{}{}{}",
-            section("Projects", &projects, false),
-            section("Certifications", &certifications, false),
-            section("Education", &education, false),
         )
     } else {
         String::new()
@@ -550,7 +550,6 @@ fn render_html(document: &CvRenderRequest) -> String {
 </head>
 <body>
   {page_one}
-  {one_page_tail}
   {page_two}
 
 <script>
@@ -568,7 +567,6 @@ fn render_html(document: &CvRenderRequest) -> String {
 </html>"#,
         name = escape(&document.name),
         page_one = page_one,
-        one_page_tail = one_page_tail,
         page_two = page_two,
     )
 }

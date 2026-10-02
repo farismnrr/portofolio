@@ -368,11 +368,7 @@ fn add_hashed_feature(output: &mut [f32], value: &str, weight: f32) {
 }
 
 fn normalize(mut values: Vec<f32>) -> Vec<f32> {
-    let norm = values
-        .iter()
-        .map(|value| value * value)
-        .sum::<f32>()
-        .sqrt();
+    let norm = values.iter().map(|value| value * value).sum::<f32>().sqrt();
     if norm > 0.0 {
         for value in &mut values {
             *value /= norm;

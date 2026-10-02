@@ -173,19 +173,13 @@ jobs:
             fi
           done
 
+          payload="$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["NINE_ROUTER_MODEL"], "reasoning_effort": "low", "messages": [{"role": "user", "content": "hi"}]}))')"
+
           response="$(curl --fail --silent --show-error \
             "${NINE_ROUTER_URL%/}/chat/completions" \
             -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
             -H 'Content-Type: application/json' \
-            --data "$(python3 - <<'PY'
-import json, os
-print(json.dumps({
-    "model": os.environ["NINE_ROUTER_MODEL"],
-    "reasoning_effort": "low",
-    "messages": [{"role": "user", "content": "hi"}],
-}))
-PY
-)")"
+            --data "$payload")"
 
           answer="$(printf '%s' "$response" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["choices"][0]["message"]["content"].strip())')"
 

@@ -238,5 +238,5 @@ jobs:
             -v "$PWD/frontend:/work" \
             -w /work \
             -e E2E_BASE_URL=http://127.0.0.1:3001 \
-            mcr.microsoft.com/playwright:v1.55.0-noble \
+            mcr.microsoft.com/playwright:v1.63.0-noble \
             bash -lc 'npm install --package-lock-only && npm ci && npm run test:e2e'

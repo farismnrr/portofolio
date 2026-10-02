@@ -376,5 +376,5 @@ fn escape(value: &str) -> String {
         .replace('<', "&lt;")
         .replace('>', "&gt;")
         .replace('"', "&quot;")
-        .replace(''', "&#39;")
+        .replace('\'', "&#39;")
 }

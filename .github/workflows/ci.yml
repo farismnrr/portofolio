@@ -259,3 +259,8 @@ jobs:
             -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
             mcr.microsoft.com/playwright:v1.63.0-noble \
             bash -lc 'npm install --package-lock-only && npm ci && npm run test:e2e'
+
+      - name: Show portfolio logs on E2E failure
+        if: failure()
+        shell: bash
+        run: docker compose -p portofolio logs --no-color --tail=250 portfolio

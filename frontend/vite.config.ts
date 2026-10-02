@@ -7,6 +7,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1600
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (
+          warning.code === 'INVALID_ANNOTATION' &&
+          warning.id?.includes('/node_modules/zod/')
+        ) {
+          return;
+        }
+
+        warn(warning);
+      }
+    }
   }
 });

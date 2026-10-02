@@ -96,6 +96,17 @@ async function readDir(name) {
 
 const chunks = [];
 
+const experienceSources = await readDir('experience');
+const projectCompanies = new Map();
+for (const { source } of experienceSources) {
+  const { meta } = parseFrontmatter(source);
+  for (const slug of inlineList(meta.projects)) {
+    const companies = projectCompanies.get(slug) ?? new Set();
+    if (meta.company) companies.add(meta.company);
+    projectCompanies.set(slug, companies);
+  }
+}
+
 for (const { file, source } of await readDir('projects')) {
   const { meta, body } = parseFrontmatter(source);
   const slug = meta.slug || path.basename(file, '.md');
@@ -107,6 +118,8 @@ for (const { file, source } of await readDir('projects')) {
     meta.description,
     meta.role,
     meta.category,
+    meta.year,
+    Array.from(projectCompanies.get(slug) ?? []).join(', '),
     tech.join(', ')
   ]
     .filter(Boolean)
@@ -117,7 +130,7 @@ for (const { file, source } of await readDir('projects')) {
     sourceType: 'project',
     sourceId: slug,
     section: 'summary',
-    company: '',
+    company: Array.from(projectCompanies.get(slug) ?? []).join(', '),
     skills: tech,
     roleTags: [meta.role, meta.category].filter(Boolean),
     content: cleanMarkdown(base)
@@ -129,7 +142,7 @@ for (const { file, source } of await readDir('projects')) {
       sourceType: 'project',
       sourceId: slug,
       section: section.title,
-      company: '',
+      company: Array.from(projectCompanies.get(slug) ?? []).join(', '),
       skills: tech,
       roleTags: [meta.role, meta.category].filter(Boolean),
       content: (meta.title || meta.cardTitle || slug) + '. ' + section.content
@@ -137,7 +150,7 @@ for (const { file, source } of await readDir('projects')) {
   }
 }
 
-for (const { file, source } of await readDir('experience')) {
+for (const { file, source } of experienceSources) {
   const { meta, body } = parseFrontmatter(source);
   const id = String(meta.order || path.basename(file, '.md'));
   const tech = inlineList(meta.tech);

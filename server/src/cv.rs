@@ -72,14 +72,21 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
             .into_response();
     }
 
+    let profile_path = format!("/tmp/chromium-profile-{suffix}");
+
     let output = Command::new("chromium")
+        .env("HOME", "/tmp")
+        .env("XDG_CONFIG_HOME", "/tmp/chromium-config")
+        .env("XDG_CACHE_HOME", "/tmp/chromium-cache")
         .args([
-            "--headless",
+            "--headless=new",
             "--no-sandbox",
             "--disable-gpu",
             "--disable-dev-shm-usage",
+            "--disable-crash-reporter",
             "--no-pdf-header-footer",
             "--run-all-compositor-stages-before-draw",
+            &format!("--user-data-dir={profile_path}"),
             &format!("--print-to-pdf={pdf_path}"),
             &format!("file://{html_path}"),
         ])
@@ -131,6 +138,7 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
 
     let _ = fs::remove_file(&html_path).await;
     let _ = fs::remove_file(&pdf_path).await;
+    let _ = fs::remove_dir_all(&profile_path).await;
     response
 }
 

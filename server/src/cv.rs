@@ -100,11 +100,7 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
                 .expect("valid PDF response"),
             Ok(_) => {
                 tracing::error!("chromium generated an invalid PDF payload");
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    "invalid PDF generated",
-                )
-                    .into_response()
+                (StatusCode::INTERNAL_SERVER_ERROR, "invalid PDF generated").into_response()
             }
             Err(error) => {
                 tracing::error!(%error, "failed to read generated CV PDF");
@@ -121,11 +117,7 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
                 stderr = %String::from_utf8_lossy(&output.stderr),
                 "chromium failed to render CV"
             );
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "failed to render CV PDF",
-            )
-                .into_response()
+            (StatusCode::INTERNAL_SERVER_ERROR, "failed to render CV PDF").into_response()
         }
         Err(error) => {
             tracing::error!(%error, "failed to launch chromium");

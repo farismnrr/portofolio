@@ -4,5 +4,10 @@ services:
     restart: unless-stopped
     ports:
       - "${PORTFOLIO_PORT:-3001}:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       PORT: "3000"
+      NINE_ROUTER_BASE_URL: "http://host.docker.internal:20128/v1"
+      NINE_ROUTER_API_KEY: "${NINE_ROUTER_API_KEY:-sk_9router}"
+      AI_MODEL: "gpt-6-luna"

@@ -182,10 +182,11 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
     }),
     '',
     'Writing rules:',
-    '- WORK EXPERIENCE MUST BE EXPLAINED BY LINKED PROJECT EVIDENCE WHEN A LINK EXISTS.',
-    '- If a selected experience lists linked project slugs, select at least one of those projects in the projects array.',
-    '- Do not write a generic experience summary. The renderer will place linked project narratives directly under the job.',
-    '- Experience entries without linked projects will use their original source bullets deterministically.',
+    '- PROJECTS and WORK EXPERIENCE are separate sections.',
+    '- Projects should contain the detailed technical narratives.',
+    '- Work Experience should stay concise and factual; linked projects are only referenced by name when a real mapping exists.',
+    '- Do not force a project relationship for experiences that have no linked projects.',
+    '- Experience summaries and bullets are attached deterministically from source Markdown, not written by the model.'
     `- Select ${isGeneral ? '4-5' : '3-4'} projects.`,
     `- Select ${isGeneral ? '4-5' : '2-3'} experience entries when evidence exists.`,
     `- Select ${isGeneral ? '4' : '2-3'} certifications that best support the target.`,
@@ -403,16 +404,6 @@ function validateNode(state: CvStateType) {
     }
   }
 
-  const selectedProjectIds = new Set(state.draft.projects.map((project) => project.sourceId));
-  for (const experience of state.draft.experiences) {
-    const source = experiences.find((item) => String(item.order) === experience.sourceId);
-    if (source?.projects.length && !source.projects.some((slug) => selectedProjectIds.has(slug))) {
-      errors.push(
-        `experience ${experience.sourceId} must be explained by at least one linked project`
-      );
-    }
-  }
-
   if (!state.draft.certifications.length) errors.push('no grounded certifications selected');
   for (const certification of state.draft.certifications) {
     if (!certifications.some((item) => String(item.order) === certification.sourceId)) {
@@ -481,25 +472,18 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
           .map((part) => part[0]?.toUpperCase() + part.slice(1))
           .join(' ');
 
-  const selectedProjectDrafts = new Map(
-    draft.projects.map((item) => [item.sourceId, item])
-  );
-
   const selectedExperiences = draft.experiences
     .map((item) => {
       const source = experiences.find((experience) => String(experience.order) === item.sourceId);
       if (!source) return null;
 
-      const linkedProjects = source.projects
+      const relatedProjects = source.projects
         .map((slug) => {
-          const draftProject = selectedProjectDrafts.get(slug);
           const project = projects.find((candidate) => candidate.slug === slug);
-          if (!draftProject || !project) return null;
+          if (!project) return null;
 
           return {
             title: project.title,
-            meta: [project.year, project.role].filter(Boolean).join(' | '),
-            narrative: draftProject.narrative,
             url: projectWebUrl(project.slug)
           };
         })
@@ -508,30 +492,21 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
       return {
         title: `${source.role} | ${source.company}`,
         meta: [source.year, source.location].filter(Boolean).join(' | '),
-        projects: linkedProjects,
-        bullets: linkedProjects.length ? [] : source.bullets.slice(0, 2)
+        summary: source.summary,
+        relatedProjects,
+        bullets: relatedProjects.length ? [] : source.bullets.slice(0, 2)
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  const linkedSelectedProjectSlugs = new Set(
-    draft.experiences.flatMap((item) => {
-      const source = experiences.find(
-        (experience) => String(experience.order) === item.sourceId
-      );
-      return source?.projects ?? [];
-    })
-  );
-
   const selectedProjects = draft.projects
-    .filter((item) => !linkedSelectedProjectSlugs.has(item.sourceId))
     .map((item) => {
       const source = projects.find((project) => project.slug === item.sourceId);
       if (!source) return null;
 
       return {
         title: source.title,
-        meta: [source.year, source.role].filter(Boolean).join(' | '),
+        meta: projectMeta(source.slug),
         narrative: item.narrative,
         url: projectWebUrl(source.slug)
       };

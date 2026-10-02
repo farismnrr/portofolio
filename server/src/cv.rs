@@ -42,8 +42,15 @@ pub struct ProjectSection {
 pub struct ExperienceSection {
     title: String,
     meta: String,
-    projects: Vec<ProjectSection>,
+    summary: String,
+    related_projects: Vec<ProjectReference>,
     bullets: Vec<String>,
+}
+
+#[derive(Deserialize)]
+pub struct ProjectReference {
+    title: String,
+    url: String,
 }
 
 #[derive(Deserialize)]
@@ -173,34 +180,40 @@ fn standalone_project_html(project: &ProjectSection) -> String {
 }
 
 fn experience_html(experience: &ExperienceSection) -> String {
-    let details = if !experience.projects.is_empty() {
-        experience
-            .projects
+    let related_projects = if experience.related_projects.is_empty() {
+        String::new()
+    } else {
+        let links = experience
+            .related_projects
             .iter()
             .map(|project| {
                 format!(
-                    r#"
-                    <li>
-                      <a class="project-link" href="{url}">{title}</a>
-                      <span class="project-meta">{meta}</span>
-                      — {narrative}
-                    </li>
-                    "#,
+                    r#"<a href="{url}">{title}</a>"#,
                     url = escape(&project.url),
                     title = escape(&project.title),
-                    meta = escape(&project.meta),
-                    narrative = escape(&project.narrative),
                 )
             })
             .collect::<Vec<_>>()
-            .join("")
+            .join(", ");
+
+        format!(
+            r#"<div class="related-projects"><strong>Related projects:</strong> {links}</div>"#,
+            links = links
+        )
+    };
+
+    let bullets = if experience.bullets.is_empty() {
+        String::new()
     } else {
-        experience
-            .bullets
-            .iter()
-            .map(|bullet| format!("<li>{}</li>", escape(bullet)))
-            .collect::<Vec<_>>()
-            .join("")
+        format!(
+            r#"<ul class="bullets">{}</ul>"#,
+            experience
+                .bullets
+                .iter()
+                .map(|bullet| format!("<li>{}</li>", escape(bullet)))
+                .collect::<Vec<_>>()
+                .join("")
+        )
     };
 
     format!(
@@ -210,14 +223,16 @@ fn experience_html(experience: &ExperienceSection) -> String {
             <span class="item-title">{title}</span>
             <span class="item-meta">{meta}</span>
           </div>
-          <ul class="bullets work-bullets">
-            {details}
-          </ul>
+          <p class="experience-summary">{summary}</p>
+          {related_projects}
+          {bullets}
         </article>
         "#,
         title = escape(&experience.title),
         meta = escape(&experience.meta),
-        details = details,
+        summary = escape(&experience.summary),
+        related_projects = related_projects,
+        bullets = bullets,
     )
 }
 
@@ -338,7 +353,11 @@ fn render_html(document: &CvRenderRequest) -> String {
             format!(
                 "{}{}{}",
                 section("Projects", &projects, false),
-                section("Certifications", &certifications, false),
+                section(
+                    "Certifications",
+                    &format!(r#"<div class="cert-list">{certifications}</div>"#),
+                    false,
+                ),
                 section("Education", &education, false),
             )
         } else {
@@ -362,7 +381,7 @@ fn render_html(document: &CvRenderRequest) -> String {
             projects_section = section("Projects", &projects, second_experiences.is_empty()),
             certifications_section = section(
                 "Certifications",
-                &certifications,
+                &format!(r#"<div class="cert-list">{certifications}</div>"#),
                 second_experiences.is_empty() && projects.is_empty(),
             ),
             education_section = section(
@@ -522,9 +541,8 @@ fn render_html(document: &CvRenderRequest) -> String {
     text-justify: inter-word;
   }}
 
-  .project-link,
   .item-title,
-  .cert-title {{
+  .project-link {{
     color: var(--text);
     font-weight: 700;
     text-decoration: underline;
@@ -536,12 +554,47 @@ fn render_html(document: &CvRenderRequest) -> String {
     font-size: 9.5pt;
   }}
 
-  .certification {{
-    margin: 0 0 7px;
-    font-size: 9.4pt;
+  .experience-summary {{
+    margin: 5px 0 0;
+    font-size: 9.45pt;
+    line-height: 1.46;
+    text-align: justify;
+    text-justify: inter-word;
+  }}
+
+  .related-projects {{
+    margin-top: 5px;
+    font-size: 9pt;
     line-height: 1.4;
+    color: var(--muted);
+  }}
+
+  .related-projects a {{
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
+  }}
+
+  .cert-list {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 22px;
+    row-gap: 10px;
+  }}
+
+  .certification {{
     break-inside: avoid;
     page-break-inside: avoid;
+    font-size: 8.75pt;
+    line-height: 1.42;
+    padding-bottom: 2px;
+  }}
+
+  .cert-title {{
+    color: #1d466f;
+    font-weight: 700;
+    text-decoration: none;
   }}
 
   .education {{

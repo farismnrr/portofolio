@@ -246,8 +246,6 @@ jobs:
     concurrency:
       group: portfolio-self-hosted
       cancel-in-progress: true
-    env:
-      PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
     steps:
       - name: Repair self-hosted workspace ownership
         shell: bash
@@ -284,7 +282,7 @@ jobs:
           docker run --rm \
             --entrypoint sh \
             -v "$PWD/frontend/test-results:/data:ro" \
-            "$PORTFOLIO_IMAGE" \
+            "$REGISTRY/$IMAGE_NAME:latest" \
             -lc '
               set -eu
               pages="$(pdfinfo /data/generated-cv.pdf | awk "/^Pages:/ { print \$2 }")"

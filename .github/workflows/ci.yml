@@ -156,6 +156,8 @@ jobs:
     name: ai smoke
     runs-on: [self-hosted, Linux, X64]
     if: github.event_name == 'pull_request'
+    env:
+      NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
     steps:
       - name: Check local 9router with GPT-6 Luna
         shell: bash
@@ -209,6 +211,7 @@ jobs:
         env:
           PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           PORTFOLIO_PORT: "3001"
+          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
         run: |
           docker compose -p portofolio pull
           docker compose -p portofolio up -d --remove-orphans

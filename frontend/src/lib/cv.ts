@@ -186,7 +186,7 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
     '- Projects should contain the detailed technical narratives.',
     '- Work Experience should stay concise and factual; linked projects are only referenced by name when a real mapping exists.',
     '- Do not force a project relationship for experiences that have no linked projects.',
-    '- Experience summaries and bullets are attached deterministically from source Markdown, not written by the model.'
+    '- Experience summaries and bullets are attached deterministically from source Markdown, not written by the model.',
     `- Select ${isGeneral ? '4-5' : '3-4'} projects.`,
     `- Select ${isGeneral ? '4-5' : '2-3'} experience entries when evidence exists.`,
     `- Select ${isGeneral ? '4' : '2-3'} certifications that best support the target.`,

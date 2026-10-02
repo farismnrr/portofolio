@@ -18,9 +18,10 @@ pub struct CvRenderRequest {
     profile_summary: String,
     technical_scope: Vec<ScopeLine>,
     projects: Vec<ProjectSection>,
-    primary_experience: Option<ExperienceSection>,
-    earlier_experience: String,
-    education_line: String,
+    experiences: Vec<ExperienceSection>,
+    certifications: Vec<CertificationSection>,
+    education_lines: Vec<String>,
+    max_pages: u8,
 }
 
 #[derive(Deserialize)]
@@ -30,23 +31,32 @@ pub struct ScopeLine {
 }
 
 #[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct ProjectSection {
+    title: String,
+    meta: String,
+    narrative: String,
+    url: String,
+}
+
+#[derive(Deserialize)]
+pub struct ExperienceSection {
     title: String,
     meta: String,
     narrative: String,
 }
 
 #[derive(Deserialize)]
-pub struct ExperienceSection {
+pub struct CertificationSection {
     title: String,
-    narrative: String,
+    meta: String,
+    url: String,
 }
 
 pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
     if payload.name.trim().is_empty()
         || payload.profile_summary.trim().is_empty()
         || payload.projects.is_empty()
+        || payload.experiences.is_empty()
     {
         return (
             StatusCode::BAD_REQUEST,
@@ -142,6 +152,55 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
     response
 }
 
+fn project_html(project: &ProjectSection) -> String {
+    format!(
+        r#"
+        <article class="project">
+          <div class="item-heading">
+            <a class="item-title" href="{url}">{title}</a>
+            <span class="item-meta">{meta}</span>
+          </div>
+          <p>{narrative}</p>
+        </article>
+        "#,
+        url = escape(&project.url),
+        title = escape(&project.title),
+        meta = escape(&project.meta),
+        narrative = escape(&project.narrative),
+    )
+}
+
+fn experience_html(experience: &ExperienceSection) -> String {
+    format!(
+        r#"
+        <article class="experience">
+          <div class="item-heading">
+            <span class="item-title">{title}</span>
+            <span class="item-meta">{meta}</span>
+          </div>
+          <p>{narrative}</p>
+        </article>
+        "#,
+        title = escape(&experience.title),
+        meta = escape(&experience.meta),
+        narrative = escape(&experience.narrative),
+    )
+}
+
+fn certification_html(certification: &CertificationSection) -> String {
+    format!(
+        r#"
+        <div class="certification">
+          <a class="cert-title" href="{url}">{title}</a>
+          <span class="cert-meta">{meta}</span>
+        </div>
+        "#,
+        url = escape(&certification.url),
+        title = escape(&certification.title),
+        meta = escape(&certification.meta),
+    )
+}
+
 fn render_html(document: &CvRenderRequest) -> String {
     let scopes = document
         .technical_scope
@@ -156,43 +215,108 @@ fn render_html(document: &CvRenderRequest) -> String {
         .collect::<Vec<_>>()
         .join("");
 
-    let projects = document
-        .projects
+    let project_split = if document.max_pages > 1 {
+        document.projects.len().min(3)
+    } else {
+        document.projects.len()
+    };
+    let (first_projects, second_projects) = document.projects.split_at(project_split);
+
+    let first_projects = first_projects
         .iter()
-        .take(4)
-        .map(|project| {
-            format!(
-                r#"
-                <article class="project">
-                  <div class="project-title">{}</div>
-                  <div class="project-meta">{}</div>
-                  <p>{}</p>
-                </article>
-                "#,
-                escape(&project.title),
-                escape(&project.meta),
-                escape(&project.narrative)
-            )
-        })
+        .map(project_html)
         .collect::<Vec<_>>()
         .join("");
 
-    let primary_experience = document
-        .primary_experience
-        .as_ref()
-        .map(|experience| {
-            format!(
-                r#"
-                <div class="experience-primary">
-                  <strong>{}</strong>
-                  <span>{}</span>
-                </div>
-                "#,
-                escape(&experience.title),
-                escape(&experience.narrative)
-            )
-        })
-        .unwrap_or_default();
+    let second_projects = second_projects
+        .iter()
+        .map(project_html)
+        .collect::<Vec<_>>()
+        .join("");
+
+    let experiences = document
+        .experiences
+        .iter()
+        .map(experience_html)
+        .collect::<Vec<_>>()
+        .join("");
+
+    let certifications = document
+        .certifications
+        .iter()
+        .map(certification_html)
+        .collect::<Vec<_>>()
+        .join("");
+
+    let education = document
+        .education_lines
+        .iter()
+        .map(|line| format!(r#"<div class="education">{}</div>"#, escape(line)))
+        .collect::<Vec<_>>()
+        .join("");
+
+    let second_page = if document.max_pages > 1 {
+        format!(
+            r#"
+            <main class="page page-two">
+              <div class="page-content fit-page">
+                {continued_projects}
+                <section class="section">
+                  <div class="section-title">Experience</div>
+                  {experiences}
+                </section>
+                <section class="section">
+                  <div class="section-title">Certifications</div>
+                  <div class="cert-list">{certifications}</div>
+                </section>
+                <section class="section">
+                  <div class="section-title">Education</div>
+                  {education}
+                </section>
+              </div>
+            </main>
+            "#,
+            continued_projects = if second_projects.is_empty() {
+                String::new()
+            } else {
+                format!(
+                    r#"<section class="section first-section">
+                         <div class="section-title">Selected Projects — Continued</div>
+                         {second_projects}
+                       </section>"#
+                )
+            },
+            experiences = experiences,
+            certifications = certifications,
+            education = education,
+        )
+    } else {
+        String::new()
+    };
+
+    let one_page_tail = if document.max_pages <= 1 {
+        format!(
+            r#"
+            <section class="section">
+              <div class="section-title">Experience</div>
+              {experiences}
+            </section>
+            <section class="section">
+              <div class="section-title">Certifications</div>
+              <div class="cert-list">{certifications}</div>
+            </section>
+            <section class="section">
+              <div class="section-title">Education</div>
+              {education}
+            </section>
+            "#,
+            experiences = experiences,
+            certifications = certifications,
+            education = education,
+        )
+    } else {
+        String::new()
+    };
 
     format!(
         r#"<!doctype html>
@@ -202,116 +326,183 @@ fn render_html(document: &CvRenderRequest) -> String {
 <title>{name} - CV</title>
 <style>
   @page {{ size: Letter; margin: 0; }}
+
   :root {{
-    --body-size: 9.05pt;
     --navy: #1d466f;
-    --text: #111827;
-    --muted: #525b67;
+    --text: #151a22;
+    --muted: #56606d;
     --rule: #1d466f;
+    --page-font-size: 9.35pt;
   }}
+
   * {{ box-sizing: border-box; }}
-  html, body {{ margin: 0; padding: 0; background: white; }}
+
+  html, body {{
+    margin: 0;
+    padding: 0;
+    background: white;
+  }}
+
   body {{
     font-family: Arial, "Liberation Sans", sans-serif;
     color: var(--text);
-    font-size: var(--body-size);
-    line-height: 1.22;
+    font-size: var(--page-font-size);
+    line-height: 1.38;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }}
+
   .page {{
     width: 8.5in;
     height: 11in;
-    padding: 0.46in 0.55in 0.40in;
+    padding: 0.52in 0.62in 0.48in;
+    break-after: page;
+    page-break-after: always;
     overflow: hidden;
   }}
-  .content {{ height: 100%; overflow: hidden; }}
+
+  .page:last-child {{
+    break-after: auto;
+    page-break-after: auto;
+  }}
+
+  .page-content {{
+    height: 100%;
+    overflow: hidden;
+  }}
+
   h1 {{
     margin: 0;
-    font-size: 19.2pt;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: 20.5pt;
+    line-height: 1.05;
+    letter-spacing: -0.018em;
     font-weight: 700;
   }}
+
   .headline {{
-    margin-top: 4px;
-    font-size: 10.5pt;
-    line-height: 1.12;
+    margin-top: 6px;
+    font-size: 10.8pt;
+    line-height: 1.22;
     font-weight: 700;
   }}
+
   .contact {{
-    margin-top: 4px;
+    margin-top: 5px;
     color: var(--muted);
-    font-size: 8.3pt;
-    line-height: 1.15;
+    font-size: 8.6pt;
+    line-height: 1.3;
   }}
-  .section {{ margin-top: 9px; }}
+
+  .section {{
+    margin-top: 13px;
+  }}
+
+  .first-section {{
+    margin-top: 0;
+  }}
+
   .section-title {{
     color: var(--navy);
-    font-size: 9.4pt;
+    font-size: 9.8pt;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.015em;
     text-transform: uppercase;
-    padding-bottom: 2px;
-    border-bottom: 0.75px solid var(--rule);
-    margin-bottom: 4px;
+    padding-bottom: 3px;
+    border-bottom: 0.8px solid var(--rule);
+    margin-bottom: 7px;
   }}
-  p {{ margin: 0; }}
+
+  p {{
+    margin: 0;
+  }}
+
   .profile {{
-    font-size: 8.8pt;
-    line-height: 1.26;
+    font-size: 9.15pt;
+    line-height: 1.46;
   }}
+
   .scope {{
-    margin: 1.2px 0;
-    font-size: 8.45pt;
-    line-height: 1.22;
+    margin: 3px 0;
+    font-size: 8.95pt;
+    line-height: 1.4;
   }}
-  .project {{
-    margin: 0 0 5.5px;
+
+  .project,
+  .experience {{
+    margin: 0 0 10px;
     break-inside: avoid;
     page-break-inside: avoid;
   }}
-  .project-title {{
-    font-weight: 700;
-    font-size: 9.15pt;
-    line-height: 1.12;
-    display: inline;
-  }}
-  .project-meta {{
-    display: inline;
-    color: var(--muted);
-    font-size: 8.05pt;
-  }}
-  .project-meta::before {{ content: " | "; }}
-  .project p {{
-    margin-top: 1px;
-    font-size: 8.55pt;
-    line-height: 1.24;
-  }}
-  .experience-primary {{
-    font-size: 8.55pt;
-    line-height: 1.25;
-  }}
-  .experience-primary strong {{
-    display: block;
-    font-size: 8.85pt;
-    margin-bottom: 1px;
-  }}
-  .earlier {{
-    margin-top: 2px;
-    font-size: 8.35pt;
+
+  .item-heading {{
     line-height: 1.22;
-    color: #252b33;
   }}
+
+  .item-title,
+  .cert-title {{
+    color: var(--text);
+    font-weight: 700;
+    text-decoration: none;
+  }}
+
+  a.item-title,
+  a.cert-title {{
+    color: var(--navy);
+  }}
+
+  .item-title {{
+    font-size: 9.5pt;
+  }}
+
+  .item-meta {{
+    color: var(--muted);
+    font-size: 8.35pt;
+  }}
+
+  .item-meta::before {{
+    content: " | ";
+  }}
+
+  .project p,
+  .experience p {{
+    margin-top: 3px;
+    font-size: 8.95pt;
+    line-height: 1.43;
+  }}
+
+  .cert-list {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 18px;
+    row-gap: 7px;
+  }}
+
+  .certification {{
+    break-inside: avoid;
+    page-break-inside: avoid;
+    font-size: 8.75pt;
+    line-height: 1.32;
+  }}
+
+  .cert-meta {{
+    color: var(--muted);
+    font-size: 8.15pt;
+  }}
+
+  .cert-meta::before {{
+    content: " | ";
+  }}
+
   .education {{
-    font-size: 8.55pt;
-    line-height: 1.2;
+    font-size: 8.9pt;
+    line-height: 1.4;
+    margin-bottom: 4px;
   }}
 </style>
 </head>
 <body>
-  <main class="page">
-    <div class="content" id="content">
+  <main class="page page-one">
+    <div class="page-content fit-page">
       <header>
         <h1>{name_upper}</h1>
         <div class="headline">{headline}</div>
@@ -330,28 +521,23 @@ fn render_html(document: &CvRenderRequest) -> String {
 
       <section class="section">
         <div class="section-title">Selected Projects</div>
-        {projects}
+        {first_projects}
       </section>
 
-      <section class="section">
-        <div class="section-title">Experience</div>
-        {primary_experience}
-        <div class="earlier">{earlier}</div>
-      </section>
-
-      <section class="section">
-        <div class="section-title">Education</div>
-        <div class="education">{education}</div>
-      </section>
+      {one_page_tail}
     </div>
   </main>
+
+  {second_page}
+
 <script>
 (() => {{
-  const content = document.getElementById('content');
-  let size = 9.05;
-  while (content.scrollHeight > content.clientHeight && size > 7.75) {{
-    size -= 0.08;
-    document.documentElement.style.setProperty('--body-size', size.toFixed(2) + 'pt');
+  for (const page of document.querySelectorAll('.fit-page')) {{
+    let size = 9.35;
+    while (page.scrollHeight > page.clientHeight && size > 8.25) {{
+      size -= 0.06;
+      page.style.fontSize = size.toFixed(2) + 'pt';
+    }}
   }}
 }})();
 </script>
@@ -363,10 +549,9 @@ fn render_html(document: &CvRenderRequest) -> String {
         contact = escape(&document.contact),
         profile = escape(&document.profile_summary),
         scopes = scopes,
-        projects = projects,
-        primary_experience = primary_experience,
-        earlier = escape(&document.earlier_experience),
-        education = escape(&document.education_line),
+        first_projects = first_projects,
+        one_page_tail = one_page_tail,
+        second_page = second_page,
     )
 }
 

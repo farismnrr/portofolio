@@ -1,11 +1,6 @@
 use std::env;
 
-use axum::{
-    extract::State,
-    http::StatusCode,
-    response::IntoResponse,
-    Json,
-};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 

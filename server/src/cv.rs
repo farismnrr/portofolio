@@ -637,7 +637,6 @@ fn escape(value: &str) -> String {
         .replace('\'', "&#39;")
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::CvRenderRequest;

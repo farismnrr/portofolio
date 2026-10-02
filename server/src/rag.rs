@@ -262,7 +262,13 @@ impl RagState {
             .map(|item| item.id.clone())
             .collect::<std::collections::HashSet<_>>();
 
-        for source_type in ["profile", "experience", "skill", "education", "certification"] {
+        for source_type in [
+            "profile",
+            "experience",
+            "skill",
+            "education",
+            "certification",
+        ] {
             for chunk in self
                 .corpus
                 .iter()

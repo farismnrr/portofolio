@@ -218,6 +218,33 @@ for (const { file, source } of await readDir('education')) {
   });
 }
 
+
+for (const { file, source } of await readDir('certifications')) {
+  const { meta } = parseFrontmatter(source);
+  const id = String(meta.order || path.basename(file, '.md'));
+
+  chunks.push({
+    id: 'certification:' + id + ':summary',
+    sourceType: 'certification',
+    sourceId: id,
+    section: 'summary',
+    company: meta.issuer || '',
+    skills: [],
+    roleTags: [meta.group, meta.issuer].filter(Boolean),
+    content: cleanMarkdown(
+      [
+        meta.title,
+        meta.issuer,
+        meta.group,
+        meta.year,
+        meta.credentialId
+      ]
+        .filter(Boolean)
+        .join('. ')
+    )
+  });
+}
+
 for (const { file, source } of await readDir('profile')) {
   const { meta, body } = parseFrontmatter(source);
 

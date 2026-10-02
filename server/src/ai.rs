@@ -31,6 +31,7 @@ impl AiState {
 #[derive(Deserialize)]
 pub struct ChatRequest {
     message: String,
+    reasoning_effort: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -41,7 +42,7 @@ pub struct ChatResponse {
 #[derive(Serialize)]
 struct NineRouterRequest<'a> {
     model: &'a str,
-    messages: [NineRouterMessage<'a>; 1],
+    messages: Vec<NineRouterMessage<'a>>,
     reasoning_effort: &'a str,
 }
 
@@ -66,6 +67,14 @@ struct NineRouterResponseMessage {
     content: String,
 }
 
+fn normalized_reasoning_effort(value: Option<&str>) -> &'static str {
+    match value {
+        Some("medium") => "medium",
+        Some("high") => "high",
+        _ => "low",
+    }
+}
+
 pub async fn chat(
     State(state): State<AiState>,
     Json(payload): Json<ChatRequest>,
@@ -83,11 +92,11 @@ pub async fn chat(
 
     let request = NineRouterRequest {
         model: &state.model,
-        messages: [NineRouterMessage {
+        messages: vec![NineRouterMessage {
             role: "user",
             content: message,
         }],
-        reasoning_effort: "low",
+        reasoning_effort: normalized_reasoning_effort(payload.reasoning_effort.as_deref()),
     };
 
     let mut request_builder = state

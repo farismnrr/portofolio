@@ -11,6 +11,8 @@ use rust_embed::RustEmbed;
 use tower_http::trace::TraceLayer;
 
 mod ai;
+mod cv;
+mod rag;
 
 #[derive(RustEmbed)]
 #[folder = "../frontend/dist/"]
@@ -67,10 +69,22 @@ async fn main() {
         .init();
 
     let ai_state = ai::AiState::from_env();
+    let corpus = Assets::get("cv-corpus.json").expect("frontend build must include cv-corpus.json");
+    let rag_state = rag::RagState::from_env(ai_state.clone(), corpus.data.as_ref())
+        .expect("valid CV retrieval configuration");
+
+    let ai_routes = Router::new()
+        .route("/api/ai/chat", post(ai::chat))
+        .with_state(ai_state);
+
+    let rag_routes = Router::new()
+        .route("/api/cv/retrieve", post(rag::retrieve))
+        .with_state(rag_state);
 
     let app = Router::new()
-        .route("/api/ai/chat", post(ai::chat))
-        .with_state(ai_state)
+        .merge(ai_routes)
+        .merge(rag_routes)
+        .route("/api/cv/render", post(cv::render))
         .fallback(embedded_asset)
         .layer(TraceLayer::new_for_http());
 

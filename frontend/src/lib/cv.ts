@@ -353,11 +353,11 @@ function validateNode(state: CvStateType) {
 
 const workflow = new StateGraph(CvState)
   .addNode('retrieve', retrieveNode)
-  .addNode('draft', draftNode)
+  .addNode('composeCv', draftNode)
   .addNode('validate', validateNode)
   .addEdge(START, 'retrieve')
-  .addEdge('retrieve', 'draft')
-  .addEdge('draft', 'validate')
+  .addEdge('retrieve', 'composeCv')
+  .addEdge('composeCv', 'validate')
   .addEdge('validate', END)
   .compile();
 

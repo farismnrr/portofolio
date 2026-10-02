@@ -297,7 +297,9 @@ jobs:
                 "PROJECTS" \
                 "CERTIFICATIONS" \
                 "EDUCATION" \
-                "UPN Veteran East Java"
+                "UPN" \
+                "East Java" \
+                "Bachelor of Computer Science"
               do
                 grep -Fqi "$required" /tmp/cv.txt || {
                   echo "Missing required PDF content: $required"

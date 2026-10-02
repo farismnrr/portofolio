@@ -4,7 +4,7 @@
   "version": "0.3.0",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "node ./scripts/build-cv-corpus.mjs && vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "content:check": "node ./scripts/check-content.mjs",
     "guard": "node ./scripts/guard-ui.mjs"
@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "@langchain/core": "^1.2.14",
-    "@langchain/langgraph": "^1.4.18",
-    "pdf-lib": "^1.17.1"
+    "@langchain/langgraph": "^1.4.18"
   }
 }

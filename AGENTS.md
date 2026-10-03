@@ -19,11 +19,12 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - The fast workflow may also support manual dispatch from `dev`.
 - The fast workflow is intentionally optimized as a persistent developer loop on the X64 self-hosted runner, not as a clean-room release build.
 - Keep fast validation/build/deploy in one self-hosted job so the same filesystem and machine-local caches are reused instead of passing artifacts between fresh runners.
-- Detect which application area changed and run only the relevant expensive work. Frontend-only changes must not rebuild Rust when a valid cached server binary exists; server-only changes should reuse the last valid frontend `dist`; Docker/Compose-only changes should avoid unrelated compiler work.
+- Detect which application area changed and run only the relevant expensive work. Frontend-only changes run frontend validation/build and then only an incremental Rust runtime rebuild/relink because the Axum binary embeds `frontend/dist` through `rust_embed`; they must not reuse an older server binary. Server-only changes reuse the last valid frontend `dist` and run Rust validation/build. Docker/Compose-only changes should avoid unrelated compiler work when valid runtime artifacts already exist.
 - Keep tracked source clean between runs while preserving intentional incremental outputs such as `frontend/node_modules`, `frontend/dist`, and the staged AMD64 runtime when safe to reuse.
 - Persist development caches under the runner user's home directory. The fast workflow uses a portfolio-specific cache root under `~/.cache/portfolio-ci` for npm downloads, Cargo build output, Cargo-installed tools, and an isolated Rustup toolchain.
 - Do not depend on or mutate the developer's global Rust toolchain for fast CI. Use the isolated portfolio Rustup/Cargo homes so interrupted CI setup cannot corrupt local tooling.
-- Fast validation runs frontend architecture/content/type checks and frontend build only when frontend inputs changed. Rust format/clippy and AMD64 runtime build run only when server inputs changed or the cached runtime is missing.
+- Fast frontend validation runs architecture/content/type checks and a frontend build only when frontend inputs changed.
+- Fast Rust format/clippy runs only when server source inputs changed. A frontend-only change still runs the incremental AMD64 runtime build so the new embedded frontend is included in the binary, but it skips Rust format/clippy when server source itself did not change.
 - Fast validation intentionally skips the expensive Rust test suite, AI smoke check, ARM64 build, QEMU, and multi-architecture container build.
 - Rust fast builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
 - Frontend fast builds should reuse the machine-local npm cache and preserved `frontend/node_modules` rather than using `npm ci` on every development push.

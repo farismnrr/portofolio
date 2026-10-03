@@ -113,6 +113,7 @@ jobs:
 
           frontend=false
           server=false
+          runtime=false
           image=false
           compose=false
           force=false
@@ -138,10 +139,12 @@ jobs:
                 case "$path" in
                   frontend/*)
                     frontend=true
+                    runtime=true
                     image=true
                     ;;
                   server/*)
                     server=true
+                    runtime=true
                     image=true
                     ;;
                   Dockerfile)
@@ -160,17 +163,19 @@ jobs:
 
           if [ ! -f frontend/dist/index.html ]; then
             frontend=true
+            runtime=true
             image=true
           fi
 
           if [ ! -x "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" ]; then
-            server=true
+            runtime=true
             image=true
           fi
 
           if [ "$force" = true ]; then
             frontend=true
             server=true
+            runtime=true
             image=true
             compose=true
           fi
@@ -178,11 +183,12 @@ jobs:
           {
             echo "frontend=$frontend"
             echo "server=$server"
+            echo "runtime=$runtime"
             echo "image=$image"
             echo "compose=$compose"
           } >> "$GITHUB_OUTPUT"
 
-          echo "frontend=$frontend server=$server image=$image compose=$compose"
+          echo "frontend=$frontend server=$server runtime=$runtime image=$image compose=$compose"
 
       - uses: actions/setup-node@v7
         if: steps.changes.outputs.frontend == 'true'
@@ -215,7 +221,7 @@ jobs:
         run: npm run build
 
       - name: Reuse isolated Rust toolchain
-        if: steps.changes.outputs.server == 'true'
+        if: steps.changes.outputs.runtime == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -243,7 +249,7 @@ jobs:
           cargo --version
 
       - name: Detect persistent Zig
-        if: steps.changes.outputs.server == 'true'
+        if: steps.changes.outputs.runtime == 'true'
         id: zig
         shell: bash
         run: |
@@ -255,12 +261,12 @@ jobs:
           fi
 
       - uses: mlugg/setup-zig@v2
-        if: steps.changes.outputs.server == 'true' && steps.zig.outputs.installed != 'true'
+        if: steps.changes.outputs.runtime == 'true' && steps.zig.outputs.installed != 'true'
         with:
           version: 0.14.1
 
       - name: Persist Zig for future runs
-        if: steps.changes.outputs.server == 'true' && steps.zig.outputs.installed != 'true'
+        if: steps.changes.outputs.runtime == 'true' && steps.zig.outputs.installed != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -268,7 +274,7 @@ jobs:
           zig version
 
       - name: Install cargo-zigbuild when missing
-        if: steps.changes.outputs.server == 'true'
+        if: steps.changes.outputs.runtime == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -286,7 +292,7 @@ jobs:
           cargo clippy --release --all-features --no-deps -- -D warnings
 
       - name: Incremental AMD64 runtime build
-        if: steps.changes.outputs.server == 'true'
+        if: steps.changes.outputs.runtime == 'true'
         working-directory: server
         shell: bash
         run: |

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { renderInlineMarkdown } from '../markdown';
   import { getProjectBySlug } from '../project-content';
   import { navigate } from '../router';
   import TechChips from './TechChips.svelte';
@@ -41,8 +42,8 @@
     {/if}
 
     {#if !compact}
-      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58">
-        {#each item.bullets as bullet}<li>{bullet}</li>{/each}
+      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58 [&_a]:font-medium [&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-black/[0.05] [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/78">
+        {#each item.bullets as bullet}<li>{@html renderInlineMarkdown(bullet)}</li>{/each}
       </ul>
       <div class="mt-5"><TechChips items={item.tech} pills/></div>
     {/if}

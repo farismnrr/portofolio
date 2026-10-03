@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 env:
   REGISTRY: ghcr.io
@@ -112,7 +113,7 @@ jobs:
         with:
           ref: ${{ needs.merge-release.outputs.main_sha }}
 
-      - name: Download validated production binaries
+      - name: Download production binaries
         uses: actions/download-artifact@v7
         with:
           name: production-runtime
@@ -129,7 +130,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package and push validated multi-architecture runtime
+      - name: Package and push multi-architecture runtime
         uses: docker/build-push-action@v7
         with:
           context: .

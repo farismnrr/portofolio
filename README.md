@@ -26,13 +26,12 @@ Development happens on `dev`.
 
 ## CI / deployment
 
-The repository has three CI/CD workflows with separate development and release responsibilities:
+The repository has two CI/CD workflows with separate development and release responsibilities:
 
 - `Fast Guardrail + AMD64 Build + Deploy` is the default development path. It runs automatically for pushes to `dev` and pull requests targeting `dev`. It runs frontend architecture/content/type checks, builds the frontend, runs Rust format/clippy, builds the AMD64 production binary, and builds an AMD64-only container. Pull requests stop after validation/build. Pushes to `dev` publish `ghcr.io/farismnrr/portofolio/portfolio-app:latest` as an AMD64 image and deploy it to the X64 self-hosted host.
-- `Full Guardrail + Build` is the expensive full validation path. It is manual/reusable rather than automatic. It retains the full frontend guardrail, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and multi-architecture container build without publishing or deploying.
-- `Full Guardrail + Build + Deploy` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. It reuses `Full Guardrail + Build`; only after full validation succeeds does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision.
+- `Full Guardrail + Build + Deploy` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision.
 
-This split keeps normal edits fast: a one-line change no longer pays for the ARM64 toolchain, QEMU/multi-architecture build, Rust test suite, or AI smoke check on every push. Those checks still protect the explicit full release path.
+There is no standalone `Full Guardrail + Build` workflow. This keeps normal edits fast and keeps the expensive full validation attached only to an explicit production release.
 
 Container image:
 

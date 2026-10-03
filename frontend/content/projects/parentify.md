@@ -8,119 +8,117 @@ cardTitle: "Parentify"
 subtitle: "Parenting Guidance and Food Information Companion"
 role: "Cloud Computing · Backend / Integration"
 category: "Capstone · Cloud"
-description: "A Bangkit Academy capstone that brought parenting articles, food guidance, and cross-functional mobile, backend, and machine-learning work into one practical companion for parents."
+description: "A Bangkit Academy capstone that combined an Android client, parenting content, food classification data, and a shared backend into one practical companion for parents."
 image: "https://raw.githubusercontent.com/Parentify/Parentify-Cloud-Computing/main/cloud-diagram.png"
 tech: [Google Cloud, Node.js, Express, MySQL, Docker, Kotlin, Machine Learning]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---
 
-## The Story
+## Why We Built It
 
-Parenting information is everywhere, but that does not automatically make it easy to use.
+Parenting information is easy to find, but useful guidance is often scattered across different places.
 
-A parent may need to understand a child’s daily needs, find a relevant article, or check whether a food fits a particular condition. Those questions usually live across different sources, use different language, and require the parent to connect the pieces themselves.
+A parent may need to read a practical article, understand a child’s daily needs, or check food information. Each answer can live in a different source and use a different structure, leaving the parent to connect everything manually.
 
-**Parentify** was our Bangkit Academy 2023 Batch 2 capstone attempt to make that journey more direct.
+**Parentify** was our Bangkit Academy capstone response to that problem: one mobile companion where parenting content and structured food information could be reached through a single product flow.
 
-Instead of building a generic information portal, the team shaped the product around a simple idea: give parents one companion where practical parenting content and structured food information can be reached from the same mobile experience.
+The goal was not to build another generic information portal. The useful part was reducing the distance between a parent’s question and the information they could act on.
 
-The capstone was split across the three Bangkit learning paths. Mobile Development owned the Android experience, Machine Learning worked on the data/model side, and Cloud Computing turned the product requirements into backend services that the application could actually consume.
+## The Product as One System
 
-My primary responsibility sat on that Cloud Computing boundary.
+Parentify was built across the three Bangkit learning paths, each with a different responsibility:
 
-## The Product Idea
+- **Mobile Development** shaped the Android experience used by the parent.
+- **Cloud Computing** exposed the application capabilities through a shared backend and data layer.
+- **Machine Learning** worked on the data/model side used by the product’s food-related flow.
 
-At a high level, Parentify connected three kinds of value:
-
-- a mobile experience that parents could use directly;
-- parenting articles that could be retrieved through the application;
-- food information and classification data that could be surfaced in a structured way.
-
-The important part was not any single endpoint or model. It was making the pieces behave like one product.
+Those parts lived in separate repositories, but users should never have to care about those boundaries.
 
 ```mermaid
 flowchart LR
-    P[Parent] --> M[Parentify mobile app]
-    M --> B[Cloud backend]
-    B --> A[Parenting articles]
-    B --> F[Food and classification data]
-    B --> I[Identity and access]
-    F --> D[Data / ML workflow]
+    U[Parent] --> M[Android app]
+    M --> API[Parentify backend]
+    API --> AUTH[Identity and access]
+    API --> ARTICLE[Parenting articles]
+    API --> FOOD[Food and classification data]
+    FOOD --> ML[Data and ML workflow]
 ```
 
-From the user’s perspective, those internal boundaries should disappear. They should simply open the application, authenticate, find information, and receive a useful response.
+From the user’s point of view, the expected experience was much simpler:
 
-## My Role in the Capstone
+```text
+open Parentify
+→ authenticate
+→ choose the information needed
+→ receive a useful response
+```
 
-I worked primarily on the cloud and backend side of the project.
+## My Responsibility
 
-That meant taking features discussed by the team and translating them into services that the Android application could call consistently. The backend exposed flows for authentication, articles, food records, and food-classification information, with MySQL holding the application data behind those flows.
+My primary responsibility was on the **Cloud Computing and backend integration** side.
 
-I also helped connect work across repositories. The project was not one monolithic codebase: Mobile Development, Cloud Computing, and Machine Learning progressed separately, so integration required us to agree on what data moved between each part and what the mobile client could rely on.
+I translated product requirements into backend capabilities that the Android client could consume consistently. The service covered authentication, parenting articles, food records, and food-classification data, with MySQL holding the application data behind those flows.
 
-That cross-team boundary was one of the most useful lessons from the project. A feature is not finished merely because one team’s component works in isolation.
+The cloud/backend work also became the shared contract between teams. Mobile Development needed stable responses to build against, while data and model work needed a clear path into the application flow.
 
-## The General System Flow
+That made the job broader than hosting routes. The backend had to make independently developed components behave like one product.
 
-The backend acted as the shared contract between the mobile experience and the underlying application data.
+## How the Backend Fit the Product
+
+The general request path looked like this:
 
 ```mermaid
 sequenceDiagram
     participant U as Parent
     participant M as Mobile app
-    participant API as Parentify backend
+    participant API as Backend
     participant DB as Application data
 
     U->>M: Open a feature
     M->>API: Send authenticated request
-    API->>DB: Read relevant data
-    DB-->>API: Return structured result
-    API-->>M: Return application response
+    API->>DB: Read the required domain data
+    DB-->>API: Return structured data
+    API-->>M: Return a consistent response
     M-->>U: Present useful information
 ```
 
-For food guidance, the application stored both the food record itself and associated classification information. The backend combined those pieces before returning them to the client, so the mobile layer did not have to reconstruct the relationship on its own.
+For food information, the backend joined the food record with its related classification data before returning it to the client. That kept the relationship inside the backend instead of forcing the Android app to reconstruct domain data on its own.
 
-Conceptually, the flow was:
-
-```text
-user intent
-→ mobile request
-→ authenticated backend boundary
-→ domain data lookup
-→ structured response
-→ mobile presentation
-```
-
-## Designing for Integration
-
-The capstone made one architectural constraint very clear: every learning path could move independently, but the product could only work if the contracts between them stayed understandable.
-
-For Cloud Computing, that meant keeping backend responsibilities explicit:
+Conceptually, the backend responsibilities were separated like this:
 
 ```text
 authentication
-→ protect application access
+→ control application access
 
 articles
-→ serve parenting content
+→ expose parenting content
 
 food data
-→ expose food details and related classification
+→ expose food details and classifications
 
 application API
-→ give the Android client one stable integration point
+→ provide one stable integration boundary for the mobile client
 ```
 
-The backend therefore became less about “hosting some routes” and more about translating several project domains into a consistent interface for the client application.
+## Working Across Repositories
 
-## What I Learned
+The project was intentionally split by learning path rather than kept in one monolithic codebase. That made integration discipline important: each team could progress independently, but the product only worked when the contracts between them agreed.
 
-Parentify was one of my first experiences building a product where the engineering problem was genuinely cross-functional.
+The project repositories are available under the **Parentify** GitHub organization:
 
-The technical work mattered, but the harder lesson was coordination: a mobile screen, database schema, backend response, and machine-learning artifact can each be correct on their own and still fail as a product if they do not agree with one another.
+- [Cloud Computing repository](https://github.com/Parentify/Parentify-Cloud-Computing)
+- [Mobile Development repository](https://github.com/Parentify/Parentify-Mobile-Development)
+- [Machine Learning repository](https://github.com/Parentify/Parentify-Machine-Learning)
 
-The capstone pushed me to think beyond deploying infrastructure. I had to think about contracts, ownership boundaries, integration order, and how backend decisions affect people working in completely different parts of the stack.
+For my part, most implementation responsibility was in the Cloud Computing repository, with additional contribution around the project’s data/model work. I do not present the Android implementation as my own work.
 
-That perspective became much more valuable to me than any individual service used during the project.
+## What the Project Taught Me
+
+Parentify was one of my first projects where the engineering problem was genuinely cross-functional.
+
+A mobile screen, API response, database schema, and model artifact can all be correct in isolation and still fail as a product when their assumptions do not line up. The useful lesson was learning to think in **contracts and boundaries**, not only individual components.
+
+It pushed me to think about ownership, integration order, hand-offs, and how backend decisions affect people working in completely different parts of the stack.
+
+That systems perspective ended up being more valuable than any single service used during the capstone.

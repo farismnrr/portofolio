@@ -13,12 +13,47 @@ env:
   RUST_TARGET_ARM64: aarch64-unknown-linux-musl
   RUSTFLAGS: -D warnings
 
+concurrency:
+  group: portfolio-production-release
+  cancel-in-progress: false
+
 jobs:
+  preflight:
+    name: release preflight
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require dev branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" != "refs/heads/dev" ]; then
+            echo "Full Guardrail + Build + Deploy must be dispatched from dev."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Require unreleased changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          if git diff --quiet origin/main...HEAD; then
+            echo "dev has no changes to release to main."
+            exit 1
+          fi
+
   guardrail:
     name: full guardrail
     runs-on: ubuntu-24.04
+    needs: preflight
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: dev
 
       - uses: actions/setup-node@v7
         with:
@@ -124,14 +159,13 @@ jobs:
           echo "Configured 9router model smoke test returned a non-empty answer."
 
   build:
-    name: build
+    name: production build
     runs-on: ubuntu-24.04
     needs: [guardrail, ai-smoke]
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: dev
 
       - uses: actions/setup-node@v7
         with:
@@ -205,6 +239,83 @@ jobs:
           chmod +x release/amd64/portfolio-server release/arm64/portfolio-server
           file release/amd64/portfolio-server release/arm64/portfolio-server
 
+      - name: Upload production binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-runtime
+          path: release/
+          if-no-files-found: error
+          retention-days: 1
+
+  merge-release:
+    name: merge dev to main
+    runs-on: ubuntu-24.04
+    needs: build
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      main_sha: ${{ steps.merge.outputs.main_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Create or reuse release PR and merge it
+        id: merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pr_number="$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --base main \
+            --head dev \
+            --json number \
+            --jq '.[0].number // empty')"
+
+          if [ -z "$pr_number" ]; then
+            pr_url="$(gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
+              --base main \
+              --head dev \
+              --title "release: dev -> main" \
+              --body "Production release created by Full Guardrail + Build + Deploy run ${GITHUB_RUN_ID}.")"
+            pr_number="${pr_url##*/}"
+          fi
+
+          gh pr merge "$pr_number" \
+            --repo "$GITHUB_REPOSITORY" \
+            --merge \
+            --match-head-commit "$GITHUB_SHA"
+
+          git fetch origin main
+          main_sha="$(git rev-parse origin/main)"
+          echo "main_sha=$main_sha" >> "$GITHUB_OUTPUT"
+          echo "Merged PR #${pr_number} into main at ${main_sha}. dev was not deleted."
+
+  publish:
+    name: publish production image
+    runs-on: ubuntu-24.04
+    needs: merge-release
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.merge-release.outputs.main_sha }}
+
+      - name: Download production binaries
+        uses: actions/download-artifact@v7
+        with:
+          name: production-runtime
+          path: release
+
       - uses: docker/setup-qemu-action@v3
 
       - uses: docker/setup-buildx-action@v4
@@ -230,7 +341,7 @@ jobs:
   deploy:
     name: deploy
     runs-on: [self-hosted, Linux, X64]
-    needs: build
+    needs: [merge-release, publish]
     permissions:
       contents: read
       packages: read
@@ -248,6 +359,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.merge-release.outputs.main_sha }}
           fetch-depth: 0
 
       - name: Log in to GHCR

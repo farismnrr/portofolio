@@ -5,205 +5,119 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: farismnrr/portofolio/portfolio-app
-  RUST_TARGET_AMD64: x86_64-unknown-linux-musl
-  RUST_TARGET_ARM64: aarch64-unknown-linux-musl
-  RUSTFLAGS: -D warnings
+
+concurrency:
+  group: portfolio-production-release
+  cancel-in-progress: false
 
 jobs:
-  guardrail:
-    name: full guardrail
+  preflight:
+    name: release preflight
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          package-manager-cache: false
-
-      - name: Restore npm download cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
-          restore-keys: |
-            npm-${{ runner.os }}-node24-
-
-      - name: Prepare frontend dependencies
-        working-directory: frontend
+      - name: Require dev branch
         shell: bash
         run: |
           set -euo pipefail
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
-          npm ci --no-audit --no-fund --prefer-offline
-
-      - name: Architecture / SOLID / DRY guard
-        working-directory: frontend
-        run: npm run guard
-
-      - name: Validate Markdown and Mermaid content
-        working-directory: frontend
-        run: npm run content:check
-
-      - name: Strict Svelte / TypeScript diagnostics
-        working-directory: frontend
-        run: npm run check
-
-      - name: Install musl toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends musl-tools
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.RUST_TARGET_AMD64 }},${{ env.RUST_TARGET_ARM64 }}
-          components: rustfmt, clippy
-
-      - name: Restore Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: server -> target
-          shared-key: portfolio-full
-          cache-targets: true
-          cache-on-failure: true
-
-      - name: Rust format
-        working-directory: server
-        run: cargo fmt --check
-
-      - name: Rust clippy
-        working-directory: server
-        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
-
-      - name: Rust tests
-        working-directory: server
-        run: cargo test --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features
-
-  ai-smoke:
-    name: ai smoke
-    runs-on: [self-hosted, Linux, X64]
-    needs: guardrail
-    env:
-      NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
-      NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
-      NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
-      NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
-      NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
-    steps:
-      - name: Check configured 9router model
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_CONNECT_TIMEOUT_SECONDS NINE_ROUTER_TIMEOUT_SECONDS NINE_ROUTER_API_KEY; do
-            if [ -z "${!name:-}" ]; then
-              echo "${name} is not available on the self-hosted runner."
-              exit 1
-            fi
-          done
-
-          payload="$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["NINE_ROUTER_MODEL"], "reasoning_effort": "low", "messages": [{"role": "user", "content": "hi"}]}))')"
-
-          response="$(curl --fail --silent --show-error \
-            "${NINE_ROUTER_URL%/}/chat/completions" \
-            -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
-            -H 'Content-Type: application/json' \
-            --data "$payload")"
-
-          answer="$(printf '%s' "$response" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["choices"][0]["message"]["content"].strip())')"
-
-          if [ -z "$answer" ]; then
-            echo "9router returned an empty answer."
+          if [ "${GITHUB_REF}" != "refs/heads/dev" ]; then
+            echo "Full Guardrail + Build + Deploy must be dispatched from dev."
             exit 1
           fi
 
-          echo "Configured 9router model smoke test returned a non-empty answer."
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
 
-  build:
-    name: build
+      - name: Require unreleased changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          if git diff --quiet origin/main...HEAD; then
+            echo "dev has no changes to release to main."
+            exit 1
+          fi
+
+  validate:
+    name: full guardrail + build
+    needs: preflight
+    uses: ./.github/workflows/full-guardrail-build.yml
+    secrets: inherit
+
+  merge-release:
+    name: merge dev to main
     runs-on: ubuntu-24.04
-    needs: [guardrail, ai-smoke]
+    needs: validate
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      main_sha: ${{ steps.merge.outputs.main_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Create or reuse release PR and merge it
+        id: merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pr_number="$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --base main \
+            --head dev \
+            --json number \
+            --jq '.[0].number // empty')"
+
+          if [ -z "$pr_number" ]; then
+            pr_url="$(gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
+              --base main \
+              --head dev \
+              --title "release: dev -> main" \
+              --body "Production release created by Full Guardrail + Build + Deploy run ${GITHUB_RUN_ID}.")"
+            pr_number="${pr_url##*/}"
+          fi
+
+          gh pr merge "$pr_number" \
+            --repo "$GITHUB_REPOSITORY" \
+            --merge \
+            --match-head-commit "$GITHUB_SHA"
+
+          git fetch origin main
+          main_sha="$(git rev-parse origin/main)"
+          echo "main_sha=$main_sha" >> "$GITHUB_OUTPUT"
+          echo "Merged PR #${pr_number} into main at ${main_sha}. dev was not deleted."
+
+  publish:
+    name: publish production image
+    runs-on: ubuntu-24.04
+    needs: merge-release
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@v7
-
-      - uses: actions/setup-node@v7
         with:
-          node-version: 24
-          package-manager-cache: false
+          ref: ${{ needs.merge-release.outputs.main_sha }}
 
-      - name: Restore npm download cache
-        uses: actions/cache@v6
+      - name: Download production binaries
+        uses: actions/download-artifact@v7
         with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
-          restore-keys: |
-            npm-${{ runner.os }}-node24-
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
-          npm ci --no-audit --no-fund --prefer-offline
-
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
-
-      - name: Install musl toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends musl-tools
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.RUST_TARGET_AMD64 }},${{ env.RUST_TARGET_ARM64 }}
-
-      - name: Restore Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: server -> target
-          shared-key: portfolio-full
-          cache-targets: true
-          cache-on-failure: true
-
-      - name: Build AMD64 runtime binary
-        working-directory: server
-        run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
-
-      - uses: mlugg/setup-zig@v2
-        with:
-          version: 0.14.1
-
-      - name: Install cargo-zigbuild when missing
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! command -v cargo-zigbuild > /dev/null 2>&1; then
-            cargo install cargo-zigbuild --locked
-          fi
-
-      - name: Build ARM64 runtime binary
-        working-directory: server
-        run: cargo zigbuild --release --target ${{ env.RUST_TARGET_ARM64 }}
-
-      - name: Stage architecture-specific runtime binaries
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p release/amd64 release/arm64
-          cp "server/target/${RUST_TARGET_AMD64}/release/portfolio-server" release/amd64/portfolio-server
-          cp "server/target/${RUST_TARGET_ARM64}/release/portfolio-server" release/arm64/portfolio-server
-          chmod +x release/amd64/portfolio-server release/arm64/portfolio-server
-          file release/amd64/portfolio-server release/arm64/portfolio-server
+          name: production-runtime
+          path: release
 
       - uses: docker/setup-qemu-action@v3
 
@@ -230,7 +144,7 @@ jobs:
   deploy:
     name: deploy
     runs-on: [self-hosted, Linux, X64]
-    needs: build
+    needs: [merge-release, publish]
     permissions:
       contents: read
       packages: read
@@ -248,6 +162,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.merge-release.outputs.main_sha }}
           fetch-depth: 0
 
       - name: Log in to GHCR

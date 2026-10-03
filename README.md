@@ -21,25 +21,24 @@ Development happens on `dev`.
 
 - Use `dev` for feature work, fixes, refactors, content edits, documentation, and CI/CD changes.
 - Do not develop directly on `main`.
-- `main` is the production branch and is only updated by the production release workflow through a pull request from `dev` to `main`.
+- `main` is the production release branch and is only updated by the explicit full production release workflow through a pull request from `dev` to `main`.
 - The release flow never deletes `dev` after merge, so development continues on the same branch after every release.
 
 ## CI / deployment
 
-The repository intentionally has exactly two CI/CD workflows:
+The repository has three CI/CD workflows with separate development and release responsibilities:
 
-- `Full Guardrail + Build` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also be started manually from `dev`. It runs the full frontend guardrail, Rust format/clippy/tests, the configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. It does not publish images, merge into `main`, or deploy.
-- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch` and must be dispatched from `dev`. It reuses the same `Full Guardrail + Build` workflow rather than maintaining a separate validation implementation. Only after that shared validation succeeds does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision through the configured self-hosted runner.
+- `Fast Guardrail + AMD64 Build + Deploy` is the default development path. It runs automatically for pushes to `dev` and pull requests targeting `dev`. It runs frontend architecture/content/type checks, builds the frontend, runs Rust format/clippy, builds the AMD64 production binary, and builds an AMD64-only container. Pull requests stop after validation/build. Pushes to `dev` publish `ghcr.io/farismnrr/portofolio/portfolio-app:latest` as an AMD64 image and deploy it to the X64 self-hosted host.
+- `Full Guardrail + Build` is the expensive full validation path. It is manual/reusable rather than automatic. It retains the full frontend guardrail, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and multi-architecture container build without publishing or deploying.
+- `Full Guardrail + Build + Deploy` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. It reuses `Full Guardrail + Build`; only after full validation succeeds does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision.
 
-There is no separate fast CI path. Development validation and release validation intentionally use the same full pipeline so a change cannot pass a weaker CI path and then fail because production uses different checks.
-
-Automatic CI never publishes an image or deploys. Production changes reach `main` only through the manual full release workflow.
+This split keeps normal edits fast: a one-line change no longer pays for the ARM64 toolchain, QEMU/multi-architecture build, Rust test suite, or AI smoke check on every push. Those checks still protect the explicit full release path.
 
 Container image:
 
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-The deployment target remains the Arch Linux `X64` self-hosted runner. The ARM64 image is also published so the same image tag can be deployed to an Orange Pi later without changing the build pipeline.
+The automatic development deployment targets the Arch Linux `X64` self-hosted runner with an AMD64-only image. The manual full release additionally verifies and publishes ARM64 compatibility for future ARM deployments.
 
 The application is exposed on port `3001` by the repository Compose configuration.
 

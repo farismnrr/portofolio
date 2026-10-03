@@ -2,7 +2,11 @@ name: Fast Guardrail + Build
 
 on:
   push:
+    branches:
+      - dev
   pull_request:
+    branches:
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -26,6 +30,13 @@ jobs:
       server: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.server == 'true' }}
       ci: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.ci == 'true' }}
     steps:
+      - name: Require dev for manual runs
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/dev'
+        shell: bash
+        run: |
+          echo "Fast Guardrail + Build manual runs must use the dev branch."
+          exit 1
+
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -41,6 +52,7 @@ jobs:
               - 'server/**'
             ci:
               - 'AGENTS.md'
+              - 'README.md'
               - '.github/workflows/**'
             app:
               - 'frontend/**'
@@ -49,6 +61,7 @@ jobs:
               - '.dockerignore'
               - 'compose.yaml'
               - 'AGENTS.md'
+              - 'README.md'
               - '.github/workflows/**'
 
   frontend:

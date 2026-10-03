@@ -82,7 +82,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm install --no-audit --no-fund --prefer-offline
+          npm install --ignore-scripts --no-audit --no-fund --prefer-offline
+          npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
 
       - name: Frontend fast guardrail
         working-directory: frontend

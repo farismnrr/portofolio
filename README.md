@@ -17,12 +17,12 @@ Static media lives under `frontend/public/`.
 
 ## CI / deployment
 
-CI is intentionally manual-only. Nothing runs automatically on push or pull request.
+The repository intentionally has two CI/CD workflows with separate responsibilities:
 
-Two GitHub Actions workflows are available:
+- `Fast Guardrail + Build` runs automatically on every push and pull request, and can also be started manually. It runs the fast architecture/content/type guardrail and builds the frontend and server without publishing or deploying.
+- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch`. It runs the full guardrail and tests, performs the configured AI smoke check, builds and publishes the multi-architecture runtime image, then deploys through the configured self-hosted runner.
 
-- `Fast Guardrail + Build` runs the fast architecture/content/type guardrail and builds the frontend and server without deploying.
-- `Full Guardrail + Build + Deploy` runs the full guardrail and tests, performs the configured AI smoke check, builds and publishes the multi-architecture runtime image, then deploys through the configured self-hosted runner.
+Automatic CI must never publish an image or deploy. Production deployment only happens through an explicit manual run of `Full Guardrail + Build + Deploy`.
 
 Container image:
 

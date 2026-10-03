@@ -2,11 +2,13 @@
 
 FROM debian:bookworm-slim
 
+ARG TARGETARCH
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends chromium ca-certificates fonts-liberation poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --chmod=755 release/portfolio-server /portfolio-server
+COPY --chmod=755 release/${TARGETARCH}/portfolio-server /portfolio-server
 
 ENV PORT=3000
 EXPOSE 3000

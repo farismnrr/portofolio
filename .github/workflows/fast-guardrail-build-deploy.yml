@@ -83,9 +83,19 @@ jobs:
         run: |
           set -euo pipefail
           cache_root="$HOME/.cache/portfolio-ci"
-          mkdir -p "$cache_root/npm" "$cache_root/cargo-target" "$HOME/.local/bin"
+          cargo_home="$cache_root/cargo-home"
+          rustup_home="$cache_root/rustup"
+          mkdir -p \
+            "$cache_root/npm" \
+            "$cache_root/cargo-target" \
+            "$cargo_home/bin" \
+            "$rustup_home" \
+            "$HOME/.local/bin"
           echo "NPM_CONFIG_CACHE=$cache_root/npm" >> "$GITHUB_ENV"
           echo "CARGO_TARGET_DIR=$cache_root/cargo-target" >> "$GITHUB_ENV"
+          echo "CARGO_HOME=$cargo_home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$rustup_home" >> "$GITHUB_ENV"
+          echo "$cargo_home/bin" >> "$GITHUB_PATH"
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "Persistent cache root: $cache_root"
@@ -204,7 +214,7 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Reuse Rust toolchain
+      - name: Reuse isolated Rust toolchain
         if: steps.changes.outputs.server == 'true'
         shell: bash
         run: |
@@ -212,25 +222,21 @@ jobs:
           command -v rustup >/dev/null 2>&1 || { echo "rustup is required on the self-hosted runner."; exit 1; }
 
           if ! rustup toolchain list | grep -q '^stable'; then
-            rustup toolchain install stable --profile minimal
-          fi
-
-          if ! rustup component list --toolchain stable --installed | grep -q '^rustfmt-'; then
-            rustup component add --toolchain stable rustfmt
-          fi
-
-          if ! rustup component list --toolchain stable --installed | grep -q '^clippy-'; then
-            rustup component add --toolchain stable clippy
-          fi
-
-          if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
-            sysroot="$(rustc --print sysroot)"
-            partial_target="$sysroot/lib/rustlib/$RUST_TARGET_AMD64"
-            if [ -d "$partial_target" ]; then
-              echo "Removing incomplete Rust target at $partial_target"
-              rm -rf "$partial_target"
+            rustup toolchain install stable \
+              --profile minimal \
+              --component rustfmt \
+              --component clippy \
+              --target "$RUST_TARGET_AMD64"
+          else
+            if ! rustup component list --toolchain stable --installed | grep -q '^rustfmt-'; then
+              rustup component add --toolchain stable rustfmt
             fi
-            rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+            if ! rustup component list --toolchain stable --installed | grep -q '^clippy-'; then
+              rustup component add --toolchain stable clippy
+            fi
+            if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+              rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+            fi
           fi
 
           rustc --version

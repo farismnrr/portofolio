@@ -26,18 +26,18 @@ Development happens on `dev`.
 
 ## CI / deployment
 
-The repository has two CI/CD workflows with separate development and release responsibilities:
+The repository has two CI/CD workflows with deliberately different responsibilities:
 
-- `Fast Guardrail + AMD64 Build + Deploy` is the default development path. It runs automatically for pushes to `dev` and pull requests targeting `dev`. It runs frontend architecture/content/type checks, builds the frontend, runs Rust format/clippy, builds the AMD64 production binary, and builds an AMD64-only container. Pull requests stop after validation/build. Pushes to `dev` publish `ghcr.io/farismnrr/portofolio/portfolio-app:latest` as an AMD64 image and deploy it to the X64 self-hosted host.
-- `Full Guardrail + Build + Deploy` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision.
+- `Fast Guardrail + AMD64 Build + Deploy` is the normal development loop. It runs on the X64 self-hosted runner as one job so frontend validation, Rust compilation, AMD64 image packaging, and deployment stay on the same machine. npm downloads and Cargo build output are persisted outside the clean checkout, so subsequent runs can reuse unchanged work instead of rebuilding from a fresh hosted runner. Rust uses a persistent `CARGO_TARGET_DIR`; Docker uses the machine-local layer cache. Pushes to `dev` build `portfolio-app:dev` locally and deploy that same local image directly, without a GHCR push/pull round trip. Pull requests validate/build but do not deploy, and untrusted fork PR code is not executed on the self-hosted runner.
+- `Full Guardrail + Build + Deploy` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image to GHCR, and deploy the merged production revision.
 
-There is no standalone `Full Guardrail + Build` workflow. This keeps normal edits fast and keeps the expensive full validation attached only to an explicit production release.
+There is no standalone `Full Guardrail + Build` workflow. The fast path is intentionally incremental and machine-local for quick iteration; the full release path remains the clean comprehensive verification boundary.
 
-Container image:
+Production container image:
 
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-The automatic development deployment targets the Arch Linux `X64` self-hosted runner with an AMD64-only image. The manual full release additionally verifies and publishes ARM64 compatibility for future ARM deployments.
+Fast development deployment uses the local `portfolio-app:dev` AMD64 image on the Arch Linux X64 self-hosted runner. Full production release additionally verifies and publishes ARM64 compatibility for future ARM deployments.
 
 The application is exposed on port `3001` by the repository Compose configuration.
 

@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -21,9 +20,82 @@ env:
   RUST_TARGET_ARM64: aarch64-unknown-linux-musl
 
 jobs:
+  changes:
+    name: changes
+    runs-on: ubuntu-24.04
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      server: ${{ steps.filter.outputs.server }}
+      image: ${{ steps.filter.outputs.image }}
+      deploy: ${{ steps.filter.outputs.deploy }}
+      ci: ${{ steps.filter.outputs.ci }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect relevant changes
+        id: filter
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+            if [ -z "$base" ] || [[ "$base" =~ ^0+$ ]]; then
+              base="$(git rev-list --max-parents=0 "$GITHUB_SHA")"
+            fi
+          fi
+
+          git diff --name-only "$base" "$GITHUB_SHA" | tee /tmp/changed-files.txt
+
+          frontend=false
+          server=false
+          image=false
+          deploy=false
+          ci=false
+
+          while IFS= read -r path; do
+            case "$path" in
+              frontend/*)
+                frontend=true
+                image=true
+                ;;
+              server/*)
+                server=true
+                image=true
+                ;;
+              Dockerfile|.dockerignore)
+                image=true
+                ;;
+              compose.yaml)
+                deploy=true
+                ;;
+              .github/workflows/ci.yml)
+                ci=true
+                ;;
+            esac
+          done < /tmp/changed-files.txt
+
+          if [ "$image" = true ]; then
+            deploy=true
+          fi
+
+          {
+            echo "frontend=$frontend"
+            echo "server=$server"
+            echo "image=$image"
+            echo "deploy=$deploy"
+            echo "ci=$ci"
+          } >> "$GITHUB_OUTPUT"
+
   build:
     name: build
     runs-on: ubuntu-24.04
+    needs: changes
+    if: needs.changes.outputs.image == 'true' || needs.changes.outputs.ci == 'true'
     env:
       RUSTFLAGS: -D warnings
     steps:
@@ -34,39 +106,39 @@ jobs:
           node-version: 24
           package-manager-cache: false
 
-      - name: Architecture / SOLID / DRY guard
-        working-directory: frontend
-        run: npm run guard
+      - name: Restore npm download cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
+          restore-keys: |
+            npm-${{ runner.os }}-node24-
 
       - name: Generate npm lockfile without warnings
         working-directory: frontend
         shell: bash
         run: |
           set -o pipefail
-          npm install --package-lock-only 2>&1 | tee /tmp/npm-lock.log
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline 2>&1 | tee /tmp/npm-lock.log
           if grep -Eiq '(^|[[:space:]])(npm warn|warning)([[:space:]:]|$)' /tmp/npm-lock.log; then
             echo "Dependency resolution emitted a warning; warnings are CI failures."
             exit 1
           fi
-
-      - name: Restore npm cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json') }}
-          restore-keys: |
-            npm-${{ runner.os }}-node24-
 
       - name: Install frontend dependencies without warnings
         working-directory: frontend
         shell: bash
         run: |
           set -o pipefail
-          npm ci 2>&1 | tee /tmp/npm-ci.log
+          npm ci --no-audit --no-fund --prefer-offline 2>&1 | tee /tmp/npm-ci.log
           if grep -Eiq '(^|[[:space:]])(npm warn|warning)([[:space:]:]|$)' /tmp/npm-ci.log; then
             echo "npm ci emitted a warning; warnings are CI failures."
             exit 1
           fi
+
+      - name: Architecture / SOLID / DRY guard
+        working-directory: frontend
+        run: npm run guard
 
       - name: Validate Markdown and Mermaid content
         working-directory: frontend
@@ -97,51 +169,69 @@ jobs:
           fi
 
       - name: Install musl toolchain
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true' || (github.event_name == 'push' && needs.changes.outputs.image == 'true')
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends musl-tools
 
       - uses: dtolnay/rust-toolchain@stable
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true' || (github.event_name == 'push' && needs.changes.outputs.image == 'true')
         with:
           targets: ${{ env.RUST_TARGET_AMD64 }},${{ env.RUST_TARGET_ARM64 }}
           components: rustfmt, clippy
 
-      - name: Restore Rust dependency cache
+      - name: Restore Rust dependency and tool cache
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true' || (github.event_name == 'push' && needs.changes.outputs.image == 'true')
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: server -> target
-          shared-key: portfolio-musl-release
+          shared-key: portfolio-musl-release-v2
           cache-targets: true
           cache-on-failure: true
 
       - name: Rust format
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: server
         run: cargo fmt --check
 
       - name: Rust clippy
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: server
         run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
 
       - name: Rust tests
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: server
         run: cargo test --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features
 
       - name: Build AMD64 runtime binary
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
         working-directory: server
         run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
 
       - uses: mlugg/setup-zig@v2
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
         with:
           version: 0.14.1
 
-      - name: Install cargo-zigbuild
-        run: cargo install cargo-zigbuild --locked
+      - name: Install cargo-zigbuild only on cache miss
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v cargo-zigbuild > /dev/null 2>&1; then
+            echo "cargo-zigbuild restored from Rust cache."
+          else
+            cargo install cargo-zigbuild --locked
+          fi
 
       - name: Build ARM64 runtime binary
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
         working-directory: server
         run: cargo zigbuild --release --target ${{ env.RUST_TARGET_ARM64 }}
 
       - name: Stage architecture-specific runtime binaries
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -151,14 +241,40 @@ jobs:
           chmod +x release/amd64/portfolio-server release/arm64/portfolio-server
           file release/amd64/portfolio-server release/arm64/portfolio-server
 
+      - name: Upload runtime binaries
+        if: github.event_name == 'push' && needs.changes.outputs.image == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: runtime-binaries
+          path: release/
+          retention-days: 1
+          if-no-files-found: error
+
+  publish:
+    name: publish
+    runs-on: ubuntu-24.04
+    needs: [changes, build]
+    if: github.event_name == 'push' && needs.changes.outputs.image == 'true' && needs.build.result == 'success'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download runtime binaries
+        uses: actions/download-artifact@v7
+        with:
+          name: runtime-binaries
+          path: release
+
+      - name: Restore executable permissions
+        run: chmod +x release/amd64/portfolio-server release/arm64/portfolio-server
+
       - uses: docker/setup-qemu-action@v3
-        if: github.event_name == 'push'
 
       - uses: docker/setup-buildx-action@v4
-        if: github.event_name == 'push'
 
       - name: Log in to GHCR
-        if: github.event_name == 'push'
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
@@ -166,7 +282,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package and push multi-architecture runtime
-        if: github.event_name == 'push'
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -174,11 +289,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=portfolio-runtime
+          cache-to: type=gha,mode=max,scope=portfolio-runtime
 
   ai-smoke:
     name: ai smoke
     runs-on: [self-hosted, Linux, X64]
-    if: github.event_name == 'pull_request'
+    needs: changes
+    if: github.event_name == 'pull_request' && (needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true')
     env:
       NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
       NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
@@ -216,9 +334,19 @@ jobs:
           echo "Configured 9router model smoke test returned a non-empty answer."
 
   deploy:
+    name: deploy
     runs-on: [self-hosted, Linux, X64]
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [changes, build, publish]
+    if: >-
+      always() &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.changes.outputs.deploy == 'true' &&
+      (needs.build.result == 'success' || needs.build.result == 'skipped') &&
+      (needs.publish.result == 'success' || needs.publish.result == 'skipped')
+    permissions:
+      contents: read
+      packages: read
     concurrency:
       group: portfolio-self-hosted
       cancel-in-progress: true

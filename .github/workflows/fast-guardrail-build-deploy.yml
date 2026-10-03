@@ -1,0 +1,242 @@
+name: Fast Guardrail + AMD64 Build + Deploy
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: read
+
+env:
+  RUST_TARGET_AMD64: x86_64-unknown-linux-musl
+  RUSTFLAGS: -D warnings
+  REGISTRY: ghcr.io
+  IMAGE_NAME: farismnrr/portofolio/portfolio-app
+
+concurrency:
+  group: fast-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: frontend fast guardrail + build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require dev for manual runs
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" != "refs/heads/dev" ]; then
+            echo "Fast Guardrail + AMD64 Build + Deploy must be dispatched from dev."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Restore npm download cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
+          restore-keys: |
+            npm-${{ runner.os }}-node24-
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
+          npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Architecture / SOLID / DRY guard
+        working-directory: frontend
+        run: npm run guard
+
+      - name: Validate Markdown and Mermaid content
+        working-directory: frontend
+        run: npm run content:check
+
+      - name: Strict Svelte / TypeScript diagnostics
+        working-directory: frontend
+        run: npm run check
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Upload frontend dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: fast-frontend-dist
+          path: frontend/dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  server:
+    name: server fast guardrail + amd64 build
+    runs-on: ubuntu-24.04
+    needs: frontend
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download frontend dist
+        uses: actions/download-artifact@v7
+        with:
+          name: fast-frontend-dist
+          path: frontend/dist
+
+      - name: Install musl toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends musl-tools
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ env.RUST_TARGET_AMD64 }}
+          components: rustfmt, clippy
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server -> target
+          shared-key: portfolio-fast-amd64
+          cache-targets: true
+          cache-on-failure: true
+
+      - name: Rust format
+        working-directory: server
+        run: cargo fmt --check
+
+      - name: Rust clippy
+        working-directory: server
+        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
+
+      - name: Build AMD64 runtime binary
+        working-directory: server
+        run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
+
+      - name: Stage AMD64 runtime binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release/amd64
+          cp "server/target/${RUST_TARGET_AMD64}/release/portfolio-server" release/amd64/portfolio-server
+          chmod +x release/amd64/portfolio-server
+          file release/amd64/portfolio-server
+
+      - name: Upload AMD64 runtime
+        uses: actions/upload-artifact@v7
+        with:
+          name: fast-amd64-runtime
+          path: release/
+          if-no-files-found: error
+          retention-days: 1
+
+  container:
+    name: amd64 container build
+    runs-on: ubuntu-24.04
+    needs: server
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download AMD64 runtime
+        uses: actions/download-artifact@v7
+        with:
+          name: fast-amd64-runtime
+          path: release
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build AMD64 runtime without publishing
+        if: github.event_name == 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: false
+          cache-from: type=gha,scope=portfolio-fast-amd64
+          cache-to: type=gha,mode=max,scope=portfolio-fast-amd64
+
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push AMD64 runtime
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=portfolio-fast-amd64
+          cache-to: type=gha,mode=max,scope=portfolio-fast-amd64
+
+  deploy:
+    name: deploy amd64 dev
+    if: github.event_name != 'pull_request'
+    runs-on: [self-hosted, Linux, X64]
+    needs: container
+    permissions:
+      contents: read
+      packages: read
+    concurrency:
+      group: portfolio-self-hosted
+      cancel-in-progress: true
+    steps:
+      - name: Repair self-hosted workspace ownership
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy latest AMD64 image to Arch host
+        env:
+          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          PORTFOLIO_PORT: "3001"
+          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
+          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
+          NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
+          NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
+          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -p portofolio pull
+          docker compose -p portofolio up -d --remove-orphans
+          docker compose -p portofolio ps
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null

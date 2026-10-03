@@ -17,7 +17,8 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: farismnrr/portofolio/portfolio-app
-  RUST_TARGET: x86_64-unknown-linux-musl
+  RUST_TARGET_AMD64: x86_64-unknown-linux-musl
+  RUST_TARGET_ARM64: aarch64-unknown-linux-musl
 
 jobs:
   build:
@@ -102,7 +103,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ env.RUST_TARGET }}
+          targets: ${{ env.RUST_TARGET_AMD64 }},${{ env.RUST_TARGET_ARM64 }}
           components: rustfmt, clippy
 
       - name: Restore Rust dependency cache
@@ -119,21 +120,39 @@ jobs:
 
       - name: Rust clippy
         working-directory: server
-        run: cargo clippy --release --target ${{ env.RUST_TARGET }} --all-targets --all-features -- -D warnings
+        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
 
       - name: Rust tests
         working-directory: server
-        run: cargo test --release --target ${{ env.RUST_TARGET }} --all-targets --all-features
+        run: cargo test --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features
 
-      - name: Build embedded single binary
+      - name: Build AMD64 runtime binary
         working-directory: server
-        run: cargo build --release --target ${{ env.RUST_TARGET }}
+        run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
 
-      - name: Stage runtime binary
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.14.1
+
+      - name: Install cargo-zigbuild
+        run: cargo install cargo-zigbuild --locked
+
+      - name: Build ARM64 runtime binary
+        working-directory: server
+        run: cargo zigbuild --release --target ${{ env.RUST_TARGET_ARM64 }}
+
+      - name: Stage architecture-specific runtime binaries
+        shell: bash
         run: |
-          mkdir -p release
-          cp "server/target/${RUST_TARGET}/release/portfolio-server" release/portfolio-server
-          chmod +x release/portfolio-server
+          set -euo pipefail
+          mkdir -p release/amd64 release/arm64
+          cp "server/target/${RUST_TARGET_AMD64}/release/portfolio-server" release/amd64/portfolio-server
+          cp "server/target/${RUST_TARGET_ARM64}/release/portfolio-server" release/arm64/portfolio-server
+          chmod +x release/amd64/portfolio-server release/arm64/portfolio-server
+          file release/amd64/portfolio-server release/arm64/portfolio-server
+
+      - uses: docker/setup-qemu-action@v3
+        if: github.event_name == 'push'
 
       - uses: docker/setup-buildx-action@v4
         if: github.event_name == 'push'
@@ -146,15 +165,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package and push prebuilt Rust runtime
+      - name: Package and push multi-architecture runtime
         if: github.event_name == 'push'
         uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
 
   ai-smoke:
     name: ai smoke
@@ -223,7 +242,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy latest
+      - name: Deploy latest to Arch host
         env:
           PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           PORTFOLIO_PORT: "3001"

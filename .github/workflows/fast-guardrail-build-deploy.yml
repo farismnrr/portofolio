@@ -112,6 +112,8 @@ jobs:
           set -euo pipefail
 
           frontend=false
+          frontend_source=false
+          frontend_content=false
           server=false
           runtime=false
           image=false
@@ -137,8 +139,15 @@ jobs:
 
               while IFS= read -r path; do
                 case "$path" in
+                  frontend/content/*|frontend/public/*)
+                    frontend=true
+                    frontend_content=true
+                    runtime=true
+                    image=true
+                    ;;
                   frontend/*)
                     frontend=true
+                    frontend_source=true
                     runtime=true
                     image=true
                     ;;
@@ -163,6 +172,8 @@ jobs:
 
           if [ ! -f frontend/dist/index.html ]; then
             frontend=true
+            frontend_source=true
+            frontend_content=true
             runtime=true
             image=true
           fi
@@ -174,6 +185,8 @@ jobs:
 
           if [ "$force" = true ]; then
             frontend=true
+            frontend_source=true
+            frontend_content=true
             server=true
             runtime=true
             image=true
@@ -182,13 +195,15 @@ jobs:
 
           {
             echo "frontend=$frontend"
+            echo "frontend_source=$frontend_source"
+            echo "frontend_content=$frontend_content"
             echo "server=$server"
             echo "runtime=$runtime"
             echo "image=$image"
             echo "compose=$compose"
           } >> "$GITHUB_OUTPUT"
 
-          echo "frontend=$frontend server=$server runtime=$runtime image=$image compose=$compose"
+          echo "frontend=$frontend frontend_source=$frontend_source frontend_content=$frontend_content server=$server runtime=$runtime image=$image compose=$compose"
 
       - uses: actions/setup-node@v7
         if: steps.changes.outputs.frontend == 'true'
@@ -205,15 +220,19 @@ jobs:
           npm install --ignore-scripts --no-audit --no-fund --prefer-offline
           npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
 
-      - name: Frontend fast guardrail
-        if: steps.changes.outputs.frontend == 'true'
+      - name: Frontend source guardrail
+        if: steps.changes.outputs.frontend_source == 'true'
         working-directory: frontend
         shell: bash
         run: |
           set -euo pipefail
           npm run guard
-          npm run content:check
           npm run check
+
+      - name: Frontend content validation
+        if: steps.changes.outputs.frontend == 'true'
+        working-directory: frontend
+        run: npm run content:check
 
       - name: Build frontend
         if: steps.changes.outputs.frontend == 'true'

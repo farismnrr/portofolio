@@ -16,6 +16,7 @@ permissions:
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
   RUSTFLAGS: -D warnings
+  RUSTUP_TOOLCHAIN: stable
   DEV_IMAGE: portfolio-app:dev
 
 concurrency:
@@ -67,9 +68,11 @@ jobs:
         run: |
           set -euo pipefail
           cache_root="$HOME/.cache/portfolio-ci"
-          mkdir -p "$cache_root/npm" "$cache_root/cargo-target"
+          mkdir -p "$cache_root/npm" "$cache_root/cargo-target" "$HOME/.local/bin"
           echo "NPM_CONFIG_CACHE=$cache_root/npm" >> "$GITHUB_ENV"
           echo "CARGO_TARGET_DIR=$cache_root/cargo-target" >> "$GITHUB_ENV"
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "Persistent cache root: $cache_root"
 
       - uses: actions/setup-node@v7
@@ -98,14 +101,54 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.RUST_TARGET_AMD64 }}
-          components: rustfmt, clippy
+      - name: Reuse Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v rustup >/dev/null 2>&1 || { echo "rustup is required on the self-hosted runner."; exit 1; }
+
+          if ! rustup toolchain list | grep -q '^stable'; then
+            rustup toolchain install stable --profile minimal
+          fi
+
+          if ! rustup component list --toolchain stable --installed | grep -q '^rustfmt-'; then
+            rustup component add --toolchain stable rustfmt
+          fi
+
+          if ! rustup component list --toolchain stable --installed | grep -q '^clippy-'; then
+            rustup component add --toolchain stable clippy
+          fi
+
+          if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+            rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+          fi
+
+          rustc --version
+          cargo --version
+
+      - name: Detect persistent Zig
+        id: zig
+        shell: bash
+        run: |
+          if command -v zig >/dev/null 2>&1; then
+            echo "installed=true" >> "$GITHUB_OUTPUT"
+            zig version
+          else
+            echo "installed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: mlugg/setup-zig@v2
+        if: steps.zig.outputs.installed != 'true'
         with:
           version: 0.14.1
+
+      - name: Persist Zig for future runs
+        if: steps.zig.outputs.installed != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ln -sfn "$(command -v zig)" "$HOME/.local/bin/zig"
+          zig version
 
       - name: Install cargo-zigbuild when missing
         shell: bash

@@ -6,6 +6,15 @@ export interface RenderedMarkdown { html: string; toc: TocItem[]; hasMermaid: bo
 function stripTags(value: string) { return value.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'"); }
 function slugify(value: string) { return stripTags(value).toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); }
 
+const mermaidPlaceholder = `<div class="mermaid-shell not-prose relative my-10 min-h-[220px] overflow-hidden border border-black/10 bg-white/45 p-5 md:p-8" data-state="pending">
+  <div class="mermaid-skeleton absolute inset-0 flex animate-pulse flex-col justify-center gap-4 p-6 md:p-10" aria-hidden="true">
+    <div class="h-4 w-1/3 rounded bg-black/10"></div>
+    <div class="h-16 w-3/4 rounded bg-black/[0.06]"></div>
+    <div class="h-4 w-1/2 rounded bg-black/10"></div>
+  </div>
+  <pre class="mermaid m-0 bg-transparent p-0">$1</pre>
+</div>`;
+
 export function renderMarkdown(markdown: string): RenderedMarkdown {
   const parsed = marked.parse(markdown, { async: false, gfm: true, breaks: false });
   let html = String(parsed);
@@ -22,7 +31,7 @@ export function renderMarkdown(markdown: string): RenderedMarkdown {
     return `<h${level} id="${id}">${inner}</h${level}>`;
   });
   const hasMermaid = /<code class="language-mermaid">/.test(html);
-  html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, '<div class="not-prose my-10 overflow-x-auto border border-black/10 bg-white/45 p-5 md:p-8"><pre class="mermaid m-0 bg-transparent p-0">$1</pre></div>');
+  html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, mermaidPlaceholder);
   html = html.replace(/<img src="([^"]+)" alt="([^"]*)"\s*\/?>/g, '<img src="$1" alt="$2" loading="lazy" decoding="async" />');
   return { html, toc, hasMermaid };
 }

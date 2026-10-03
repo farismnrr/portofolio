@@ -8,9 +8,10 @@
   export let first=false;
   export let last=false;
 
-  $: linkedProjects = (item.projects ?? [])
-    .map((slug:string) => getProjectBySlug(slug))
-    .filter(Boolean);
+  $: linkedProjects = (item.projects ?? []).flatMap((slug:string) => {
+    const project = getProjectBySlug(slug);
+    return project ? [project] : [];
+  });
 </script>
 
 <article class="grid gap-5 border-b border-black/10 py-8 md:grid-cols-[170px_42px_1fr] lg:py-10">

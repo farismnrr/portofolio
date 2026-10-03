@@ -14,13 +14,17 @@ These rules apply to repository work unless the user explicitly requests otherwi
 ## CI/CD
 
 - Keep exactly two GitHub Actions workflow files under `.github/workflows/`.
-- `fast-guardrail-build.yml` is the automatic development validation workflow. It runs for pushes to `dev` and pull requests targeting `dev`, may also support manual dispatch from `dev`, and must never publish images, merge into `main`, or deploy.
+- `full-guardrail-build.yml` is the automatic development validation workflow. It runs the full frontend guardrail, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build without publishing or deploying.
+- `full-guardrail-build.yml` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also support manual dispatch from `dev` and `workflow_call` reuse by the production release workflow.
+- The automatic full workflow must never publish images, merge into `main`, or deploy.
 - `full-guardrail-build-deploy.yml` is the production release workflow. It must remain manual-only via `workflow_dispatch` and must only be run from `dev`.
-- The full release workflow must run the full guardrail/tests and production build first. Only after those succeed may it create or reuse the `dev` -> `main` pull request, merge that PR into `main`, publish the production image, and deploy it.
-- The full release workflow is the only workflow allowed to merge the release PR, publish the production image, or deploy.
+- The production release workflow must reuse `full-guardrail-build.yml` for validation instead of maintaining a separate duplicated guardrail/build implementation.
+- Only after the shared full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, publish the production image, and deploy it.
+- The production release workflow is the only workflow allowed to merge the release PR, publish the production image, or deploy.
 - The release workflow must not delete the `dev` branch after the PR merge.
 - Do not add `push`, `pull_request`, `schedule`, `workflow_run`, or other automatic triggers to the full deployment workflow.
-- Keep guardrail/build/release/deploy responsibilities separated according to the two workflows above. Do not recreate legacy CI workflows or split the pipeline into additional YAML files unless explicitly requested.
+- Do not recreate a separate fast CI workflow. Development validation and release validation must use the same full validation workflow to prevent drift.
+- Do not recreate legacy CI workflows or split the pipeline into additional YAML files unless explicitly requested.
 
 ## Documentation
 

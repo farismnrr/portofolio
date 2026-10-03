@@ -28,8 +28,10 @@ Development happens on `dev`.
 
 The repository intentionally has exactly two CI/CD workflows:
 
-- `Fast Guardrail + Build` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also be started manually from `dev`. It runs the fast architecture/content/type guardrail and builds the frontend and server without publishing, merging into `main`, or deploying.
-- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch` and must be dispatched from `dev`. It runs the full guardrail and tests, performs the configured AI smoke check, builds the production runtime, then creates or reuses the `dev` -> `main` release pull request and merges it without deleting `dev`. After the merge succeeds, it publishes the multi-architecture runtime image and deploys the merged production revision through the configured self-hosted runner.
+- `Full Guardrail + Build` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also be started manually from `dev`. It runs the full frontend guardrail, Rust format/clippy/tests, the configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. It does not publish images, merge into `main`, or deploy.
+- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch` and must be dispatched from `dev`. It reuses the same `Full Guardrail + Build` workflow rather than maintaining a separate validation implementation. Only after that shared validation succeeds does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision through the configured self-hosted runner.
+
+There is no separate fast CI path. Development validation and release validation intentionally use the same full pipeline so a change cannot pass a weaker CI path and then fail because production uses different checks.
 
 Automatic CI never publishes an image or deploys. Production changes reach `main` only through the manual full release workflow.
 

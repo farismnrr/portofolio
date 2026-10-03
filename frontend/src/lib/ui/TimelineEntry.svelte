@@ -1,9 +1,16 @@
 <script lang="ts">
+  import { getProjectBySlug } from '../project-content';
+  import { navigate } from '../router';
   import TechChips from './TechChips.svelte';
+
   export let item:any;
   export let compact=false;
   export let first=false;
   export let last=false;
+
+  $: linkedProjects = (item.projects ?? [])
+    .map((slug:string) => getProjectBySlug(slug))
+    .filter(Boolean);
 </script>
 
 <article class="grid gap-5 border-b border-black/10 py-8 md:grid-cols-[170px_42px_1fr] lg:py-10">
@@ -18,6 +25,20 @@
     <p class="mt-1 text-[16px] text-black/62">{item.role}</p>
     {#if item.location}<p class="mt-1 text-[13px] text-black/42">{item.location}</p>{/if}
     <p class="mt-5 text-[15px] leading-7 text-black/58">{item.summary}</p>
+
+    {#if linkedProjects.length}
+      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
+        <span class="text-black/40">Related project</span>
+        {#each linkedProjects as project}
+          <a
+            class="font-medium text-[var(--accent)] underline decoration-black/20 underline-offset-4 transition hover:decoration-current"
+            href={'/projects/' + project.slug}
+            on:click={(event)=>navigate(event, '/projects/' + project.slug)}
+          >{project.cardTitle} →</a>
+        {/each}
+      </div>
+    {/if}
+
     {#if !compact}
       <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58">
         {#each item.bullets as bullet}<li>{bullet}</li>{/each}

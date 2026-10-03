@@ -15,14 +15,23 @@ Portfolio data lives under `frontend/content/`. Profile, experience, education, 
 
 Static media lives under `frontend/public/`.
 
+## Branch workflow
+
+Development happens on `dev`.
+
+- Use `dev` for feature work, fixes, refactors, content edits, documentation, and CI/CD changes.
+- Do not develop directly on `main`.
+- `main` is the production branch and is only updated by the production release workflow through a pull request from `dev` to `main`.
+- The release flow never deletes `dev` after merge, so development continues on the same branch after every release.
+
 ## CI / deployment
 
-The repository intentionally has two CI/CD workflows with separate responsibilities:
+The repository intentionally has exactly two CI/CD workflows:
 
-- `Fast Guardrail + Build` runs automatically on every push and pull request, and can also be started manually. It runs the fast architecture/content/type guardrail and builds the frontend and server without publishing or deploying.
-- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch`. It runs the full guardrail and tests, performs the configured AI smoke check, builds and publishes the multi-architecture runtime image, then deploys through the configured self-hosted runner.
+- `Fast Guardrail + Build` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also be started manually from `dev`. It runs the fast architecture/content/type guardrail and builds the frontend and server without publishing, merging into `main`, or deploying.
+- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch` and must be dispatched from `dev`. It runs the full guardrail and tests, performs the configured AI smoke check, builds the production runtime, then creates or reuses the `dev` -> `main` release pull request and merges it without deleting `dev`. After the merge succeeds, it publishes the multi-architecture runtime image and deploys the merged production revision through the configured self-hosted runner.
 
-Automatic CI must never publish an image or deploy. Production deployment only happens through an explicit manual run of `Full Guardrail + Build + Deploy`.
+Automatic CI never publishes an image or deploys. Production changes reach `main` only through the manual full release workflow.
 
 Container image:
 

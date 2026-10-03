@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { renderInlineMarkdown } from '../markdown';
+  import { certificationGroupId, certificationGroups } from '../structured-content';
   import { getProjectBySlug } from '../project-content';
+  import { renderInlineMarkdown } from '../markdown';
   import { navigate } from '../router';
   import TechChips from './TechChips.svelte';
 
@@ -12,6 +13,11 @@
   $: linkedProjects = (item.projects ?? []).flatMap((slug:string) => {
     const project = getProjectBySlug(slug);
     return project ? [project] : [];
+  });
+
+  $: linkedCertificationGroups = (item.certificationGroups ?? []).flatMap((name:string) => {
+    const group = certificationGroups.find((candidate) => candidate.group === name);
+    return group ? [group] : [];
   });
 </script>
 
@@ -28,22 +34,38 @@
     {#if item.location}<p class="mt-1 text-[13px] text-black/42">{item.location}</p>{/if}
     <p class="mt-5 text-[15px] leading-7 text-black/58">{item.summary}</p>
 
-    {#if linkedProjects.length}
+    {#if linkedProjects.length || linkedCertificationGroups.length}
       <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
-        <span class="text-black/40">Related project</span>
-        {#each linkedProjects as project}
-          <a
-            class="font-medium text-[var(--accent)] underline decoration-black/20 underline-offset-4 transition hover:decoration-current"
-            href={'/projects/' + project.slug}
-            on:click={(event)=>navigate(event, '/projects/' + project.slug)}
-          >{project.cardTitle} →</a>
-        {/each}
+        {#if linkedProjects.length}
+          <span class="text-black/40">Related project</span>
+          {#each linkedProjects as project}
+            <a
+              class="font-medium text-[var(--accent)] underline decoration-black/20 underline-offset-4 transition hover:decoration-current"
+              href={'/projects/' + project.slug}
+              on:click={(event)=>navigate(event, '/projects/' + project.slug)}
+            >{project.cardTitle} →</a>
+          {/each}
+        {/if}
+
+        {#if linkedCertificationGroups.length}
+          <span class="text-black/40">Related certifications</span>
+          {#each linkedCertificationGroups as group}
+            <a
+              class="font-medium text-[var(--accent)] underline decoration-black/20 underline-offset-4 transition hover:decoration-current"
+              href={'/certifications#' + certificationGroupId(group.group)}
+            >{group.group} ({group.items.length}) →</a>
+          {/each}
+        {/if}
       </div>
     {/if}
 
     {#if !compact}
-      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58 [&_a]:font-medium [&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-black/[0.05] [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/78">
-        {#each item.bullets as bullet}<li>{@html renderInlineMarkdown(bullet)}</li>{/each}
+      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58">
+        {#each item.bullets as bullet}
+          <li class="[&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-black/5 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/75">
+            {@html renderInlineMarkdown(bullet)}
+          </li>
+        {/each}
       </ul>
       <div class="mt-5"><TechChips items={item.tech} pills/></div>
     {/if}

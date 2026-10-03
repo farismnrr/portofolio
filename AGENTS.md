@@ -13,19 +13,18 @@ These rules apply to repository work unless the user explicitly requests otherwi
 
 ## CI/CD
 
-- Keep exactly three GitHub Actions workflow files under `.github/workflows/` unless the user explicitly requests another structure.
+- Keep exactly two GitHub Actions workflow files under `.github/workflows/` unless the user explicitly requests another structure.
 - `fast-guardrail-build-deploy.yml` is the automatic development workflow for `dev`.
 - The fast workflow runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also support manual dispatch from `dev`.
 - Fast validation runs the frontend architecture/content/type checks, frontend build, Rust format/clippy, and an AMD64 production build. It intentionally skips the expensive Rust test suite, AI smoke check, ARM64 build, QEMU, and multi-architecture container build.
 - On pull requests targeting `dev`, the fast workflow validates and builds the AMD64 container without publishing or deploying.
 - On pushes to `dev` and manual runs from `dev`, the fast workflow publishes an AMD64-only `ghcr.io/farismnrr/portofolio/portfolio-app:latest` image and deploys it to the X64 self-hosted host.
-- `full-guardrail-build.yml` is the full validation workflow. It retains the complete frontend guardrail, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build without publishing or deploying.
-- `full-guardrail-build.yml` is not an automatic development trigger. It supports manual dispatch from `dev` and `workflow_call` reuse by the production release workflow.
 - `full-guardrail-build-deploy.yml` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` and must only be run from `dev`.
-- The production release workflow must reuse `full-guardrail-build.yml` for full validation instead of duplicating the complete validation implementation.
-- Only after shared full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, publish the production multi-architecture image, and deploy it.
+- The production release workflow contains the complete full validation inline: frontend guardrail/build, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build.
+- Only after full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, publish the production multi-architecture image, and deploy it.
 - The release workflow must not delete the `dev` branch after the PR merge.
 - Do not add automatic triggers to `full-guardrail-build-deploy.yml` unless the user explicitly requests a release-policy change.
+- Do not recreate a standalone `full-guardrail-build.yml` workflow unless explicitly requested.
 - Keep the fast and full paths intentionally different: fast optimizes normal development feedback and X64 deployment; full protects explicit production releases and ARM64 compatibility.
 
 ## Documentation

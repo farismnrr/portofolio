@@ -87,7 +87,7 @@ jobs:
           retention-days: 1
 
   server:
-    name: server fast guardrail + amd64 build
+    name: server fast guardrail + amd64 image
     runs-on: ubuntu-24.04
     needs: frontend
     steps:
@@ -138,30 +138,9 @@ jobs:
           chmod +x release/amd64/portfolio-server
           file release/amd64/portfolio-server
 
-      - name: Upload AMD64 runtime
-        uses: actions/upload-artifact@v7
-        with:
-          name: fast-amd64-runtime
-          path: release/
-          if-no-files-found: error
-          retention-days: 1
-
-  container:
-    name: amd64 container build
-    runs-on: ubuntu-24.04
-    needs: server
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Download AMD64 runtime
-        uses: actions/download-artifact@v7
-        with:
-          name: fast-amd64-runtime
-          path: release
-
       - uses: docker/setup-buildx-action@v4
 
-      - name: Build AMD64 runtime without publishing
+      - name: Build AMD64 runtime image without publishing
         if: github.event_name == 'pull_request'
         uses: docker/build-push-action@v7
         with:
@@ -180,7 +159,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push AMD64 runtime
+      - name: Package and push AMD64 runtime image
         if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v7
         with:
@@ -196,7 +175,7 @@ jobs:
     name: deploy amd64 dev
     if: github.event_name != 'pull_request'
     runs-on: [self-hosted, Linux, X64]
-    needs: container
+    needs: server
     permissions:
       contents: read
       packages: read

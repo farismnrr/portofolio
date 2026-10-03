@@ -21,9 +21,10 @@ jobs:
     name: detect changes
     runs-on: ubuntu-24.04
     outputs:
-      app: ${{ steps.filter.outputs.app }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-      server: ${{ steps.filter.outputs.server }}
+      app: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.app == 'true' }}
+      frontend: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.frontend == 'true' }}
+      server: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.server == 'true' }}
+      ci: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.ci == 'true' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -38,6 +39,9 @@ jobs:
               - 'frontend/**'
             server:
               - 'server/**'
+            ci:
+              - 'AGENTS.md'
+              - '.github/workflows/**'
             app:
               - 'frontend/**'
               - 'server/**'
@@ -45,8 +49,7 @@ jobs:
               - '.dockerignore'
               - 'compose.yaml'
               - 'AGENTS.md'
-              - '.github/workflows/fast-guardrail-build.yml'
-              - '.github/workflows/full-guardrail-build-deploy.yml'
+              - '.github/workflows/**'
 
   frontend:
     name: frontend guardrail + build
@@ -78,17 +81,17 @@ jobs:
           npm ci --no-audit --no-fund --prefer-offline
 
       - name: Architecture / SOLID / DRY guard
-        if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+        if: needs.changes.outputs.frontend == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: frontend
         run: npm run guard
 
       - name: Validate Markdown and Mermaid content
-        if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+        if: needs.changes.outputs.frontend == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: frontend
         run: npm run content:check
 
       - name: Strict Svelte / TypeScript diagnostics
-        if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+        if: needs.changes.outputs.frontend == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: frontend
         run: npm run check
 
@@ -131,7 +134,7 @@ jobs:
           cache-on-failure: true
 
       - name: Rust format
-        if: needs.changes.outputs.server == 'true' || github.event_name == 'workflow_dispatch'
+        if: needs.changes.outputs.server == 'true' || needs.changes.outputs.ci == 'true'
         working-directory: server
         run: cargo fmt --check
 

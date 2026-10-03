@@ -1,6 +1,8 @@
 name: Fast Guardrail + Build
 
 on:
+  push:
+  pull_request:
   workflow_dispatch:
 
 permissions:

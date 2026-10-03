@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - dev
+    paths-ignore:
+      - README.md
+      - AGENTS.md
+      - "**/*.md"
+      - "!frontend/content/**/*.md"
   pull_request:
     branches:
       - dev
@@ -11,23 +16,25 @@ on:
 
 permissions:
   contents: read
-  packages: write
   pull-requests: read
 
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
   RUSTFLAGS: -D warnings
-  REGISTRY: ghcr.io
-  IMAGE_NAME: farismnrr/portofolio/portfolio-app
+  DEV_IMAGE: portfolio-app:dev
 
 concurrency:
   group: fast-dev-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  frontend:
-    name: frontend fast guardrail + build
-    runs-on: ubuntu-24.04
+  fast:
+    name: incremental amd64 build + deploy
+    runs-on: [self-hosted, Linux, X64]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    concurrency:
+      group: portfolio-self-hosted
+      cancel-in-progress: true
     steps:
       - name: Require dev for manual runs
         if: github.event_name == 'workflow_dispatch'
@@ -39,20 +46,34 @@ jobs:
             exit 1
           fi
 
+      - name: Repair workspace ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
       - uses: actions/checkout@v7
+        with:
+          clean: true
+          fetch-depth: 1
+
+      - name: Configure persistent build caches
+        shell: bash
+        run: |
+          set -euo pipefail
+          cache_root="$HOME/.cache/portfolio-ci"
+          mkdir -p "$cache_root/npm" "$cache_root/cargo-target"
+          echo "NPM_CONFIG_CACHE=$cache_root/npm" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_DIR=$cache_root/cargo-target" >> "$GITHUB_ENV"
+          echo "Persistent cache root: $cache_root"
 
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           package-manager-cache: false
-
-      - name: Restore npm download cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
-          restore-keys: |
-            npm-${{ runner.os }}-node24-
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -62,150 +83,77 @@ jobs:
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
           npm ci --no-audit --no-fund --prefer-offline
 
-      - name: Architecture / SOLID / DRY guard
+      - name: Frontend fast guardrail
         working-directory: frontend
-        run: npm run guard
-
-      - name: Validate Markdown and Mermaid content
-        working-directory: frontend
-        run: npm run content:check
-
-      - name: Strict Svelte / TypeScript diagnostics
-        working-directory: frontend
-        run: npm run check
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run guard
+          npm run content:check
+          npm run check
 
       - name: Build frontend
         working-directory: frontend
         run: npm run build
 
-      - name: Upload frontend dist
-        uses: actions/upload-artifact@v7
-        with:
-          name: fast-frontend-dist
-          path: frontend/dist/
-          if-no-files-found: error
-          retention-days: 1
-
-  server:
-    name: server fast guardrail + amd64 image
-    runs-on: ubuntu-24.04
-    needs: frontend
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Download frontend dist
-        uses: actions/download-artifact@v7
-        with:
-          name: fast-frontend-dist
-          path: frontend/dist
-
-      - name: Install musl toolchain
+      - name: Ensure musl toolchain
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends musl-tools
+          set -euo pipefail
+          if command -v musl-gcc >/dev/null 2>&1; then
+            exit 0
+          fi
+
+          if command -v pacman >/dev/null 2>&1; then
+            sudo pacman -S --needed --noconfirm musl
+          else
+            echo "musl-gcc is missing and this self-hosted runner is not Arch/pacman based."
+            exit 1
+          fi
 
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ env.RUST_TARGET_AMD64 }}
           components: rustfmt, clippy
 
-      - name: Restore Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: server -> target
-          shared-key: portfolio-fast-amd64
-          cache-targets: true
-          cache-on-failure: true
-
-      - name: Rust format
+      - name: Rust fast guardrail
         working-directory: server
-        run: cargo fmt --check
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo fmt --check
+          cargo clippy --release --target "$RUST_TARGET_AMD64" --all-targets --all-features -- -D warnings
 
-      - name: Rust clippy
+      - name: Incremental AMD64 runtime build
         working-directory: server
-        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
-
-      - name: Build AMD64 runtime binary
-        working-directory: server
-        run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build --release --target "$RUST_TARGET_AMD64"
 
       - name: Stage AMD64 runtime binary
         shell: bash
         run: |
           set -euo pipefail
+          rm -rf release/amd64
           mkdir -p release/amd64
-          cp "server/target/${RUST_TARGET_AMD64}/release/portfolio-server" release/amd64/portfolio-server
+          cp "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" release/amd64/portfolio-server
           chmod +x release/amd64/portfolio-server
           file release/amd64/portfolio-server
 
-      - uses: docker/setup-buildx-action@v4
-
-      - name: Build AMD64 runtime image without publishing
-        if: github.event_name == 'pull_request'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
-          push: false
-          cache-from: type=gha,scope=portfolio-fast-amd64
-          cache-to: type=gha,mode=max,scope=portfolio-fast-amd64
-
-      - name: Log in to GHCR
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Package and push AMD64 runtime image
-        if: github.event_name != 'pull_request'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha,scope=portfolio-fast-amd64
-          cache-to: type=gha,mode=max,scope=portfolio-fast-amd64
-
-  deploy:
-    name: deploy amd64 dev
-    if: github.event_name != 'pull_request'
-    runs-on: [self-hosted, Linux, X64]
-    needs: server
-    permissions:
-      contents: read
-      packages: read
-    concurrency:
-      group: portfolio-self-hosted
-      cancel-in-progress: true
-    steps:
-      - name: Repair self-hosted workspace ownership
+      - name: Build local AMD64 runtime image
         shell: bash
         run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/work" \
-            alpine:3.20 \
-            chown -R "$(id -u):$(id -g)" /work
+          set -euo pipefail
+          DOCKER_BUILDKIT=1 docker build \
+            --build-arg TARGETARCH=amd64 \
+            --tag "$DEV_IMAGE" \
+            .
 
-      - uses: actions/checkout@v7
-        with:
-          ref: dev
-          fetch-depth: 0
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy latest AMD64 image to Arch host
+      - name: Deploy local AMD64 image
+        if: github.event_name != 'pull_request'
         env:
-          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"
           NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
           NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
@@ -215,7 +163,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          docker compose -p portofolio pull
-          docker compose -p portofolio up -d --remove-orphans
+          docker compose -p portofolio up -d --remove-orphans --no-build
           docker compose -p portofolio ps
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null

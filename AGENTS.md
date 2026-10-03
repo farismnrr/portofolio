@@ -18,11 +18,12 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - The fast workflow runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also support manual dispatch from `dev`.
 - The fast workflow is intentionally optimized as a persistent developer loop on the X64 self-hosted runner, not as a clean-room release build.
 - Keep fast validation/build/deploy in one self-hosted job so the same filesystem and machine-local caches are reused instead of passing artifacts between fresh runners.
-- Keep the source checkout clean, but persist compiler/package caches outside the GitHub workspace under the runner user's home directory.
+- Keep tracked source clean between runs, while preserving only intentional development caches such as `frontend/node_modules`; compiler/package caches may live outside the GitHub workspace under the runner user's home directory.
 - Fast validation runs the frontend architecture/content/type checks, frontend build, Rust format/clippy, and an AMD64 production build. It intentionally skips the expensive Rust test suite, AI smoke check, ARM64 build, QEMU, and multi-architecture container build.
 - Rust fast builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
-- Frontend fast builds should reuse a persistent machine-local npm download cache and persistent `node_modules` directory outside the checkout rather than using `npm ci` on every development push.
+- Frontend fast builds should reuse the machine-local npm download cache and preserved `frontend/node_modules` rather than using `npm ci` on every development push.
 - Fast Rust clippy should validate the normal runtime targets only; exhaustive `--all-targets` validation belongs to the full release workflow.
+- The self-hosted fast build must not require passwordless `sudo`; use user-local tooling such as Zig/cargo-zigbuild when a portable MUSL build is required.
 - Fast AMD64 container packaging should use the local Docker daemon and its layer cache. Do not push to GHCR and pull the same image back merely to deploy it on the same self-hosted machine.
 - On pull requests targeting `dev`, the fast workflow validates/builds but must not deploy. Do not run untrusted fork pull-request code on the self-hosted runner.
 - On pushes to `dev` and manual runs from `dev`, the fast workflow builds a local AMD64 image and deploys that local image directly to the X64 self-hosted host.

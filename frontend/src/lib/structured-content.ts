@@ -1,7 +1,7 @@
 import { parseFrontmatter, parseInlineList, requireKeys, unquote } from './content';
 
 export interface ExperienceEntry {
-  order: number; year: string; company: string; role: string; location: string; summary: string; tech: string[]; projects: string[]; bullets: string[];
+  order: number; year: string; company: string; role: string; location: string; summary: string; tech: string[]; projects: string[]; certificationGroups: string[]; bullets: string[];
 }
 export interface EducationEntry { order: number; year: string; institution: string; program: string; description: string; }
 export interface SkillGroup { order: number; title: string; description: string; items: string[]; }
@@ -35,7 +35,7 @@ function bullets(body:string){ return body.split(/\r?\n/).map(x=>x.trim()).filte
 
 export const experiences: ExperienceEntry[] = Object.entries(experienceModules).map(([path,src])=>{
   const {values,body}=parseFrontmatter(path,src); requireKeys(path,values,['order','year','company','role','location','summary','tech','projects']);
-  return {order:int(path,values.get('order')),year:unquote(values.get('year')??''),company:unquote(values.get('company')??''),role:unquote(values.get('role')??''),location:unquote(values.get('location')??''),summary:unquote(values.get('summary')??''),tech:parseInlineList(values.get('tech')??''),projects:parseInlineList(values.get('projects')??''),bullets:bullets(body)};
+  return {order:int(path,values.get('order')),year:unquote(values.get('year')??''),company:unquote(values.get('company')??''),role:unquote(values.get('role')??''),location:unquote(values.get('location')??''),summary:unquote(values.get('summary')??''),tech:parseInlineList(values.get('tech')??''),projects:parseInlineList(values.get('projects')??''),certificationGroups:parseInlineList(values.get('certificationGroups')??'[]'),bullets:bullets(body)};
 }).sort((a,b)=>a.order-b.order);
 
 export const education: EducationEntry[] = Object.entries(educationModules).map(([path,src])=>{
@@ -59,6 +59,10 @@ export const certifications: Certification[] = Object.entries(certModules).map((
 }).sort((a,b)=>a.order-b.order);
 
 export const certificationGroups = [...new Set(certifications.map(x=>x.group))].map(group=>({group,items:certifications.filter(x=>x.group===group)}));
+
+export function certificationGroupId(group:string){
+  return group.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
+}
 
 export const gallery: GalleryItem[] = Object.entries(galleryModules).map(([path,src])=>{
   const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','image','caption','size']);

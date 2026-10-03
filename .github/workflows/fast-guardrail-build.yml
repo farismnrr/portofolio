@@ -1,0 +1,118 @@
+name: Fast Guardrail + Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fast-guardrail-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUSTFLAGS: -D warnings
+
+jobs:
+  guardrail:
+    name: fast guardrail
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Restore npm download cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
+          restore-keys: |
+            npm-${{ runner.os }}-node24-
+
+      - name: Prepare frontend dependencies
+        working-directory: frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
+          npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Architecture / SOLID / DRY guard
+        working-directory: frontend
+        run: npm run guard
+
+      - name: Validate Markdown and Mermaid content
+        working-directory: frontend
+        run: npm run content:check
+
+      - name: Strict Svelte / TypeScript diagnostics
+        working-directory: frontend
+        run: npm run check
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server -> target
+          shared-key: portfolio-fast
+          cache-on-failure: true
+
+      - name: Rust format
+        working-directory: server
+        run: cargo fmt --check
+
+      - name: Rust clippy
+        working-directory: server
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+  build:
+    name: build
+    runs-on: ubuntu-24.04
+    needs: guardrail
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Restore npm download cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24-${{ hashFiles('frontend/package.json', 'frontend/.npmrc') }}
+          restore-keys: |
+            npm-${{ runner.os }}-node24-
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline
+          npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server -> target
+          shared-key: portfolio-fast
+          cache-on-failure: true
+
+      - name: Build server
+        working-directory: server
+        run: cargo build --release

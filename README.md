@@ -17,13 +17,18 @@ Static media lives under `frontend/public/`.
 
 ## CI / deployment
 
-Every push to `main` validates the frontend content and Svelte/TypeScript application, validates and builds the Rust server, publishes a multi-architecture runtime image to GHCR for `linux/amd64` and `linux/arm64`, and deploys through the configured self-hosted runner.
+CI is intentionally manual-only. Nothing runs automatically on push or pull request.
+
+Two GitHub Actions workflows are available:
+
+- `Fast Guardrail + Build` runs the fast architecture/content/type guardrail and builds the frontend and server without deploying.
+- `Full Guardrail + Build + Deploy` runs the full guardrail and tests, performs the configured AI smoke check, builds and publishes the multi-architecture runtime image, then deploys through the configured self-hosted runner.
 
 Container image:
 
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-The current deployment target remains the Arch Linux `X64` self-hosted runner. The ARM64 image is published now so the same image tag can be deployed to an Orange Pi later without changing the build pipeline.
+The deployment target remains the Arch Linux `X64` self-hosted runner. The ARM64 image is also published so the same image tag can be deployed to an Orange Pi later without changing the build pipeline.
 
 The application is exposed on port `3001` by the repository Compose configuration.
 

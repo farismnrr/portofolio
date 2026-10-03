@@ -17,14 +17,15 @@ Static media lives under `frontend/public/`.
 
 ## CI / deployment
 
-Every push to `main` validates the frontend content and Svelte/TypeScript application, validates and builds the Rust server, publishes the runtime image to GHCR, and deploys through the configured self-hosted runner.
+Every push to `main` validates the frontend content and Svelte/TypeScript application, validates and builds the Rust server, publishes a multi-architecture runtime image to GHCR for `linux/amd64` and `linux/arm64`, and deploys through the configured self-hosted runner.
 
 Container image:
 
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-The application is exposed on port `3001` by the repository Compose configuration.
+The current deployment target remains the Arch Linux `X64` self-hosted runner. The ARM64 image is published now so the same image tag can be deployed to an Orange Pi later without changing the build pipeline.
 
+The application is exposed on port `3001` by the repository Compose configuration.
 
 ## AI runtime configuration
 

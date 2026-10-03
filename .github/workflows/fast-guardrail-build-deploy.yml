@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - dev
-    paths-ignore:
-      - README.md
-      - AGENTS.md
-      - "**/*.md"
-      - "!frontend/content/**/*.md"
   pull_request:
     branches:
       - dev

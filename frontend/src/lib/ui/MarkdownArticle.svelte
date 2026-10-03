@@ -83,27 +83,3 @@
     {@html html}
   </article>
 </div>
-
-<style>
-  :global(.project-markdown .mermaid-shell:not([data-state='rendered']) > .mermaid) {
-    position: absolute;
-    inset: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  :global(.project-markdown .mermaid-shell[data-state='rendered'] > .mermaid-skeleton) {
-    display: none;
-  }
-
-  :global(.project-markdown .mermaid-shell[data-state='rendered'] > .mermaid) {
-    position: static;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  :global(.project-markdown .mermaid svg) {
-    max-width: 100%;
-    height: auto;
-  }
-</style>

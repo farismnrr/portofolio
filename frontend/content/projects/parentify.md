@@ -9,7 +9,7 @@ subtitle: "Parenting Guidance and Food Recognition Companion"
 role: "Cloud Computing · Backend / Integration"
 category: "Bangkit Capstone · Cross-functional"
 description: "A Bangkit Academy capstone that brought parenting guidance and image-based food recognition into one Android experience, supported by a shared backend, structured application data, and a machine-learning workflow."
-image: "https://raw.githubusercontent.com/Parentify/Parentify-Cloud-Computing/main/cloud-diagram.png"
+image: "/images/projects/parentify/showcase.png"
 tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"

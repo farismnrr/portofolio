@@ -224,6 +224,12 @@ jobs:
           fi
 
           if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+            sysroot="$(rustc --print sysroot)"
+            partial_target="$sysroot/lib/rustlib/$RUST_TARGET_AMD64"
+            if [ -d "$partial_target" ]; then
+              echo "Removing incomplete Rust target at $partial_target"
+              rm -rf "$partial_target"
+            fi
             rustup target add --toolchain stable "$RUST_TARGET_AMD64"
           fi
 

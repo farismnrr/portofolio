@@ -4,9 +4,21 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - "frontend/**"
+      - "server/**"
+      - "Dockerfile"
+      - "compose.yaml"
+      - ".github/workflows/fast-guardrail-build-deploy.yml"
   pull_request:
     branches:
       - dev
+    paths:
+      - "frontend/**"
+      - "server/**"
+      - "Dockerfile"
+      - "compose.yaml"
+      - ".github/workflows/fast-guardrail-build-deploy.yml"
   workflow_dispatch:
 
 permissions:
@@ -54,14 +66,17 @@ jobs:
       - uses: actions/checkout@v7
         with:
           clean: false
-          fetch-depth: 1
+          fetch-depth: 0
 
-      - name: Clean source while preserving frontend dependencies
+      - name: Clean source while preserving incremental outputs
         shell: bash
         run: |
           set -euo pipefail
           git reset --hard HEAD
-          git clean -ffdx -e frontend/node_modules/
+          git clean -ffdx \
+            -e frontend/node_modules/ \
+            -e frontend/dist/ \
+            -e release/amd64/
 
       - name: Configure persistent build caches
         shell: bash
@@ -75,12 +90,98 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "Persistent cache root: $cache_root"
 
+      - name: Detect changed areas
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          frontend=false
+          server=false
+          image=false
+          compose=false
+          force=false
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            force=true
+          else
+            if [ "$EVENT_NAME" = "pull_request" ]; then
+              base="$PR_BASE"
+              head="$PR_HEAD"
+            else
+              base="$PUSH_BEFORE"
+              head="$GITHUB_SHA"
+            fi
+
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+              force=true
+            else
+              echo "Changed files:"
+              git diff --name-only "$base" "$head" | tee /tmp/portfolio-fast-changes.txt
+
+              while IFS= read -r path; do
+                case "$path" in
+                  frontend/*)
+                    frontend=true
+                    image=true
+                    ;;
+                  server/*)
+                    server=true
+                    image=true
+                    ;;
+                  Dockerfile)
+                    image=true
+                    ;;
+                  compose.yaml)
+                    compose=true
+                    ;;
+                  .github/workflows/fast-guardrail-build-deploy.yml)
+                    force=true
+                    ;;
+                esac
+              done < /tmp/portfolio-fast-changes.txt
+            fi
+          fi
+
+          if [ ! -f frontend/dist/index.html ]; then
+            frontend=true
+            image=true
+          fi
+
+          if [ ! -x "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" ]; then
+            server=true
+            image=true
+          fi
+
+          if [ "$force" = true ]; then
+            frontend=true
+            server=true
+            image=true
+            compose=true
+          fi
+
+          {
+            echo "frontend=$frontend"
+            echo "server=$server"
+            echo "image=$image"
+            echo "compose=$compose"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "frontend=$frontend server=$server image=$image compose=$compose"
+
       - uses: actions/setup-node@v7
+        if: steps.changes.outputs.frontend == 'true'
         with:
           node-version: 24
           package-manager-cache: false
 
       - name: Reuse frontend dependencies
+        if: steps.changes.outputs.frontend == 'true'
         working-directory: frontend
         shell: bash
         run: |
@@ -89,6 +190,7 @@ jobs:
           npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
 
       - name: Frontend fast guardrail
+        if: steps.changes.outputs.frontend == 'true'
         working-directory: frontend
         shell: bash
         run: |
@@ -98,10 +200,12 @@ jobs:
           npm run check
 
       - name: Build frontend
+        if: steps.changes.outputs.frontend == 'true'
         working-directory: frontend
         run: npm run build
 
       - name: Reuse Rust toolchain
+        if: steps.changes.outputs.server == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -127,6 +231,7 @@ jobs:
           cargo --version
 
       - name: Detect persistent Zig
+        if: steps.changes.outputs.server == 'true'
         id: zig
         shell: bash
         run: |
@@ -138,12 +243,12 @@ jobs:
           fi
 
       - uses: mlugg/setup-zig@v2
-        if: steps.zig.outputs.installed != 'true'
+        if: steps.changes.outputs.server == 'true' && steps.zig.outputs.installed != 'true'
         with:
           version: 0.14.1
 
       - name: Persist Zig for future runs
-        if: steps.zig.outputs.installed != 'true'
+        if: steps.changes.outputs.server == 'true' && steps.zig.outputs.installed != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -151,6 +256,7 @@ jobs:
           zig version
 
       - name: Install cargo-zigbuild when missing
+        if: steps.changes.outputs.server == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -159,14 +265,16 @@ jobs:
           fi
 
       - name: Rust fast guardrail
+        if: steps.changes.outputs.server == 'true'
         working-directory: server
         shell: bash
         run: |
           set -euo pipefail
           cargo fmt --check
-          cargo clippy --release --all-features -- -D warnings
+          cargo clippy --release --all-features --no-deps -- -D warnings
 
       - name: Incremental AMD64 runtime build
+        if: steps.changes.outputs.server == 'true'
         working-directory: server
         shell: bash
         run: |
@@ -174,16 +282,17 @@ jobs:
           cargo zigbuild --release --target "$RUST_TARGET_AMD64"
 
       - name: Stage AMD64 runtime binary
+        if: steps.changes.outputs.image == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf release/amd64
           mkdir -p release/amd64
           cp "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" release/amd64/portfolio-server
           chmod +x release/amd64/portfolio-server
           file release/amd64/portfolio-server
 
       - name: Build local AMD64 runtime image
+        if: steps.changes.outputs.image == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -193,7 +302,7 @@ jobs:
             .
 
       - name: Deploy local AMD64 image
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && (steps.changes.outputs.image == 'true' || steps.changes.outputs.compose == 'true')
         env:
           PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"

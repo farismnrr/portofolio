@@ -43,6 +43,13 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - Do not recreate a standalone `full-guardrail-build.yml` workflow unless explicitly requested.
 - Keep the fast and full paths intentionally different: fast optimizes normal development feedback and X64 deployment with persistent incremental caches and change-aware execution; full protects explicit production releases with clean comprehensive validation and ARM64 compatibility.
 
+## Shared database deployment
+
+- Arch deployments reuse the infrastructure-owned `shared-postgres` container; do not provision an application-specific PostgreSQL container or volume.
+- Both deploy workflows must supply the `PORTFOLIO_DATABASE_URL` repository secret to Compose. The server requires `DATABASE_URL`.
+- Deployment verification must check nonempty `/api/cv/retrieve` evidence with backend `pgvector+postgres-fts`; HTTP 200 with memory fallback does not prove database success.
+- Preserve shared infrastructure and other applications when migrating or cleaning up Portfolio database resources.
+
 ## Documentation
 
 - `README.md`, `AGENTS.md`, the active workflow files, and the current implementation must describe the same branch, CI, and deployment behavior.

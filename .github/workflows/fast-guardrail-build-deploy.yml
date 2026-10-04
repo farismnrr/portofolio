@@ -343,6 +343,7 @@ jobs:
         env:
           PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"
+          PORTFOLIO_DATABASE_URL: ${{ secrets.PORTFOLIO_DATABASE_URL }}
           NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
           NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
           NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
@@ -351,6 +352,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          : "${PORTFOLIO_DATABASE_URL:?Configure the PORTFOLIO_DATABASE_URL repository secret}"
+          test "$(docker inspect --format '{{.State.Health.Status}}' shared-postgres)" = healthy
+          docker compose -p portofolio config --quiet
           docker compose -p portofolio up -d --remove-orphans --no-build
           docker compose -p portofolio ps
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null
+          # Retrieval returns HTTP 200 even on memory fallback; check the actual backend.
+          for attempt in {1..10}; do
+            if curl --fail --silent --show-error --max-time 90 \
+              -H 'Content-Type: application/json' \
+              --data '{"target":"software-engineer","query":"Rust PostgreSQL Docker","limit":6}' \
+              http://127.0.0.1:3001/api/cv/retrieve \
+              | python3 -c 'import json,sys; r=json.load(sys.stdin); sys.exit(0 if r.get("backend") == "pgvector+postgres-fts" and r.get("evidence") else 1)'; then
+              echo "Shared PostgreSQL retrieval verified"
+              break
+            fi
+            if [ "$attempt" -eq 10 ]; then
+              echo "Shared PostgreSQL retrieval verification failed" >&2
+              exit 1
+            fi
+            sleep 2
+          done

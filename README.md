@@ -53,3 +53,13 @@ Required repository variables:
 - `NINE_ROUTER_TIMEOUT_SECONDS`
 
 The 9router API key remains a repository secret.
+
+## Shared PostgreSQL on Arch
+
+Both development and production deployments reuse the existing `shared-postgres` infrastructure container on Arch. The application uses host networking and connects through `127.0.0.1:5432` to the dedicated `portfolio` database using its own `portfolio` login role. Compose does not create a database container or database volume.
+
+Set the repository secret `PORTFOLIO_DATABASE_URL` to the password-authenticated PostgreSQL connection URL for that database. Both deploy workflows pass it to Compose, which supplies `DATABASE_URL` to the server. `DATABASE_URL` is required; the server does not fall back to the retired local database on port 5433. Keep credentials out of tracked files and repository variables.
+
+Before deploying to a new host, provision the `portfolio` database and role and enable the `vector` extension as a database administrator. The runtime role owns its `cv_chunks` table and creates its GIN text-search and HNSW vector indexes. The shared infrastructure container and its data volume are managed separately from this application.
+
+Both deploy workflows require `shared-postgres` to be healthy and check `/api/cv/retrieve` after deployment. The check requires nonempty evidence and backend `pgvector+postgres-fts`; HTTP 200 with `memory-fallback` fails the deployment verification. Removing the old `cv-db` service allows Compose to remove its orphan container. Remove the old `portofolio_portfolio-cv-pgdata` volume only after backing up, migrating, and verifying the shared database.

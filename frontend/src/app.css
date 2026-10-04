@@ -83,3 +83,17 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   --tw-prose-th-borders: color-mix(in srgb, var(--page-fg) 20%, transparent);
   --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 12%, transparent);
 }
+
+.mermaid-shell {
+  border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  background: color-mix(in srgb, var(--surface) 72%, var(--page-bg));
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.mermaid-skeleton-bar {
+  background: color-mix(in srgb, var(--page-fg) 10%, transparent);
+}
+
+.mermaid-skeleton-block {
+  background: color-mix(in srgb, var(--page-fg) 6%, transparent);
+}

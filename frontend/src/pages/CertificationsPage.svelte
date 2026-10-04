@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { certificationGroups, pageCopy } from '../lib/structured-content';
+  import { certificationGroupId, certificationGroups, pageCopy } from '../lib/structured-content';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
@@ -12,7 +12,7 @@
     </div>
 
     {#each certificationGroups as group}
-      <section class="border-b border-black/10 py-9">
+      <section id={certificationGroupId(group.group)} class="scroll-mt-28 border-b border-black/10 py-9">
         <div class="flex items-baseline justify-between gap-6">
           <h2 class="text-[28px] font-semibold tracking-[-0.03em]">{group.group}</h2>
           <span class="shrink-0 text-[13px] text-black/45">{group.items.length} credentials</span>

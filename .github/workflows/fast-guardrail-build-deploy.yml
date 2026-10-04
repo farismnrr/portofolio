@@ -1,0 +1,140 @@
+name: Fast AMD64 Build + Deploy
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "frontend/**"
+      - "server/**"
+      - "Dockerfile"
+      - "compose.yaml"
+      - ".github/workflows/fast-guardrail-build-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  RUST_TARGET_AMD64: x86_64-unknown-linux-musl
+  RUSTUP_TOOLCHAIN: stable
+  DEV_IMAGE: portfolio-app:dev
+
+concurrency:
+  group: fast-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast:
+    name: build + deploy
+    runs-on: [self-hosted, Linux, X64]
+    concurrency:
+      group: portfolio-self-hosted
+      cancel-in-progress: true
+
+    steps:
+      - name: Repair workspace ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/work" \
+            alpine:3.20 \
+            chown -R "$(id -u):$(id -g)" /work
+
+      - uses: actions/checkout@v7
+        with:
+          clean: false
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.14.1
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cache_root="$HOME/.cache/portfolio-ci"
+          export NPM_CONFIG_CACHE="$cache_root/npm"
+          export CARGO_TARGET_DIR="$cache_root/cargo-target"
+          export CARGO_HOME="$cache_root/cargo-home"
+          export RUSTUP_HOME="$cache_root/rustup"
+          export PATH="$CARGO_HOME/bin:$HOME/.cargo/bin:$PATH"
+
+          mkdir -p \
+            "$NPM_CONFIG_CACHE" \
+            "$CARGO_TARGET_DIR" \
+            "$CARGO_HOME/bin" \
+            "$RUSTUP_HOME"
+
+          git reset --hard "$GITHUB_SHA"
+          git clean -ffdx \
+            -e frontend/node_modules/ \
+            -e frontend/dist/ \
+            -e release/amd64/
+
+          (
+            cd frontend
+            npm install --ignore-scripts --no-audit --no-fund --prefer-offline
+            npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
+            npm run build
+          )
+
+          command -v rustup >/dev/null 2>&1 || {
+            echo "rustup is required on the self-hosted runner."
+            exit 1
+          }
+
+          if ! rustup toolchain list | grep -q '^stable'; then
+            rustup toolchain install stable \
+              --profile minimal \
+              --target "$RUST_TARGET_AMD64"
+          elif ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+            rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+          fi
+
+          if ! command -v cargo-zigbuild >/dev/null 2>&1; then
+            cargo install cargo-zigbuild --locked
+          fi
+
+          (
+            cd server
+            cargo zigbuild --release --target "$RUST_TARGET_AMD64"
+          )
+
+          mkdir -p release/amd64
+          cp "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" release/amd64/portfolio-server
+          chmod +x release/amd64/portfolio-server
+
+          DOCKER_BUILDKIT=1 docker build \
+            --build-arg TARGETARCH=amd64 \
+            --tag "$DEV_IMAGE" \
+            .
+
+      - name: Deploy
+        env:
+          PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
+          PORTFOLIO_PORT: "3001"
+          PORTFOLIO_DATABASE_URL: ${{ secrets.PORTFOLIO_DATABASE_URL }}
+          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
+          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
+          NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
+          NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
+          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${PORTFOLIO_DATABASE_URL:?Configure the PORTFOLIO_DATABASE_URL repository secret}"
+          test "$(docker inspect --format '{{.State.Health.Status}}' shared-postgres)" = healthy
+          docker compose -p portofolio config --quiet
+          docker compose -p portofolio up -d --remove-orphans --no-build
+          docker compose -p portofolio ps
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
+            http://127.0.0.1:3001/ > /dev/null

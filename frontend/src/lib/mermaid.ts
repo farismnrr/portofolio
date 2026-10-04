@@ -32,7 +32,8 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   const nodes = [...root.querySelectorAll<HTMLElement>('.mermaid')];
   if (!nodes.length) return;
 
-  const { default: mermaid } = await import('mermaid');
+  const mermaidUrl = '/vendor/mermaid.esm.min.mjs';
+  const { default: mermaid } = await import(/* @vite-ignore */ mermaidUrl);
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'strict',

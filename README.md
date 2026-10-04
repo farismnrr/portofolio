@@ -21,25 +21,23 @@ Development happens on `dev`.
 
 - Use `dev` for feature work, fixes, refactors, content edits, documentation, and CI/CD changes.
 - Do not develop directly on `main`.
-- `main` is the production branch and is only updated by the production release workflow through a pull request from `dev` to `main`.
+- `main` is the production release branch and is only updated by the explicit full production release workflow through a pull request from `dev` to `main`.
 - The release flow never deletes `dev` after merge, so development continues on the same branch after every release.
 
 ## CI / deployment
 
-The repository intentionally has exactly two CI/CD workflows:
+The repository has two CI/CD workflows with deliberately different responsibilities:
 
-- `Full Guardrail + Build` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also be started manually from `dev`. It runs the full frontend guardrail, Rust format/clippy/tests, the configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. It does not publish images, merge into `main`, or deploy.
-- `Full Guardrail + Build + Deploy` is manual-only via `workflow_dispatch` and must be dispatched from `dev`. It reuses the same `Full Guardrail + Build` workflow rather than maintaining a separate validation implementation. Only after that shared validation succeeds does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image, and deploy the merged production revision through the configured self-hosted runner.
+- `Fast Guardrail + AMD64 Build + Deploy` is the normal development loop. It runs as one job on the X64 self-hosted runner and is change-aware. Frontend source/config edits run the fast architecture/type guardrail, content validation, and production frontend build; Markdown/static-content-only edits skip Svelte/type/architecture source checks and run only content validation plus the production frontend build. Frontend edits then perform only an incremental Rust runtime rebuild/relink because the Axum binary embeds `frontend/dist` through `rust_embed`; Rust format/clippy are skipped when server source itself did not change. Server-only edits reuse the last valid frontend `dist`, while Docker/Compose-only edits avoid unrelated compiler work when cached runtime artifacts are still valid. Documentation-only repository edits do not trigger the application pipeline. The runner preserves `frontend/node_modules`, `frontend/dist`, Cargo build output, Docker layers, and a portfolio-specific isolated Rust/Cargo toolchain under `~/.cache/portfolio-ci`, so normal follow-up builds reuse previous work instead of starting from zero. Mermaid remains a local lazy-loaded runtime, but its official prebuilt ESM bundle is staged into `frontend/public/vendor/` before Vite builds so Vite copies it as a static asset instead of transforming Mermaid's full dependency graph on every frontend build. The fast path builds only AMD64, skips Rust tests/AI smoke/ARM64/multi-arch work, and deploys the local `portfolio-app:dev` image directly without a GHCR push/pull round trip.
+- `Full Guardrail + Build + Publish` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, and publish the validated multi-architecture runtime image (AMD64 + ARM64) to GHCR.
 
-There is no separate fast CI path. Development validation and release validation intentionally use the same full pipeline so a change cannot pass a weaker CI path and then fail because production uses different checks.
+There is no standalone `Full Guardrail + Build` workflow. The fast path is intentionally incremental and machine-local for quick iteration; the full release path remains the clean comprehensive verification boundary.
 
-Automatic CI never publishes an image or deploys. Production changes reach `main` only through the manual full release workflow.
-
-Container image:
+Production container image:
 
 `ghcr.io/farismnrr/portofolio/portfolio-app:latest`
 
-The deployment target remains the Arch Linux `X64` self-hosted runner. The ARM64 image is also published so the same image tag can be deployed to an Orange Pi later without changing the build pipeline.
+Fast development deployment uses the local `portfolio-app:dev` AMD64 image on the Arch Linux X64 self-hosted runner. Full production release additionally verifies and publishes ARM64 compatibility for future ARM deployments.
 
 The application is exposed on port `3001` by the repository Compose configuration.
 
@@ -55,3 +53,13 @@ Required repository variables:
 - `NINE_ROUTER_TIMEOUT_SECONDS`
 
 The 9router API key remains a repository secret.
+
+## Shared PostgreSQL on Arch
+ 
+The development deployment reuses the existing `shared-postgres` infrastructure container on Arch. The application uses host networking and connects through `127.0.0.1:5432` to the dedicated `portfolio` database using its own `portfolio` login role. Compose does not create a database container or database volume.
+ 
+Set the repository secret `PORTFOLIO_DATABASE_URL` to the password-authenticated PostgreSQL connection URL for that database. The fast deploy workflow passes it to Compose, which supplies `DATABASE_URL` to the server. `DATABASE_URL` is required; the server does not fall back to the retired local database on port 5433. Keep credentials out of tracked files and repository variables.
+ 
+Before deploying to a new host, provision the `portfolio` database and role and enable the `vector` extension as a database administrator. The runtime role owns its `cv_chunks` table and creates its GIN text-search and HNSW vector indexes. The shared infrastructure container and its data volume are managed separately from this application.
+ 
+The fast deploy workflow requires `shared-postgres` to be healthy and checks `/api/cv/retrieve` after deployment. The check requires nonempty evidence and backend `pgvector+postgres-fts`; HTTP 200 with `memory-fallback` fails the deployment verification. Removing the old `cv-db` service allows Compose to remove its orphan container. Remove the old `portofolio_portfolio-cv-pgdata` volume only after backing up, migrating, and verifying the shared database.

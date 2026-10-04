@@ -5,183 +5,133 @@ slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
-subtitle: "On-Prem Smart-Space Platform"
-role: "Software Engineer · Rust / IoT / Platform"
-category: "IoT · Rust"
-description: "An on-prem platform for organizing physical spaces, users, and connected-device control around explicit site boundaries."
+subtitle: "Local Control Organized Around Real Spaces"
+role: "Software Engineer · Backend / IoT / Platform"
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "An on-prem smart-space platform that organizes users, rooms, device state, telemetry, and control around the physical places people actually manage."
 image: "/images/projects/featured/sensio-iot.png"
-tech: [Rust, Axum, Askama, SQLx, PostgreSQL, MQTT, OpenTelemetry, Docker]
-productUrl: ""
+tech: [Rust, Axum, PostgreSQL, MQTT, Zigbee2MQTT, OpenTelemetry, Docker]
+productUrl: "https://iot.sensio.id"
 repoUrl: ""
 ---
 
-## The Story
+## The Problem
 
-IoT systems often look clean in a technical diagram and confusing in real life.
+People managing a room do not think in broker topics, hardware addresses, or database identifiers.
 
-A device has an ID. A broker has a topic. A controller has an address. A database has another identifier.
+They think in physical language: *the lights in this meeting room, the sensor in that office, the devices this operator is allowed to control.*
 
-But the person using the system does not think like that.
+**Sensio IoT** is built around translating those real-world boundaries into software boundaries.
 
-They think:
+The product has evolved through more than one implementation, but the underlying idea has stayed consistent: organize control around **sites and rooms**, keep device protocols behind an integration layer, and make local hardware state understandable from a human-facing interface.
 
-> “Turn off the lights in Meeting Room A.”
+## Product Approach
 
-or:
-
-> “Give this employee access to devices in the Jakarta office.”
-
-That difference is where **Sensio IoT** begins.
-
-The product is designed around the physical world first, not around protocol identifiers.
-
-## The Core Idea
-
-The main concept is **site-oriented control**.
-
-A site represents a real place: an office, school, home, store, factory, or other physical environment.
-
-Users become members of sites.
-
-Devices belong to spaces inside sites.
-
-Permissions are evaluated in that context.
+A user first enters the physical scope they are responsible for, then works with the devices and automation inside that scope.
 
 ```mermaid
-erDiagram
-    USER ||--o{ SITE_MEMBERSHIP : has
-    SITE ||--o{ SITE_MEMBERSHIP : grants
-    SITE ||--o{ AREA : contains
-    AREA ||--o{ DEVICE : contains
-    DEVICE ||--o{ DEVICE_EVENT : produces
+flowchart LR
+    U[User / HMI] --> S[Select site]
+    S --> R[Select room]
+    R --> D[View device state]
+    D --> A[Request action or automation]
+    A --> P[Device provider / protocol]
+    P --> H[Physical hardware]
+    H --> T[State and telemetry]
+    T --> D
 ```
 
-This gives the system a model that matches how people naturally describe the real world.
+That hierarchy matters more than any particular protocol. The same product-level action can eventually be translated to different providers without making the user learn how each device communicates.
 
-## The User Experience
+## How the Platform Evolved
 
-Imagine a building operator opening the application.
+Sensio IoT has gone through two main application shapes.
 
-They should not see a wall of device IDs.
+The earlier implementation used a React HMI with a NestJS backend. It centered the UI around rooms, synchronized device state through REST, Socket.IO, and SSE, stored telemetry in PostgreSQL/TimescaleDB, and experimented with a room-scoped LangGraph assistant that could read context and dispatch device commands through the backend.
 
-They should see the spaces they are responsible for.
+The newer implementation is a Rust rewrite that intentionally reduces the runtime surface. Axum serves both HTTP APIs and server-rendered Askama pages, SQLx owns PostgreSQL persistence, and the application models users, sites, site memberships, rooms, devices, and local runtime configuration in one service.
 
-They choose a site, enter a room, inspect current device state, and perform an action.
+```mermaid
+flowchart TD
+    LEGACY[Earlier React + NestJS platform]
+    CURRENT[Current Rust platform]
+
+    LEGACY --> IDEA[Room-based HMI, telemetry, realtime state, conversational control]
+    IDEA --> CURRENT
+
+    CURRENT --> AUTH[Identity + site membership]
+    CURRENT --> SPACE[Site + room model]
+    CURRENT --> DEVICE[Device integration]
+    CURRENT --> OPS[On-prem runtime + observability]
+```
+
+I treat those as iterations of the same product rather than pretending they were one unchanged architecture.
+
+## Identity and Physical Scope
+
+The current rewrite makes physical scope part of authorization.
+
+Users do not receive one global role that automatically applies everywhere. Site membership is the role boundary, and room access is evaluated through that site relationship. That matches the product model: permission to operate one office should not silently become permission to operate every other site.
+
+Authentication is also designed for an on-prem control surface rather than public self-service signup. Provisioned users sign in, short-lived access tokens are paired with rotating refresh tokens, and browser sessions keep token material out of normal client-side JavaScript.
+
+The result is a simple conceptual chain:
+
+```text
+identity
+→ site membership
+→ room scope
+→ device action
+```
+
+## Device Integration
+
+The device side is deliberately separated from the site and room model.
+
+In the current Rust implementation, Zigbee2MQTT support has its own mapping, adapter, repository, listener, service, and HTTP boundary. Discovery and state messages are ingested from MQTT topics, normalized into application state, and commands are translated back into provider-specific payloads when a user controls a device.
 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant S as Smart-space platform
-    participant P as Permission boundary
+    participant A as Sensio IoT
+    participant Z as Zigbee2MQTT
     participant D as Device
-    U->>S: Open a site and choose a device
-    U->>S: Request an action
-    S->>P: Check site membership and permission
-    alt Allowed
-        P-->>S: Permit
-        S->>D: Execute control
-        D-->>S: Return current state
-        S-->>U: Show updated state
-    else Denied
-        P-->>S: Reject
-        S-->>U: Explain that action is not allowed
-    end
+
+    U->>A: Control a device in the selected room
+    A->>A: Check site / room scope
+    A->>Z: Publish provider command
+    Z->>D: Send device command
+    D-->>Z: Report resulting state
+    Z-->>A: State / telemetry event
+    A-->>U: Show current state
 ```
 
-The technical details stay underneath the interaction.
+The same boundary also gives the platform somewhere to absorb protocol-specific details instead of leaking them throughout the UI and domain model.
 
-## The General Control Algorithm
+## On-Prem as Part of the Product
 
-Every device action can be reduced to a sequence of questions.
+For a smart-space system, deployment location affects the user experience.
 
-```text
-Who is asking?
-Where does this action belong?
-Is this person a member of that site?
-Are they allowed to control this target?
-Is the device available?
-Execute the action.
-Observe the resulting state.
-```
+Lighting, room controls, telemetry, and local automation are awkward if every interaction depends on a distant service being reachable. Sensio IoT therefore treats local deployment as part of the architecture, not just an installation detail.
 
-Conceptually:
+The Rust rewrite is packaged as a CI-built container and has been worked through both AMD64 and ARM64 deployment paths, including Jetson-based runtime work. Observability and browser-level verification are part of that operational loop because the software ultimately has to work next to the hardware it controls.
 
-```text
-identity
-→ scope
-→ permission
-→ availability
-→ action
-→ state
-```
+## My Contribution
 
-This algorithm is more important than the protocol used to talk to the device.
+My work on Sensio IoT has followed the platform across those iterations.
 
-## Why Space Matters More Than Device IDs
+It includes the backend and device boundary of the earlier room-oriented system, telemetry and realtime-control flows, experiments with room-scoped conversational control, and the current Rust rewrite where the physical domain, authentication boundary, Zigbee2MQTT integration, runtime packaging, and on-prem deployment are being made more explicit.
 
-A flat device list works when there are ten devices.
+Rather than presenting the rewrite as a completely separate project, I see it as the same product being simplified around lessons from the earlier architecture.
 
-It becomes painful when there are hundreds.
+## What I Took From It
 
-Humans need grouping, context, and ownership.
+The recurring lesson in Sensio IoT is that the hardest part of connected-device software is not sending a command to a broker.
 
-The physical hierarchy gives the system a natural way to answer questions like:
+The harder question is how to keep **identity, physical scope, device state, protocol translation, and local operations** consistent while the system evolves. Once those boundaries are clear, individual device integrations become much easier to reason about.
 
-- Which devices belong to this office?
-- Which room is this sensor in?
-- Who is allowed to control these lights?
-- Which telemetry belongs to this site?
-- Which automation should apply here?
+## Product Links
 
-That structure becomes the backbone for more advanced features later.
+- Sensio IoT: [iot.sensio.id](https://iot.sensio.id)
+- Sensio Platform: [sensio.id](https://sensio.id)
 
-## General System Design
-
-```mermaid
-flowchart LR
-    H[Human intent] --> C[Control layer]
-    C --> I[Device integration]
-    I --> P[Physical devices]
-    P --> T[Telemetry]
-    T --> C
-    C --> H
-```
-
-**Human intent** is expressed in product terms: rooms, devices, scenes, and actions.
-
-**Control layer** applies identity, scope, and permission.
-
-**Device integration** translates those product-level actions into whatever protocol the hardware understands.
-
-**Telemetry** closes the loop by showing what actually happened.
-
-## Why On-Prem Is Part of the Concept
-
-For physical infrastructure, local availability matters.
-
-If a smart-space system controls lights, environmental systems, or meeting rooms, users may still expect it to work even when the internet is unreliable.
-
-That makes local deployment useful for:
-
-- lower latency;
-- predictable availability;
-- privacy;
-- local operational control.
-
-The product is therefore not only about IoT features. It is also about where control should live.
-
-## Product Tradeoffs
-
-**Local control vs cloud convenience.** On-prem systems give operators more control, but require more responsibility for deployment and maintenance.
-
-**Simple hierarchy vs enterprise complexity.** A clean site/room/device model is easy to understand, but very large organizations may need more levels.
-
-**Immediate control vs stronger checks.** Every permission check adds a little work, but skipping them creates the wrong trust model.
-
-## Implementation Notes
-
-The current rewrite uses a single Rust application, PostgreSQL state, server-rendered UI, secure session handling, and MQTT-oriented device integration.
-
-## Stack
-
-Rust, Axum, Askama, SQLx, PostgreSQL, MQTT, Docker, and OpenTelemetry.

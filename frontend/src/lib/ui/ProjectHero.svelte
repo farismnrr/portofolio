@@ -3,6 +3,7 @@
   import MediaImage from './MediaImage.svelte';
   import TechChips from './TechChips.svelte';
   export let project: ProjectDocument;
+  $: preserveShowcase = project.slug === 'parentify';
 </script>
 
 <section class="grid gap-12 border-b border-black/10 pb-12 lg:grid-cols-[.72fr_1.28fr]">
@@ -20,5 +21,11 @@
     {/if}
     <div class="mt-7 border-t border-black/10 pt-5"><TechChips items={project.tech} pills/></div>
   </div>
-  <MediaImage className="aspect-[1.72] w-full" src={project.image} alt={project.cardTitle} eager/>
+  <MediaImage
+    className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.72] w-full"}
+    src={project.image}
+    alt={project.cardTitle}
+    eager
+    fit={preserveShowcase ? 'contain' : 'cover'}
+  />
 </section>

@@ -6,25 +6,49 @@ These rules apply to repository work unless the user explicitly requests otherwi
 
 - `dev` is the only default working branch for development, fixes, refactors, content edits, documentation changes, and CI/CD changes.
 - Start repository work from `dev` and commit/push changes to `dev`. Do not develop directly on `main`.
-- `main` is the production branch. It may only be updated by merging a pull request from `dev` to `main` as part of the explicit production release workflow.
+- `main` is the production release branch. It may only be updated by merging a pull request from `dev` to `main` as part of the explicit full production release workflow.
 - Do not directly commit, push, force-push, or otherwise edit `main` during normal development.
 - Do not delete `dev`, `main`, or any other branch as part of the release workflow. In particular, never use automatic head-branch deletion when merging the `dev` -> `main` release pull request.
 - After a successful release merge, continue subsequent development on the existing `dev` branch.
 
 ## CI/CD
 
-- Keep exactly two GitHub Actions workflow files under `.github/workflows/`.
-- `full-guardrail-build.yml` is the automatic development validation workflow. It runs the full frontend guardrail, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build without publishing or deploying.
-- `full-guardrail-build.yml` runs automatically for pushes to `dev` and pull requests targeting `dev`, and may also support manual dispatch from `dev` and `workflow_call` reuse by the production release workflow.
-- The automatic full workflow must never publish images, merge into `main`, or deploy.
-- `full-guardrail-build-deploy.yml` is the production release workflow. It must remain manual-only via `workflow_dispatch` and must only be run from `dev`.
-- The production release workflow must reuse `full-guardrail-build.yml` for validation instead of maintaining a separate duplicated guardrail/build implementation.
-- Only after the shared full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, publish the production image, and deploy it.
-- The production release workflow is the only workflow allowed to merge the release PR, publish the production image, or deploy.
+- Keep exactly two GitHub Actions workflow files under `.github/workflows/` unless the user explicitly requests another structure.
+- `fast-guardrail-build-deploy.yml` is the automatic development workflow for `dev`.
+- The fast workflow runs automatically only when application/runtime inputs change (`frontend/**`, `server/**`, `Dockerfile`, `compose.yaml`, or the fast workflow itself). Documentation-only repository changes must not pay for an application build.
+- The fast workflow may also support manual dispatch from `dev`.
+- The fast workflow is intentionally optimized as a persistent developer loop on the X64 self-hosted runner, not as a clean-room release build.
+- Keep fast validation/build/deploy in one self-hosted job so the same filesystem and machine-local caches are reused instead of passing artifacts between fresh runners.
+- Detect which application area changed and run only the relevant expensive work. Frontend-only changes run frontend validation/build and then only an incremental Rust runtime rebuild/relink because the Axum binary embeds `frontend/dist` through `rust_embed`; they must not reuse an older server binary. Server-only changes reuse the last valid frontend `dist` and run Rust validation/build. Docker/Compose-only changes should avoid unrelated compiler work when valid runtime artifacts already exist.
+- Distinguish frontend source/config changes from content/static-asset changes. Content-only edits must run content validation and the production frontend build, but should skip Svelte/type/architecture source checks that cannot be affected by Markdown/static-content changes. Frontend source/config changes still run the full fast frontend guardrail.
+- Keep tracked source clean between runs while preserving intentional incremental outputs such as `frontend/node_modules`, `frontend/dist`, and the staged AMD64 runtime when safe to reuse.
+- Persist development caches under the runner user's home directory. The fast workflow uses a portfolio-specific cache root under `~/.cache/portfolio-ci` for npm downloads, Cargo build output, Cargo-installed tools, and an isolated Rustup toolchain.
+- Do not depend on or mutate the developer's global Rust toolchain for fast CI. Use the isolated portfolio Rustup/Cargo homes so interrupted CI setup cannot corrupt local tooling.
+- Fast frontend builds should keep heavy prebuilt browser runtimes out of Vite's transform graph when the upstream package provides an official standalone bundle. Mermaid is staged from its local installed package into `frontend/public/vendor/` before build and lazy-loaded from there; do not replace this with a CDN dependency or rebundle the full Mermaid module graph without an explicit reason.
+- Fast Rust format/clippy runs only when server source inputs changed. A frontend-only change still runs the incremental AMD64 runtime build so the new embedded frontend is included in the binary, but it skips Rust format/clippy when server source itself did not change.
+- Fast validation intentionally skips the expensive Rust test suite, AI smoke check, ARM64 build, QEMU, and multi-architecture container build.
+- Rust fast builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
+- Frontend fast builds should reuse the machine-local npm cache and preserved `frontend/node_modules` rather than using `npm ci` on every development push.
+- Fast Rust clippy should validate the normal runtime target only; exhaustive `--all-targets` validation belongs to the full release workflow.
+- The self-hosted fast build must not require passwordless `sudo`; use user-local tooling such as Zig/cargo-zigbuild for the MUSL runtime build.
+- Reuse the installed Rust/Zig/cargo-zigbuild toolchain on subsequent fast runs. Toolchain installation is a warm-up operation, not normal per-push work.
+- Fast AMD64 container packaging should use the local Docker daemon and its layer cache. Do not push to GHCR and pull the same image back merely to deploy it on the same self-hosted machine.
+- On pull requests targeting `dev`, the fast workflow validates/builds but must not deploy. Do not run untrusted fork pull-request code on the self-hosted runner.
+- On pushes to `dev` and manual runs from `dev`, the fast workflow builds a local AMD64 image only when required and deploys that local image directly to the X64 self-hosted host.
+- `full-guardrail-build-deploy.yml` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` and must only be run from `dev`.
+- The production release workflow contains the complete full validation inline: frontend guardrail/build, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build.
+- Only after full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, and publish the production multi-architecture image to GHCR.
 - The release workflow must not delete the `dev` branch after the PR merge.
-- Do not add `push`, `pull_request`, `schedule`, `workflow_run`, or other automatic triggers to the full deployment workflow.
-- Do not recreate a separate fast CI workflow. Development validation and release validation must use the same full validation workflow to prevent drift.
-- Do not recreate legacy CI workflows or split the pipeline into additional YAML files unless explicitly requested.
+- Do not add automatic triggers to `full-guardrail-build-deploy.yml` unless the user explicitly requests a release-policy change.
+- Do not recreate a standalone `full-guardrail-build.yml` workflow unless explicitly requested.
+- Keep the fast and full paths intentionally different: fast optimizes normal development feedback and X64 deployment with persistent incremental caches and change-aware execution; full protects explicit production releases with clean comprehensive validation, ARM64 compatibility, and GHCR multi-arch publishing without direct deployment.
+
+## Shared database deployment
+
+- Arch deployments reuse the infrastructure-owned `shared-postgres` container; do not provision an application-specific PostgreSQL container or volume.
+- The fast deploy workflow must supply the `PORTFOLIO_DATABASE_URL` repository secret to Compose. The server requires `DATABASE_URL`.
+- Deployment verification must check nonempty `/api/cv/retrieve` evidence with backend `pgvector+postgres-fts`; HTTP 200 with memory fallback does not prove database success.
+- Preserve shared infrastructure and other applications when migrating or cleaning up Portfolio database resources.
 
 ## Documentation
 

@@ -7,11 +7,17 @@
   export let project: ProjectDocument;
   export let featured=false;
   $: detailPath = '/projects/' + project.slug;
+  $: preserveShowcase = project.slug === 'parentify';
 </script>
 
 <article class={featured ? "grid gap-10 border-b border-black/10 pb-10 lg:grid-cols-[1.45fr_.65fr]" : "border-b border-black/10 pb-9"}>
   <a href={detailPath} on:mouseenter={()=>prefetchRoute(detailPath)} on:focus={()=>prefetchRoute(detailPath)} on:click={(e)=>navigate(e,detailPath)} class="block">
-    <MediaImage className="aspect-[1.78] w-full" src={project.image} alt={project.cardTitle}/>
+    <MediaImage
+      className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.78] w-full"}
+      src={project.image}
+      alt={project.cardTitle}
+      fit={preserveShowcase ? 'contain' : 'cover'}
+    />
   </a>
   <div class={featured ? "self-center py-3" : "pt-4"}>
     <p class="text-[11px] uppercase tracking-[0.18em] text-black/43">{project.id} / {project.year}</p>

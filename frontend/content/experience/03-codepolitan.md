@@ -4,11 +4,12 @@ year: Sep 2024 — Dec 2024
 company: Codepolitan
 role: Full Stack Web Developer
 location: ""
-summary: Built REST APIs, MongoDB-backed services, and responsive Vue interfaces.
+summary: Completed a full-stack web development learning program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
+certificationGroups: [Alibaba Cloud]
 ---
 
-- Architected and maintained robust RESTful APIs using Node.js and Express.js, while managing high-availability MongoDB databases.
-- Developed responsive, user-centric frontend interfaces using Vue.js, ensuring seamless cross-device compatibility and user experience.
-- Achieved Alibaba Cloud Certification through the KodeBisat collaboration, verifying expertise in scalable cloud infrastructure.
+- Worked through backend development with Node.js and Express.js, including API design and application data stored in MongoDB.
+- Built frontend exercises with Vue.js to connect user-facing interfaces with the application services developed during the program.
+- Extended the learning path into cloud fundamentals through the related Alibaba Cloud credentials listed in the Certifications section.

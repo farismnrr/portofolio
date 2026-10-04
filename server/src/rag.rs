@@ -66,8 +66,8 @@ pub struct RetrieveResponse {
 
 impl RagState {
     pub fn from_env(ai: AiState, corpus_json: &[u8]) -> Result<Self, String> {
-        let database_url = env::var("DATABASE_URL")
-            .unwrap_or_else(|_| "postgresql://portfolio@127.0.0.1:5433/portfolio".to_string());
+        let database_url =
+            env::var("DATABASE_URL").map_err(|_| "DATABASE_URL is required".to_string())?;
         let pool = PgPoolOptions::new()
             .max_connections(5)
             .connect_lazy(&database_url)

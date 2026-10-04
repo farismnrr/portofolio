@@ -4,11 +4,11 @@ year: Feb 2025 — July 2025
 company: DBS Foundation
 role: Machine Learning Engineer
 location: ""
-summary: Built machine-learning models and data pipelines with Python and TensorFlow.
-tech: [Python, TensorFlow, Machine Learning]
-projects: []
+summary: Studied applied machine learning through an image-classification capstone focused on turning food images into useful ingredient predictions.
+tech: [Python, TensorFlow, EfficientNetV2L, Machine Learning]
+projects: [gizilens]
 ---
 
-- Engineered and deployed high-performance Machine Learning models using Python and TensorFlow to address complex business challenges.
-- Orchestrated end-to-end data processing pipelines and advanced visualization techniques to drive model development and performance optimization.
-- Leveraged deep learning methodologies to solve real-world problems, ensuring scalable and accurate predictive analysis.
+- Worked through the practical machine-learning lifecycle from preparing image datasets and augmentation through training, validation, testing, and inference.
+- Used **GiziLens** as the capstone context for understanding how an image classifier can become one capability inside a broader product rather than remain only a notebook experiment.
+- Focused on the machine-learning boundary of the team project: food-image classification, model evaluation, and a prediction flow that could be consumed by the application layer.

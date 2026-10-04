@@ -9,7 +9,7 @@ subtitle: "From Long Recordings to Reusable Meeting Knowledge"
 role: "Software Engineer · Product / Backend / AI"
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting product that preserves long recordings, processes them asynchronously, and turns transcripts into structured notes, decisions, action items, and searchable context."
-image: "/images/projects/featured/sensio-notes.png"
+image: "/images/projects/sensio-notes/showcase.png"
 tech: [React, Capacitor, NestJS, PostgreSQL, S3, WebSocket, LangGraph, OpenTelemetry]
 productUrl: ""
 repoUrl: ""

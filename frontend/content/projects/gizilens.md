@@ -9,7 +9,7 @@ subtitle: "Connecting a Food-Recognition Idea with the Application Infrastructur
 role: "Web & Backend Engineering · Team Capstone"
 category: "DBS Foundation · Capstone Project"
 description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, and deployment."
-image: ""
+image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"

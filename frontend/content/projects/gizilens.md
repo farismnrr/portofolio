@@ -3,122 +3,168 @@ id: "10"
 order: 10
 slug: gizilens
 year: "2025"
-title: "GiziLens: Food Recognition for Nutrition Workflows"
+title: "GiziLens: A Team Capstone Around Food Recognition"
 cardTitle: "GiziLens"
-subtitle: "Turning a Food Image into a Useful Starting Point for Nutrition Analysis"
-role: "Machine Learning Engineer"
+subtitle: "Connecting a Food-Recognition Idea with the Application Infrastructure Around It"
+role: "Web & Backend Engineering · Team Capstone"
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation capstone exploring how image classification can identify common food ingredients and become part of a broader nutrition-oriented web experience."
+description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, and deployment."
 image: ""
-tech: [Python, TensorFlow, EfficientNetV2L, Image Classification, Nuxt, TypeScript, PostgreSQL, Redis, Docker]
+tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
-repoUrl: "https://github.com/Group-CC25-CF047/Machine-Learning"
+repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"
 ---
 
-## The Problem
+## The Idea
 
-Nutrition tools often assume the user already knows exactly what food or ingredient they are looking at.
+**GiziLens** was a team capstone from the DBS Foundation program built around a simple idea: a nutrition-oriented application could begin with something users already have — a photo of food or an ingredient.
 
-That is not always how people encounter food in practice. Sometimes the starting point is simply an image: an apple on a table, a vegetable in a kitchen, or an ingredient whose name is not immediately known. Before any nutrition information can be useful, the application first needs a reasonable way to identify what is visible.
+The project explored that idea through two different technical responsibilities.
 
-**GiziLens** was our DBS Foundation capstone project built around that first step.
+One side of the team worked on **food-image recognition**, turning an image into one of the supported ingredient labels. The other side worked on the **application around that capability**: how a user enters the system, how identity and sessions are managed, where application data lives, and how the web stack can be run as a deployable service.
 
-The idea was to use image classification to recognize common food ingredients, then place that prediction inside a larger web application where it could eventually support nutrition-related workflows. The machine-learning model was therefore not treated as the whole product. It was one component responsible for translating an image into a food label that the rest of the system could understand.
-
-## Product Approach
-
-The core interaction can be reduced to a simple flow: a user provides an image, the model prepares the image in the format it was trained on, predicts one of the supported food classes, and returns a label that can be used by the application.
+Those responsibilities lived in separate repositories, and they were not fully integrated into a single end-to-end production flow in the repository state preserved today. I think that distinction is important: GiziLens was a team system in progress, not a finished product where every subsystem had already been connected.
 
 ```mermaid
 flowchart LR
-    U[User] --> IMG[Food image]
-    IMG --> PREP[Resize and prepare image]
-    PREP --> MODEL[Food classification model]
-    MODEL --> LABEL[Predicted ingredient]
-    LABEL --> APP[GiziLens application]
-    APP --> INFO[Nutrition-oriented workflow]
+    IDEA[GiziLens product idea]
+    IDEA --> ML[Machine-learning subsystem]
+    IDEA --> APP[Web application subsystem]
+
+    ML --> CLASSIFY[Food / ingredient classification]
+    APP --> AUTH[Identity and sessions]
+    APP --> DATA[Application persistence]
+    APP --> RUNTIME[Deployment and runtime]
 ```
 
-Keeping that boundary explicit was important. The model answers a narrow question — *what ingredient does this image most closely resemble among the supported classes?* — while the application is responsible for everything around that prediction, such as user accounts, presentation, persistence, and the wider product experience.
+## The Machine-Learning Subsystem
 
-## Building the Classifier
+The team's machine-learning repository contains a **32-class food and ingredient image classifier** built with TensorFlow and EfficientNetV2L.
 
-The machine-learning repository contains the training workflow for a 32-class food ingredient classifier.
-
-The dataset was separated into training, validation, and test sets. Images were normalized to a consistent `224 × 224` input size, while augmentation introduced variations such as horizontal flips, rotation, zoom, contrast, and brightness. This helped the training process see more realistic visual variation instead of learning only the exact appearance of the original images.
-
-The model used **EfficientNetV2L** with ImageNet weights as a feature extractor. Rather than training a large visual network entirely from scratch, the pretrained backbone was frozen and followed by a smaller classification head that mapped the extracted image features into the 32 supported ingredient classes.
+Its dataset combined several public image sources and grouped the supported labels into fruits, vegetables, nuts, and seasonings. Training used `224 × 224` images, augmentation, an ImageNet-pretrained EfficientNetV2L backbone, and a classification head for the 32 output classes.
 
 ```mermaid
-flowchart TD
-    DATA[Food image dataset] --> SPLIT[Train / validation / test]
+flowchart LR
+    DATA[Food image datasets] --> SPLIT[Train / validation / test]
     SPLIT --> AUG[Image augmentation]
-    AUG --> EN[EfficientNetV2L feature extractor]
-    EN --> POOL[Global average pooling]
-    POOL --> DENSE[Dense representation]
-    DENSE --> DROP[Dropout]
-    DROP --> OUT[32-class softmax prediction]
+    AUG --> MODEL[EfficientNetV2L]
+    MODEL --> HEAD[32-class classifier]
+    HEAD --> LABEL[Predicted ingredient label]
 ```
 
-This is a practical transfer-learning setup: reuse a model that already understands general visual features, then train the final layers for the narrower food-recognition problem.
+A separate prediction script shows the inference boundary clearly: load the trained Keras model, prepare an input image, run the model, and map the highest-scoring output to an ingredient label.
 
-## From Training to Prediction
+This subsystem is part of the GiziLens team project, but I do **not** present its model training as my individual implementation. The repository history attributes that machine-learning work to another team member.
 
-Training and inference were kept as separate concerns.
+## The Application Subsystem
 
-During training, the model learned from batches of labeled images and was evaluated against validation data after each epoch. Early stopping monitored validation accuracy so the process could retain the strongest weights rather than simply continuing for a fixed number of epochs regardless of improvement.
+My implementation work is much more visible in the separate **Web-App** repository.
 
-For inference, the repository also contains a small prediction script. It loads the saved Keras model, resizes a supplied image to `224 × 224`, converts it into a model-ready array, runs prediction, and maps the highest-scoring output back to the corresponding ingredient label.
+Rather than starting from the classifier, I worked on the foundation needed for GiziLens to behave like an actual web application: users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
+
+The application repository is split into a Nuxt frontend and a Bun/TypeScript backend built with Hapi.
+
+```mermaid
+flowchart TB
+    U[User] --> NUXT[Nuxt web application]
+    NUXT --> API[Application API]
+
+    API --> AUTH[Authentication and user flows]
+    AUTH --> SESSION[JWT + session lifecycle]
+
+    API --> PG[(PostgreSQL)]
+    API --> REDIS[(Redis)]
+
+    NUXT --> DEPLOY[Containerized runtime]
+    API --> DEPLOY
+    DEPLOY --> NGINX[Nginx / HTTPS boundary]
+```
+
+The current frontend is primarily an identity and account shell: registration, login, authenticated user information, token refresh, logout, and a dashboard. It does not currently expose a complete image-upload-to-classification user journey, so I avoid describing that intended integration as if it were already implemented.
+
+## Identity and Session Flow
+
+A large part of the application work was making authentication more than a single login endpoint.
+
+The backend exposes user registration for different roles, login, authenticated user retrieval and update, logout, account deletion/restore, and token refresh. JWT authentication protects authenticated routes, while persisted sessions give the application a server-side lifecycle for validating and revoking access.
 
 ```mermaid
 sequenceDiagram
-    participant U as Input image
-    participant P as Preprocessing
-    participant M as Trained model
-    participant L as Label mapping
+    participant U as User
+    participant W as Nuxt app
+    participant A as Hapi API
+    participant S as Session layer
+    participant D as PostgreSQL / Redis
 
-    U->>P: Provide image
-    P->>P: Resize to 224 × 224
-    P->>M: Submit image tensor
-    M-->>L: Return class probabilities
-    L-->>U: Return highest-scoring food label
+    U->>W: Register or sign in
+    W->>A: Submit credentials
+    A->>D: Validate / persist user
+    A->>S: Create session and tokens
+    S-->>W: Return authenticated session
+
+    U->>W: Open protected area
+    W->>A: Authenticated request
+    A->>S: Verify token and session
+    S->>D: Resolve session / user state
+    D-->>A: Current account state
+    A-->>W: Protected response
+
+    opt Access token needs renewal
+        W->>A: Refresh session
+        A->>S: Validate persisted session
+        S-->>W: Issue refreshed access
+    end
 ```
 
-That small inference boundary is what makes the trained model useful outside the notebook: another service can treat it as a classifier instead of needing to know how the model was trained.
+The frontend mirrors that lifecycle with auth composables, API proxy handlers, session-aware middleware, and client-side authentication state. That makes login, refresh, logout, and protected requests part of one flow rather than unrelated API calls.
 
-## The Application Around the Model
+## Persistence and Application Boundaries
 
-The capstone organization also contains a separate **Web-App** repository for GiziLens.
+PostgreSQL is used as the durable application store for users and sessions, while Redis provides a separate fast-access infrastructure boundary. The backend keeps these concerns behind repository and dependency layers instead of letting HTTP handlers talk directly to storage everywhere.
 
-That repository shows the surrounding product concerns: a Nuxt-based frontend, backend APIs, registration and authentication flows, session handling, PostgreSQL persistence, Redis integration, and Docker-based runtime configuration. In other words, the project was structured as more than a notebook demonstration.
+The server startup sequence reflects that separation: establish PostgreSQL and Redis connections, register the application's dependencies, build the Hapi server, register its plugins and authentication extensions, then start serving requests.
 
-From a system-design perspective, the two repositories represent different responsibilities:
+```mermaid
+flowchart TD
+    START[Application startup] --> CONN[Connect PostgreSQL + Redis]
+    CONN --> DI[Register dependencies]
+    DI --> MODULES[Users / sessions / utilities]
+    MODULES --> HAPI[Create Hapi server]
+    HAPI --> EXT[Auth / JWT / error extensions]
+    EXT --> RUN[Serve application]
+```
+
+This structure was useful to me because it kept application rules, HTTP transport, and infrastructure from collapsing into one layer as the project grew.
+
+## Running GiziLens as a Service
+
+The repository also includes the operational side of the application.
+
+Frontend and backend have their own container build paths. The runtime configuration brings those services together with PostgreSQL, Redis, and Nginx on a shared Docker network. Nginx configuration covers reverse-proxy concerns and HTTPS certificate setup, while the deployment scripts provide a repeatable way to build, update, and restart the GiziLens services.
 
 ```mermaid
 flowchart LR
-    USER[User] --> WEB[Web application]
-    WEB --> API[Application backend]
-    API --> AUTH[Identity and session data]
-    API --> ML[Food recognition capability]
-    ML --> PRED[Predicted ingredient]
-    PRED --> API
-    API --> WEB
+    INTERNET[Client] --> NGINX[Nginx / HTTPS]
+    NGINX --> FRONT[Nuxt frontend]
+    NGINX --> BACK[Hapi backend]
+    BACK --> POSTGRES[(PostgreSQL)]
+    BACK --> REDIS[(Redis)]
 ```
 
-The web application provides the product boundary. The machine-learning work provides the visual recognition capability. Keeping those responsibilities separate makes it easier to improve the classifier without coupling model-training code to account management or user-interface concerns.
+This was the part of the capstone where the project stopped feeling like a collection of local files and started behaving like a small deployed system with clear service boundaries.
 
-## My Role
+## My Contribution
 
-My focus in the DBS Foundation capstone was the **machine-learning side of GiziLens**.
+My contribution to GiziLens centered on the **Web-App and its runtime foundation**.
 
-That meant working with the image-classification workflow: preparing image datasets, using augmentation, applying transfer learning with TensorFlow, evaluating the model against held-out data, and turning the trained model into a prediction flow that could be consumed beyond the training notebook.
+I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend. The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
 
-The broader GiziLens system was a team project. The separate Web-App repository represents the application work surrounding the model, so I treat it here as system context rather than claiming every part of that application as my individual implementation.
+The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support. But the part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual implementation here.
 
 ## What I Took From It
 
-The most useful lesson from GiziLens was that model accuracy is only one part of making machine learning useful.
+GiziLens ended up teaching me more about **system boundaries** than about any single framework.
 
-A model still needs a clear input contract, stable preprocessing, understandable output labels, and a clean boundary with the application that consumes it. The project made that distinction tangible: training created the recognition capability, while product integration determined whether that capability could become part of an actual user workflow.
+A model can solve the recognition problem. A backend can solve identity and persistence. A frontend can give people somewhere to interact with the system. Deployment can make those pieces reachable. None of those pieces becomes the whole product by itself.
 
-That separation — **model responsibility versus application responsibility** — is the part of the project that continued to matter beyond the capstone itself.
+The capstone made that separation concrete for me: understand what each subsystem is responsible for, be explicit about what has actually been integrated, and avoid treating a team project's combined output as one person's work.

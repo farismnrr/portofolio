@@ -1,4 +1,4 @@
-name: Full Guardrail + Build + Deploy
+name: Full Guardrail + Build + Publish
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${GITHUB_REF}" != "refs/heads/dev" ]; then
-            echo "Full Guardrail + Build + Deploy must be dispatched from dev."
+            echo "Full Guardrail + Build + Publish must be dispatched from dev."
             exit 1
           fi
 
@@ -290,7 +290,7 @@ jobs:
               --base main \
               --head dev \
               --title "release: dev -> main" \
-              --body "Production release created by Full Guardrail + Build + Deploy run ${GITHUB_RUN_ID}.")"
+              --body "Production release created by Full Guardrail + Build + Publish run ${GITHUB_RUN_ID}.")"
             pr_number="${pr_url##*/}"
           fi
 
@@ -340,74 +340,8 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.merge-release.outputs.main_sha }}
           cache-from: type=gha,scope=portfolio-runtime
           cache-to: type=gha,mode=max,scope=portfolio-runtime
-
-  deploy:
-    name: deploy
-    runs-on: [self-hosted, Linux, X64]
-    needs: [merge-release, publish]
-    permissions:
-      contents: read
-      packages: read
-    concurrency:
-      group: portfolio-self-hosted
-      cancel-in-progress: true
-    steps:
-      - name: Repair self-hosted workspace ownership
-        shell: bash
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/work" \
-            alpine:3.20 \
-            chown -R "$(id -u):$(id -g)" /work
-
-      - uses: actions/checkout@v7
-        with:
-          ref: ${{ needs.merge-release.outputs.main_sha }}
-          fetch-depth: 0
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy latest to Arch host
-        env:
-          PORTFOLIO_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          PORTFOLIO_PORT: "3001"
-          PORTFOLIO_DATABASE_URL: ${{ secrets.PORTFOLIO_DATABASE_URL }}
-          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
-          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
-          NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
-          NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
-          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${PORTFOLIO_DATABASE_URL:?Configure the PORTFOLIO_DATABASE_URL repository secret}"
-          test "$(docker inspect --format '{{.State.Health.Status}}' shared-postgres)" = healthy
-          docker compose -p portofolio config --quiet
-          docker compose -p portofolio pull
-          docker compose -p portofolio up -d --remove-orphans
-          docker compose -p portofolio ps
-          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null
-          # Retrieval returns HTTP 200 even on memory fallback; check the actual backend.
-          for attempt in {1..10}; do
-            if curl --fail --silent --show-error --max-time 90 \
-              -H 'Content-Type: application/json' \
-              --data '{"target":"software-engineer","query":"Rust PostgreSQL Docker","limit":6}' \
-              http://127.0.0.1:3001/api/cv/retrieve \
-              | python3 -c 'import json,sys; r=json.load(sys.stdin); sys.exit(0 if r.get("backend") == "pgvector+postgres-fts" and r.get("evidence") else 1)'; then
-              echo "Shared PostgreSQL retrieval verified"
-              break
-            fi
-            if [ "$attempt" -eq 10 ]; then
-              echo "Shared PostgreSQL retrieval verification failed" >&2
-              exit 1
-            fi
-            sleep 2
-          done

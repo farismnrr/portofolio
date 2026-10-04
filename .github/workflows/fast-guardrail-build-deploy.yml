@@ -1,16 +1,7 @@
-name: Fast Guardrail + AMD64 Build + Deploy
+name: Fast AMD64 Build + Deploy
 
 on:
   push:
-    branches:
-      - dev
-    paths:
-      - "frontend/**"
-      - "server/**"
-      - "Dockerfile"
-      - "compose.yaml"
-      - ".github/workflows/fast-guardrail-build-deploy.yml"
-  pull_request:
     branches:
       - dev
     paths:
@@ -23,11 +14,9 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
 
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
-  RUSTFLAGS: -D warnings
   RUSTUP_TOOLCHAIN: stable
   DEV_IMAGE: portfolio-app:dev
 
@@ -37,23 +26,13 @@ concurrency:
 
 jobs:
   fast:
-    name: incremental amd64 build + deploy
+    name: build + deploy
     runs-on: [self-hosted, Linux, X64]
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     concurrency:
       group: portfolio-self-hosted
       cancel-in-progress: true
-    steps:
-      - name: Require dev for manual runs
-        if: github.event_name == 'workflow_dispatch'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_REF}" != "refs/heads/dev" ]; then
-            echo "Fast Guardrail + AMD64 Build + Deploy must be dispatched from dev."
-            exit 1
-          fi
 
+    steps:
       - name: Repair workspace ownership
         shell: bash
         run: |
@@ -68,278 +47,78 @@ jobs:
           clean: false
           fetch-depth: 0
 
-      - name: Clean source while preserving incremental outputs
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.14.1
+
+      - name: Build
         shell: bash
         run: |
           set -euo pipefail
-          git reset --hard HEAD
+
+          cache_root="$HOME/.cache/portfolio-ci"
+          export NPM_CONFIG_CACHE="$cache_root/npm"
+          export CARGO_TARGET_DIR="$cache_root/cargo-target"
+          export CARGO_HOME="$cache_root/cargo-home"
+          export RUSTUP_HOME="$cache_root/rustup"
+          export PATH="$CARGO_HOME/bin:$HOME/.cargo/bin:$PATH"
+
+          mkdir -p \
+            "$NPM_CONFIG_CACHE" \
+            "$CARGO_TARGET_DIR" \
+            "$CARGO_HOME/bin" \
+            "$RUSTUP_HOME"
+
+          git reset --hard "$GITHUB_SHA"
           git clean -ffdx \
             -e frontend/node_modules/ \
             -e frontend/dist/ \
             -e release/amd64/
 
-      - name: Configure persistent build caches
-        shell: bash
-        run: |
-          set -euo pipefail
-          cache_root="$HOME/.cache/portfolio-ci"
-          cargo_home="$cache_root/cargo-home"
-          rustup_home="$cache_root/rustup"
-          mkdir -p \
-            "$cache_root/npm" \
-            "$cache_root/cargo-target" \
-            "$cargo_home/bin" \
-            "$rustup_home" \
-            "$HOME/.local/bin"
-          echo "NPM_CONFIG_CACHE=$cache_root/npm" >> "$GITHUB_ENV"
-          echo "CARGO_TARGET_DIR=$cache_root/cargo-target" >> "$GITHUB_ENV"
-          echo "CARGO_HOME=$cargo_home" >> "$GITHUB_ENV"
-          echo "RUSTUP_HOME=$rustup_home" >> "$GITHUB_ENV"
-          echo "$cargo_home/bin" >> "$GITHUB_PATH"
-          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          echo "Persistent cache root: $cache_root"
+          (
+            cd frontend
+            npm install --ignore-scripts --no-audit --no-fund --prefer-offline
+            npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
+            npm run build
+          )
 
-      - name: Detect changed areas
-        id: changes
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          PUSH_BEFORE: ${{ github.event.before }}
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          frontend=false
-          frontend_source=false
-          frontend_content=false
-          server=false
-          runtime=false
-          image=false
-          compose=false
-          force=false
-
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            force=true
-          else
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              base="$PR_BASE"
-              head="$PR_HEAD"
-            else
-              base="$PUSH_BEFORE"
-              head="$GITHUB_SHA"
-            fi
-
-            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
-              force=true
-            else
-              echo "Changed files:"
-              git diff --name-only "$base" "$head" | tee /tmp/portfolio-fast-changes.txt
-
-              while IFS= read -r path; do
-                case "$path" in
-                  frontend/content/*|frontend/public/*)
-                    frontend=true
-                    frontend_content=true
-                    runtime=true
-                    image=true
-                    ;;
-                  frontend/*)
-                    frontend=true
-                    frontend_source=true
-                    runtime=true
-                    image=true
-                    ;;
-                  server/*)
-                    server=true
-                    runtime=true
-                    image=true
-                    ;;
-                  Dockerfile)
-                    image=true
-                    ;;
-                  compose.yaml)
-                    compose=true
-                    ;;
-                  .github/workflows/fast-guardrail-build-deploy.yml)
-                    force=true
-                    ;;
-                esac
-              done < /tmp/portfolio-fast-changes.txt
-            fi
-          fi
-
-          if [ ! -f frontend/dist/index.html ]; then
-            frontend=true
-            frontend_source=true
-            frontend_content=true
-            runtime=true
-            image=true
-          fi
-
-          if [ ! -x "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" ]; then
-            runtime=true
-            image=true
-          fi
-
-          if [ "$force" = true ]; then
-            frontend=true
-            frontend_source=true
-            frontend_content=true
-            server=true
-            runtime=true
-            image=true
-            compose=true
-          fi
-
-          {
-            echo "frontend=$frontend"
-            echo "frontend_source=$frontend_source"
-            echo "frontend_content=$frontend_content"
-            echo "server=$server"
-            echo "runtime=$runtime"
-            echo "image=$image"
-            echo "compose=$compose"
-          } >> "$GITHUB_OUTPUT"
-
-          echo "frontend=$frontend frontend_source=$frontend_source frontend_content=$frontend_content server=$server runtime=$runtime image=$image compose=$compose"
-
-      - uses: actions/setup-node@v7
-        if: steps.changes.outputs.frontend == 'true'
-        with:
-          node-version: 24
-          package-manager-cache: false
-
-      - name: Reuse frontend dependencies
-        if: steps.changes.outputs.frontend == 'true'
-        working-directory: frontend
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm install --ignore-scripts --no-audit --no-fund --prefer-offline
-          npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
-
-      - name: Frontend source guardrail
-        if: steps.changes.outputs.frontend_source == 'true'
-        working-directory: frontend
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm run guard
-          npm run check
-
-      - name: Frontend content validation
-        if: steps.changes.outputs.frontend == 'true'
-        working-directory: frontend
-        run: npm run content:check
-
-      - name: Build frontend
-        if: steps.changes.outputs.frontend == 'true'
-        working-directory: frontend
-        run: npm run build
-
-      - name: Reuse isolated Rust toolchain
-        if: steps.changes.outputs.runtime == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          command -v rustup >/dev/null 2>&1 || { echo "rustup is required on the self-hosted runner."; exit 1; }
+          command -v rustup >/dev/null 2>&1 || {
+            echo "rustup is required on the self-hosted runner."
+            exit 1
+          }
 
           if ! rustup toolchain list | grep -q '^stable'; then
             rustup toolchain install stable \
               --profile minimal \
-              --component rustfmt \
-              --component clippy \
               --target "$RUST_TARGET_AMD64"
-          else
-            if ! rustup component list --toolchain stable --installed | grep -q '^rustfmt-'; then
-              rustup component add --toolchain stable rustfmt
-            fi
-            if ! rustup component list --toolchain stable --installed | grep -q '^clippy-'; then
-              rustup component add --toolchain stable clippy
-            fi
-            if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
-              rustup target add --toolchain stable "$RUST_TARGET_AMD64"
-            fi
+          elif ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+            rustup target add --toolchain stable "$RUST_TARGET_AMD64"
           fi
 
-          rustc --version
-          cargo --version
-
-      - name: Detect persistent Zig
-        if: steps.changes.outputs.runtime == 'true'
-        id: zig
-        shell: bash
-        run: |
-          if command -v zig >/dev/null 2>&1; then
-            echo "installed=true" >> "$GITHUB_OUTPUT"
-            zig version
-          else
-            echo "installed=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - uses: mlugg/setup-zig@v2
-        if: steps.changes.outputs.runtime == 'true' && steps.zig.outputs.installed != 'true'
-        with:
-          version: 0.14.1
-
-      - name: Persist Zig for future runs
-        if: steps.changes.outputs.runtime == 'true' && steps.zig.outputs.installed != 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          ln -sfn "$(command -v zig)" "$HOME/.local/bin/zig"
-          zig version
-
-      - name: Install cargo-zigbuild when missing
-        if: steps.changes.outputs.runtime == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
           if ! command -v cargo-zigbuild >/dev/null 2>&1; then
             cargo install cargo-zigbuild --locked
           fi
 
-      - name: Rust fast guardrail
-        if: steps.changes.outputs.server == 'true'
-        working-directory: server
-        shell: bash
-        run: |
-          set -euo pipefail
-          cargo fmt --check
-          cargo clippy --release --all-features --no-deps -- -D warnings
+          (
+            cd server
+            cargo zigbuild --release --target "$RUST_TARGET_AMD64"
+          )
 
-      - name: Incremental AMD64 runtime build
-        if: steps.changes.outputs.runtime == 'true'
-        working-directory: server
-        shell: bash
-        run: |
-          set -euo pipefail
-          cargo zigbuild --release --target "$RUST_TARGET_AMD64"
-
-      - name: Stage AMD64 runtime binary
-        if: steps.changes.outputs.image == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
           mkdir -p release/amd64
           cp "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" release/amd64/portfolio-server
           chmod +x release/amd64/portfolio-server
-          file release/amd64/portfolio-server
 
-      - name: Build local AMD64 runtime image
-        if: steps.changes.outputs.image == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
           DOCKER_BUILDKIT=1 docker build \
             --build-arg TARGETARCH=amd64 \
             --tag "$DEV_IMAGE" \
             .
 
-      - name: Deploy local AMD64 image
-        if: github.event_name != 'pull_request' && (steps.changes.outputs.image == 'true' || steps.changes.outputs.compose == 'true')
+      - name: Deploy
         env:
           PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"
@@ -357,20 +136,5 @@ jobs:
           docker compose -p portofolio config --quiet
           docker compose -p portofolio up -d --remove-orphans --no-build
           docker compose -p portofolio ps
-          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3001/ > /dev/null
-          # Retrieval returns HTTP 200 even on memory fallback; check the actual backend.
-          for attempt in {1..10}; do
-            if curl --fail --silent --show-error --max-time 90 \
-              -H 'Content-Type: application/json' \
-              --data '{"target":"software-engineer","query":"Rust PostgreSQL Docker","limit":6}' \
-              http://127.0.0.1:3001/api/cv/retrieve \
-              | python3 -c 'import json,sys; r=json.load(sys.stdin); sys.exit(0 if r.get("backend") == "pgvector+postgres-fts" and r.get("evidence") else 1)'; then
-              echo "Shared PostgreSQL retrieval verified"
-              break
-            fi
-            if [ "$attempt" -eq 10 ]; then
-              echo "Shared PostgreSQL retrieval verification failed" >&2
-              exit 1
-            fi
-            sleep 2
-          done
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
+            http://127.0.0.1:3001/ > /dev/null

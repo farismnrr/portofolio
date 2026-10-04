@@ -5,184 +5,117 @@ slug: sensio-notes
 year: "2026"
 title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
-subtitle: "Meeting Intelligence Platform"
-role: "Software Engineer · AI / Backend / Infrastructure"
-category: "AI · Backend"
-description: "A meeting intelligence product that turns raw conversations into structured, searchable, evidence-aware knowledge."
+subtitle: "From Long Recordings to Reusable Meeting Knowledge"
+role: "Software Engineer · Product / Backend / AI"
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "A meeting product that preserves long recordings, processes them asynchronously, and turns transcripts into structured notes, decisions, action items, and searchable context."
 image: "/images/projects/featured/sensio-notes.png"
-tech: [React 19, Capacitor, NestJS 11, PostgreSQL, Drizzle, S3, LangChain, LangGraph, OpenTelemetry]
+tech: [React, Capacitor, NestJS, PostgreSQL, S3, WebSocket, LangGraph, OpenTelemetry]
 productUrl: ""
 repoUrl: ""
 ---
 
-## The Story
+## The Problem
 
-A meeting usually feels productive while it is happening.
+A meeting recording is useful evidence, but it is rarely useful by itself.
 
-People talk, decisions are made, responsibilities are mentioned, ideas appear, and everyone leaves with the feeling that the important things were understood.
+The questions people come back with are usually smaller and more practical: *what was decided, who needs to follow up, what problem was raised, and where in the conversation did that come from?*
 
-A few days later, that confidence starts to disappear.
+**Sensio Notes** is built around that gap. It treats the recording and transcript as the source material, then turns them into meeting information that can be reviewed and reused without replaying the entire conversation.
 
-Someone asks, “Who was supposed to handle that?” Another person remembers the decision differently. The recording exists, but nobody wants to listen to an hour of audio just to recover one sentence.
+There is another problem underneath that product idea: the recording has to survive long sessions, mobile operating-system constraints, and unreliable networks before any AI processing becomes useful.
 
-That gap is the reason **Sensio Notes** exists.
-
-The goal is not simply to record a meeting. The goal is to make the meeting remain useful after it ends.
-
-## What the Product Is Really Trying to Do
-
-Sensio Notes treats every meeting as raw information that needs to be turned into something reusable.
-
-A conversation starts messy. People interrupt each other, jump between topics, return to older points, and make decisions without saying the words “this is a decision.”
-
-The product tries to transform that mess into a more durable memory:
-
-- what was discussed;
-- what was decided;
-- what needs to happen next;
-- who is responsible;
-- what context matters later;
-- where those conclusions came from.
-
-The important part is that the AI does not become the meeting itself. The original conversation remains the source of truth.
-
-```mermaid
-mindmap
-  root((Meeting))
-    Evidence
-      Recording
-      Transcript
-    Understanding
-      Summary
-      Decisions
-      Action items
-    Memory
-      Searchable knowledge
-```
-
-## How It Feels to Use
-
-From the user's perspective, the flow should feel boringly simple.
-
-You start a meeting, record it, end it, and wait while the system processes everything in the background.
-
-After that, instead of seeing only a media file, you get a useful representation of the meeting.
-
-```mermaid
-journey
-    title A meeting becomes reusable knowledge
-    section Capture
-      Start the meeting: 5: User
-      Record the conversation: 5: User
-    section Processing
-      End the meeting: 5: User
-      Wait while it is processed: 3: User
-      Review the transcript: 4: User
-    section Reuse
-      Review decisions and actions: 5: User
-      Search the meeting later: 5: User
-```
-
-The complexity belongs inside the system, not in the user's workflow.
-
-## The Main Problem Behind the Scenes
-
-There are actually two separate problems.
-
-The first is **capture reliability**.
-
-If a meeting lasts an hour and the network drops near the end, the system should not behave as if nothing happened. The product has to assume that devices sleep, connections disappear, browsers throttle background activity, and mobile operating systems behave differently from desktop browsers.
-
-The second is **interpretation reliability**.
-
-An AI can produce a very convincing paragraph that sounds correct while quietly inventing meaning that was never actually present.
-
-So the product has to solve both:
+That makes the product a combination of two different concerns:
 
 ```text
-preserve the evidence
+preserve the meeting reliably
 then
-interpret the evidence carefully
+interpret it carefully
 ```
 
-That ordering matters.
+## Product Approach
 
-## General Processing Logic
-
-The processing model is intentionally staged.
-
-1. Preserve the meeting first.
-2. Turn speech into text.
-3. Break the transcript into useful context.
-4. Detect important discussion structure.
-5. Extract decisions and actions.
-6. Generate higher-level summaries.
-7. Keep the outputs connected to the original evidence.
-8. Store the result so the meeting remains useful later.
+From the user's point of view, the flow stays simple: record or upload a meeting, wait while it is processed, then review the transcript and the structures derived from it.
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Captured
-    Captured --> Transcribed
-    Transcribed --> Contextualized
-    Contextualized --> Interpreted
-    Interpreted --> MeetingKnowledge
-    MeetingKnowledge --> [*]
+flowchart LR
+    U[User] --> C[Web or mobile client]
+    C --> R[Recording / upload]
+    R --> S[Durable media storage]
+    S --> B[Meeting backend]
+    B --> T[Asynchronous transcription]
+    T --> A[Structured AI processing]
+    A --> M[Meeting knowledge]
+    M --> C
+    B -. progress updates .-> C
 ```
 
-The algorithm is less about “ask an LLM to summarize this” and more about building several smaller transformations that can be reasoned about independently.
+The important boundary is that capture, transcription, and interpretation are separate stages. A summary should not be treated as the original evidence, and a failed processing step should not make the recording itself disappear.
 
-## General System Design
+## Capture Before Interpretation
 
-The system can be understood as four layers.
+The client supports both browser/PWA and native-mobile recording because those environments fail in different ways.
+
+On the web path, recording uses the browser media APIs together with a wake-lock strategy so a long meeting is less likely to be interrupted by background throttling. On native mobile, Capacitor bridges to a native audio-recorder path so recording can continue under mobile constraints that a normal browser tab cannot handle as reliably.
+
+After recording, the client does not rely on one large request. Audio is divided into small chunks and queued through the upload flow so a long file can move into object storage more safely over an unstable connection.
+
+That design keeps the first promise of the product deliberately boring: **do not lose the meeting**.
+
+## Processing the Meeting
+
+Once media is durable, the backend becomes an orchestration layer rather than a synchronous request handler.
+
+The NestJS service owns meeting lifecycle and authentication, coordinates S3 uploads, starts or tracks asynchronous transcription work, receives processing callbacks, persists application state, and sends progress back to the client through real-time notifications.
 
 ```mermaid
-flowchart TD
-    C[Capture] --> P[Processing]
-    P --> K[Knowledge]
-    K --> E[Experience]
+sequenceDiagram
+    participant C as Client
+    participant B as NestJS backend
+    participant S as S3
+    participant W as Transcription worker
+    participant A as AI workflow
+
+    C->>B: Create meeting / request upload
+    B-->>C: Upload instructions
+    C->>S: Upload recording chunks
+    C->>B: Finish upload
+    B->>W: Start transcription work
+    W-->>B: Processing status / transcript callback
+    B-->>C: Real-time progress
+    B->>A: Process finished transcript
+    A-->>B: Summary / decisions / actions / structure
+    B-->>C: Meeting becomes reviewable
 ```
 
-**Capture** is responsible for not losing the meeting.
+The application uses PostgreSQL for durable product data, while the client and backend are kept as separate repositories so recording UX can evolve independently from processing and persistence concerns.
 
-**Processing** turns media into transcript and structured interpretation.
+## From Transcript to Meeting Knowledge
 
-**Knowledge** stores the useful long-term representation.
+Sensio Notes does not stop at producing raw text.
 
-**Experience** is what the user interacts with: summaries, action items, search, and review.
+The completed transcript can be processed through structured LangChain/LangGraph workflows to produce higher-level views such as summaries, action items, decisions, discussion structure, and PPP-style progress/issues/plans context.
 
-The layers matter because each one has a different failure mode. A capture failure is not the same kind of problem as a bad summary. Keeping them conceptually separate makes the whole product easier to trust.
+The useful distinction is:
 
-## Why This Product Is More Than a Meeting Recorder
+```text
+recording = evidence
+transcript = searchable representation of that evidence
+AI output = interpretation built on top of it
+```
 
-The real value appears weeks later.
+Keeping those layers conceptually separate makes it easier for the product to expose useful automation without pretending generated text is more authoritative than the meeting itself.
 
-A normal recorder answers:
+## My Contribution
 
-> “What happened in this meeting?”
+My work on Sensio Notes spans the application and backend boundary rather than one isolated model or endpoint.
 
-Sensio Notes tries to answer:
+I worked on the flow that connects recording and upload behavior to the meeting lifecycle behind it: asynchronous processing boundaries, persistent meeting state, real-time status, and the structured AI workflows that turn a finished transcript into something people can actually review.
 
-> “What did we decide, what should happen next, and what context from past meetings matters now?”
+The product is split across private client and backend repositories, so I describe it here as one system while keeping the responsibilities explicit. The client handles recording and the review experience; the backend coordinates storage, processing, persistence, and the AI-assisted interpretation pipeline.
 
-That shift is what turns a recording tool into a knowledge tool.
+## What I Took From It
 
-## Product Tradeoffs
+Sensio Notes made one design rule especially clear: **capture reliability and AI quality are different problems**.
 
-There are a few unavoidable tensions.
-
-**Speed vs accuracy.** Users want results quickly, but better interpretation may require more processing.
-
-**Automation vs trust.** AI can save time, but a user still needs confidence that important outputs came from real evidence.
-
-**Rich output vs clarity.** The system can extract many structures, but too much information can make a meeting harder to understand instead of easier.
-
-The product has to stay useful without becoming noisy.
-
-## Implementation Notes
-
-The current implementation uses a web/native recording client, asynchronous backend processing, durable media storage, structured AI workflows, and real-time progress updates.
-
-## Stack
-
-React, Capacitor, NestJS, PostgreSQL, object storage, LangChain/LangGraph, and OpenTelemetry.
+A clever summary cannot recover a recording that was never preserved, and a perfectly stored recording is still inconvenient if useful decisions remain buried inside an hour of audio. The system has to protect the evidence first and add interpretation second.

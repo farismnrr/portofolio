@@ -11,7 +11,7 @@ category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting product that preserves long recordings, processes them asynchronously, and turns transcripts into structured notes, decisions, action items, and searchable context."
 image: "/images/projects/sensio-notes/showcase.png"
 tech: [React, Capacitor, NestJS, PostgreSQL, S3, WebSocket, LangGraph, OpenTelemetry]
-productUrl: ""
+productUrl: "https://notes.sensio.id"
 repoUrl: ""
 ---
 
@@ -119,3 +119,9 @@ The product is split across private client and backend repositories, so I descri
 Sensio Notes made one design rule especially clear: **capture reliability and AI quality are different problems**.
 
 A clever summary cannot recover a recording that was never preserved, and a perfectly stored recording is still inconvenient if useful decisions remain buried inside an hour of audio. The system has to protect the evidence first and add interpretation second.
+
+## Product Links
+
+- Sensio Notes: [notes.sensio.id](https://notes.sensio.id)
+- Sensio Platform: [sensio.id](https://sensio.id)
+

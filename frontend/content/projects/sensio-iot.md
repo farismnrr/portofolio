@@ -11,7 +11,7 @@ category: "PT Perkasa Pilar Utama · Product Development"
 description: "An on-prem smart-space platform that organizes users, rooms, device state, telemetry, and control around the physical places people actually manage."
 image: "/images/projects/featured/sensio-iot.png"
 tech: [Rust, Axum, PostgreSQL, MQTT, Zigbee2MQTT, OpenTelemetry, Docker]
-productUrl: ""
+productUrl: "https://iot.sensio.id"
 repoUrl: ""
 ---
 
@@ -129,3 +129,9 @@ Rather than presenting the rewrite as a completely separate project, I see it as
 The recurring lesson in Sensio IoT is that the hardest part of connected-device software is not sending a command to a broker.
 
 The harder question is how to keep **identity, physical scope, device state, protocol translation, and local operations** consistent while the system evolves. Once those boundaries are clear, individual device integrations become much easier to reason about.
+
+## Product Links
+
+- Sensio IoT: [iot.sensio.id](https://iot.sensio.id)
+- Sensio Platform: [sensio.id](https://sensio.id)
+

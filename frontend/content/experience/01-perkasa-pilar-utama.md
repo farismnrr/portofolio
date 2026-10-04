@@ -9,6 +9,6 @@ tech: [NestJS, Rust, PostgreSQL, MQTT, S3, LangGraph, Docker]
 projects: [sensio-notes, sensio-iot]
 ---
 
-- Worked across the backend and integration boundaries of **Sensio Notes**, connecting recording and upload flows with asynchronous processing, meeting data, real-time status, and AI-assisted review.
-- Developed **Sensio IoT** around physical site, room, and device boundaries, including device state, telemetry and control flows, automation, and on-prem deployment concerns.
+- Worked across the backend and integration boundaries of **[Sensio Notes](https://notes.sensio.id)** on the **[Sensio](https://sensio.id)** platform, connecting recording and upload flows with asynchronous processing, meeting data, real-time status, and AI-assisted review.
+- Developed **[Sensio IoT](https://iot.sensio.id)** on the **[Sensio](https://sensio.id)** platform around physical site, room, and device boundaries, including device state, telemetry and control flows, automation, and on-prem deployment concerns.
 - The role has moved across more than one implementation as the products evolved; the related project pages document those system changes and responsibilities in more detail.

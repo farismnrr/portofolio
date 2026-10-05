@@ -70,14 +70,14 @@
           </button>
 
           {#if cvPickerOpen}
-            <div class="space-y-3 rounded-2xl border border-black/10 bg-black/[0.025] p-4">
+            <div class="cv-profile-picker space-y-3 rounded-2xl border p-4">
               <label class="block text-[12px] font-semibold text-black/65" for="cv-profile">
                 Choose a CV profile
               </label>
               <select
                 id="cv-profile"
                 bind:value={selectedCvTarget}
-                class="w-full rounded-xl border border-black/12 bg-white px-3 py-2 text-[13px] text-black/75 outline-none transition focus:border-black/35"
+                class="cv-profile-select w-full rounded-xl border px-3 py-2 text-[13px] outline-none transition"
                 disabled={generatingCv}
               >
                 {#each CV_PROFILE_OPTIONS as cvProfile}
@@ -88,7 +88,7 @@
                 {CV_PROFILES[selectedCvTarget].headline} · {CV_PROFILES[selectedCvTarget].maxPages} page{CV_PROFILES[selectedCvTarget].maxPages === 1 ? '' : 's'}
               </p>
               <button
-                class="w-full rounded-xl bg-black px-3 py-2.5 text-[13px] font-semibold text-white transition hover:bg-black/80 disabled:cursor-wait disabled:opacity-45"
+                class="cv-generate-button w-full rounded-xl px-3 py-2.5 text-[13px] font-semibold transition disabled:cursor-wait disabled:opacity-45"
                 type="button"
                 disabled={generatingCv}
                 on:click={handleSaveCv}
@@ -100,7 +100,7 @@
 
           {#if generatingCv}
             <div
-              class="rounded-2xl border border-black/10 bg-black/[0.025] p-4"
+              class="cv-profile-status rounded-2xl border p-4"
               role="status"
               aria-live="polite"
             >
@@ -118,7 +118,7 @@
               </div>
             </div>
           {:else if cvGeneratedProfile}
-            <div class="rounded-2xl border border-black/10 bg-black/[0.025] p-4" role="status">
+            <div class="cv-profile-status rounded-2xl border p-4" role="status">
               <p class="text-[13px] font-semibold text-black/78">{cvGeneratedProfile} CV generated</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
                 Your PDF was generated from verified portfolio content and downloaded.
@@ -126,7 +126,7 @@
             </div>
           {/if}
 
-          {#if cvError}<p class="text-[12px] leading-5 text-red-700">{cvError}</p>{/if}
+          {#if cvError}<p class="cv-profile-error text-[12px] leading-5">{cvError}</p>{/if}
         </div>
       </aside>
 

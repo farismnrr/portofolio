@@ -97,3 +97,50 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 .mermaid-skeleton-block {
   background: color-mix(in srgb, var(--page-fg) 6%, transparent);
 }
+
+.cv-profile-picker,
+.cv-profile-status {
+  border-color: color-mix(in srgb, var(--page-fg) 10%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 2.5%, transparent);
+}
+
+.cv-profile-select {
+  border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  background-color: var(--surface);
+  color: var(--page-fg);
+  color-scheme: light;
+  accent-color: var(--accent);
+}
+
+html[data-theme="dark"] .cv-profile-select {
+  color-scheme: dark;
+}
+
+.cv-profile-select option,
+.cv-profile-select optgroup {
+  background-color: var(--surface);
+  color: var(--page-fg);
+}
+
+.cv-profile-select:focus {
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.cv-generate-button {
+  background: var(--page-fg);
+  color: var(--page-bg);
+}
+
+.cv-generate-button:hover {
+  background: var(--accent);
+  color: var(--page-bg);
+}
+
+.cv-profile-error {
+  color: #b42318;
+}
+
+html[data-theme="dark"] .cv-profile-error {
+  color: #ff9b9b;
+}

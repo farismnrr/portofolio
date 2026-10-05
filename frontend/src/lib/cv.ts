@@ -460,15 +460,32 @@ function validateMatchingSource(
   errors: string[]
 ) {
   let matchingEvidence = 0;
+  const linkedExperienceIds =
+    sourceType === 'project'
+      ? new Set(
+          experiences
+            .filter((experience) => experience.projects.includes(sourceId))
+            .map((experience) => String(experience.order))
+        )
+      : new Set<string>();
+
   for (const id of ids) {
     const source = evidenceMap.get(id);
     if (!source) continue;
-    if (source.sourceType !== sourceType || source.sourceId !== sourceId) {
-      errors.push(`${label} cites unrelated evidence ${id}`);
-    } else {
+
+    const directMatch = source.sourceType === sourceType && source.sourceId === sourceId;
+    const linkedExperienceSupport =
+      sourceType === 'project' &&
+      source.sourceType === 'experience' &&
+      linkedExperienceIds.has(source.sourceId);
+
+    if (directMatch) {
       matchingEvidence += 1;
+    } else if (!linkedExperienceSupport) {
+      errors.push(`${label} cites unrelated evidence ${id}`);
     }
   }
+
   if (!matchingEvidence) {
     errors.push(`${label} must cite ${sourceType} evidence from source ${sourceId}`);
   }

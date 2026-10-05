@@ -7,7 +7,6 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
-  import { CV_PROFILE_OPTIONS, CV_PROFILES, type CvTarget } from '../lib/cv-profiles';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
@@ -15,21 +14,19 @@
 
   let generatingCv = false;
   let cvError = '';
-  let cvGeneratedProfile = '';
-  let cvPickerOpen = false;
-  let selectedCvTarget: CvTarget = 'general';
+  let cvGenerated = false;
 
   async function handleSaveCv() {
     if (generatingCv) return;
 
     generatingCv = true;
     cvError = '';
-    cvGeneratedProfile = '';
+    cvGenerated = false;
 
     try {
-      const { generateCv } = await import('../lib/cv');
-      await generateCv(selectedCvTarget);
-      cvGeneratedProfile = CV_PROFILES[selectedCvTarget].label;
+      const { generateGeneralCv } = await import('../lib/cv');
+      await generateGeneralCv();
+      cvGenerated = true;
     } catch (error) {
       cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
     } finally {
@@ -58,49 +55,15 @@
             class="flex items-center gap-3 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
             type="button"
             disabled={generatingCv}
-            aria-expanded={cvPickerOpen}
-            on:click={() => {
-              cvPickerOpen = !cvPickerOpen;
-              cvError = '';
-              cvGeneratedProfile = '';
-            }}
+            on:click={handleSaveCv}
           >
             <AppIcon name="file-text" size={18}/>
-            Generate CV with AI
+            {generatingCv ? 'Generating CV with AI…' : 'Save CV'}
           </button>
-
-          {#if cvPickerOpen}
-            <div class="cv-profile-picker space-y-3 rounded-2xl border p-4">
-              <label class="block text-[12px] font-semibold text-black/65" for="cv-profile">
-                Choose a CV profile
-              </label>
-              <select
-                id="cv-profile"
-                bind:value={selectedCvTarget}
-                class="cv-profile-select w-full rounded-xl border px-3 py-2 text-[13px] outline-none transition"
-                disabled={generatingCv}
-              >
-                {#each CV_PROFILE_OPTIONS as cvProfile}
-                  <option value={cvProfile.id}>{cvProfile.label}</option>
-                {/each}
-              </select>
-              <p class="text-[12px] leading-5 text-black/50">
-                {CV_PROFILES[selectedCvTarget].headline} · {CV_PROFILES[selectedCvTarget].maxPages} page{CV_PROFILES[selectedCvTarget].maxPages === 1 ? '' : 's'}
-              </p>
-              <button
-                class="cv-generate-button w-full rounded-xl px-3 py-2.5 text-[13px] font-semibold transition disabled:cursor-wait disabled:opacity-45"
-                type="button"
-                disabled={generatingCv}
-                on:click={handleSaveCv}
-              >
-                {generatingCv ? 'Generating CV with AI…' : `Generate ${CV_PROFILES[selectedCvTarget].label} CV`}
-              </button>
-            </div>
-          {/if}
 
           {#if generatingCv}
             <div
-              class="cv-profile-status rounded-2xl border p-4"
+              class="cv-status rounded-2xl border p-4"
               role="status"
               aria-live="polite"
             >
@@ -117,16 +80,16 @@
                 </div>
               </div>
             </div>
-          {:else if cvGeneratedProfile}
-            <div class="cv-profile-status rounded-2xl border p-4" role="status">
-              <p class="text-[13px] font-semibold text-black/78">{cvGeneratedProfile} CV generated</p>
+          {:else if cvGenerated}
+            <div class="cv-status rounded-2xl border p-4" role="status">
+              <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
-                Your PDF was generated from verified portfolio content and downloaded.
+                Your general CV was generated from verified portfolio content and downloaded.
               </p>
             </div>
           {/if}
 
-          {#if cvError}<p class="cv-profile-error text-[12px] leading-5">{cvError}</p>{/if}
+          {#if cvError}<p class="cv-error text-[12px] leading-5">{cvError}</p>{/if}
         </div>
       </aside>
 

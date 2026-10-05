@@ -345,3 +345,63 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.merge-release.outputs.main_sha }}
           cache-from: type=gha,scope=portfolio-runtime
           cache-to: type=gha,mode=max,scope=portfolio-runtime
+
+  deploy-orangepi:
+    name: deploy + verify Orange Pi
+    runs-on: [self-hosted, Linux, X64]
+    needs: [merge-release, publish]
+    env:
+      ORANGEPI_SSH_HOST: orangepi
+      ORANGEPI_ROOT: /opt/portfolio
+      MAIN_SHA: ${{ needs.merge-release.outputs.main_sha }}
+      IMAGE: ghcr.io/farismnrr/portofolio/portfolio-app:${{ needs.merge-release.outputs.main_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.merge-release.outputs.main_sha }}
+
+      - name: Check Orange Pi transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -o BatchMode=yes -o ConnectTimeout=10 "$ORANGEPI_SSH_HOST" \
+            'test "$(uname -m)" = aarch64 && test -d /opt/portfolio && test -f /opt/portfolio/.env'
+
+      - name: Transfer production deployment definition
+        shell: bash
+        run: |
+          set -euo pipefail
+          scp -q \
+            deploy/orangepi/compose.yaml \
+            deploy/orangepi/deploy.sh \
+            deploy/orangepi/verify.sh \
+            deploy/orangepi/rollback.sh \
+            "$ORANGEPI_SSH_HOST:$ORANGEPI_ROOT/"
+          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "chmod 750 '$ORANGEPI_ROOT/deploy.sh' '$ORANGEPI_ROOT/verify.sh' '$ORANGEPI_ROOT/rollback.sh'"
+
+      - name: Deploy exact immutable main SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/deploy.sh' '$IMAGE'"
+
+      - name: Verify production and roll back on failure
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/verify.sh' '$MAIN_SHA'"; then
+            exit 0
+          fi
+
+          echo "Orange Pi verification failed; restoring the previous known-good application SHA." >&2
+          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/rollback.sh'"
+          previous_sha="$(ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "cat '$ORANGEPI_ROOT/state/deployed-sha'")"
+          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/verify.sh' '$previous_sha'"
+          echo "Rollback verification passed for ${previous_sha}." >&2
+          exit 1

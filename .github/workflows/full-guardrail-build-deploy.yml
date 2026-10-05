@@ -354,7 +354,7 @@ jobs:
       ORANGEPI_SSH_HOST: orangepi
       ORANGEPI_ROOT: /opt/portfolio
       MAIN_SHA: ${{ needs.merge-release.outputs.main_sha }}
-      IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.merge-release.outputs.main_sha }}
+      IMAGE: ghcr.io/farismnrr/portofolio/portfolio-app:${{ needs.merge-release.outputs.main_sha }}
     steps:
       - uses: actions/checkout@v7
         with:

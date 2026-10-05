@@ -1,7 +1,11 @@
 node_modules/
 frontend/node_modules/
 frontend/dist/
+frontend/public/cv-corpus.json
+frontend/public/vendor/
+release/amd64/
 target/
 server/target/
+server/Cargo.lock
 .DS_Store
 .env

@@ -4,9 +4,10 @@
   "version": "0.3.0",
   "type": "module",
   "scripts": {
-    "build": "node ./scripts/build-cv-corpus.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build",
+    "build": "node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "content:check": "node ./scripts/check-content.mjs",
+    "cv:check": "node ./scripts/check-cv-profiles.mjs",
     "guard": "node ./scripts/guard-ui.mjs"
   },
   "devDependencies": {

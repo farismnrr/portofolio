@@ -97,3 +97,16 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 .mermaid-skeleton-block {
   background: color-mix(in srgb, var(--page-fg) 6%, transparent);
 }
+
+.cv-status {
+  border-color: color-mix(in srgb, var(--page-fg) 10%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 2.5%, transparent);
+}
+
+.cv-error {
+  color: #b42318;
+}
+
+html[data-theme="dark"] .cv-error {
+  color: #ff9b9b;
+}

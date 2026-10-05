@@ -15,6 +15,12 @@ Portfolio data lives under `frontend/content/`. Profile, experience, education, 
 
 Static media lives under `frontend/public/`.
 
+## Generate CV with AI
+
+The About page uses one evidence-grounded CV pipeline with four deterministic profiles: General, AI Engineer, Software Engineer, and DevOps. The shared registry lives in [`frontend/content/cv-profiles.json`](frontend/content/cv-profiles.json) and is consumed by the Svelte workflow and Rust retrieval/PDF renderer.
+
+The pipeline keeps portfolio Markdown as the source of truth, then performs profile-aware hybrid retrieval, metadata reranking, evidence planning, AI wording, grounding validation, deterministic source enrichment, and validated PDF rendering. AI cannot choose technical-scope labels or provide factual identity fields; those come from the selected profile and portfolio content. The profile-specific output uses a deterministic filename and page budget, with a minimum 10pt body typography floor.
+
 ## Branch workflow
 
 Development happens on `dev`.

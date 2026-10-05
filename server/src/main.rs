@@ -12,6 +12,7 @@ use tower_http::trace::TraceLayer;
 
 mod ai;
 mod cv;
+mod profiles;
 mod rag;
 
 #[derive(RustEmbed)]

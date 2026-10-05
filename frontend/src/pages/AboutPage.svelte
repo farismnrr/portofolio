@@ -58,12 +58,12 @@
             on:click={handleSaveCv}
           >
             <AppIcon name="file-text" size={18}/>
-            {generatingCv ? 'Generating CV with AI…' : 'Generate CV with AI'}
+            {generatingCv ? 'Generating CV with AI…' : 'Save CV'}
           </button>
 
           {#if generatingCv}
             <div
-              class="rounded-2xl border border-black/10 bg-black/[0.025] p-4"
+              class="cv-status rounded-2xl border p-4"
               role="status"
               aria-live="polite"
             >
@@ -81,15 +81,15 @@
               </div>
             </div>
           {:else if cvGenerated}
-            <div class="rounded-2xl border border-black/10 bg-black/[0.025] p-4" role="status">
+            <div class="cv-status rounded-2xl border p-4" role="status">
               <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
-                Your PDF was generated from verified portfolio content and downloaded.
+                Your general CV was generated from verified portfolio content and downloaded.
               </p>
             </div>
           {/if}
 
-          {#if cvError}<p class="text-[12px] leading-5 text-red-700">{cvError}</p>{/if}
+          {#if cvError}<p class="cv-error text-[12px] leading-5">{cvError}</p>{/if}
         </div>
       </aside>
 

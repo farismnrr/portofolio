@@ -50,6 +50,16 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - Deployment verification must check nonempty `/api/cv/retrieve` evidence with backend `pgvector+postgres-fts`; HTTP 200 with memory fallback does not prove database success.
 - Preserve shared infrastructure and other applications when migrating or cleaning up Portfolio database resources.
 
+## Orange Pi production deployment
+
+- The full release workflow deploys only the immutable `main` SHA tag after GHCR publish. It never deploys `latest`.
+- Orange Pi production lives under `/opt/portfolio/` and runs the Portfolio application, PostgreSQL 17 with pgvector, and 9router 0.5.95 in the versioned Compose definition under `deploy/orangepi/`.
+- The Orange Pi `.env` is host-local, mode `600`, and must never be committed or copied into CI artifacts. It contains the production database URL and AI configuration.
+- The deployment job recreates only the Portfolio service. PostgreSQL and 9router are persistent services and must not be recreated on an application release.
+- Verification must prove ARM64 execution, exact SHA image identity, loopback-only ports, homepage and public-site success, nonempty `pgvector+postgres-fts` retrieval evidence, authenticated 9router models, nonempty `/api/ai/chat`, and clean startup/database/AI logs.
+- A failed verification restores the SHA stored in `state/previous-sha`, verifies that rollback, and fails the release job. Database rollback is a separate operation.
+- The current deployment transport is the existing Arch self-hosted runner over its private SSH/Tailscale path. This is a transport dependency for CI only; production runtime must not point at Arch PostgreSQL or Arch 9router.
+
 ## Documentation
 
 - `README.md`, `AGENTS.md`, the active workflow files, and the current implementation must describe the same branch, CI, and deployment behavior.

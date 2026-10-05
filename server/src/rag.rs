@@ -1,20 +1,27 @@
 use std::{
-    collections::{hash_map::DefaultHasher, HashMap},
+    collections::{hash_map::DefaultHasher, HashMap, HashSet},
     env,
     hash::{Hash, Hasher},
     sync::Arc,
 };
 
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use axum::{
+    extract::State,
+    http::StatusCode,
+    response::{IntoResponse, Response},
+    Json,
+};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use sqlx::{postgres::PgPoolOptions, PgPool, Row};
 
-use crate::ai::AiState;
+use crate::{
+    ai::AiState,
+    profiles::{self, CvProfile},
+};
 
 const VECTOR_DIM: usize = 256;
 const MAX_SEMANTIC_EVIDENCE: usize = 10;
-const MAX_PROJECT_CHUNKS_PER_SOURCE: usize = 3;
 const MAX_TOTAL_EVIDENCE: usize = 25;
 
 #[derive(Clone)]
@@ -44,7 +51,7 @@ pub struct RetrieveRequest {
     limit: Option<i64>,
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Evidence {
     id: String,
@@ -144,7 +151,7 @@ impl RagState {
             .corpus
             .iter()
             .filter_map(|chunk| {
-                let hash = content_hash(&chunk.content);
+                let hash = chunk_fingerprint(chunk);
                 match existing.get(&chunk.id) {
                     Some(current) if current == &hash => None,
                     _ => Some((chunk, hash)),
@@ -214,7 +221,11 @@ impl RagState {
         Ok(())
     }
 
-    async fn search_pgvector(&self, query: &str, limit: i64) -> Result<Vec<Evidence>, sqlx::Error> {
+    async fn search_pgvector(
+        &self,
+        query: &str,
+        candidate_limit: i64,
+    ) -> Result<Vec<Evidence>, sqlx::Error> {
         self.sync_index().await?;
 
         let query_vector = match self.ai.embeddings(&[query.to_string()]).await {
@@ -239,7 +250,7 @@ impl RagState {
         )
         .bind(vector)
         .bind(query)
-        .bind(limit)
+        .bind(candidate_limit)
         .fetch_all(&self.pool)
         .await?;
 
@@ -259,70 +270,80 @@ impl RagState {
             .collect())
     }
 
-    fn budget_semantic_evidence(&self, evidence: Vec<Evidence>) -> Vec<Evidence> {
-        let mut project_counts = HashMap::<String, usize>::new();
-        let mut budgeted = Vec::new();
-
-        for item in evidence {
-            if item.source_type == "project" {
-                let count = project_counts.entry(item.source_id.clone()).or_default();
-                if *count >= MAX_PROJECT_CHUNKS_PER_SOURCE {
-                    continue;
-                }
-                *count += 1;
-            }
-
-            budgeted.push(item);
-            if budgeted.len() >= MAX_SEMANTIC_EVIDENCE {
-                break;
-            }
-        }
-
-        budgeted
+    fn rerank_evidence(
+        &self,
+        profile: &CvProfile,
+        query: &str,
+        evidence: Vec<Evidence>,
+        limit: usize,
+    ) -> Vec<Evidence> {
+        rerank_evidence(profile, query, evidence, limit)
     }
 
-    fn enrich_grounding_context(&self, query: &str, evidence: Vec<Evidence>) -> Vec<Evidence> {
-        let mut evidence = self.budget_semantic_evidence(evidence);
+    fn enrich_grounding_context(
+        &self,
+        profile: &CvProfile,
+        query: &str,
+        evidence: Vec<Evidence>,
+        limit: usize,
+    ) -> Vec<Evidence> {
+        let mut evidence = self.rerank_evidence(profile, query, evidence, limit);
         let mut seen = evidence
             .iter()
             .map(|item| item.id.clone())
-            .collect::<std::collections::HashSet<_>>();
-        let query_vector = fallback_embedding(query);
+            .collect::<HashSet<_>>();
+        let mut project_counts = evidence
+            .iter()
+            .filter(|item| item.source_type == "project")
+            .fold(HashMap::<String, usize>::new(), |mut counts, item| {
+                *counts.entry(item.source_id.clone()).or_default() += 1;
+                counts
+            });
 
-        for (source_type, cap) in [
-            ("profile", 1_usize),
-            ("experience", 5),
-            ("skill", 4),
-            ("education", 1),
-            ("certification", 4),
+        for source_type in [
+            "profile",
+            "experience",
+            "skill",
+            "education",
+            "certification",
         ] {
+            let cap = profile
+                .enrichment_caps
+                .get(source_type)
+                .copied()
+                .unwrap_or_default();
+            if cap == 0 {
+                continue;
+            }
+
+            let query_vector = fallback_embedding(query);
             let mut candidates = self
                 .corpus
                 .iter()
                 .filter(|chunk| chunk.source_type == source_type && chunk.section == "summary")
                 .map(|chunk| {
                     let vector = fallback_embedding(&chunk.content);
-                    let score = cosine(&query_vector, &vector) * 0.68
+                    let raw_score = cosine(&query_vector, &vector) * 0.68
                         + lexical_score(query, &chunk.content) * 0.32;
-                    (score, chunk)
+                    let mut candidate = evidence_from_chunk(chunk, raw_score);
+                    candidate.score = rerank_score(profile, query, &candidate);
+                    (candidate, chunk)
                 })
                 .collect::<Vec<_>>();
 
-            candidates.sort_by(|left, right| right.0.total_cmp(&left.0));
+            candidates.sort_by(|left, right| right.0.score.total_cmp(&left.0.score));
 
-            for (score, chunk) in candidates.into_iter().take(cap) {
-                if seen.insert(chunk.id.clone()) {
-                    evidence.push(Evidence {
-                        id: chunk.id.clone(),
-                        source_type: chunk.source_type.clone(),
-                        source_id: chunk.source_id.clone(),
-                        section: chunk.section.clone(),
-                        company: chunk.company.clone(),
-                        skills: chunk.skills.clone(),
-                        role_tags: chunk.role_tags.clone(),
-                        content: chunk.content.clone(),
-                        score,
-                    });
+            for (candidate, chunk) in candidates.into_iter().take(cap) {
+                if chunk.source_type == "project" {
+                    let count = project_counts.entry(chunk.source_id.clone()).or_default();
+                    if *count >= profile.project_chunk_cap {
+                        continue;
+                    }
+                    *count += 1;
+                }
+
+                if seen.insert(candidate.id.clone()) {
+                    evidence.push(candidate);
                 }
 
                 if evidence.len() >= MAX_TOTAL_EVIDENCE {
@@ -335,78 +356,210 @@ impl RagState {
         evidence
     }
 
-    fn search_memory(&self, query: &str, limit: usize) -> Vec<Evidence> {
+    fn search_memory(
+        &self,
+        profile: &CvProfile,
+        query: &str,
+        candidate_limit: usize,
+    ) -> Vec<Evidence> {
         let query_vector = fallback_embedding(query);
-        let mut scored = self
+        let scored = self
             .corpus
             .iter()
             .map(|chunk| {
                 let vector = fallback_embedding(&chunk.content);
                 let lexical = lexical_score(query, &chunk.content);
                 let vector_score = cosine(&query_vector, &vector);
-                Evidence {
-                    id: chunk.id.clone(),
-                    source_type: chunk.source_type.clone(),
-                    source_id: chunk.source_id.clone(),
-                    section: chunk.section.clone(),
-                    company: chunk.company.clone(),
-                    skills: chunk.skills.clone(),
-                    role_tags: chunk.role_tags.clone(),
-                    content: chunk.content.clone(),
-                    score: vector_score * 0.68 + lexical * 0.32,
-                }
+                evidence_from_chunk(chunk, vector_score * 0.68 + lexical * 0.32)
             })
             .collect::<Vec<_>>();
-        scored.sort_by(|a, b| b.score.total_cmp(&a.score));
-        scored.truncate(limit);
-        scored
+
+        self.rerank_evidence(profile, query, scored, candidate_limit)
     }
 }
 
 pub async fn retrieve(
     State(state): State<RagState>,
     Json(payload): Json<RetrieveRequest>,
-) -> impl IntoResponse {
+) -> Response {
+    let target = payload.target.trim().to_lowercase();
+    let profile = match profiles::get(&target) {
+        Ok(profile) => profile,
+        Err(error) => return (StatusCode::BAD_REQUEST, error).into_response(),
+    };
     let limit = payload
         .limit
         .unwrap_or(MAX_SEMANTIC_EVIDENCE as i64)
-        .clamp(6, MAX_SEMANTIC_EVIDENCE as i64);
-    let target = payload.target.trim().to_lowercase();
-    let default_query = match target.as_str() {
-        "ai-engineer" => "AI engineer RAG retrieval embeddings LangGraph agents MCP LLM inference machine learning Python pgvector",
-        "devops" => "DevOps platform infrastructure Docker Linux CI CD observability OpenTelemetry deployment cloud backend reliability",
-        "software-engineer" => "software engineer backend frontend APIs distributed systems PostgreSQL Rust Go TypeScript product engineering",
-        _ => "software engineer backend frontend APIs databases cloud infrastructure CI CD security product engineering distributed systems IoT reliability Rust Go TypeScript PostgreSQL Docker",
-    };
+        .clamp(6, MAX_SEMANTIC_EVIDENCE as i64) as usize;
     let query = payload
         .query
         .as_deref()
         .map(str::trim)
         .filter(|value| !value.is_empty())
-        .unwrap_or(default_query);
+        .unwrap_or(profile.retrieval_query.as_str());
+    let candidate_limit = (limit.saturating_mul(4)).clamp(12, 40) as i64;
 
-    match state.search_pgvector(query, limit).await {
+    match state.search_pgvector(query, candidate_limit).await {
         Ok(evidence) => (
             StatusCode::OK,
             Json(RetrieveResponse {
-                evidence: state.enrich_grounding_context(query, evidence),
+                evidence: state.enrich_grounding_context(profile, query, evidence, limit),
                 backend: "pgvector+postgres-fts",
             }),
-        ),
+        )
+            .into_response(),
         Err(error) => {
-            tracing::error!(%error, "pgvector retrieval unavailable; falling back to in-memory retrieval");
+            tracing::error!(%error, profile = %profile.id, "pgvector retrieval unavailable; falling back to in-memory retrieval");
             (
                 StatusCode::OK,
                 Json(RetrieveResponse {
                     evidence: state.enrich_grounding_context(
+                        profile,
                         query,
-                        state.search_memory(query, limit as usize),
+                        state.search_memory(profile, query, candidate_limit as usize),
+                        limit,
                     ),
                     backend: "memory-fallback",
                 }),
             )
+                .into_response()
         }
     }
+}
+
+fn rerank_evidence(
+    profile: &CvProfile,
+    query: &str,
+    mut evidence: Vec<Evidence>,
+    limit: usize,
+) -> Vec<Evidence> {
+    for item in &mut evidence {
+        item.score = rerank_score(profile, query, item);
+    }
+
+    let mut selected = Vec::with_capacity(limit);
+    let mut project_counts = HashMap::<String, usize>::new();
+    let mut source_counts = HashMap::<String, usize>::new();
+
+    while selected.len() < limit && !evidence.is_empty() {
+        let best_index = evidence
+            .iter()
+            .enumerate()
+            .filter_map(|(index, item)| {
+                if item.source_type == "project"
+                    && project_counts
+                        .get(&item.source_id)
+                        .copied()
+                        .unwrap_or_default()
+                        >= profile.project_chunk_cap
+                {
+                    return None;
+                }
+
+                let diversity_penalty = source_counts
+                    .get(&item.source_type)
+                    .copied()
+                    .unwrap_or_default() as f64
+                    * 0.025
+                    + if item.source_type == "project" {
+                        project_counts
+                            .get(&item.source_id)
+                            .copied()
+                            .unwrap_or_default() as f64
+                            * 0.06
+                    } else {
+                        0.0
+                    };
+                Some((index, item.score - diversity_penalty))
+            })
+            .max_by(|left, right| left.1.total_cmp(&right.1))
+            .map(|(index, _)| index);
+
+        let Some(index) = best_index else {
+            break;
+        };
+        let item = evidence.remove(index);
+        if item.source_type == "project" {
+            *project_counts.entry(item.source_id.clone()).or_default() += 1;
+        }
+        *source_counts.entry(item.source_type.clone()).or_default() += 1;
+        selected.push(item);
+    }
+
+    selected
+}
+
+fn rerank_score(profile: &CvProfile, query: &str, item: &Evidence) -> f64 {
+    let semantic_score = item.score.clamp(0.0, 1.0);
+    let lexical = lexical_score(query, &item.content);
+    let metadata = metadata_signal_score(profile, item);
+    let source_preference = profile
+        .source_type_weights
+        .get(&item.source_type)
+        .copied()
+        .unwrap_or(0.35)
+        .clamp(0.0, 1.0);
+
+    (semantic_score * 0.55 + lexical * 0.10 + metadata * 0.25 + source_preference * 0.10)
+        .clamp(0.0, 1.0)
+}
+
+fn metadata_signal_score(profile: &CvProfile, item: &Evidence) -> f64 {
+    let skill_score = signal_match_score(&profile.preferred_signals, &item.skills, "") * 0.42
+        + signal_match_score(&profile.secondary_signals, &item.skills, "") * 0.12;
+    let role_score = signal_match_score(&profile.preferred_signals, &item.role_tags, "") * 0.28
+        + signal_match_score(&profile.secondary_signals, &item.role_tags, "") * 0.08;
+    let content_score = signal_match_score(&profile.preferred_signals, &[], &item.content) * 0.07
+        + signal_match_score(&profile.secondary_signals, &[], &item.content) * 0.03;
+
+    (skill_score + role_score + content_score).clamp(0.0, 1.0)
+}
+
+fn signal_match_score(signals: &[String], metadata: &[String], content: &str) -> f64 {
+    if signals.is_empty() {
+        return 0.0;
+    }
+
+    let metadata = metadata.join(" ").to_lowercase();
+    let content = content.to_lowercase();
+    let matched = signals
+        .iter()
+        .filter(|signal| {
+            let signal = signal.to_lowercase();
+            metadata.contains(&signal) || (!content.is_empty() && content.contains(&signal))
+        })
+        .count()
+        .min(3);
+
+    matched as f64 / signals.len().min(3) as f64
+}
+
+fn evidence_from_chunk(chunk: &CorpusChunk, score: f64) -> Evidence {
+    Evidence {
+        id: chunk.id.clone(),
+        source_type: chunk.source_type.clone(),
+        source_id: chunk.source_id.clone(),
+        section: chunk.section.clone(),
+        company: chunk.company.clone(),
+        skills: chunk.skills.clone(),
+        role_tags: chunk.role_tags.clone(),
+        content: chunk.content.clone(),
+        score,
+    }
+}
+
+fn chunk_fingerprint(chunk: &CorpusChunk) -> String {
+    content_hash(&format!(
+        "{}|{}|{}|{}|{}|{:?}|{:?}|{}",
+        chunk.source_type,
+        chunk.source_id,
+        chunk.section,
+        chunk.company,
+        chunk.content,
+        chunk.skills,
+        chunk.role_tags,
+        chunk.id
+    ))
 }
 
 fn content_hash(content: &str) -> String {
@@ -497,4 +650,79 @@ fn cosine(a: &[f32], b: &[f32]) -> f64 {
         .zip(b)
         .map(|(left, right)| f64::from(*left) * f64::from(*right))
         .sum()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{rerank_evidence, Evidence};
+    use crate::profiles;
+
+    fn evidence(
+        id: &str,
+        source_type: &str,
+        source_id: &str,
+        skills: &[&str],
+        role_tags: &[&str],
+        score: f64,
+    ) -> Evidence {
+        Evidence {
+            id: id.to_string(),
+            source_type: source_type.to_string(),
+            source_id: source_id.to_string(),
+            section: "summary".to_string(),
+            company: String::new(),
+            skills: skills.iter().map(|value| (*value).to_string()).collect(),
+            role_tags: role_tags.iter().map(|value| (*value).to_string()).collect(),
+            content: format!("{id} evidence"),
+            score,
+        }
+    }
+
+    #[test]
+    fn reranking_uses_profile_metadata_signals() {
+        let profile = profiles::get("ai-engineer").expect("AI profile");
+        let ranked = rerank_evidence(
+            profile,
+            "production AI retrieval",
+            vec![
+                evidence(
+                    "generic",
+                    "project",
+                    "generic",
+                    &["Docker"],
+                    &["Product"],
+                    0.95,
+                ),
+                evidence(
+                    "agentic",
+                    "project",
+                    "agentic",
+                    &["MCP", "RAG", "LangGraph"],
+                    &["Applied AI"],
+                    0.78,
+                ),
+            ],
+            2,
+        );
+
+        assert_eq!(ranked[0].source_id, "agentic");
+    }
+
+    #[test]
+    fn reranking_applies_a_per_project_evidence_cap() {
+        let profile = profiles::get("software-engineer").expect("software profile");
+        let ranked = rerank_evidence(
+            profile,
+            "backend APIs",
+            vec![
+                evidence("one", "project", "same", &["Rust"], &["Backend"], 0.9),
+                evidence("two", "project", "same", &["Rust"], &["Backend"], 0.89),
+                evidence("three", "project", "same", &["Rust"], &["Backend"], 0.88),
+                evidence("four", "project", "same", &["Rust"], &["Backend"], 0.87),
+            ],
+            4,
+        );
+
+        assert_eq!(ranked.len(), profile.project_chunk_cap);
+    }
 }

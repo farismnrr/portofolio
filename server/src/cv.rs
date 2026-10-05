@@ -9,15 +9,17 @@ use axum::{
 use serde::Deserialize;
 use tokio::{fs, process::Command};
 
-const MIN_SECOND_PAGE_FILL: f64 = 0.78;
-const MIN_PROJECTS: usize = 3;
-const MIN_EXPERIENCES: usize = 3;
-const MIN_CERTIFICATIONS: usize = 2;
-const MAX_LAYOUT_PASSES: usize = 8;
+const MAX_LAYOUT_PASSES: usize = 16;
+
+use crate::profiles::{self, CvProfile};
 
 #[derive(Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CvRenderRequest {
+    #[serde(default)]
+    contract_version: Option<String>,
+    #[serde(default)]
+    profile_id: Option<String>,
     name: String,
     headline: String,
     contact: String,
@@ -82,40 +84,40 @@ struct DensityProfile {
 const DENSITY_PROFILES: [DensityProfile; 4] = [
     DensityProfile {
         name: "compact",
-        body_size: 9.05,
+        body_size: 10.0,
         line_height: 1.34,
-        section_gap: 10.0,
-        item_gap: 8.0,
+        section_gap: 9.0,
+        item_gap: 7.0,
         bullet_gap: 3.0,
         horizontal_margin: 0.56,
         vertical_margin: 0.43,
     },
     DensityProfile {
         name: "balanced",
-        body_size: 9.35,
+        body_size: 10.2,
         line_height: 1.40,
-        section_gap: 12.0,
-        item_gap: 10.0,
+        section_gap: 10.0,
+        item_gap: 8.0,
         bullet_gap: 4.0,
         horizontal_margin: 0.60,
         vertical_margin: 0.48,
     },
     DensityProfile {
         name: "roomy",
-        body_size: 9.65,
+        body_size: 10.4,
         line_height: 1.46,
-        section_gap: 14.0,
-        item_gap: 12.0,
+        section_gap: 12.0,
+        item_gap: 10.0,
         bullet_gap: 5.0,
         horizontal_margin: 0.62,
         vertical_margin: 0.50,
     },
     DensityProfile {
         name: "spacious",
-        body_size: 9.90,
+        body_size: 10.6,
         line_height: 1.50,
-        section_gap: 16.0,
-        item_gap: 14.0,
+        section_gap: 14.0,
+        item_gap: 12.0,
         bullet_gap: 6.0,
         horizontal_margin: 0.64,
         vertical_margin: 0.52,
@@ -135,11 +137,20 @@ struct PdfCandidate {
 }
 
 pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
-    if let Err(message) = validate_document(&payload) {
+    let profile_id = payload.profile_id.as_deref().unwrap_or("general");
+    let profile = match profiles::get(profile_id) {
+        Ok(profile) => profile,
+        Err(error) => return (StatusCode::BAD_REQUEST, error).into_response(),
+    };
+
+    let mut payload = payload;
+    payload.headline = profile.headline.clone();
+
+    if let Err(message) = validate_document(&payload, profile) {
         return (StatusCode::BAD_REQUEST, message).into_response();
     }
 
-    match render_validated_pdf(payload).await {
+    match render_validated_pdf(payload, profile).await {
         Ok(candidate) => {
             tracing::info!(
                 profile = candidate.profile_name,
@@ -152,7 +163,7 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
                 .header(header::CONTENT_TYPE, "application/pdf")
                 .header(
                     header::CONTENT_DISPOSITION,
-                    "attachment; filename=\"Faris_Munir_Mahdi_CV.pdf\"",
+                    format!("attachment; filename=\"{}\"", profile.filename),
                 )
                 .header(header::CACHE_CONTROL, "no-store")
                 .body(Body::from(candidate.bytes))
@@ -169,55 +180,98 @@ pub async fn render(Json(payload): Json<CvRenderRequest>) -> Response {
     }
 }
 
-fn validate_document(document: &CvRenderRequest) -> Result<(), &'static str> {
+fn validate_document(document: &CvRenderRequest, profile: &CvProfile) -> Result<(), String> {
     if document.name.trim().is_empty() || document.profile_summary.trim().is_empty() {
-        return Err("CV identity and professional summary are required");
+        return Err("CV identity and professional summary are required".to_string());
     }
     if document.technical_scope.is_empty() {
-        return Err("CV skills are required");
+        return Err("CV skills are required".to_string());
+    }
+    if document.technical_scope.len() != profile.technical_scopes.len() {
+        return Err(format!(
+            "CV technical scope count {} does not match profile {} scope count {}",
+            document.technical_scope.len(),
+            profile.id,
+            profile.technical_scopes.len()
+        ));
+    }
+    for (index, (actual, expected)) in document
+        .technical_scope
+        .iter()
+        .zip(&profile.technical_scopes)
+        .enumerate()
+    {
+        if actual.label != expected.label {
+            return Err(format!(
+                "CV technical scope {} label does not match profile {}",
+                index + 1,
+                profile.id
+            ));
+        }
     }
     if document.experiences.is_empty() {
-        return Err("CV work experience is required");
+        return Err("CV work experience is required".to_string());
     }
     if document.projects.is_empty() {
-        return Err("CV projects are required");
+        return Err("CV projects are required".to_string());
     }
     if document.certifications.is_empty() {
-        return Err("CV certifications are required");
+        return Err("CV certifications are required".to_string());
     }
     if document.education_lines.is_empty() {
-        return Err("CV education is required");
+        return Err("CV education is required".to_string());
     }
     if document.max_pages == 0 {
-        return Err("CV page budget must be greater than zero");
+        return Err("CV page budget must be greater than zero".to_string());
+    }
+    if document.max_pages != profile.max_pages {
+        return Err(format!(
+            "CV page budget {} does not match profile {} budget {}",
+            document.max_pages, profile.id, profile.max_pages
+        ));
+    }
+    if let Some(contract_version) = &document.contract_version {
+        if contract_version != profiles::CONTRACT_VERSION {
+            return Err(format!(
+                "unsupported CV contract version: {contract_version}"
+            ));
+        }
     }
 
     Ok(())
 }
 
-async fn render_validated_pdf(mut document: CvRenderRequest) -> Result<PdfCandidate, String> {
+async fn render_validated_pdf(
+    mut document: CvRenderRequest,
+    profile: &CvProfile,
+) -> Result<PdfCandidate, String> {
     for pass in 0..MAX_LAYOUT_PASSES {
         let mut best: Option<PdfCandidate> = None;
         let mut smallest_page_count = usize::MAX;
 
-        for profile in DENSITY_PROFILES {
-            let candidate = render_candidate(&document, profile, pass).await?;
+        for density in DENSITY_PROFILES {
+            if density.body_size < profile.layout_policy.min_body_size_pt.max(10.0) {
+                continue;
+            }
+            let candidate = render_candidate(&document, density, pass).await?;
             smallest_page_count = smallest_page_count.min(candidate.1.pages);
 
-            if candidate.1.pages != usize::from(document.max_pages) {
+            if candidate.1.pages != usize::from(profile.max_pages) {
                 continue;
             }
 
             validate_pdf_contents(&document, &candidate.1)?;
 
-            if document.max_pages > 1 && candidate.1.fill_ratio < MIN_SECOND_PAGE_FILL {
+            if profile.max_pages > 1
+                && candidate.1.fill_ratio < profile.layout_policy.min_second_page_fill
+            {
                 continue;
             }
 
             let next = PdfCandidate {
                 bytes: candidate.0,
                 fill_ratio: candidate.1.fill_ratio,
-                profile_name: profile.name,
+                profile_name: density.name,
             };
 
             if best
@@ -232,19 +286,25 @@ async fn render_validated_pdf(mut document: CvRenderRequest) -> Result<PdfCandid
             return Ok(best);
         }
 
-        if smallest_page_count < usize::from(document.max_pages) {
+        if smallest_page_count < usize::from(profile.max_pages) {
             return Err(format!(
                 "document underfilled: rendered {smallest_page_count} page(s), expected {}",
-                document.max_pages
+                profile.max_pages
             ));
         }
 
-        if !trim_lowest_priority_optional_item(&mut document) {
-            return Err(format!(
-                "document still exceeds {} pages after bounded fitting",
-                document.max_pages
-            ));
+        if trim_lowest_priority_optional_item(&mut document, profile) {
+            continue;
         }
+
+        if tighten_lowest_priority_narrative(&mut document) {
+            continue;
+        }
+
+        return Err(format!(
+            "document still exceeds {} pages after bounded fitting",
+            profile.max_pages
+        ));
     }
 
     Err("layout fitting exhausted its bounded passes".to_string())
@@ -449,21 +509,58 @@ fn parse_attribute(source: &str, attribute: &str) -> Option<f64> {
     rest[..end].parse::<f64>().ok()
 }
 
-fn trim_lowest_priority_optional_item(document: &mut CvRenderRequest) -> bool {
-    if document.certifications.len() > MIN_CERTIFICATIONS {
+fn trim_lowest_priority_optional_item(document: &mut CvRenderRequest, profile: &CvProfile) -> bool {
+    if document.certifications.len() > profile.layout_policy.minimum_items.certifications {
         document.certifications.pop();
         return true;
     }
-    if document.projects.len() > MIN_PROJECTS {
+    if document.projects.len() > profile.layout_policy.minimum_items.projects {
         document.projects.pop();
         return true;
     }
-    if document.experiences.len() > MIN_EXPERIENCES {
+    if document.experiences.len() > profile.layout_policy.minimum_items.experiences {
         document.experiences.pop();
         return true;
     }
 
     false
+}
+
+fn tighten_lowest_priority_narrative(document: &mut CvRenderRequest) -> bool {
+    for project in document.projects.iter_mut().rev() {
+        if let Some(shortened) = shorten_text(&project.narrative) {
+            project.narrative = shortened;
+            return true;
+        }
+    }
+
+    shorten_text(&document.profile_summary).map(|shortened| {
+        document.profile_summary = shortened;
+        true
+    }) == Some(true)
+}
+
+fn shorten_text(value: &str) -> Option<String> {
+    let sentences = value
+        .split_inclusive(['.', '!', '?'])
+        .map(str::trim)
+        .filter(|sentence| !sentence.is_empty())
+        .collect::<Vec<_>>();
+
+    if sentences.len() > 1 {
+        let keep = sentences.len().div_ceil(2);
+        let shortened = sentences[..keep].join(" ");
+        if shortened.len() < value.len() {
+            return Some(shortened);
+        }
+    }
+
+    let words = value.split_whitespace().collect::<Vec<_>>();
+    if words.len() > 28 {
+        return Some(words[..words.len().div_ceil(2).max(20)].join(" "));
+    }
+
+    None
 }
 
 async fn cleanup_attempt(html_path: &str, pdf_path: &str, profile_path: &str) {
@@ -676,7 +773,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .contact {{
     margin-top: 5px;
     color: #444444;
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.35;
   }}
 
@@ -738,7 +835,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .item-meta,
   .cert-meta {{
     color: #444444;
-    font-size: 9pt;
+    font-size: 10pt;
   }}
 
   .item-meta::before,
@@ -780,7 +877,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .certification {{
-    font-size: 8.75pt;
+    font-size: 10pt;
     line-height: 1.42;
     padding-bottom: 2px;
   }}
@@ -852,10 +949,13 @@ fn escape(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::{last_page_fill_ratio, CvRenderRequest};
+    use crate::profiles;
 
     #[test]
     fn accepts_frontend_camel_case_render_payload() {
         let payload = serde_json::json!({
+            "contractVersion": "cv-contract/v1",
+            "profileId": "general",
             "name": "Faris Munir Mahdi",
             "headline": "Software Engineer",
             "contact": "farismnrr.com",
@@ -915,5 +1015,15 @@ mod tests {
 
         let ratio = last_page_fill_ratio(bbox).expect("fill ratio");
         assert!((ratio - (650.0 / 792.0)).abs() < 0.0001);
+    }
+
+    #[test]
+    fn profile_registry_drives_renderer_filename_and_page_budget() {
+        let profile = profiles::get("devops").expect("DevOps profile");
+
+        assert_eq!(profile.filename, "Faris_Munir_Mahdi_DevOps_CV.pdf");
+        assert_eq!(profile.max_pages, 1);
+        assert!(profile.layout_policy.min_body_size_pt >= 10.0);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 1);
     }
 }

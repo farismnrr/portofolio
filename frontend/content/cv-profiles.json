@@ -1,0 +1,368 @@
+{
+  "general": {
+    "id": "general",
+    "label": "General",
+    "headline": "Software Engineer",
+    "maxPages": 2,
+    "filename": "Faris_Munir_Mahdi_CV.pdf",
+    "retrievalQuery": "software engineer end-to-end engineering backend APIs databases system design product engineering frontend full-stack cloud CI/CD deployment infrastructure applied AI IoT systems reliability",
+    "preferredSignals": [
+      "backend",
+      "api",
+      "database",
+      "system design",
+      "product engineering",
+      "cloud",
+      "ci/cd",
+      "deployment",
+      "infrastructure",
+      "applied ai",
+      "iot",
+      "system integration"
+    ],
+    "secondarySignals": [
+      "frontend",
+      "full-stack",
+      "reliability",
+      "security",
+      "observability",
+      "automation"
+    ],
+    "sourceTypeWeights": {
+      "project": 1.0,
+      "experience": 0.95,
+      "skill": 0.78,
+      "profile": 0.62,
+      "certification": 0.52,
+      "education": 0.45
+    },
+    "projectChunkCap": 2,
+    "enrichmentCaps": {
+      "profile": 1,
+      "experience": 4,
+      "skill": 3,
+      "education": 1,
+      "certification": 3
+    },
+    "technicalScopes": [
+      {
+        "key": "software-engineering",
+        "label": "Software Engineering",
+        "guidance": "End-to-end engineering ownership, product delivery, architecture, testing, and meaningful frontend or full-stack work."
+      },
+      {
+        "key": "backend-data",
+        "label": "Backend & Data",
+        "guidance": "Backend services, APIs, databases, data flows, authentication, and system design."
+      },
+      {
+        "key": "cloud-platform",
+        "label": "Cloud & Platform",
+        "guidance": "Cloud, CI/CD, deployment, infrastructure, observability, and operational reliability."
+      },
+      {
+        "key": "applied-ai-systems",
+        "label": "Applied AI & Systems",
+        "guidance": "Applied AI, IoT, integrations, and systems work only where the evidence supports it; keep this as one capability among several."
+      }
+    ],
+    "budgets": {
+      "projects": 5,
+      "experiences": 4,
+      "certifications": 4
+    },
+    "writingPolicy": {
+      "identity": "Present the candidate first as a broad Software Engineer with end-to-end engineering ownership. Applied AI is one capability, not the identity.",
+      "focus": "Balance backend, APIs, databases, product or full-stack engineering, cloud and platform work, IoT or systems integration, and applied AI.",
+      "summaryRange": "70-100 words",
+      "projectRange": "60-95 words",
+      "avoid": [
+        "AI-first identity",
+        "keyword stuffing",
+        "generic filler such as passionate, results-driven, hardworking, cutting-edge, or innovative"
+      ]
+    },
+    "layoutPolicy": {
+      "minSecondPageFill": 0.78,
+      "minBodySizePt": 10,
+      "minimumItems": {
+        "projects": 3,
+        "experiences": 3,
+        "certifications": 2
+      }
+    }
+  },
+  "ai-engineer": {
+    "id": "ai-engineer",
+    "label": "AI Engineer",
+    "headline": "Applied AI Engineer",
+    "maxPages": 1,
+    "filename": "Faris_Munir_Mahdi_AI_Engineer_CV.pdf",
+    "retrievalQuery": "applied AI engineer production AI systems agents MCP tool use RAG retrieval embeddings pgvector vector search LLM integration evaluation AI safety sandbox execution boundaries observability backend integration reliability data pipelines",
+    "preferredSignals": [
+      "agents",
+      "mcp",
+      "tool use",
+      "rag",
+      "retrieval",
+      "embeddings",
+      "pgvector",
+      "vector search",
+      "llm",
+      "langgraph",
+      "evaluation",
+      "ai safety",
+      "sandbox",
+      "observability",
+      "data pipeline"
+    ],
+    "secondarySignals": [
+      "backend",
+      "production",
+      "reliability",
+      "api",
+      "postgresql",
+      "python"
+    ],
+    "sourceTypeWeights": {
+      "project": 1.0,
+      "experience": 0.92,
+      "skill": 0.86,
+      "profile": 0.55,
+      "certification": 0.5,
+      "education": 0.35
+    },
+    "projectChunkCap": 3,
+    "enrichmentCaps": {
+      "profile": 1,
+      "experience": 3,
+      "skill": 3,
+      "education": 1,
+      "certification": 2
+    },
+    "technicalScopes": [
+      {
+        "key": "applied-ai-systems",
+        "label": "Applied AI Systems",
+        "guidance": "Production AI features and systems integration grounded in demonstrated application work, not unsupported research or model-training claims."
+      },
+      {
+        "key": "retrieval-agentic-systems",
+        "label": "Retrieval & Agentic Systems",
+        "guidance": "Agents, MCP, tool use, RAG, retrieval, embeddings, vector search, evaluation, and explicit AI safety boundaries."
+      },
+      {
+        "key": "ai-platform-production",
+        "label": "AI Platform & Production",
+        "guidance": "Backend integration, data pipelines, observability, sandbox or execution boundaries, and production reliability around AI systems."
+      }
+    ],
+    "budgets": {
+      "projects": 3,
+      "experiences": 2,
+      "certifications": 2
+    },
+    "writingPolicy": {
+      "identity": "Present the candidate as an engineer who builds production AI systems and products. Do not present them as an AI researcher or model-training expert without direct evidence.",
+      "focus": "Prioritize agents, MCP, tool use, retrieval, RAG, embeddings, vector search, LLM integration, evaluation, safety boundaries, backend integration, reliability, and data pipelines.",
+      "summaryRange": "45-65 words",
+      "projectRange": "45-75 words",
+      "avoid": [
+        "unsupported AI research claims",
+        "unsupported model-training ownership",
+        "keyword stuffing",
+        "generic filler"
+      ]
+    },
+    "layoutPolicy": {
+      "minSecondPageFill": 0,
+      "minBodySizePt": 10,
+      "minimumItems": {
+        "projects": 1,
+        "experiences": 1,
+        "certifications": 1
+      }
+    }
+  },
+  "software-engineer": {
+    "id": "software-engineer",
+    "label": "Software Engineer",
+    "headline": "Software Engineer",
+    "maxPages": 1,
+    "filename": "Faris_Munir_Mahdi_Software_Engineer_CV.pdf",
+    "retrievalQuery": "software engineer backend APIs authentication authorization database design multi-tenancy backend services distributed systems performance reliability testing security integrations full-stack product engineering architecture",
+    "preferredSignals": [
+      "api",
+      "backend",
+      "authentication",
+      "authorization",
+      "database",
+      "multi-tenancy",
+      "distributed systems",
+      "performance",
+      "reliability",
+      "testing",
+      "security",
+      "integration"
+    ],
+    "secondarySignals": [
+      "full-stack",
+      "product engineering",
+      "frontend",
+      "postgresql",
+      "rust",
+      "typescript"
+    ],
+    "sourceTypeWeights": {
+      "project": 1.0,
+      "experience": 0.96,
+      "skill": 0.82,
+      "profile": 0.58,
+      "certification": 0.48,
+      "education": 0.4
+    },
+    "projectChunkCap": 3,
+    "enrichmentCaps": {
+      "profile": 1,
+      "experience": 3,
+      "skill": 3,
+      "education": 1,
+      "certification": 2
+    },
+    "technicalScopes": [
+      {
+        "key": "backend-apis",
+        "label": "Backend & APIs",
+        "guidance": "Backend architecture, APIs, authentication, authorization, service boundaries, and integration behavior."
+      },
+      {
+        "key": "data-distributed-systems",
+        "label": "Data & Distributed Systems",
+        "guidance": "Database design, multi-tenancy, data flows, distributed or asynchronous behavior, performance, and reliability."
+      },
+      {
+        "key": "product-engineering",
+        "label": "Product Engineering",
+        "guidance": "Problem-to-architecture reasoning, testing, security, integrations, and relevant full-stack product delivery."
+      }
+    ],
+    "budgets": {
+      "projects": 3,
+      "experiences": 2,
+      "certifications": 2
+    },
+    "writingPolicy": {
+      "identity": "Present the candidate as a Software Engineer. AI is a supporting capability, not the main identity.",
+      "focus": "Use a problem to architecture to engineering decision to system behavior or outcome narrative. Prioritize APIs, backend architecture, identity, data, distributed behavior, reliability, security, integrations, and product engineering.",
+      "summaryRange": "45-65 words",
+      "projectRange": "45-75 words",
+      "avoid": [
+        "AI-first identity",
+        "technology-stack dumping without engineering reasoning",
+        "keyword stuffing",
+        "generic filler"
+      ]
+    },
+    "layoutPolicy": {
+      "minSecondPageFill": 0,
+      "minBodySizePt": 10,
+      "minimumItems": {
+        "projects": 1,
+        "experiences": 1,
+        "certifications": 1
+      }
+    }
+  },
+  "devops": {
+    "id": "devops",
+    "label": "DevOps",
+    "headline": "DevOps / Platform Engineer",
+    "maxPages": 1,
+    "filename": "Faris_Munir_Mahdi_DevOps_CV.pdf",
+    "retrievalQuery": "DevOps platform engineer CI/CD release engineering incremental builds caching Docker containers multi-arch Linux deployment rollback health checks observability OpenTelemetry PostgreSQL operations cloud infrastructure automation reliability developer productivity",
+    "preferredSignals": [
+      "github actions",
+      "ci/cd",
+      "release engineering",
+      "incremental build",
+      "caching",
+      "docker",
+      "container",
+      "multi-arch",
+      "linux",
+      "deployment",
+      "rollback",
+      "health check",
+      "observability",
+      "opentelemetry",
+      "automation",
+      "reliability"
+    ],
+    "secondarySignals": [
+      "postgresql",
+      "cloud",
+      "platform",
+      "developer productivity",
+      "backend"
+    ],
+    "sourceTypeWeights": {
+      "project": 0.98,
+      "experience": 1.0,
+      "skill": 0.88,
+      "profile": 0.5,
+      "certification": 0.55,
+      "education": 0.35
+    },
+    "projectChunkCap": 3,
+    "enrichmentCaps": {
+      "profile": 1,
+      "experience": 3,
+      "skill": 3,
+      "education": 1,
+      "certification": 2
+    },
+    "technicalScopes": [
+      {
+        "key": "cicd-release-engineering",
+        "label": "CI/CD & Release Engineering",
+        "guidance": "GitHub Actions, build and release automation, incremental builds, caching, artifact flow, and safe deployment or rollback behavior."
+      },
+      {
+        "key": "infrastructure-containers",
+        "label": "Infrastructure & Containers",
+        "guidance": "Docker, Linux, containerization, multi-architecture builds, cloud or platform infrastructure, and PostgreSQL operations."
+      },
+      {
+        "key": "observability-reliability",
+        "label": "Observability & Reliability",
+        "guidance": "Health checks, observability, OpenTelemetry, automation, incident boundaries, reliability, and developer productivity."
+      }
+    ],
+    "budgets": {
+      "projects": 3,
+      "experiences": 2,
+      "certifications": 2
+    },
+    "writingPolicy": {
+      "identity": "Present the candidate as a DevOps / Platform Engineer only through demonstrated delivery, infrastructure, automation, observability, or reliability evidence.",
+      "focus": "Prioritize CI/CD, release engineering, incremental builds, caching, Docker, Linux, multi-arch delivery, deployment, rollback, health checks, observability, OpenTelemetry, PostgreSQL operations, automation, reliability, and developer productivity.",
+      "summaryRange": "45-65 words",
+      "projectRange": "45-75 words",
+      "avoid": [
+        "calling a project relevant only because it uses Docker",
+        "unsupported operations ownership",
+        "keyword stuffing",
+        "generic filler"
+      ]
+    },
+    "layoutPolicy": {
+      "minSecondPageFill": 0,
+      "minBodySizePt": 10,
+      "minimumItems": {
+        "projects": 1,
+        "experiences": 1,
+        "certifications": 1
+      }
+    }
+  }
+}

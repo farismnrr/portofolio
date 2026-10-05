@@ -6,10 +6,16 @@ import {
   profile
 } from './structured-content';
 import { projects } from './project-content';
+import {
+  CV_CONTRACT_VERSION,
+  getCvProfile,
+  type CvProfile,
+  type CvTarget
+} from './cv-profiles';
 
-export type CvTarget = 'general' | 'software-engineer' | 'ai-engineer' | 'devops';
+export type { CvTarget } from './cv-profiles';
 
-interface Evidence {
+export interface Evidence {
   id: string;
   sourceType:
     | 'project'
@@ -48,7 +54,7 @@ interface GroundedText {
 }
 
 interface ScopeDraft extends GroundedText {
-  label: string;
+  key: string;
 }
 
 interface ProjectDraft {
@@ -68,6 +74,7 @@ interface CertificationDraft {
 }
 
 interface CvDraft {
+  contractVersion: string;
   profileSummary: GroundedText;
   technicalScope: ScopeDraft[];
   projects: ProjectDraft[];
@@ -96,17 +103,22 @@ function contactLine() {
 }
 
 async function retrieveNode(state: CvStateType) {
+  const cvProfile = getCvProfile(state.target);
   const response = await fetch('/api/cv/retrieve', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      target: state.target,
+      target: cvProfile.id,
+      query: cvProfile.retrievalQuery,
       limit: 10
     })
   });
 
   if (!response.ok) {
-    throw new Error(`CV retrieval failed with status ${response.status}`);
+    const message = await response.text().catch(() => '');
+    throw new Error(
+      `CV retrieval failed with status ${response.status}${message ? `: ${message.slice(0, 240)}` : ''}`
+    );
   }
 
   const payload = (await response.json()) as RetrieveResponse;
@@ -116,56 +128,82 @@ async function retrieveNode(state: CvStateType) {
   };
 }
 
-function draftPrompt(target: CvTarget, evidence: Evidence[]) {
-  const isGeneral = target === 'general';
-  const targetLabel = isGeneral
-    ? 'general software engineering CV'
-    : target
-        .split('-')
-        .map((part) => part[0]?.toUpperCase() + part.slice(1))
-        .join(' ');
+function planEvidenceNode(state: CvStateType) {
+  const cvProfile = getCvProfile(state.target);
+  const candidates = [...state.evidence];
+  const planned: Evidence[] = [];
+  const selectedIds = new Set<string>();
+  const projectCounts = new Map<string, number>();
+
+  const addCandidate = (candidate: Evidence) => {
+    if (selectedIds.has(candidate.id)) return;
+    if (candidate.sourceType === 'project') {
+      const count = projectCounts.get(candidate.sourceId) ?? 0;
+      if (count >= cvProfile.projectChunkCap) return;
+      projectCounts.set(candidate.sourceId, count + 1);
+    }
+    selectedIds.add(candidate.id);
+    planned.push(candidate);
+  };
+
+  const sourceTypes = Object.entries(cvProfile.sourceTypeWeights)
+    .sort((left, right) => right[1] - left[1])
+    .map(([sourceType]) => sourceType);
+
+  // Cover each available source type once before filling the remaining context.
+  for (const sourceType of sourceTypes) {
+    const candidate = candidates
+      .filter((item) => item.sourceType === sourceType && !selectedIds.has(item.id))
+      .sort((left, right) => right.score - left.score)[0];
+    if (candidate) addCandidate(candidate);
+  }
+
+  candidates
+    .sort((left, right) => right.score - left.score)
+    .forEach(addCandidate);
+
+  return { evidence: planned };
+}
+
+function draftPrompt(cvProfile: CvProfile, evidence: Evidence[]) {
+  const scopeSchema = cvProfile.technicalScopes.map((scope) => ({
+    key: scope.key,
+    text: scope.guidance,
+    evidenceIds: ['id']
+  }));
 
   return [
-    `You are writing content for a ${isGeneral ? 'maximum two-page' : 'one-page'} ATS-friendly CV for Faris Munir Mahdi.`,
-    `Target: ${targetLabel}.`,
+    `You are writing a ${cvProfile.maxPages === 2 ? 'maximum two-page' : 'one-page'} ATS-friendly CV for Faris Munir Mahdi.`,
+    `Contract version: ${CV_CONTRACT_VERSION}.`,
+    `Profile: ${cvProfile.label} (${cvProfile.id}).`,
+    `Deterministic headline: ${cvProfile.headline}.`,
     '',
     'Use ONLY the EVIDENCE records below.',
     'Never invent employers, dates, projects, credentials, technologies, metrics, responsibilities, or outcomes.',
     'Every generated narrative must cite the exact evidence IDs it used.',
+    'A generated number, percentage, date, or named technology must appear in the evidence it cites.',
+    'Return ONLY strict JSON. Do not return Markdown, code fences, comments, or prose outside JSON.',
     '',
-    ...(isGeneral
-      ? [
-          'GENERAL CV BALANCE RULES:',
-          '- This is NOT an AI Engineer CV. Present Faris first as a broad Software Engineer.',
-          '- Balance backend engineering, APIs and databases, product/full-stack work, cloud/platform/DevOps, IoT/system integration, and applied AI.',
-          '- AI/RAG/agents may appear as one capability among several, never as the dominant identity.',
-          '- Prefer breadth and evidence of end-to-end engineering ownership over specialization.',
-          '- Target two visually full pages with readable spacing.',
-          '- Select only the strongest, most representative evidence. Do not include everything just because it exists.',
-          '- Order projects, experience, and certifications by importance because lower-priority items may be trimmed to satisfy the final two-page layout.'
-        ]
-      : []),
+    'PROFILE WRITING POLICY:',
+    `- Identity: ${cvProfile.writingPolicy.identity}`,
+    `- Focus: ${cvProfile.writingPolicy.focus}`,
+    `- Avoid: ${cvProfile.writingPolicy.avoid.join('; ')}.`,
+    `- Prefer these signals when selecting evidence: ${cvProfile.preferredSignals.join(', ')}.`,
+    `- Use these as secondary signals: ${cvProfile.secondarySignals.join(', ')}.`,
+    `- Target ${cvProfile.maxPages} page(s) with readable typography; never pad with unsupported claims.`,
     '',
-    'Return ONLY valid JSON matching this schema:',
+    'Return ONLY valid JSON matching this cv-contract/v1 schema:',
     JSON.stringify({
+      contractVersion: CV_CONTRACT_VERSION,
       profileSummary: {
-        text: isGeneral
-          ? '70-100 word balanced software engineering summary'
-          : '45-65 word role-focused professional summary',
+        text: `${cvProfile.writingPolicy.summaryRange} role-focused professional summary`,
         evidenceIds: ['id']
       },
-      technicalScope: [
-        { label: 'Software Engineering', text: 'broad engineering capabilities', evidenceIds: ['id'] },
-        { label: 'Backend & Data', text: 'backend, API, database capabilities', evidenceIds: ['id'] },
-        { label: 'Cloud & Platform', text: 'cloud, CI/CD, observability, infrastructure capabilities', evidenceIds: ['id'] },
-        { label: 'Applied Systems', text: 'IoT and AI only where supported', evidenceIds: ['id'] }
-      ],
+      technicalScope: scopeSchema,
       projects: [
         {
           sourceId: 'real project slug',
-          narrative: isGeneral
-            ? '60-95 word narrative explaining problem, ownership, architecture, and engineering evidence'
-            : '45-75 word role-focused narrative',
+          narrative: `${cvProfile.writingPolicy.projectRange} narrative explaining problem, ownership, architecture, engineering decision, and grounded behavior or outcome`,
           evidenceIds: ['project evidence id']
         }
       ],
@@ -183,20 +221,18 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
       ]
     }),
     '',
-    'Writing rules:',
+    'Selection and writing rules:',
     '- PROJECTS and WORK EXPERIENCE are separate sections.',
-    '- Projects should contain the detailed technical narratives.',
-    '- Work Experience should stay concise and factual; linked projects are only referenced by name when a real mapping exists.',
-    '- Do not force a project relationship for experiences that have no linked projects.',
-    '- Experience summaries and bullets are attached deterministically from source Markdown, not written by the model.',
-    `- Select ${isGeneral ? '5' : '3-4'} projects at most, ordered strongest first.`,
-    `- Select ${isGeneral ? '4' : '2-3'} experience entries at most, ordered most relevant/recent first.`,
-    `- Select ${isGeneral ? '4' : '2-3'} certifications at most, ordered strongest first.`,
-    '- Do not invent titles, companies, dates, certificate names, or URLs; those are attached deterministically later.',
-    '- Project narrative is the main proof of work. Do NOT output Stack lines or URLs.',
-    `- Technical Scope must contain exactly ${isGeneral ? '4' : '3'} lines.`,
-    '- Avoid generic filler such as passionate, results-driven, hardworking, cutting-edge, innovative.',
-    '- No markdown, no comments, no prose outside JSON.',
+    '- Projects contain the detailed technical narratives and are the main proof of technical work.',
+    '- Work Experience stays concise and factual; summaries and bullets are attached deterministically from source Markdown.',
+    '- Related projects are attached only when the source Markdown contains an actual mapping. Never force a relationship.',
+    `- Select at most ${cvProfile.budgets.projects} projects, ${cvProfile.budgets.experiences} experience entries, and ${cvProfile.budgets.certifications} certifications.`,
+    '- Select at least one grounded project, experience, and certification. Education is attached deterministically and cannot be removed.',
+    '- Order selected records strongest or most relevant first because the renderer may trim lower-priority optional records.',
+    '- Do not invent titles, companies, dates, certificate names, URLs, or stack lines; those are attached deterministically later.',
+    '- Do not output scope labels. The technical scope keys and labels are deterministic from the profile registry.',
+    `- technicalScope must contain exactly these keys in this order: ${cvProfile.technicalScopes.map((scope) => scope.key).join(', ')}.`,
+    '- Avoid generic filler such as passionate, results-driven, hardworking, cutting-edge, or innovative.',
     '',
     'WORK_PROJECT_LINKS:',
     JSON.stringify(
@@ -218,23 +254,29 @@ function draftPrompt(target: CvTarget, evidence: Evidence[]) {
         company: item.company,
         skills: item.skills,
         roleTags: item.roleTags,
-        content: item.content
+        content: item.content,
+        relevanceScore: Number(item.score.toFixed(4))
       }))
     )
   ].join('\n');
 }
 
 function parseAiJson(raw: string): unknown {
-  const cleaned = raw.replace(/^```(?:json)?/i, '').replace(/```$/i, '').trim();
-  const start = cleaned.indexOf('{');
-  const end = cleaned.lastIndexOf('}');
-  if (start < 0 || end <= start) throw new Error('AI CV writer did not return JSON.');
-  return JSON.parse(cleaned.slice(start, end + 1));
+  const cleaned = raw.trim();
+  if (cleaned.startsWith('```') || !cleaned.startsWith('{') || !cleaned.endsWith('}')) {
+    throw new Error('AI CV writer did not return strict JSON.');
+  }
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    throw new Error('AI CV writer returned invalid JSON.');
+  }
 }
 
 function stringArray(value: unknown) {
   return Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === 'string')
+    ? value.filter((item): item is string => typeof item === 'string').map((item) => item.trim())
     : [];
 }
 
@@ -246,15 +288,14 @@ function groundedText(value: unknown): GroundedText {
   };
 }
 
-function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
+function normalizeDraft(value: unknown, cvProfile: CvProfile): CvDraft {
   const item = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
-  const expectedScopes = target === 'general' ? 4 : 3;
 
   const technicalScope = Array.isArray(item.technicalScope)
-    ? item.technicalScope.slice(0, expectedScopes).map((raw) => {
+    ? item.technicalScope.map((raw) => {
         const scope = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
-          label: typeof scope.label === 'string' ? scope.label.trim() : '',
+          key: typeof scope.key === 'string' ? scope.key.trim() : '',
           text: typeof scope.text === 'string' ? scope.text.trim() : '',
           evidenceIds: stringArray(scope.evidenceIds)
         };
@@ -262,7 +303,7 @@ function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
     : [];
 
   const projectsDraft = Array.isArray(item.projects)
-    ? item.projects.slice(0, target === 'general' ? 5 : 4).map((raw) => {
+    ? item.projects.slice(0, cvProfile.budgets.projects).map((raw) => {
         const project = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
           sourceId: typeof project.sourceId === 'string' ? project.sourceId.trim() : '',
@@ -273,7 +314,7 @@ function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
     : [];
 
   const experiencesDraft = Array.isArray(item.experiences)
-    ? item.experiences.slice(0, target === 'general' ? 5 : 3).map((raw) => {
+    ? item.experiences.slice(0, cvProfile.budgets.experiences).map((raw) => {
         const experience = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
           sourceId: typeof experience.sourceId === 'string' ? experience.sourceId.trim() : '',
@@ -283,7 +324,7 @@ function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
     : [];
 
   const certificationDraft = Array.isArray(item.certifications)
-    ? item.certifications.slice(0, target === 'general' ? 4 : 3).map((raw) => {
+    ? item.certifications.slice(0, cvProfile.budgets.certifications).map((raw) => {
         const certification =
           raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
         return {
@@ -295,6 +336,8 @@ function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
     : [];
 
   return {
+    contractVersion:
+      typeof item.contractVersion === 'string' ? item.contractVersion.trim() : '',
     profileSummary: groundedText(item.profileSummary),
     technicalScope,
     projects: projectsDraft,
@@ -304,14 +347,16 @@ function normalizeDraft(value: unknown, target: CvTarget): CvDraft {
 }
 
 async function draftNode(state: CvStateType) {
+  const cvProfile = getCvProfile(state.target);
   const response = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      message: draftPrompt(state.target, state.evidence),
+      message: draftPrompt(cvProfile, state.evidence),
       reasoning_effort: 'medium',
       metadata: {
-        target: state.target,
+        contractVersion: CV_CONTRACT_VERSION,
+        target: cvProfile.id,
         evidenceCount: state.evidence.length
       }
     })
@@ -326,7 +371,7 @@ async function draftNode(state: CvStateType) {
 
   const payload = (await response.json()) as AiResponse;
   return {
-    draft: normalizeDraft(parseAiJson(payload.message), state.target)
+    draft: normalizeDraft(parseAiJson(payload.message), cvProfile)
   };
 }
 
@@ -346,10 +391,97 @@ function validateEvidenceIds(
   }
 }
 
+function normalizeClaim(value: string) {
+  return value
+    .replace(/[—–]/g, '-')
+    .toLowerCase()
+    .replace(/,/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractNumericClaims(text: string) {
+  return [...new Set(text.match(/\b\d[\d,.]*(?:\s*%)?\b/g) ?? [])];
+}
+
+function hasClaim(text: string, claim: string) {
+  return normalizeClaim(text).replace(/\s+/g, '').includes(normalizeClaim(claim).replace(/\s+/g, ''));
+}
+
+function hasKnownTerm(text: string, term: string) {
+  const normalizedText = ` ${text.toLowerCase()} `;
+  const normalizedTerm = term.toLowerCase().trim();
+  if (!normalizedTerm || normalizedTerm.length < 3) return false;
+  return normalizedText.includes(` ${normalizedTerm} `) || normalizedText.includes(normalizedTerm);
+}
+
+function validateGroundedClaims(
+  text: string,
+  evidenceIds: string[],
+  evidenceMap: Map<string, Evidence>,
+  allEvidence: Evidence[],
+  label: string,
+  errors: string[]
+) {
+  if (!text) return;
+  if (/```|^\s*#{1,6}\s/m.test(text)) {
+    errors.push(`${label} contains Markdown instead of plain text`);
+  }
+
+  const citedEvidence = evidenceIds
+    .map((id) => evidenceMap.get(id))
+    .filter((item): item is Evidence => Boolean(item));
+  const citedText = citedEvidence
+    .map((item) => [item.content, item.company, ...item.skills, ...item.roleTags].join(' '))
+    .join(' ');
+
+  for (const claim of extractNumericClaims(text)) {
+    if (!hasClaim(citedText, claim)) {
+      errors.push(`${label} contains an ungrounded numeric claim: ${claim}`);
+    }
+  }
+
+  const knownTechnicalTerms = new Set(
+    allEvidence.flatMap((item) => item.skills).filter((term) => term.trim().length >= 3)
+  );
+  for (const term of knownTechnicalTerms) {
+    if (hasKnownTerm(text, term) && !hasKnownTerm(citedText, term)) {
+      errors.push(`${label} contains an uncited technology or system: ${term}`);
+    }
+  }
+}
+
+function validateMatchingSource(
+  ids: string[],
+  evidenceMap: Map<string, Evidence>,
+  sourceType: Evidence['sourceType'],
+  sourceId: string,
+  label: string,
+  errors: string[]
+) {
+  let matchingEvidence = 0;
+  for (const id of ids) {
+    const source = evidenceMap.get(id);
+    if (!source) continue;
+    if (source.sourceType !== sourceType || source.sourceId !== sourceId) {
+      errors.push(`${label} cites unrelated evidence ${id}`);
+    } else {
+      matchingEvidence += 1;
+    }
+  }
+  if (!matchingEvidence) {
+    errors.push(`${label} must cite ${sourceType} evidence from source ${sourceId}`);
+  }
+}
+
 function validateNode(state: CvStateType) {
+  const cvProfile = getCvProfile(state.target);
   const errors: string[] = [];
   const evidenceMap = new Map(state.evidence.map((item) => [item.id, item]));
-  const expectedScopes = state.target === 'general' ? 4 : 3;
+
+  if (state.draft.contractVersion !== CV_CONTRACT_VERSION) {
+    errors.push(`unsupported CV contract version: ${state.draft.contractVersion || 'missing'}`);
+  }
 
   validateEvidenceIds(
     state.draft.profileSummary.evidenceIds,
@@ -357,33 +489,73 @@ function validateNode(state: CvStateType) {
     'profile summary',
     errors
   );
+  if (!state.draft.profileSummary.text) errors.push('profile summary has no text');
+  validateGroundedClaims(
+    state.draft.profileSummary.text,
+    state.draft.profileSummary.evidenceIds,
+    evidenceMap,
+    state.evidence,
+    'profile summary',
+    errors
+  );
 
-  if (state.draft.technicalScope.length !== expectedScopes) {
-    errors.push(`technical scope must contain exactly ${expectedScopes} lines`);
+  if (state.draft.technicalScope.length !== cvProfile.technicalScopes.length) {
+    errors.push(
+      `technical scope must contain exactly ${cvProfile.technicalScopes.length} lines for ${cvProfile.id}`
+    );
   }
 
   for (const [index, scope] of state.draft.technicalScope.entries()) {
-    if (!scope.label || !scope.text) errors.push(`technical scope ${index + 1} is incomplete`);
+    const expected = cvProfile.technicalScopes[index];
+    if (!expected || scope.key !== expected.key) {
+      errors.push(
+        `technical scope ${index + 1} must use deterministic key ${expected?.key ?? 'none'}`
+      );
+    }
+    if (!scope.text) errors.push(`technical scope ${index + 1} is incomplete`);
     validateEvidenceIds(scope.evidenceIds, evidenceMap, `technical scope ${index + 1}`, errors);
+    validateGroundedClaims(
+      scope.text,
+      scope.evidenceIds,
+      evidenceMap,
+      state.evidence,
+      `technical scope ${index + 1}`,
+      errors
+    );
   }
 
   if (!state.draft.projects.length) errors.push('no grounded projects selected');
+  if (state.draft.projects.length > cvProfile.budgets.projects) {
+    errors.push(`projects exceed the ${cvProfile.budgets.projects}-item profile budget`);
+  }
   for (const project of state.draft.projects) {
     if (!projects.some((item) => item.slug === project.sourceId)) {
       errors.push(`unknown project source: ${project.sourceId}`);
     }
     if (!project.narrative) errors.push(`project ${project.sourceId} has no narrative`);
     validateEvidenceIds(project.evidenceIds, evidenceMap, `project ${project.sourceId}`, errors);
-
-    for (const id of project.evidenceIds) {
-      const source = evidenceMap.get(id);
-      if (source && (source.sourceType !== 'project' || source.sourceId !== project.sourceId)) {
-        errors.push(`project ${project.sourceId} cites unrelated evidence ${id}`);
-      }
-    }
+    validateMatchingSource(
+      project.evidenceIds,
+      evidenceMap,
+      'project',
+      project.sourceId,
+      `project ${project.sourceId}`,
+      errors
+    );
+    validateGroundedClaims(
+      project.narrative,
+      project.evidenceIds,
+      evidenceMap,
+      state.evidence,
+      `project ${project.sourceId}`,
+      errors
+    );
   }
 
   if (!state.draft.experiences.length) errors.push('no grounded experiences selected');
+  if (state.draft.experiences.length > cvProfile.budgets.experiences) {
+    errors.push(`experiences exceed the ${cvProfile.budgets.experiences}-item profile budget`);
+  }
   for (const experience of state.draft.experiences) {
     if (!experiences.some((item) => String(item.order) === experience.sourceId)) {
       errors.push(`unknown experience source: ${experience.sourceId}`);
@@ -394,19 +566,20 @@ function validateNode(state: CvStateType) {
       `experience ${experience.sourceId}`,
       errors
     );
-
-    for (const id of experience.evidenceIds) {
-      const source = evidenceMap.get(id);
-      if (
-        source &&
-        (source.sourceType !== 'experience' || source.sourceId !== experience.sourceId)
-      ) {
-        errors.push(`experience ${experience.sourceId} cites unrelated evidence ${id}`);
-      }
-    }
+    validateMatchingSource(
+      experience.evidenceIds,
+      evidenceMap,
+      'experience',
+      experience.sourceId,
+      `experience ${experience.sourceId}`,
+      errors
+    );
   }
 
   if (!state.draft.certifications.length) errors.push('no grounded certifications selected');
+  if (state.draft.certifications.length > cvProfile.budgets.certifications) {
+    errors.push(`certifications exceed the ${cvProfile.budgets.certifications}-item profile budget`);
+  }
   for (const certification of state.draft.certifications) {
     if (!certifications.some((item) => String(item.order) === certification.sourceId)) {
       errors.push(`unknown certification source: ${certification.sourceId}`);
@@ -417,16 +590,14 @@ function validateNode(state: CvStateType) {
       `certification ${certification.sourceId}`,
       errors
     );
-
-    for (const id of certification.evidenceIds) {
-      const source = evidenceMap.get(id);
-      if (
-        source &&
-        (source.sourceType !== 'certification' || source.sourceId !== certification.sourceId)
-      ) {
-        errors.push(`certification ${certification.sourceId} cites unrelated evidence ${id}`);
-      }
-    }
+    validateMatchingSource(
+      certification.evidenceIds,
+      evidenceMap,
+      'certification',
+      certification.sourceId,
+      `certification ${certification.sourceId}`,
+      errors
+    );
   }
 
   return { validationErrors: errors };
@@ -434,10 +605,12 @@ function validateNode(state: CvStateType) {
 
 const workflow = new StateGraph(CvState)
   .addNode('retrieve', retrieveNode)
+  .addNode('planEvidence', planEvidenceNode)
   .addNode('composeCv', draftNode)
   .addNode('validate', validateNode)
   .addEdge(START, 'retrieve')
-  .addEdge('retrieve', 'composeCv')
+  .addEdge('retrieve', 'planEvidence')
+  .addEdge('planEvidence', 'composeCv')
   .addEdge('composeCv', 'validate')
   .addEdge('validate', END)
   .compile();
@@ -466,13 +639,7 @@ function projectMeta(slug: string) {
 }
 
 async function renderPdf(draft: CvDraft, target: CvTarget) {
-  const headline =
-    target === 'general'
-      ? 'Software Engineer'
-      : target
-          .split('-')
-          .map((part) => part[0]?.toUpperCase() + part.slice(1))
-          .join(' ');
+  const cvProfile = getCvProfile(target);
 
   const selectedExperiences = draft.experiences
     .map((item) => {
@@ -530,29 +697,38 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  const educationLines = education
-    .slice(0, 1)
-    .map((item) => [item.institution, item.program, item.year].filter(Boolean).join(' | '));
+  const educationLines = education.map((item) =>
+    [item.institution, item.program, item.year].filter(Boolean).join(' | ')
+  );
+  const scopeByKey = new Map(draft.technicalScope.map((scope) => [scope.key, scope.text]));
 
   const response = await fetch('/api/cv/render', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      contractVersion: CV_CONTRACT_VERSION,
+      profileId: cvProfile.id,
       name: profile.name,
-      headline,
+      headline: cvProfile.headline,
       contact: contactLine(),
       profileSummary: draft.profileSummary.text,
-      technicalScope: draft.technicalScope.map(({ label, text }) => ({ label, text })),
+      technicalScope: cvProfile.technicalScopes.map((scope) => ({
+        label: scope.label,
+        text: scopeByKey.get(scope.key) ?? ''
+      })),
       projects: selectedProjects,
       experiences: selectedExperiences,
       certifications: selectedCertifications,
       educationLines,
-      maxPages: target === 'general' ? 2 : 1
+      maxPages: cvProfile.maxPages
     })
   });
 
   if (!response.ok) {
-    throw new Error(`CV renderer failed with status ${response.status}`);
+    const message = await response.text().catch(() => '');
+    throw new Error(
+      `CV renderer failed with status ${response.status}${message ? `: ${message.slice(0, 360)}` : ''}`
+    );
   }
 
   const blob = await response.blob();
@@ -561,7 +737,7 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
-  anchor.download = 'Faris_Munir_Mahdi_CV.pdf';
+  anchor.download = cvProfile.filename;
   anchor.rel = 'noopener';
   document.body.appendChild(anchor);
   anchor.click();
@@ -580,6 +756,6 @@ export async function generateCv(target: CvTarget = 'general') {
   await renderPdf(result.draft, target);
 }
 
-export async function generateGeneralCv() {
+export function generateGeneralCv() {
   return generateCv('general');
 }

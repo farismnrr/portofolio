@@ -7,6 +7,7 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
+  import { CV_PROFILE_OPTIONS, CV_PROFILES, type CvTarget } from '../lib/cv-profiles';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
@@ -14,19 +15,21 @@
 
   let generatingCv = false;
   let cvError = '';
-  let cvGenerated = false;
+  let cvGeneratedProfile = '';
+  let cvPickerOpen = false;
+  let selectedCvTarget: CvTarget = 'general';
 
   async function handleSaveCv() {
     if (generatingCv) return;
 
     generatingCv = true;
     cvError = '';
-    cvGenerated = false;
+    cvGeneratedProfile = '';
 
     try {
-      const { generateGeneralCv } = await import('../lib/cv');
-      await generateGeneralCv();
-      cvGenerated = true;
+      const { generateCv } = await import('../lib/cv');
+      await generateCv(selectedCvTarget);
+      cvGeneratedProfile = CV_PROFILES[selectedCvTarget].label;
     } catch (error) {
       cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
     } finally {
@@ -55,11 +58,45 @@
             class="flex items-center gap-3 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
             type="button"
             disabled={generatingCv}
-            on:click={handleSaveCv}
+            aria-expanded={cvPickerOpen}
+            on:click={() => {
+              cvPickerOpen = !cvPickerOpen;
+              cvError = '';
+              cvGeneratedProfile = '';
+            }}
           >
             <AppIcon name="file-text" size={18}/>
-            {generatingCv ? 'Generating CV with AI…' : 'Generate CV with AI'}
+            Generate CV with AI
           </button>
+
+          {#if cvPickerOpen}
+            <div class="space-y-3 rounded-2xl border border-black/10 bg-black/[0.025] p-4">
+              <label class="block text-[12px] font-semibold text-black/65" for="cv-profile">
+                Choose a CV profile
+              </label>
+              <select
+                id="cv-profile"
+                bind:value={selectedCvTarget}
+                class="w-full rounded-xl border border-black/12 bg-white px-3 py-2 text-[13px] text-black/75 outline-none transition focus:border-black/35"
+                disabled={generatingCv}
+              >
+                {#each CV_PROFILE_OPTIONS as cvProfile}
+                  <option value={cvProfile.id}>{cvProfile.label}</option>
+                {/each}
+              </select>
+              <p class="text-[12px] leading-5 text-black/50">
+                {CV_PROFILES[selectedCvTarget].headline} · {CV_PROFILES[selectedCvTarget].maxPages} page{CV_PROFILES[selectedCvTarget].maxPages === 1 ? '' : 's'}
+              </p>
+              <button
+                class="w-full rounded-xl bg-black px-3 py-2.5 text-[13px] font-semibold text-white transition hover:bg-black/80 disabled:cursor-wait disabled:opacity-45"
+                type="button"
+                disabled={generatingCv}
+                on:click={handleSaveCv}
+              >
+                {generatingCv ? 'Generating CV with AI…' : `Generate ${CV_PROFILES[selectedCvTarget].label} CV`}
+              </button>
+            </div>
+          {/if}
 
           {#if generatingCv}
             <div
@@ -80,9 +117,9 @@
                 </div>
               </div>
             </div>
-          {:else if cvGenerated}
+          {:else if cvGeneratedProfile}
             <div class="rounded-2xl border border-black/10 bg-black/[0.025] p-4" role="status">
-              <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
+              <p class="text-[13px] font-semibold text-black/78">{cvGeneratedProfile} CV generated</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
                 Your PDF was generated from verified portfolio content and downloaded.
               </p>

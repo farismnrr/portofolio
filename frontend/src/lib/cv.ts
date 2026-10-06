@@ -641,11 +641,7 @@ function absolutePortfolioUrl(value: string) {
 function projectWebUrl(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  return (
-    project.productUrl ||
-    project.repoUrl ||
-    `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`
-  );
+  return `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`;
 }
 
 function projectMeta(slug: string) {

@@ -1,7 +1,7 @@
 ---
 order: 5
 title: DevOps & Infrastructure
-items: [Docker, AWS, GitHub Actions, GCP, Linux]
+items: [Docker, Linux, GitHub Actions, OpenTelemetry, Prometheus, Grafana, Jira, AWS, GCP]
 ---
 
-Automating deployment workflows with CI/CD pipelines and managing containerized infrastructure on cloud platforms for high availability.
+Automating deployment workflows with CI/CD pipelines, managing containerized Linux infrastructure, tracking agile delivery via Jira, and instrumenting production observability with OpenTelemetry, Prometheus, and Grafana.

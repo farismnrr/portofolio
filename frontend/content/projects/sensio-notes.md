@@ -10,7 +10,7 @@ role: "Backend & Fullstack Engineer · Architecture / Platform / AI Workflows"
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A production meeting intelligence platform that captures long audio sessions, processes them asynchronously, and converts transcripts into structured notes, action items, and searchable knowledge."
 image: "/images/projects/sensio-notes/showcase.png"
-tech: [NestJS, TypeScript, React, Capacitor, PostgreSQL, Redis, S3, WebSocket, LangGraph, OpenTelemetry, Docker]
+tech: [NestJS, TypeScript, React, Capacitor, PostgreSQL, Redis, S3, WebSocket, LangGraph, OpenTelemetry, Docker, Jira]
 productUrl: "https://notes.sensio.id"
 repoUrl: ""
 ---
@@ -115,7 +115,7 @@ My work on Sensio Notes spans fullstack product engineering, production backend 
 - **Asynchronous Worker Pipelines**: Orchestrated transcription worker lifecycles with queue backoff, idempotent callback handlers, and live WebSocket broadcasts to maintain transparent progress during multi-minute processing runs.
 - **Structured AI & RAG Workflows**: Built LangGraph pipelines that chunk transcripts, query LLMs for grounded summaries and action items, and enforce strict JSON schemas so generated outputs link directly to source evidence.
 - **Fullstack Client-Server Integration**: Bridged React and Capacitor mobile recording flows with backend state machines, ensuring consistent wake-lock behavior, offline resilience, and fluid review UX.
-- **Production Operations**: Containerized services with Docker, established OpenTelemetry instrumentation and structured logging, and managed production deployments ensuring high availability and zero data loss.
+- **Production Operations & Agile Delivery**: Containerized services with Docker, established OpenTelemetry distributed tracing and structured logging across audio processing pipelines, tracked sprint deliverables via Jira, and managed production deployments ensuring high availability and zero data loss.
 
 ## What I Took From It
 

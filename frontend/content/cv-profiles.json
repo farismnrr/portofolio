@@ -2,11 +2,12 @@
   "general": {
     "id": "general",
     "label": "General",
-    "headline": "Backend Systems & Fullstack Developer",
+    "headline": "Software Engineer — Backend & Systems Architecture",
     "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
-    "retrievalQuery": "backend systems developer fullstack web engineer NestJS Rust PostgreSQL distributed architecture APIs system design concurrency Redis WebSockets React TypeScript Docker Linux CI/CD production on-premise LangGraph RAG",
+    "retrievalQuery": "software engineer backend systems distributed architecture fullstack web NestJS Rust PostgreSQL Redis APIs system design concurrency WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability Jira production on-premise LangGraph RAG",
     "preferredSignals": [
+      "software engineering",
       "backend",
       "fullstack",
       "full-stack",
@@ -21,17 +22,20 @@
       "react",
       "typescript",
       "docker",
+      "observability",
+      "opentelemetry",
+      "jira",
+      "linux",
       "production"
     ],
     "secondarySignals": [
       "ci/cd",
-      "linux",
+      "prometheus",
+      "grafana",
       "timescaledb",
       "mqtt",
       "rag",
-      "langgraph",
-      "observability",
-      "opentelemetry"
+      "langgraph"
     ],
     "sourceTypeWeights": {
       "project": 1.0,
@@ -53,35 +57,36 @@
       {
         "key": "backend-systems",
         "label": "Backend Systems & Architecture",
-        "guidance": "High-performance backend services, REST and WebSocket APIs, concurrency, data modeling (PostgreSQL, TimescaleDB, Redis), and system design in NestJS and Rust."
+        "guidance": "High-performance backend services in Rust (Axum) and NestJS, REST and WebSocket APIs, concurrency, PostgreSQL schema design, TimescaleDB, and Redis caching."
       },
       {
         "key": "fullstack-web",
         "label": "Fullstack Web Development",
-        "guidance": "End-to-end web engineering across modern React, TypeScript, responsive PWAs, mobile Capacitor bridges, state management, and seamless client-server API integration."
+        "guidance": "End-to-end web engineering in React and TypeScript, responsive PWAs, mobile Capacitor bridges, real-time client state synchronization, and seamless API integration."
       },
       {
         "key": "cloud-devops",
-        "label": "Cloud, DevOps & Production Platforms",
-        "guidance": "Linux system administration, Docker containerization, multi-arch builds, CI/CD automation with GitHub Actions, OpenTelemetry observability, and on-premises edge reliability."
+        "label": "Cloud, DevOps & Observability",
+        "guidance": "Linux system administration, Docker multi-arch containers (AMD64/ARM64), CI/CD automation, Jira agile project tracking, and OpenTelemetry/Prometheus observability."
       },
       {
         "key": "applied-ai-rag",
         "label": "Applied AI, RAG & Intelligent Systems",
-        "guidance": "Evidence-grounded RAG pipelines, LangGraph structured extraction, vector databases (pgvector), and contextual automation integrated into real-world production products."
+        "guidance": "Evidence-grounded RAG pipelines, LangGraph structured extraction, vector databases (pgvector), and contextual automation integrated into production software."
       }
     ],
     "budgets": {
-      "projects": 5,
-      "experiences": 4,
-      "certifications": 4
+      "projects": 4,
+      "experiences": 3,
+      "certifications": 3
     },
     "writingPolicy": {
-      "identity": "Present Faris clearly as a skilled Backend Systems & Fullstack Developer with solid production engineering experience across robust backend architectures, distributed services, databases, and modern web applications.",
-      "focus": "Emphasize high-performance backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
-      "summaryRange": "75-100 words",
-      "projectRange": "60-95 words",
+      "identity": "Present Faris clearly as a Software Engineer specialized in Backend Systems & Fullstack Web Development, with solid production engineering experience across robust backend architectures, distributed services, databases, and modern web applications. Machine learning is not his identity; applied AI/RAG is treated strictly as an integrated software capability.",
+      "focus": "Emphasize high-performance backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), production observability (OpenTelemetry, Prometheus, Grafana), agile delivery (Jira), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
+      "summaryRange": "70-88 words",
+      "projectRange": "55-75 words",
       "avoid": [
+        "Machine Learning Engineer or Data Scientist positioning",
         "generic filler such as passionate, hardworking, cutting-edge, innovative",
         "appearing only as a superficial or hobbyist developer without production ownership",
         "AI-only identity that obscures strong core backend and software craft",
@@ -89,11 +94,11 @@
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.78,
+      "minSecondPageFill": 0.65,
       "minBodySizePt": 10,
       "minimumItems": {
         "projects": 3,
-        "experiences": 3,
+        "experiences": 2,
         "certifications": 2
       }
     }

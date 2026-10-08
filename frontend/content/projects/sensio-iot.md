@@ -10,7 +10,7 @@ role: "Backend & Systems Engineer · Rust / IoT / Platform Architecture"
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A production on-premises smart-space platform that organizes users, rooms, device state, telemetry, and hardware control around the physical spaces people manage."
 image: "/images/projects/featured/sensio-iot.png"
-tech: [Rust, Axum, NestJS, TypeScript, React, PostgreSQL, TimescaleDB, MQTT, Zigbee2MQTT, Docker, Linux, OpenTelemetry, LangGraph]
+tech: [Rust, Axum, NestJS, TypeScript, React, PostgreSQL, TimescaleDB, MQTT, Zigbee2MQTT, Tasmota, Docker, Linux, OpenTelemetry, Jira, LangGraph]
 productUrl: "https://iot.sensio.id"
 repoUrl: ""
 ---
@@ -84,29 +84,36 @@ identity
 → device action
 ```
 
-## Device Integration
+## Device Integration: Tasmota and Zigbee Ecosystems
 
 The device communication layer is separated cleanly from the site and room domain model.
 
-In the Rust implementation, Zigbee2MQTT support is organized into dedicated mapping, adapter, repository, listener, service, and HTTP boundaries. Discovery and status messages are ingested from MQTT topics, normalized into application state, and commands are translated into provider-specific payloads when an authorized user actuates hardware.
+The platform manages two primary hardware integration pipelines:
+
+1. **Tasmota-Flashed Smart Devices & Power Monitoring**:
+   Smart plugs, energy meters, relays, and power strips running open-source **Tasmota** firmware communicate over dedicated MQTT channels. The ingestion pipeline listens to `tele/%topic%/SENSOR` broadcasts to parse real-time power metrics (active power in Watts, line voltage, current, and accumulated energy consumption), tracks relay state changes via `stat/%topic%/POWER`, and issues low-latency switching commands via `cmnd/%topic%/Power` without external cloud dependencies.
+2. **Zigbee2MQTT Environmental & Presence Sensors**:
+   Coordinates Zigbee coordinators and edge routers to ingest environmental telemetry (ambient temperature, humidity, illuminance) and occupant presence (PIR motion detectors, magnetic door/window sensors).
+
+In the Rust implementation, these integrations are structured into dedicated mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped domain state, while outgoing commands are translated into provider-specific payloads.
 
 ```mermaid
 sequenceDiagram
     participant U as User
     participant A as Sensio IoT
-    participant Z as Zigbee2MQTT
-    participant D as Device
+    participant Z as Tasmota / Zigbee2MQTT
+    participant D as Physical Hardware
 
-    U->>A: Control a device in the selected room
-    A->>A: Check site / room scope
-    A->>Z: Publish provider command
-    Z->>D: Send device command
-    D-->>Z: Report resulting state
-    Z-->>A: State / telemetry event
-    A-->>U: Show current state
+    U->>A: Control device or set automation
+    A->>A: Verify site & room RBAC
+    A->>Z: Publish provider command (MQTT)
+    Z->>D: Dispatch hardware command
+    D-->>Z: Acknowledge execution
+    Z-->>A: Telemetry & state update (MQTT)
+    A-->>U: Real-time UI synchronization
 ```
 
-This decoupled boundary absorbs protocol-specific quirks and network retries instead of leaking them into the user interface or database schema.
+This decoupled boundary absorbs protocol-specific quirks, MQTT broker disconnects, and network retries instead of leaking them into the user interface or database schema.
 
 ## On-Prem as Part of the Product
 
@@ -114,7 +121,7 @@ For a smart-space system, deployment location directly impacts reliability and l
 
 Lighting, room controls, telemetry, and local automation cannot depend on distant cloud round-trips. Sensio IoT treats local on-premises deployment as a core architectural requirement.
 
-The Rust service is packaged as a multi-architecture Docker container (supporting both AMD64 and ARM64) and runs on edge hardware including NVIDIA Jetson and Linux single-board computers. OpenTelemetry tracing, health checks, and container lifecycle monitoring ensure rock-solid uptime next to the physical equipment it manages.
+The Rust service is packaged as a multi-architecture Docker container (supporting both AMD64 and ARM64) and runs on edge hardware including NVIDIA Jetson and Linux single-board computers. OpenTelemetry distributed tracing, Prometheus metrics for ingestion latency and broker throughput, and container health checks ensure rock-solid uptime next to the physical equipment it manages.
 
 ## My Contribution
 
@@ -122,9 +129,9 @@ My work on Sensio IoT spans backend systems engineering, fullstack interfaces, d
 
 - **Fullstack & Backend Engineering**: Built both the initial React + NestJS fullstack platform and the high-performance Rust (Axum + SQLx) rewrite, implementing relational schemas, connection pooling, and real-time state synchronization.
 - **Physical RBAC Authorization**: Designed site- and room-scoped access control with secure JWT/refresh token rotation, preventing unauthorized command dispatch across multi-tenant physical spaces.
-- **Hardware & Protocol Integration**: Engineered asynchronous MQTT message consumers and Zigbee2MQTT adapters that handle real-time sensor ingestion, device discovery, and low-latency command publishing.
+- **Hardware & Protocol Integration**: Engineered asynchronous MQTT message consumers, Tasmota telemetry parsers, and Zigbee2MQTT adapters that handle real-time power monitoring, sensor ingestion, device discovery, and low-latency actuation.
 - **Conversational AI & Automation**: Developed room-scoped LangGraph assistant workflows to parse contextual commands and trigger device state changes within verified safety constraints.
-- **Production Edge Deployment**: Packaged containerized multi-architecture images (AMD64 / ARM64), deployed services to on-premise edge hardware (Jetson / Linux servers), and established OpenTelemetry observability for production reliability.
+- **Production Edge Deployment & Observability**: Packaged containerized multi-architecture images (AMD64 / ARM64), deployed services to on-premise edge hardware (Jetson / Linux servers), tracked agile deliverables in Jira, and established OpenTelemetry/Prometheus observability for production reliability.
 
 ## What I Took From It
 

@@ -2,13 +2,13 @@
 order: 2
 year: Feb 2025 — July 2025
 company: DBS Foundation
-role: Software Engineer
+role: Machine Learning Engineer
 location: ""
-summary: Contributed to the DBS Foundation capstone as a software engineer, developing backend API services, session authentication, data storage, and containerized runtime for the GiziLens web application.
-tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Python]
+summary: Completed the DBS Foundation program through a team capstone that combined food-image recognition with a deployable web application foundation.
+tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
 projects: [gizilens]
 ---
 
-- Worked in the **[GiziLens](/projects/gizilens)** capstone team, leading development of the web application services and backend boundaries surrounding the machine learning subsystem.
-- Built application APIs, session authentication, PostgreSQL relational schema, Redis caching, and Nuxt web integration within a containerized Docker runtime.
-- Coordinated cross-functional task delivery and integration boundaries, treating ML model inference as a modular backend service rather than a standalone component.
+- Worked in the **[GiziLens](/projects/gizilens)** capstone team, where the project was split between a food-recognition subsystem and the web application surrounding it.
+- Contributed primarily to the application side: authentication and session flows, user APIs, PostgreSQL and Redis integration, the Nuxt frontend boundary, and the containerized runtime around the services.
+- Kept the machine-learning classifier as a team subsystem in the project story rather than presenting another member's model-training work as my individual implementation.

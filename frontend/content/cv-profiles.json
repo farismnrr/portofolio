@@ -2,68 +2,73 @@
   "general": {
     "id": "general",
     "label": "General",
-    "headline": "Software Engineer",
+    "headline": "Backend Systems & Fullstack Developer",
     "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
-    "retrievalQuery": "software engineer end-to-end engineering backend APIs databases system design product engineering frontend full-stack cloud CI/CD deployment infrastructure applied AI IoT systems reliability",
+    "retrievalQuery": "backend systems developer fullstack web engineer NestJS Rust PostgreSQL distributed architecture APIs system design concurrency Redis WebSockets React TypeScript Docker Linux CI/CD production on-premise LangGraph RAG",
     "preferredSignals": [
       "backend",
+      "fullstack",
+      "full-stack",
+      "postgresql",
+      "rust",
+      "nestjs",
       "api",
-      "database",
       "system design",
-      "product engineering",
-      "cloud",
-      "ci/cd",
-      "deployment",
-      "infrastructure",
-      "applied ai",
-      "iot",
-      "system integration"
+      "architecture",
+      "redis",
+      "websocket",
+      "react",
+      "typescript",
+      "docker",
+      "production"
     ],
     "secondarySignals": [
-      "frontend",
-      "full-stack",
-      "reliability",
-      "security",
+      "ci/cd",
+      "linux",
+      "timescaledb",
+      "mqtt",
+      "rag",
+      "langgraph",
       "observability",
-      "automation"
+      "opentelemetry"
     ],
     "sourceTypeWeights": {
       "project": 1.0,
       "experience": 0.95,
-      "skill": 0.78,
-      "profile": 0.62,
-      "certification": 0.52,
+      "skill": 0.8,
+      "profile": 0.6,
+      "certification": 0.5,
       "education": 0.45
     },
     "projectChunkCap": 2,
     "enrichmentCaps": {
       "profile": 1,
       "experience": 4,
-      "skill": 3,
+      "skill": 4,
       "education": 1,
       "certification": 3
     },
     "technicalScopes": [
       {
-        "key": "software-engineering",
-        "label": "Software Engineering",
-        "guidance": "End-to-end engineering ownership, product delivery, architecture, testing, and meaningful frontend or full-stack work."
+        "key": "backend-systems",
+        "label": "Backend Systems & Architecture",
+        "guidance": "High-performance backend services, REST and WebSocket APIs, concurrency, data modeling (PostgreSQL, TimescaleDB, Redis), and system design in NestJS and Rust."
       },
       {
-        "key": "backend-data",
-        "label": "Backend & Data",
-        "guidance": "Backend services, APIs, databases, data flows, authentication, and system design."
+        "key": "fullstack-web",
+        "label": "Fullstack Web Development",
+        "guidance": "End-to-end web engineering across modern React, TypeScript, responsive PWAs, mobile Capacitor bridges, state management, and seamless client-server API integration."
       },
       {
-        "key": "cloud-platform",
-        "label": "Cloud & Platform",
-        "guidance": "Cloud, CI/CD, deployment, infrastructure, observability, and operational reliability."
+        "key": "cloud-devops",
+        "label": "Cloud, DevOps & Production Platforms",
+        "guidance": "Linux system administration, Docker containerization, multi-arch builds, CI/CD automation with GitHub Actions, OpenTelemetry observability, and on-premises edge reliability."
       },
       {
-        "key": "applied-ai-systems",
-        "label": "Applied AI & Systems",
-        "guidance": "Applied AI, IoT, integrations, and systems work only where the evidence supports it; keep this as one capability among several."
+        "key": "applied-ai-rag",
+        "label": "Applied AI, RAG & Intelligent Systems",
+        "guidance": "Evidence-grounded RAG pipelines, LangGraph structured extraction, vector databases (pgvector), and contextual automation integrated into real-world production products."
       }
     ],
     "budgets": {
@@ -72,14 +77,15 @@
       "certifications": 4
     },
     "writingPolicy": {
-      "identity": "Present the candidate first as a broad Software Engineer with end-to-end engineering ownership. Applied AI is one capability, not the identity.",
-      "focus": "Balance backend, APIs, databases, product or full-stack engineering, cloud and platform work, IoT or systems integration, and applied AI.",
-      "summaryRange": "70-100 words",
+      "identity": "Present Faris clearly as a skilled Backend Systems & Fullstack Developer with solid production engineering experience across robust backend architectures, distributed services, databases, and modern web applications.",
+      "focus": "Emphasize high-performance backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
+      "summaryRange": "75-100 words",
       "projectRange": "60-95 words",
       "avoid": [
-        "AI-first identity",
-        "keyword stuffing",
-        "generic filler such as passionate, results-driven, hardworking, cutting-edge, or innovative"
+        "generic filler such as passionate, hardworking, cutting-edge, innovative",
+        "appearing only as a superficial or hobbyist developer without production ownership",
+        "AI-only identity that obscures strong core backend and software craft",
+        "keyword stuffing without architectural context"
       ]
     },
     "layoutPolicy": {

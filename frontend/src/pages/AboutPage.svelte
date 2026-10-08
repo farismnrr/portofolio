@@ -84,7 +84,7 @@
             <div class="cv-status rounded-2xl border p-4" role="status">
               <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
-                Your general CV was generated from verified portfolio content and downloaded.
+                Your CV was generated from verified portfolio content and downloaded.
               </p>
             </div>
           {/if}

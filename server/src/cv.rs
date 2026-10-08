@@ -1019,11 +1019,11 @@ mod tests {
 
     #[test]
     fn profile_registry_drives_renderer_filename_and_page_budget() {
-        let profile = profiles::get("devops").expect("DevOps profile");
+        let profile = profiles::get("general").expect("General profile");
 
-        assert_eq!(profile.filename, "Faris_Munir_Mahdi_DevOps_CV.pdf");
-        assert_eq!(profile.max_pages, 1);
+        assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
+        assert_eq!(profile.max_pages, 2);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 1);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 3);
     }
 }

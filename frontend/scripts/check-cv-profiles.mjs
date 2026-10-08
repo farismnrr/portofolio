@@ -12,21 +12,6 @@ const expected = {
     maxPages: 2,
     scopes: 4,
     filename: 'Faris_Munir_Mahdi_CV.pdf'
-  },
-  'ai-engineer': {
-    maxPages: 1,
-    scopes: 3,
-    filename: 'Faris_Munir_Mahdi_AI_Engineer_CV.pdf'
-  },
-  'software-engineer': {
-    maxPages: 1,
-    scopes: 3,
-    filename: 'Faris_Munir_Mahdi_Software_Engineer_CV.pdf'
-  },
-  devops: {
-    maxPages: 1,
-    scopes: 3,
-    filename: 'Faris_Munir_Mahdi_DevOps_CV.pdf'
   }
 };
 

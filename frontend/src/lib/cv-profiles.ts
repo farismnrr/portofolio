@@ -1,6 +1,6 @@
 import rawProfiles from '../../content/cv-profiles.json';
 
-export type CvTarget = 'general' | 'ai-engineer' | 'software-engineer' | 'devops';
+export type CvTarget = 'general';
 
 export const CV_CONTRACT_VERSION = 'cv-contract/v1';
 
@@ -52,8 +52,8 @@ export const CV_PROFILES = rawProfiles as unknown as Record<CvTarget, CvProfile>
 
 export const CV_PROFILE_OPTIONS = Object.values(CV_PROFILES);
 
-export function getCvProfile(target: CvTarget): CvProfile {
-  const profile = CV_PROFILES[target];
+export function getCvProfile(target: CvTarget = 'general'): CvProfile {
+  const profile = CV_PROFILES[target] ?? CV_PROFILES.general;
   if (!profile) throw new Error(`Unknown CV profile: ${target}`);
   return profile;
 }

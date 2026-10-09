@@ -55,8 +55,8 @@
       title: `${profile.name} — ${profile.role}`,
       description: defaultDescription,
       canonical,
-      image: absoluteUrl(profile.image),
-      imageAlt: `${profile.name}, ${profile.role}`,
+      image: `${siteUrl}/og-image.png`,
+      imageAlt: `${profile.name} — ${profile.role}`,
       ogType: 'website',
       published: '',
       structuredData: null as Record<string, unknown> | null

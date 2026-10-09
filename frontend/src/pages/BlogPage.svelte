@@ -1,11 +1,14 @@
 <script lang="ts">
   import { articles, featuredArticle, formatArticleDate } from '../lib/blog-content';
+  import { renderMarkdown } from '../lib/markdown';
   import { navigate } from '../lib/router';
   import { pageCopy } from '../lib/structured-content';
+  import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
 
+  const journalContext = renderMarkdown(pageCopy.blog.body);
   $: featuredPath = featuredArticle ? '/blog/' + featuredArticle.slug : '/blog';
 </script>
 
@@ -13,6 +16,9 @@
   <PageShell className="py-14 lg:py-16">
     <div class="border-b border-black/10 pb-10">
       <PageIntro eyebrow={pageCopy.blog.eyebrow} title={pageCopy.blog.title} subtitle={pageCopy.blog.subtitle} description={pageCopy.blog.description} compact/>
+      <div class="mt-7 max-w-4xl text-[14px] leading-7 text-black/55">
+        <MarkdownArticle html={journalContext.html} hasMermaid={journalContext.hasMermaid}/>
+      </div>
     </div>
 
     {#if featuredArticle}

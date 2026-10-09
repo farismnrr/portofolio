@@ -9,6 +9,7 @@
   export let compact=false;
   export let first=false;
   export let last=false;
+  export let wide=false;
 
   $: linkedProjects = (item.projects ?? []).flatMap((slug:string) => {
     const project = getProjectBySlug(slug);
@@ -28,7 +29,7 @@
     <span class={"absolute left-[5px] top-[7px] h-[9px] w-[9px] rounded-full border " + (first ? "border-[#334734] bg-[#334734]" : "border-black/55 bg-[var(--page-bg)]")}></span>
     {#if !last}<span class="absolute left-[9px] top-[17px] h-[calc(100%+2.5rem)] w-px bg-black/12"></span>{/if}
   </div>
-  <div class="max-w-4xl">
+  <div class={wide ? "max-w-none" : "max-w-4xl"}>
     <h3 class="text-[22px] font-semibold tracking-[-0.025em]">{item.company}</h3>
     <p class="mt-1 text-[16px] text-black/62">{item.role}</p>
     {#if item.location}<p class="mt-1 text-[13px] text-black/42">{item.location}</p>{/if}

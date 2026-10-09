@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://farismnrr.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://farismnrr.com/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/experience</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/skills</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farismnrr.com/projects</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://farismnrr.com/projects/askin</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/gizilens</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/iotnet</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/masih-awam-ai-code</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/masih-awam-lms</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/multitenant-user-management</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/parentify</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farismnrr.com/projects/portfolio-website</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farismnrr.com/projects/sensio-iot</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://farismnrr.com/projects/sensio-notes</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://farismnrr.com/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farismnrr.com/blog/building-iotnet</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farismnrr.com/certifications</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://farismnrr.com/gallery</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+</urlset>

@@ -10,8 +10,12 @@
   import MobileNavigation from './lib/ui/MobileNavigation.svelte';
   import { initializeTheme } from './lib/theme';
 
-  let Page: any = null;
-  let loading = true;
+  export let initialPage: any = null;
+  export let initialPath = '';
+
+  let Page: any = initialPage;
+  let resolvedPath = initialPage ? initialPath : '';
+  let loading = !Page;
   let requestId = 0;
 
   onMount(() => initializeTheme());
@@ -19,7 +23,7 @@
   $: current = $path;
   $: active = resolveActiveNavigation(current);
   $: seo = getSeo(current);
-  $: void resolvePage(current);
+  $: if (current !== resolvedPath) void resolvePage(current);
 
   async function resolvePage(currentPath: string) {
     const id = ++requestId;
@@ -27,6 +31,7 @@
     const module = await loadRoute(currentPath);
     if (id !== requestId) return;
     Page = module.default;
+    resolvedPath = currentPath;
     loading = false;
   }
 </script>

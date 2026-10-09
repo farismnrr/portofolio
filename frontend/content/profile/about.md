@@ -10,8 +10,8 @@ googleCloudSkills: https://www.cloudskillsboost.google/public_profiles/df853200-
 email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: Software Engineer · Backend · Cloud · IoT
-headline: Backend, cloud, and IoT work that has to hold up outside a demo.
-intro: I am a Software Engineer focused on backend services, cloud infrastructure, and IoT systems. I like working on the boundaries between software, data, and devices, where the design usually matters more than the framework name.
+headline: Software Engineer focused on backend, cloud, and connected systems.
+intro: I build APIs, production infrastructure, IoT platforms, and practical AI features. Most of my work is about making software, data, and devices behave predictably together.
 availability: ""
 quote: ""
 ---

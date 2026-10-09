@@ -8,9 +8,12 @@
 
 <main>
   <PageShell className="py-14 lg:py-16">
-    <div class="grid gap-12 border-b border-black/10 pb-10 lg:grid-cols-[1fr_320px]">
+    <div class="border-b border-black/10 pb-10">
       <PageIntro eyebrow={pageCopy.projects.eyebrow} title={pageCopy.projects.title} subtitle={pageCopy.projects.subtitle} description={pageCopy.projects.description} compact/>
-      <div class="self-end pb-2"><p class="text-[11px] uppercase tracking-[0.2em] text-black/45">{String(projects.length).padStart(2, "0")} Projects</p><p class="mt-4 text-[14px] leading-6 text-black/55">{pageCopy.projects.body}</p></div>
+      <div class="mt-7 flex max-w-[66ch] flex-wrap items-start gap-x-6 gap-y-2 text-[13px] leading-6 text-black/52">
+        <span class="shrink-0 text-[10px] font-semibold uppercase tracking-[0.16em] text-black/40">{projects.length} projects</span>
+        <p class="min-w-0 flex-1">{pageCopy.projects.body}</p>
+      </div>
     </div>
 
     <section class="mt-8 space-y-10">

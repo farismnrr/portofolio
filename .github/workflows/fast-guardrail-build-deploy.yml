@@ -157,25 +157,10 @@ jobs:
             -X POST http://127.0.0.1:3001/api/cv/retrieve \
             -H 'Content-Type: application/json' \
             --data '{"target":"general","query":"backend PostgreSQL Rust Docker","limit":6}')"
-          printf '%s\n' "$retrieve" | python3 -c '
-import json, sys
-d=json.load(sys.stdin)
-if d.get("backend") != "pgvector+postgres-fts":
-    raise SystemExit("retrieval backend is not pgvector+postgres-fts")
-if not d.get("evidence"):
-    raise SystemExit("retrieval evidence is empty")
-print("retrieval_backend=" + d["backend"])
-print("retrieval_evidence_count=" + str(len(d["evidence"])))
-'
+          printf '%s\n' "$retrieve" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("backend") == "pgvector+postgres-fts", "retrieval backend is not pgvector+postgres-fts"; assert d.get("evidence"), "retrieval evidence is empty"; print("retrieval_backend=" + d["backend"]); print("retrieval_evidence_count=" + str(len(d["evidence"])))'
 
           ai_response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
             -X POST http://127.0.0.1:3001/api/ai/chat \
             -H 'Content-Type: application/json' \
             --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
-          printf '%s\n' "$ai_response" | python3 -c '
-import json, sys
-d=json.load(sys.stdin)
-if not d.get("message", "").strip():
-    raise SystemExit("AI response is empty")
-print("ai_response_nonempty=true")
-'
+          printf '%s\n' "$ai_response" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("message", "").strip(), "AI response is empty"; print("ai_response_nonempty=true")'

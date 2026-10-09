@@ -4,11 +4,11 @@ year: July 2025 — Present
 company: PT Perkasa Pilar Utama
 role: Backend & Fullstack Developer
 location: "Jakarta, Indonesia"
-summary: Architected, shipped, and maintained production backend services, real-time APIs, and fullstack integrations for Sensio Notes and Sensio IoT—handling long-running media workflows, asynchronous transcription, structured RAG pipelines, and physical IoT device controls in live production.
+summary: I work across the backend, client integration, and production operations for Sensio Notes and Sensio IoT, with most of my time going into media-processing flows, real-time APIs, AI-assisted meeting workflows, and IoT control systems.
 tech: [NestJS, Rust, TypeScript, React, PostgreSQL, Redis, MQTT, S3, Docker, Linux, OpenTelemetry, Jira, LangGraph]
 projects: [sensio-notes, sensio-iot]
 ---
 
-- Engineered production backend services and integration boundaries for **[Sensio Notes](/projects/sensio-notes)** on the Sensio platform: designed PostgreSQL relational schemas, coordinated chunked S3 audio uploads, built fault-tolerant asynchronous worker pipelines, real-time WebSocket status broadcasts, and structured LangGraph/RAG workflows that convert raw meeting transcripts into validated action items and searchable knowledge.
-- Developed and maintained **[Sensio IoT](/projects/sensio-iot)** on the Sensio platform: built high-performance backend services in Rust (Axum) and NestJS, managed site/room-scoped RBAC authorization, ingested real-time telemetry and bi-directional device commands via MQTT and Zigbee2MQTT, and packaged containerized runtimes for on-premise production deployments.
-- Owned end-to-end fullstack and operational responsibilities across product iterations: connected web and mobile client interfaces to backend APIs, established Dockerized deployment pipelines, tracked sprint deliverables via Jira, and instrumented system observability using OpenTelemetry, Prometheus, and structured logs to maintain system stability in live production.
+- On **[Sensio Notes](/projects/sensio-notes)**, I work on the backend and product integration around long meeting recordings: PostgreSQL data models, chunked S3 uploads, background transcription work, WebSocket progress updates, and LangGraph workflows that turn transcripts into reviewable notes and action items.
+- On **[Sensio IoT](/projects/sensio-iot)**, I build and maintain backend services in Rust and NestJS, including room- and site-scoped access control, telemetry ingestion, device commands over MQTT and Zigbee2MQTT, and the containerized runtime used for on-premise deployments.
+- I also handle the less visible parts of shipping both products: connecting web and mobile clients to backend state, tracing failures with OpenTelemetry and structured logs, packaging services with Docker, and following issues from development through production.

@@ -9,6 +9,7 @@ on:
       - "server/**"
       - "Dockerfile"
       - "compose.yaml"
+      - ".github/scripts/**"
       - ".github/workflows/fast-guardrail-build-deploy.yml"
   workflow_dispatch:
 
@@ -52,9 +53,9 @@ jobs:
           node-version: 24
           package-manager-cache: false
 
-      - uses: mlugg/setup-zig@v2
-        with:
-          version: 0.14.1
+      - name: Set up pinned Zig
+        shell: bash
+        run: bash .github/scripts/setup-zig.sh
 
       - name: Build
         shell: bash

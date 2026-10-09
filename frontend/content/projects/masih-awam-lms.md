@@ -15,7 +15,7 @@ productUrl: ""
 repoUrl: ""
 ---
 
-## The Problem
+## A course list does not always tell a learner what to do next
 
 A conventional LMS is good at storing courses and tracking completion. It is not always good at helping a learner understand what to do next.
 
@@ -23,7 +23,7 @@ The usual pattern is a course list, then modules, then lessons. Everything can b
 
 **Masih Awam LMS** explores a different presentation model. The underlying learning structure stays familiar, but the learner moves through worlds, quests, lessons, and checkpoints instead of browsing a flat catalog.
 
-## The Core Idea
+## Progress is part of the interface
 
 The product treats progression as part of the interface, not only as a percentage stored in the backend.
 
@@ -45,24 +45,9 @@ The game concepts are there to answer a practical question: **what should I do n
 
 They are not meant to replace the learning material or turn every interaction into a reward mechanic.
 
-## Learner Flow
-
-The platform keeps the next action visible by carrying progress through a small hierarchy.
-
-```mermaid
-stateDiagram-v2
-    [*] --> WorldSelected
-    WorldSelected --> QuestActive
-    QuestActive --> LessonInProgress
-    LessonInProgress --> ProgressRecorded
-    ProgressRecorded --> QuestActive: more lessons remain
-    ProgressRecorded --> StageUnlocked: quest complete
-    StageUnlocked --> [*]
-```
-
 A lesson contributes to a quest. A quest contributes to a world. The interface can then show the learner where they are without asking them to reconstruct that context from several pages.
 
-## Progress Model
+## Keep the progress model simple
 
 The calculation itself stays simple:
 
@@ -84,7 +69,7 @@ lesson
 
 Keeping the calculation predictable matters because presentation can change without changing what completion means.
 
-## Story as Navigation Context
+## Story gives navigation context, not completion state
 
 Storytelling is useful only when it helps the learner understand the path.
 
@@ -92,7 +77,7 @@ A character, scene, or quest description can explain why the next lesson matters
 
 That separation means the story layer can change without corrupting course completion.
 
-## System Design
+## Experience, learning domain, and progress stay separate
 
 The product can be viewed as three connected layers.
 
@@ -111,7 +96,7 @@ flowchart TD
 
 The boundary is useful because each layer changes for a different reason. Story and presentation evolve with the learning experience, while progress needs to remain stable and auditable.
 
-## Rendering by Data Ownership
+## Rendering follows data ownership
 
 Not every page carries the same kind of data.
 
@@ -128,7 +113,7 @@ flowchart TD
 
 The rendering strategy follows the data instead of applying one technique to every page.
 
-## Product Tradeoffs
+## Tradeoffs that shape the product
 
 **Engagement vs distraction.** Game mechanics should make the path clearer, not become the main activity.
 
@@ -138,10 +123,6 @@ The rendering strategy follows the data instead of applying one technique to eve
 
 Those tradeoffs shape the product more than adding another visual reward system.
 
-## Implementation Notes
+## Current implementation
 
 The current product uses a Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.
-
-## Stack
-
-Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.

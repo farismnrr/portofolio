@@ -2,8 +2,8 @@
 slug: projects
 eyebrow: Selected work
 title: Projects
-subtitle: Real systems. Real impact.
-description: A collection of software systems I’ve designed, built, and shipped across backend infrastructure, intelligent systems, cloud platforms, and connected devices.
+subtitle: Systems I built, maintained, or used to learn something the hard way.
+description: Case studies from backend, cloud, IoT, and AI-related work, written around the problem, the decisions, and what the system actually had to do.
 ---
 
-Each project is a long-form engineering case study backed by repository-local Markdown, so the content can grow without growing the page component.
+I write these as case studies, not feature lists. Each one starts with what the project was trying to solve, then walks through the decisions that mattered: architecture, data flow, integration boundaries, operational constraints, and the parts that changed once the system met real use.

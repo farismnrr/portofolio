@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
@@ -138,42 +138,3 @@ jobs:
           docker compose -p portofolio ps
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
-
-      - name: Generate branding raster assets and restore workflow
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if command -v magick >/dev/null 2>&1; then
-            rasterizer=(magick)
-          elif command -v convert >/dev/null 2>&1; then
-            rasterizer=(convert)
-          else
-            echo "ImageMagick is required on the self-hosted runner for this one-time branding asset generation."
-            exit 42
-          fi
-
-          "${rasterizer[@]}" -background none frontend/public/favicon.svg -resize 180x180 frontend/public/apple-touch-icon.png
-          "${rasterizer[@]}" -background none frontend/public/favicon.svg -resize 192x192 frontend/public/icon-192.png
-          "${rasterizer[@]}" -background none frontend/public/favicon.svg -resize 512x512 frontend/public/icon-512.png
-
-          cat > /tmp/portfolio-og.svg <<'SVG'
-          <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-            <rect width="1200" height="630" fill="#263526"/>
-            <rect x="70" y="70" width="1060" height="490" rx="34" fill="#f6f5ef"/>
-            <text x="120" y="230" font-family="DejaVu Sans, Arial, sans-serif" font-size="72" font-weight="700" fill="#263526">Faris Munir Mahdi</text>
-            <text x="120" y="315" font-family="DejaVu Sans, Arial, sans-serif" font-size="42" font-weight="600" fill="#263526">Software Engineer</text>
-            <text x="120" y="390" font-family="DejaVu Sans, Arial, sans-serif" font-size="31" fill="#405740">Backend · Cloud · IoT · AI</text>
-            <line x1="120" y1="440" x2="1080" y2="440" stroke="#263526" stroke-opacity="0.18" stroke-width="2"/>
-            <text x="120" y="505" font-family="DejaVu Sans, Arial, sans-serif" font-size="28" fill="#405740">farismnrr.com</text>
-          </svg>
-          SVG
-
-          "${rasterizer[@]}" -background none /tmp/portfolio-og.svg -resize 1200x630 frontend/public/og-image.png
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git show "$GITHUB_SHA^:.github/workflows/fast-guardrail-build-deploy.yml" > .github/workflows/fast-guardrail-build-deploy.yml
-          git add frontend/public/apple-touch-icon.png frontend/public/icon-192.png frontend/public/icon-512.png frontend/public/og-image.png .github/workflows/fast-guardrail-build-deploy.yml
-          git commit -m "chore(branding): add raster icons and social card"
-          git push origin HEAD:dev

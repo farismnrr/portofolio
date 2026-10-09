@@ -4,7 +4,7 @@ import { basename, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const siteUrl = 'https://farismnrr.com';
-const frontendRoot = resolve(fileURLToPath(new URL('..', import.meta.url)), '..');
+const frontendRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const repoRoot = resolve(frontendRoot, '..');
 const contentRoot = join(frontendRoot, 'content');
 const publicRoot = join(frontendRoot, 'public');

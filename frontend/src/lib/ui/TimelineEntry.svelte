@@ -68,7 +68,7 @@
           </li>
         {/each}
       </ul>
-      <div class="mt-5"><TechChips items={item.tech} pills/></div>
+      {#if !wide}<div class="mt-5"><TechChips items={item.tech} pills/></div>{/if}
     {/if}
   </div>
 </article>

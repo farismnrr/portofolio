@@ -1,8 +1,9 @@
 import { articles, getArticleByPath } from './blog-content';
 import { getProjectByPath, projects } from './project-content';
-import { profile } from './structured-content';
+import { certifications, profile, publications } from './structured-content';
 
 const siteUrl = 'https://farismnrr.com';
+const personId = `${siteUrl}/#person`;
 const defaultDescription =
   'Portfolio of Faris Munir Mahdi, a Software Engineer focused on backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.';
 
@@ -28,6 +29,47 @@ function graph(...nodes: Record<string, unknown>[]) {
   return { '@context': 'https://schema.org', '@graph': nodes };
 }
 
+function personNode() {
+  return {
+    '@type': 'Person',
+    '@id': personId,
+    name: profile.name,
+    url: `${siteUrl}/`,
+    image: absoluteUrl(profile.image),
+    jobTitle: profile.role,
+    sameAs: [profile.github, profile.linkedin, profile.googleCloudSkills].filter(Boolean),
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'UPN Veteran Jawa Timur',
+      sameAs: 'https://www.upnjatim.ac.id/'
+    },
+    knowsAbout: [
+      'Software Engineering',
+      'Backend Engineering',
+      'Cloud Infrastructure',
+      'Internet of Things',
+      'Artificial Intelligence'
+    ]
+  };
+}
+
+function publicationNode(publication: (typeof publications)[number], index: number) {
+  const node: Record<string, unknown> = {
+    '@type': publication.type === 'journal' ? 'ScholarlyArticle' : 'CreativeWork',
+    '@id': `${siteUrl}/about#publication-${index + 1}`,
+    name: publication.title,
+    headline: publication.title,
+    description: publication.summary,
+    url: publication.url,
+    datePublished: publication.year,
+    author: { '@id': personId },
+    publisher: publication.venue,
+    inLanguage: publication.type === 'journal' ? 'id' : 'id'
+  };
+  if (publication.doi) node.sameAs = [publication.doi];
+  return node;
+}
+
 export function getSeo(currentPath: string) {
   const cleanPath = currentPath === '/' ? '/' : currentPath.replace(/\/$/, '');
   const canonical = `${siteUrl}${cleanPath}`;
@@ -43,19 +85,26 @@ export function getSeo(currentPath: string) {
   };
 
   if (cleanPath === '/about') {
+    const publicationNodes = publications.map(publicationNode);
     return {
       ...base,
       title: `About — ${profile.name}`,
       description: profile.intro || defaultDescription,
-      structuredData: graph({
-        '@type': 'ProfilePage',
-        '@id': `${canonical}#profile-page`,
-        url: canonical,
-        name: `About ${profile.name}`,
-        description: profile.intro || defaultDescription,
-        mainEntity: { '@id': `${siteUrl}/#person` },
-        inLanguage: 'en'
-      }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }]))
+      structuredData: graph(
+        personNode(),
+        {
+          '@type': 'ProfilePage',
+          '@id': `${canonical}#profile-page`,
+          url: canonical,
+          name: `About ${profile.name}`,
+          description: profile.intro || defaultDescription,
+          mainEntity: { '@id': personId },
+          hasPart: publicationNodes.map((node) => ({ '@id': node['@id'] })),
+          inLanguage: 'en'
+        },
+        ...publicationNodes,
+        breadcrumb([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])
+      )
     };
   }
 
@@ -70,7 +119,7 @@ export function getSeo(currentPath: string) {
         url: canonical,
         name: `Experience — ${profile.name}`,
         description: `Professional software engineering experience of ${profile.name}.`,
-        about: { '@id': `${siteUrl}/#person` },
+        about: { '@id': personId },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Experience', path: '/experience' }]))
     };
@@ -86,7 +135,7 @@ export function getSeo(currentPath: string) {
         '@id': `${canonical}#webpage`,
         url: canonical,
         name: `Skills — ${profile.name}`,
-        about: { '@id': `${siteUrl}/#person` },
+        about: { '@id': personId },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Skills', path: '/skills' }]))
     };
@@ -120,22 +169,22 @@ export function getSeo(currentPath: string) {
   if (cleanPath.startsWith('/projects/')) {
     const project = getProjectByPath(cleanPath);
     if (project) {
-      const externalLinks = [project.productUrl, project.repoUrl].filter(Boolean);
       const projectNode: Record<string, unknown> = {
         '@type': project.repoUrl ? 'SoftwareSourceCode' : 'CreativeWork',
         '@id': `${canonical}#project`,
         url: canonical,
+        mainEntityOfPage: canonical,
         name: project.title,
         headline: project.subtitle,
         description: project.description,
         image: absoluteUrl(project.image),
-        author: { '@id': `${siteUrl}/#person` },
+        author: { '@id': personId },
         keywords: project.tech.join(', '),
         about: project.category,
         inLanguage: 'en'
       };
       if (project.repoUrl) projectNode.codeRepository = project.repoUrl;
-      if (externalLinks.length) projectNode.sameAs = externalLinks;
+      if (project.productUrl) projectNode.workExample = project.productUrl;
 
       return {
         ...base,
@@ -196,9 +245,15 @@ export function getSeo(currentPath: string) {
           description: article.excerpt,
           image: absoluteUrl(article.cover),
           datePublished: article.published,
-          author: { '@id': `${siteUrl}/#person` },
-          publisher: { '@id': `${siteUrl}/#person` },
+          author: {
+            '@type': 'Person',
+            '@id': personId,
+            name: profile.name,
+            url: `${siteUrl}/about`
+          },
+          publisher: { '@id': personId },
           articleSection: article.category,
+          isAccessibleForFree: true,
           inLanguage: 'en'
         }, breadcrumb([
           { name: 'Home', path: '/' },
@@ -215,11 +270,26 @@ export function getSeo(currentPath: string) {
       title: `Certifications — ${profile.name}`,
       description: `Technical certifications and professional learning completed by ${profile.name}.`,
       structuredData: graph({
-        '@type': 'WebPage',
-        '@id': `${canonical}#webpage`,
+        '@type': 'CollectionPage',
+        '@id': `${canonical}#collection`,
         url: canonical,
         name: `Certifications — ${profile.name}`,
-        about: { '@id': `${siteUrl}/#person` },
+        about: { '@id': personId },
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: certifications.map((certification, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            item: {
+              '@type': 'EducationalOccupationalCredential',
+              name: certification.title,
+              url: certification.url || canonical,
+              recognizedBy: certification.issuer ? { '@type': 'Organization', name: certification.issuer } : undefined,
+              identifier: certification.credentialId || undefined,
+              dateCreated: certification.year || undefined
+            }
+          }))
+        },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Certifications', path: '/certifications' }]))
     };
@@ -235,7 +305,7 @@ export function getSeo(currentPath: string) {
         '@id': `${canonical}#collection`,
         url: canonical,
         name: `Gallery — ${profile.name}`,
-        about: { '@id': `${siteUrl}/#person` },
+        about: { '@id': personId },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }]))
     };

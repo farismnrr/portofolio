@@ -19,9 +19,9 @@ mod rag;
 #[folder = "../frontend/dist/"]
 struct Assets;
 
-fn asset_response(path: &str, bytes: Vec<u8>) -> Response {
+fn asset_response_with_status(path: &str, bytes: Vec<u8>, status: StatusCode) -> Response {
     let mime = mime_guess::from_path(path).first_or_octet_stream();
-    let cache_control = if path == "index.html" {
+    let cache_control = if path == "index.html" || status == StatusCode::NOT_FOUND {
         "no-cache"
     } else if path.starts_with("assets/") {
         "public, max-age=31536000, immutable"
@@ -30,34 +30,84 @@ fn asset_response(path: &str, bytes: Vec<u8>) -> Response {
     };
 
     Response::builder()
-        .status(StatusCode::OK)
+        .status(status)
         .header(header::CONTENT_TYPE, mime.as_ref())
         .header(header::CACHE_CONTROL, cache_control)
+        .header("content-language", "en")
+        .header("x-content-type-options", "nosniff")
         .body(Body::from(bytes))
         .expect("valid embedded asset response")
 }
 
+fn asset_response(path: &str, bytes: Vec<u8>) -> Response {
+    asset_response_with_status(path, bytes, StatusCode::OK)
+}
+
+fn route_exists(path: &str) -> bool {
+    Assets::get("routes.txt")
+        .and_then(|asset| String::from_utf8(asset.data.into_owned()).ok())
+        .is_some_and(|routes| routes.lines().any(|route| route == path))
+}
+
+fn redirect_response(location: &str) -> Response {
+    Response::builder()
+        .status(StatusCode::PERMANENT_REDIRECT)
+        .header(header::LOCATION, location)
+        .header(header::CACHE_CONTROL, "public, max-age=3600")
+        .body(Body::empty())
+        .expect("valid redirect response")
+}
+
 async fn embedded_asset(uri: Uri) -> Response {
-    let requested = uri.path().trim_start_matches('/');
-    let path = if requested.is_empty() {
+    let uri_path = uri.path();
+
+    if uri_path == "/index.html" {
+        return redirect_response("/");
+    }
+
+    if uri_path.len() > 1 && uri_path.ends_with('/') {
+        let normalized = uri_path.trim_end_matches('/');
+        if route_exists(normalized) {
+            let location = match uri.query() {
+                Some(query) => format!("{normalized}?{query}"),
+                None => normalized.to_owned(),
+            };
+            return redirect_response(&location);
+        }
+    }
+
+    let requested = uri_path.trim_start_matches('/');
+    let asset_path = if requested.is_empty() {
         "index.html"
     } else {
         requested
     };
 
-    if let Some(asset) = Assets::get(path) {
-        return asset_response(path, asset.data.into_owned());
+    if let Some(asset) = Assets::get(asset_path) {
+        return asset_response(asset_path, asset.data.into_owned());
     }
 
-    if let Some(index) = Assets::get("index.html") {
-        return asset_response("index.html", index.data.into_owned());
+    if route_exists(uri_path) {
+        if let Some(index) = Assets::get("index.html") {
+            return asset_response("index.html", index.data.into_owned());
+        }
+
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "embedded frontend is missing index.html",
+        )
+            .into_response();
     }
 
-    (
-        StatusCode::INTERNAL_SERVER_ERROR,
-        "embedded frontend is missing index.html",
-    )
-        .into_response()
+    if let Some(not_found) = Assets::get("404.html") {
+        return asset_response_with_status(
+            "404.html",
+            not_found.data.into_owned(),
+            StatusCode::NOT_FOUND,
+        );
+    }
+
+    (StatusCode::NOT_FOUND, "Not found").into_response()
 }
 
 #[tokio::main]

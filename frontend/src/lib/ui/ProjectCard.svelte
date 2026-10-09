@@ -8,6 +8,7 @@
   export let featured=false;
   $: detailPath = '/projects/' + project.slug;
   $: preserveShowcase = project.slug === 'parentify';
+  $: visibleTech = featured ? project.tech : project.tech.slice(0, 4);
 </script>
 
 <article class={featured ? "grid gap-10 border-b border-black/10 pb-10 lg:grid-cols-[1.45fr_.65fr]" : "border-b border-black/10 pb-9"}>
@@ -20,12 +21,13 @@
     />
   </a>
   <div class={featured ? "self-center py-3" : "pt-4"}>
-    <p class="text-[11px] uppercase tracking-[0.18em] text-black/43">{project.id} / {project.year}</p>
+    <p class="text-[11px] uppercase tracking-[0.14em] text-black/43">{project.year}</p>
     <h2 class="mt-2 text-[25px] font-semibold leading-tight tracking-[-0.03em]">{project.cardTitle}</h2>
-    {#if project.subtitle}<p class="mt-1 text-[17px] text-black/55">{project.subtitle}</p>{/if}
-    <p class="mt-3 max-w-2xl text-[14px] leading-6 text-black/55">{project.description}</p>
-    <div class="mt-3 grid grid-cols-[48px_1fr] text-[11px]"><span class="text-black/35">Role</span><span class="text-black/55">{project.role}</span></div>
-    <div class="mt-2 grid grid-cols-[48px_1fr]"><span class="text-[11px] text-black/35">Tech</span><TechChips items={project.tech}/></div>
-    {#if featured}<a class="btn btn-neutral btn-sm mt-7 rounded-none border-0 bg-[#354536] px-7 font-normal text-white hover:bg-[#263427]" href={detailPath} on:mouseenter={()=>prefetchRoute(detailPath)} on:click={(e)=>navigate(e,detailPath)}>Read case study →</a>{/if}
+    {#if project.subtitle}<p class="mt-1 text-[16px] text-black/52">{project.subtitle}</p>{/if}
+    <p class="mt-3 max-w-[66ch] text-[14px] leading-6 text-black/55">{project.description}</p>
+    <p class="mt-4 text-[11px] text-black/48"><span class="text-black/32">Role</span> · {project.role}</p>
+    <div class="mt-2"><TechChips items={visibleTech}/></div>
+    {#if !featured && project.tech.length > visibleTech.length}<p class="mt-2 text-[10px] text-black/36">+{project.tech.length-visibleTech.length} more in case study</p>{/if}
+    {#if featured}<a class="mt-7 inline-flex items-center text-[12px] font-medium text-black/72 underline underline-offset-4 hover:text-black" href={detailPath} on:mouseenter={()=>prefetchRoute(detailPath)} on:click={(e)=>navigate(e,detailPath)}>Read case study →</a>{/if}
   </div>
 </article>

@@ -1,17 +1,19 @@
 # Portfolio
 
-Personal portfolio implemented with Svelte and served by a Rust + Axum application.
+Personal portfolio implemented with Svelte and served by a Rust + Axum application. Public routes are prerendered at build time to crawlable HTML, then hydrated by Svelte in the browser; Axum embeds and serves the generated route documents and static assets.
 
 ## Stack
 
-- Svelte + Vite
+- Svelte + Vite with build-time prerendering and hydration
 - Rust + Axum
 - Repository-local Markdown content
 - Docker
 - GitHub Actions
 - GitHub Container Registry (GHCR)
 
-Portfolio data lives under `frontend/content/`. Profile, experience, education, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
+Portfolio data lives under `frontend/content/`. Profile, experience, education, publications, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
+
+The production frontend build generates per-route HTML plus search/discovery assets such as `sitemap.xml`, `robots.txt`, `feed.xml`, `llms.txt`, and `llms-full.txt`. Route-specific title, description, canonical, Open Graph/Twitter metadata, and JSON-LD are included in the prerendered HTML so crawlers do not depend on client-side JavaScript for core content or metadata.
 
 Static media lives under `frontend/public/`.
 
@@ -34,10 +36,10 @@ Development happens on `dev`.
 
 The repository has two CI/CD workflows with deliberately different responsibilities:
 
-- `Fast Guardrail + AMD64 Build + Deploy` is the normal development loop. It runs as one job on the X64 self-hosted runner and is change-aware. Frontend source/config edits run the fast architecture/type guardrail, content validation, and production frontend build; Markdown/static-content-only edits skip Svelte/type/architecture source checks and run only content validation plus the production frontend build. Frontend edits then perform only an incremental Rust runtime rebuild/relink because the Axum binary embeds `frontend/dist` through `rust_embed`; Rust format/clippy are skipped when server source itself did not change. Server-only edits reuse the last valid frontend `dist`, while Docker/Compose-only edits avoid unrelated compiler work when cached runtime artifacts are still valid. Documentation-only repository edits do not trigger the application pipeline. The runner preserves `frontend/node_modules`, `frontend/dist`, Cargo build output, Docker layers, and a portfolio-specific isolated Rust/Cargo toolchain under `~/.cache/portfolio-ci`, so normal follow-up builds reuse previous work instead of starting from zero. Mermaid remains a local lazy-loaded runtime, but its official prebuilt ESM bundle is staged into `frontend/public/vendor/` before Vite builds so Vite copies it as a static asset instead of transforming Mermaid's full dependency graph on every frontend build. The fast path builds only AMD64, skips Rust tests/AI smoke/ARM64/multi-arch work, and deploys the local `portfolio-app:dev` image directly without a GHCR push/pull round trip.
+- `Fast AMD64 Build + Deploy` is the development and pre-release validation loop on the X64 self-hosted runner. For application/runtime changes it reuses machine-local npm, Cargo, Rustup, Zig, and Docker caches, then runs the same frontend source/content gates that protect the full release (`guard`, content validation, strict Svelte/TypeScript diagnostics, and the production prerender build). It also runs Rust formatting, clippy with warnings denied, and the Rust test suite before producing the AMD64 MUSL runtime with `cargo-zigbuild`. After building the local `portfolio-app:dev` image it deploys to the Arch development host and verifies the homepage, PostgreSQL/pgvector retrieval with non-empty evidence, and a non-empty AI response through the application. Documentation-only changes do not trigger the application pipeline. This fast path still intentionally skips ARM64, QEMU, multi-architecture container validation, GHCR publishing, `dev` -> `main` merging, and Orange Pi production deployment.
 - `Full Guardrail + Build + Publish` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image (AMD64 + ARM64) to GHCR, and deploy the exact immutable `main` SHA to the Orange Pi. The release job then verifies the live application, PostgreSQL/pgvector retrieval, 9router, AI response, public site, and error-free startup; a failed verification restores the previous known-good application SHA and fails the workflow.
 
-There is no standalone `Full Guardrail + Build` workflow. The fast path is intentionally incremental and machine-local for quick iteration; the full release path remains the clean comprehensive verification boundary.
+There is no standalone `Full Guardrail + Build` workflow. The fast path now catches frontend, formatting, clippy, test, development database, and AI failures before a release is attempted; the full release remains the clean cross-architecture and production verification boundary.
 
 Production container image:
 
@@ -81,4 +83,4 @@ Set the repository secret `PORTFOLIO_DATABASE_URL` to the password-authenticated
  
 Before deploying to a new host, provision the `portfolio` database and role and enable the `vector` extension as a database administrator. The runtime role owns its `cv_chunks` table and creates its GIN text-search and HNSW vector indexes. The shared infrastructure container and its data volume are managed separately from this application.
  
-The fast deploy workflow requires `shared-postgres` to be healthy and checks `/api/cv/retrieve` after deployment. The check requires nonempty evidence and backend `pgvector+postgres-fts`; HTTP 200 with `memory-fallback` fails the deployment verification. This shared Arch database is a development/fast-run dependency only; production uses the Orange Pi database described above. Removing the old `cv-db` service allows Compose to remove its orphan container. Remove the old `portofolio_portfolio-cv-pgdata` volume only after backing up, migrating, and verifying the shared database.
+The fast deploy workflow requires `shared-postgres` to be healthy and checks `/api/cv/retrieve` after deployment. The check requires nonempty evidence and backend `pgvector+postgres-fts`; HTTP 200 with `memory-fallback` fails the deployment verification. It also checks a non-empty `/api/ai/chat` response. This shared Arch database is a development/fast-run dependency only; production uses the Orange Pi database described above. Removing the old `cv-db` service allows Compose to remove its orphan container. Remove the old `portofolio_portfolio-cv-pgdata` volume only after backing up, migrating, and verifying the shared database.

@@ -7,6 +7,7 @@ export interface EducationEntry { order: number; year: string; institution: stri
 export interface SkillGroup { order: number; title: string; description: string; items: string[]; }
 export interface Principle { order: number; index: string; title: string; description: string; }
 export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; image: string; }
+export interface Publication { order: number; type: 'journal'|'thesis'|'project-report'; title: string; year: string; venue: string; url: string; doi: string; summary: string; }
 export interface GalleryItem { order: number; image: string; caption: string; size: 'wide'|'tall'|'large'|'normal'; }
 export interface PageCopy {
   slug: string; eyebrow: string; title: string; subtitle: string; description: string; body: string;
@@ -25,6 +26,7 @@ const educationModules = import.meta.glob('../../content/education/*.md', { eage
 const skillModules = import.meta.glob('../../content/skills/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const principleModules = import.meta.glob('../../content/principles/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const certModules = import.meta.glob('../../content/certifications/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
+const publicationModules = import.meta.glob('../../content/publications/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const galleryModules = import.meta.glob('../../content/gallery/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const pageModules = import.meta.glob('../../content/pages/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
 const profileModules = import.meta.glob('../../content/profile/*.md', { eager:true, query:'?raw', import:'default' }) as Record<string,string>;
@@ -56,6 +58,14 @@ export const principles: Principle[] = Object.entries(principleModules).map(([pa
 export const certifications: Certification[] = Object.entries(certModules).map(([path,src])=>{
   const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','group','issuer','title','year','credentialId','url','image']);
   return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??''),image:unquote(values.get('image')??'')};
+}).sort((a,b)=>a.order-b.order);
+
+export const publications: Publication[] = Object.entries(publicationModules).map(([path,src])=>{
+  const {values,body}=parseFrontmatter(path,src);
+  requireKeys(path,values,['order','type','title','year','venue','url','doi']);
+  const type=unquote(values.get('type')??'') as Publication['type'];
+  if(!['journal','thesis','project-report'].includes(type)) throw new Error(`${path}: unsupported publication type`);
+  return {order:int(path,values.get('order')),type,title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),venue:unquote(values.get('venue')??''),url:unquote(values.get('url')??''),doi:unquote(values.get('doi')??''),summary:body};
 }).sort((a,b)=>a.order-b.order);
 
 export const certificationGroups = [...new Set(certifications.map(x=>x.group))].map(group=>({group,items:certifications.filter(x=>x.group===group)}));

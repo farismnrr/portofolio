@@ -150,9 +150,9 @@ jobs:
         working-directory: server
         run: cargo build --release --target ${{ env.RUST_TARGET_AMD64 }}
 
-      - uses: mlugg/setup-zig@v2
-        with:
-          version: 0.14.1
+      - name: Set up pinned Zig
+        shell: bash
+        run: bash .github/scripts/setup-zig.sh
 
       - name: Install cargo-zigbuild when missing
         shell: bash

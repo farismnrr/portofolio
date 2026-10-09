@@ -1,6 +1,6 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { education, experiences, pageCopy, profile } from '../lib/structured-content';
+  import { education, experiences, pageCopy, profile, publications } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import PageIntro from '../lib/ui/PageIntro.svelte';
@@ -104,6 +104,34 @@
           </div>
           {#each selectedExperience as item, i}<TimelineEntry {item} first={i===0} last={i===selectedExperience.length-1}/>{/each}
         </div>
+
+        <section class="mt-12 border-t border-black/10 pt-10">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">Public academic work</p>
+          <h2 class="mt-3 text-[30px] font-semibold tracking-[-0.035em]">Publications & research</h2>
+          <p class="mt-2 max-w-3xl text-[15px] leading-7 text-black/55">
+            Publicly verifiable academic work spanning IoT firmware delivery, cloud-connected devices, and AI-backed backend systems.
+          </p>
+          <div class="mt-6">
+            {#each publications as item}
+              <article class="grid gap-5 border-b border-black/10 py-7 md:grid-cols-[170px_1fr]">
+                <div>
+                  <p class="text-[14px] text-black/45">{item.year}</p>
+                  <p class="mt-1 text-[11px] uppercase tracking-[0.14em] text-black/38">{item.type.replace('-', ' ')}</p>
+                </div>
+                <div>
+                  <h3 class="text-[21px] font-semibold tracking-[-0.02em]">
+                    <a class="hover:opacity-60" href={item.url}>{item.title}</a>
+                  </h3>
+                  <p class="mt-1 text-[14px] text-black/52">{item.venue}</p>
+                  <p class="mt-3 max-w-3xl text-[14px] leading-6 text-black/55">{item.summary}</p>
+                  {#if item.doi}
+                    <a class="mt-3 inline-block text-[13px] underline underline-offset-4 hover:opacity-60" href={item.doi}>DOI</a>
+                  {/if}
+                </div>
+              </article>
+            {/each}
+          </div>
+        </section>
 
         <section class="mt-12 border-t border-black/10 pt-10">
           <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">{pageCopy.education.eyebrow}</p>

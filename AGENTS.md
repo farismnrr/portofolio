@@ -15,33 +15,29 @@ These rules apply to repository work unless the user explicitly requests otherwi
 
 - Keep exactly two GitHub Actions workflow files under `.github/workflows/` unless the user explicitly requests another structure.
 - `fast-guardrail-build-deploy.yml` is the automatic development workflow for `dev`.
-- The fast workflow runs automatically only when application/runtime inputs change (`frontend/**`, `server/**`, `Dockerfile`, `compose.yaml`, or the fast workflow itself). Documentation-only repository changes must not pay for an application build.
+- The fast workflow runs automatically only when application/runtime inputs change (`frontend/**`, `server/**`, `Dockerfile`, `compose.yaml`, the shared CI scripts, or the fast workflow itself). Documentation-only repository changes must not pay for an application build.
 - The fast workflow may also support manual dispatch from `dev`.
-- The fast workflow is intentionally optimized as a persistent developer loop on the X64 self-hosted runner, not as a clean-room release build.
+- The fast workflow is the pre-release validation loop on the X64 self-hosted runner. It must catch frontend architecture/content/type/build failures and Rust format/clippy/test failures before the manual full release is attempted.
 - Keep fast validation/build/deploy in one self-hosted job so the same filesystem and machine-local caches are reused instead of passing artifacts between fresh runners.
-- Detect which application area changed and run only the relevant expensive work. Frontend-only changes run frontend validation/build and then only an incremental Rust runtime rebuild/relink because the Axum binary embeds `frontend/dist` through `rust_embed`; they must not reuse an older server binary. Server-only changes reuse the last valid frontend `dist` and run Rust validation/build. Docker/Compose-only changes should avoid unrelated compiler work when valid runtime artifacts already exist.
-- Distinguish frontend source/config changes from content/static-asset changes. Content-only edits must run content validation and the production frontend build, but should skip Svelte/type/architecture source checks that cannot be affected by Markdown/static-content changes. Frontend source/config changes still run the full fast frontend guardrail.
-- Keep tracked source clean between runs while preserving intentional incremental outputs such as `frontend/node_modules`, `frontend/dist`, and the staged AMD64 runtime when safe to reuse.
-- Persist development caches under the runner user's home directory. The fast workflow uses a portfolio-specific cache root under `~/.cache/portfolio-ci` for npm downloads, Cargo build output, Cargo-installed tools, and an isolated Rustup toolchain.
-- Do not depend on or mutate the developer's global Rust toolchain for fast CI. Use the isolated portfolio Rustup/Cargo homes so interrupted CI setup cannot corrupt local tooling.
-- Fast frontend builds should keep heavy prebuilt browser runtimes out of Vite's transform graph when the upstream package provides an official standalone bundle. Mermaid is staged from its local installed package into `frontend/public/vendor/` before build and lazy-loaded from there; do not replace this with a CDN dependency or rebundle the full Mermaid module graph without an explicit reason.
-- Fast Rust format/clippy runs only when server source inputs changed. A frontend-only change still runs the incremental AMD64 runtime build so the new embedded frontend is included in the binary, but it skips Rust format/clippy when server source itself did not change.
-- Fast validation intentionally skips the expensive Rust test suite, AI smoke check, ARM64 build, QEMU, and multi-architecture container build.
-- Rust fast builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
+- The fast frontend path must run the architecture/SOLID/DRY guard, Markdown/Mermaid content validation, strict Svelte/TypeScript diagnostics, and the production frontend build including prerender/SEO verification.
+- The fast Rust path must run `cargo fmt --check`, clippy with warnings denied, and the Rust test suite before building the AMD64 MUSL runtime with Zig/cargo-zigbuild.
+- Fast Rust builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
 - Frontend fast builds should reuse the machine-local npm cache and preserved `frontend/node_modules` rather than using `npm ci` on every development push.
-- Fast Rust clippy should validate the normal runtime target only; exhaustive `--all-targets` validation belongs to the full release workflow.
+- Fast frontend builds should keep heavy prebuilt browser runtimes out of Vite's transform graph when the upstream package provides an official standalone bundle. Mermaid is staged from its local installed package into `frontend/public/vendor/` before build and lazy-loaded from there; do not replace this with a CDN dependency or rebundle the full Mermaid module graph without an explicit reason.
 - The self-hosted fast build must not require passwordless `sudo`; use user-local tooling such as Zig/cargo-zigbuild for the MUSL runtime build.
 - Reuse the installed Rust/Zig/cargo-zigbuild toolchain on subsequent fast runs. Toolchain installation is a warm-up operation, not normal per-push work.
 - Fast AMD64 container packaging should use the local Docker daemon and its layer cache. Do not push to GHCR and pull the same image back merely to deploy it on the same self-hosted machine.
+- Fast deployment verification must prove the homepage is reachable, `/api/cv/retrieve` returns nonempty evidence with backend `pgvector+postgres-fts`, and `/api/ai/chat` returns a nonempty answer.
+- Fast validation still intentionally skips ARM64 production compilation, QEMU, multi-architecture container validation, GHCR publishing, `dev` -> `main` merging, and Orange Pi production deployment. Those remain full-release responsibilities.
 - On pull requests targeting `dev`, the fast workflow validates/builds but must not deploy. Do not run untrusted fork pull-request code on the self-hosted runner.
-- On pushes to `dev` and manual runs from `dev`, the fast workflow builds a local AMD64 image only when required and deploys that local image directly to the X64 self-hosted host.
+- On pushes to `dev` and manual runs from `dev`, the fast workflow builds a local AMD64 image and deploys that local image directly to the X64 self-hosted host.
 - `full-guardrail-build-deploy.yml` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` and must only be run from `dev`.
 - The production release workflow contains the complete full validation inline: frontend guardrail/build, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build.
 - Only after full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, and publish the production multi-architecture image to GHCR.
 - The release workflow must not delete the `dev` branch after the PR merge.
 - Do not add automatic triggers to `full-guardrail-build-deploy.yml` unless the user explicitly requests a release-policy change.
 - Do not recreate a standalone `full-guardrail-build.yml` workflow unless explicitly requested.
-- Keep the fast and full paths intentionally different: fast optimizes normal development feedback and X64 deployment with persistent incremental caches and change-aware execution; full protects explicit production releases with clean comprehensive validation, ARM64 compatibility, and GHCR multi-arch publishing without direct deployment.
+- Keep the fast and full paths intentionally different: fast validates all normal source/content/Rust test gates and the AMD64 development runtime with live database/AI checks; full remains the clean cross-architecture, container, merge, publish, and production deployment boundary.
 
 ## Shared database deployment
 

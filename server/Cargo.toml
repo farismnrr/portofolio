@@ -3,6 +3,11 @@ name = "portfolio-server"
 version = "0.3.0"
 edition = "2021"
 
+# Rust 1.97 exposes linker stderr through the special `linker_messages` lint.
+# Zig/cargo-zigbuild emits the known deprecated `-O1` linker note even when linking succeeds.
+[lints.rust]
+linker_messages = "allow"
+
 [dependencies]
 axum = "0.8"
 mime_guess = "2"

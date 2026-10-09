@@ -15,7 +15,7 @@ productUrl: "https://i-ot.net/"
 repoUrl: ""
 ---
 
-## The Problem
+## Operating a fleet is different from connecting one device
 
 Building one connected device is mostly an integration task. Operating a fleet introduces a different set of problems.
 
@@ -23,7 +23,7 @@ The platform has to know who owns each device, who may control it, what state th
 
 **IoTNet** was built around that operational layer. It sits between people and connected hardware so users can work with product concepts instead of broker topics and raw protocol messages.
 
-## The Core Model
+## Command sent is not state observed
 
 A user asks for an outcome. The platform turns that request into a device action, applies the relevant access rules, and waits for state or telemetry to show what happened.
 
@@ -40,7 +40,7 @@ stateDiagram-v2
 
 The distinction between **command published** and **state observed** is deliberate. In a physical system, sending a message is not the same thing as proving that a device changed state.
 
-## Device Control Flow
+## Device control path
 
 A control request passes through application context before it reaches the broker.
 
@@ -64,7 +64,7 @@ sequenceDiagram
 
 That flow keeps device behavior grounded in what the system observes instead of assuming every command succeeds.
 
-## Automation
+## Automation as event, condition, decision, action
 
 Automation uses a small set of reusable stages:
 
@@ -79,7 +79,7 @@ A temperature reading can be the event, occupancy and thresholds can become cond
 
 The same model can describe security alerts, environmental control, scheduling, and other IoT behavior without creating a separate automation concept for each device type.
 
-## Identity and Ownership
+## Ownership before control
 
 Access control is part of the device model because hardware always belongs to some scope: a tenant, organization, site, project, or user group.
 
@@ -92,7 +92,7 @@ who is allowed to ask it to do that?
 
 Keeping ownership and messaging in the same product model makes those checks explicit before a command reaches physical hardware.
 
-## System Design
+## Separating product meaning from message delivery
 
 ```mermaid
 flowchart TD
@@ -110,20 +110,15 @@ The application platform owns the meaning of an action. The messaging layer hand
 
 That boundary is useful when devices reconnect, publish state independently, or fail in ways that do not map cleanly to a synchronous request.
 
-## HTTP and MQTT
+## HTTP for people, MQTT for devices
 
 HTTP and MQTT stay separate because they solve different problems.
 
 HTTP fits user-driven workflows such as loading resources, changing configuration, or requesting an operation. MQTT fits device communication where messages arrive asynchronously and connections can come and go.
 
-```text
-human workflow → application API
-device workflow → messaging
-```
-
 The backend connects those two sides without forcing either one to behave like the other.
 
-## Product Tradeoffs
+## Tradeoffs that shape the platform
 
 **Real-time feedback vs operational complexity.** Faster feedback usually means more event-driven state and more failure paths to observe.
 
@@ -133,10 +128,6 @@ The backend connects those two sides without forcing either one to behave like t
 
 Those tradeoffs matter more to the long-term platform than adding another device protocol.
 
-## Implementation Notes
+## Current implementation
 
 The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.
-
-## Stack
-
-Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, Go plugins, and OpenTelemetry.

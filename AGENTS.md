@@ -19,7 +19,8 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - The fast workflow may also support manual dispatch from `dev`.
 - The fast workflow is the pre-release validation loop on the X64 self-hosted runner. It must catch frontend architecture/content/type/build failures and Rust format/clippy/test failures before the manual full release is attempted.
 - Keep fast validation/build/deploy in one self-hosted job so the same filesystem and machine-local caches are reused instead of passing artifacts between fresh runners.
-- The fast frontend path must run the architecture/SOLID/DRY guard, Markdown/Mermaid content validation, strict Svelte/TypeScript diagnostics, and the production frontend build including prerender/SEO verification.
+- The fast frontend path must run the architecture/SOLID/DRY guard, Markdown/Mermaid content validation, the writing-style/slop guard for changed portfolio Markdown, strict Svelte/TypeScript diagnostics, and the production frontend build including prerender/SEO verification.
+- The writing-style guard is an editorial lint, not an AI-authorship detector. It blocks em dashes in changed visible copy plus a small high-confidence set of overused AI-style phrases, while softer structural/style patterns remain warnings. Factual date/period metadata and fenced code/diagram content are exempt from the em-dash rule.
 - The fast Rust path must run `cargo fmt --check`, clippy with warnings denied, and the Rust test suite before building the AMD64 MUSL runtime with Zig/cargo-zigbuild.
 - Fast Rust builds must use a persistent `CARGO_TARGET_DIR` outside the checkout so unchanged crates are reused across workflow runs.
 - Frontend fast builds should reuse the machine-local npm cache and preserved `frontend/node_modules` rather than using `npm ci` on every development push.
@@ -32,7 +33,7 @@ These rules apply to repository work unless the user explicitly requests otherwi
 - On pull requests targeting `dev`, the fast workflow validates/builds but must not deploy. Do not run untrusted fork pull-request code on the self-hosted runner.
 - On pushes to `dev` and manual runs from `dev`, the fast workflow builds a local AMD64 image and deploys that local image directly to the X64 self-hosted host.
 - `full-guardrail-build-deploy.yml` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` and must only be run from `dev`.
-- The production release workflow contains the complete full validation inline: frontend guardrail/build, Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build.
+- The production release workflow contains the complete full validation inline: frontend guardrail/build (including the writing-style guard), Rust format/clippy/tests, AI smoke check, AMD64/ARM64 production builds, and multi-architecture container build.
 - Only after full validation succeeds may the production release workflow create or reuse the `dev` -> `main` pull request, merge that PR into `main`, and publish the production multi-architecture image to GHCR.
 - The release workflow must not delete the `dev` branch after the PR merge.
 - Do not add automatic triggers to `full-guardrail-build-deploy.yml` unless the user explicitly requests a release-policy change.

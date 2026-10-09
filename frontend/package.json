@@ -4,7 +4,7 @@
   "version": "0.3.0",
   "type": "module",
   "scripts": {
-    "build": "node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/generate-seo-assets.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build && vite build --ssr src/entry-server.ts --outDir .ssr && node ./scripts/prerender.mjs && node ./scripts/verify-prerender.mjs",
+    "build": "node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/generate-seo-assets.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build && vite build --ssr src/lib/entry-server.ts --outDir .ssr && node ./scripts/prerender.mjs && node ./scripts/verify-prerender.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "content:check": "node ./scripts/check-content.mjs",
     "cv:check": "node ./scripts/check-cv-profiles.mjs",

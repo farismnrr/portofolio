@@ -81,7 +81,7 @@ function urlEntry(path, lastmod = '') {
   return `  <url><loc>${escapeXml(loc)}</loc>${lastmodXml}</url>`;
 }
 
-const [profileFiles, projectFiles, blogFiles, experienceFiles, educationFiles, skillFiles, certificationFiles, pageFiles] = await Promise.all([
+const [profileFiles, projectFiles, blogFiles, experienceFiles, educationFiles, skillFiles, certificationFiles, publicationFiles, pageFiles] = await Promise.all([
   markdownFiles('profile'),
   markdownFiles('projects'),
   markdownFiles('blog'),
@@ -89,6 +89,7 @@ const [profileFiles, projectFiles, blogFiles, experienceFiles, educationFiles, s
   markdownFiles('education'),
   markdownFiles('skills'),
   markdownFiles('certifications'),
+  markdownFiles('publications'),
   markdownFiles('pages')
 ]);
 
@@ -123,7 +124,7 @@ await writeFile(join(publicRoot, 'routes.txt'), `${routes.join('\n')}\n`, 'utf8'
 
 const routeLastmod = new Map([
   ['/', latestDate([...profileFiles, ...projectFiles, ...experienceFiles, ...pageFiles])],
-  ['/about', latestDate(profileFiles)],
+  ['/about', latestDate([...profileFiles, ...educationFiles, ...publicationFiles])],
   ['/experience', latestDate(experienceFiles)],
   ['/skills', latestDate(skillFiles)],
   ['/projects', latestDate(projectFiles)],
@@ -150,6 +151,25 @@ const profileIntro = profile?.values.get('intro') ?? 'Software Engineer focused 
 const github = profile?.values.get('github') ?? 'https://github.com/farismnrr';
 const linkedin = profile?.values.get('linkedin') ?? 'https://www.linkedin.com/in/farismnrr';
 
+const rssItems = articles
+  .filter((article) => article.published && !Number.isNaN(Date.parse(article.published)))
+  .sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
+  .map((article) => {
+    const url = `${siteUrl}/blog/${article.slug}`;
+    return [
+      '    <item>',
+      `      <title>${escapeXml(article.title)}</title>`,
+      `      <link>${escapeXml(url)}</link>`,
+      `      <guid isPermaLink="true">${escapeXml(url)}</guid>`,
+      `      <pubDate>${new Date(article.published).toUTCString()}</pubDate>`,
+      `      <description>${escapeXml(article.excerpt)}</description>`,
+      '    </item>'
+    ].join('\n');
+  });
+
+const rss = `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${escapeXml(`${profileName} — Engineering Blog`)}</title>\n    <link>${escapeXml(`${siteUrl}/blog`)}</link>\n    <description>${escapeXml(`Technical writing by ${profileName} about software engineering, backend systems, cloud infrastructure, IoT, and applied AI.`)}</description>\n    <language>en</language>\n    <atom:link href="${escapeXml(`${siteUrl}/feed.xml`)}" rel="self" type="application/rss+xml" />\n${rssItems.join('\n')}\n  </channel>\n</rss>\n`;
+await writeFile(join(publicRoot, 'feed.xml'), rss, 'utf8');
+
 const llms = [
   `# ${profileName}`,
   '',
@@ -174,6 +194,7 @@ const llms = [
   '## Machine-readable discovery',
   '',
   `- Sitemap: ${siteUrl}/sitemap.xml`,
+  `- RSS: ${siteUrl}/feed.xml`,
   `- Robots: ${siteUrl}/robots.txt`,
   `- Extended portfolio context: ${siteUrl}/llms-full.txt`,
   '',
@@ -210,6 +231,8 @@ const llmsFull = [
   '',
   sourceSection('Education', educationFiles, () => `${siteUrl}/about`),
   '',
+  sourceSection('Publications', publicationFiles, () => `${siteUrl}/about`),
+  '',
   sourceSection('Skills', skillFiles, () => `${siteUrl}/skills`),
   '',
   sourceSection('Projects', projectFiles, (file) => `${siteUrl}/projects/${file.values.get('slug') ?? basename(file.name, '.md')}`),
@@ -221,6 +244,7 @@ const llmsFull = [
   '## Discovery',
   '',
   `- Sitemap: ${siteUrl}/sitemap.xml`,
+  `- RSS: ${siteUrl}/feed.xml`,
   `- Robots: ${siteUrl}/robots.txt`,
   `- Compact LLM index: ${siteUrl}/llms.txt`,
   ''

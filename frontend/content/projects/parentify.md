@@ -170,7 +170,9 @@ My direct implementation work was primarily in **Cloud Computing**: backend beha
 
 I also worked at the integration boundary between the cloud, mobile, and machine-learning deliverables. I describe all three parts here because they are necessary to understand the product, not because I implemented every layer myself.
 
-The main lesson was simple. A mobile screen, API endpoint, database table, and model can each work correctly on their own while the product still fails if their assumptions do not match. Parentify made contracts and ownership boundaries just as important as the code inside each repository.
+The main lesson was simple. A mobile screen, API endpoint, database table, and model can each work correctly on their own. The product can still fail if their assumptions do not match.
+
+Parentify made contracts and ownership boundaries just as important as the code inside each repository.
 
 ## Repositories
 

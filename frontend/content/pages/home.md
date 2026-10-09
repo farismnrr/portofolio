@@ -2,7 +2,7 @@
 slug: home
 eyebrow: Portfolio
 title: Home
-subtitle: I work mostly on backend systems, cloud infrastructure, and IoT — especially where software has to deal with real devices, data, and operational constraints.
+subtitle: I work mostly on backend systems, cloud infrastructure, and IoT, especially where software has to deal with real devices, data, and operational constraints.
 description: Selected work, projects, and engineering notes by Faris Munir Mahdi.
 primaryAction: View Projects
 secondaryAction: Contact

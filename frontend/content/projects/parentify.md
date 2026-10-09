@@ -15,7 +15,7 @@ productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---
 
-## The Problem
+## One product, three learning tracks
 
 Parenting information is easy to find, but it is often split across unrelated sources.
 
@@ -23,7 +23,7 @@ A parent may look for childcare guidance in one place and then use another tool 
 
 The app combined curated parenting content with camera-based food recognition. The engineering challenge was less about either feature in isolation and more about making the Android, backend, data, and machine-learning parts agree on the same product flow.
 
-## Product Approach
+## Two user journeys
 
 Parentify had two main journeys.
 
@@ -49,7 +49,7 @@ flowchart LR
 
 The user should not have to care that those features came from different Bangkit learning paths. The integration work existed to make them feel like one application.
 
-## Team Boundaries
+## How the team split the system
 
 The project was split across the three Bangkit tracks:
 
@@ -59,35 +59,7 @@ The project was split across the three Bangkit tracks:
 
 The Android app coordinated the experience. Network-backed features called the backend, while the camera flow connected captured images to the classifier and then resolved the detected category into product data.
 
-```mermaid
-sequenceDiagram
-    participant U as Parent
-    participant A as Android app
-    participant S as Backend API
-    participant D as MySQL
-    participant M as ML classifier
-
-    U->>A: Use parenting or food feature
-
-    alt Parenting content
-        A->>S: Request authenticated content
-        S->>D: Read application data
-        D-->>S: Return structured records
-        S-->>A: Return API response
-    else Food recognition
-        U->>A: Capture ingredient image
-        A->>M: Submit image for classification
-        M-->>A: Return detected category
-        A->>S: Request related food information
-        S->>D: Read food record
-        D-->>S: Return food details
-        S-->>A: Return structured response
-    end
-
-    A-->>U: Present useful information
-```
-
-## Mobile Experience
+## Mobile experience
 
 The Android application was written in **Kotlin** and used Android architecture components to keep UI state, navigation, networking, local persistence, and camera behavior separated.
 
@@ -95,7 +67,7 @@ The Android application was written in **Kotlin** and used Android architecture 
 
 That structure supported authentication, parenting content, favorites, camera capture, food detection results, and supporting settings/detail screens without putting the whole product flow into screen code.
 
-## Food Recognition
+## Food recognition
 
 The Machine Learning track trained a TensorFlow/Keras convolutional neural network to classify **36 food-ingredient categories**.
 
@@ -114,7 +86,7 @@ camera image
 → present result to the user
 ```
 
-## Backend and Data Layer
+## Backend and data contract
 
 My primary responsibility was the **Cloud Computing** side, especially the backend and integration contract used by the Android app.
 
@@ -122,25 +94,9 @@ The Node.js service used **Express** for APIs around authentication, parenting a
 
 Authentication used **JSON Web Tokens**, password hashing with **bcrypt**, and request validation with **Joi**. The backend kept database relationships behind an application-facing contract so the Android client could work with stable domain responses instead of database structure.
 
-Conceptually, the service covered four areas:
-
-```text
-authentication
-→ identify users and control access
-
-parenting articles
-→ provide guidance content
-
-food information
-→ map detected ingredients to records
-
-API contract
-→ keep mobile, data, and backend assumptions aligned
-```
-
 That contract mattered because each team could progress independently. Integration only worked when naming, payloads, and data relationships matched across all three tracks.
 
-## Cloud and Delivery
+## Cloud delivery
 
 The backend was prepared for **Google Cloud** on a Linux environment with Node.js and MySQL.
 
@@ -148,23 +104,7 @@ Deployment documentation covered application dependencies, database access, serv
 
 For this capstone, the cloud work was where authentication, persistent data, API behavior, and cross-team integration met.
 
-## Technology Across the Product
-
-| Area | Technology | Role in Parentify |
-| --- | --- | --- |
-| Android | Kotlin, Android SDK, ViewModel, LiveData, Navigation Component | User-facing application and screen/state flow |
-| Mobile architecture | Hilt, Room, View/Data Binding | Dependency management, local persistence, and UI integration |
-| Networking | Retrofit, OkHttp | Communication between the Android client and remote services |
-| Device capability | CameraX | Camera capture for food recognition |
-| Authentication | Firebase Auth, JWT, bcrypt | Identity and protected access across the product stack |
-| Backend | Node.js, Express, Joi | Application APIs, validation, and integration logic |
-| Data | MySQL | Persistent user, article, food, and related records |
-| Machine learning | TensorFlow, Keras, CNN | Training the 36-class ingredient classifier |
-| Mobile inference artifact | TensorFlow Lite | Portable model format for application-oriented inference |
-| Cloud | Google Cloud, Linux | Runtime environment for backend and data services |
-| API collaboration | Postman | Backend testing and API contract documentation |
-
-## My Responsibility
+## What I owned
 
 My direct implementation work was primarily in **Cloud Computing**: backend behavior, application data, authentication, and the API surface consumed by the mobile team.
 
@@ -174,7 +114,7 @@ The main lesson was simple. A mobile screen, API endpoint, database table, and m
 
 Parentify made contracts and ownership boundaries just as important as the code inside each repository.
 
-## Repositories
+## Source
 
 Parentify is split across the original Bangkit repositories:
 

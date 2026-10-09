@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AppIcon from '../lib/ui/AppIcon.svelte';
   import { education, experiences, pageCopy, profile, publications, skillGroups } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -32,47 +33,56 @@
 </script>
 
 <main>
-  <PageShell className="py-14 lg:py-18">
-    <section class="grid gap-10 lg:grid-cols-[.78fr_1.22fr] lg:items-start lg:gap-20">
-      <aside>
-        <MediaImage className="aspect-[.84] w-full" src={profile.image} alt={profile.name}/>
+  <PageShell className="py-14 lg:py-16">
+    <div class="grid gap-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-14">
+      <aside class="self-start lg:border-r lg:border-black/10 lg:pr-10">
+        <MediaImage className="aspect-[.8] w-full" src={profile.image} alt={profile.name}/>
 
-        <div class="mt-6 border-t border-black/10 pt-5">
-          <p class="text-[15px] font-medium text-black/82">{profile.name}</p>
-          <p class="mt-1 text-[14px] text-black/52">{profile.role}</p>
+        <h2 class="mt-6 text-[26px] font-semibold leading-tight tracking-[-0.025em]">{profile.name}</h2>
+        <p class="mt-1 text-[15px] text-black/55">{profile.role}</p>
+
+        <div class="mt-6 space-y-3 text-[13px] text-black/60">
+          <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
+          <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
         </div>
 
-        <dl class="mt-6 space-y-3 text-[13px] leading-5">
-          <div>
-            <dt class="text-black/40">Based in</dt>
-            <dd class="mt-0.5 text-black/68">{profile.location}</dd>
-          </div>
-          <div>
-            <dt class="text-black/40">Languages</dt>
-            <dd class="mt-0.5 text-black/68">{profile.languages}</dd>
-          </div>
-        </dl>
+        <div class="my-6 h-px bg-black/10"></div>
 
-        <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-black/62">
-          <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href={profile.github}>GitHub</a>
-          <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href={profile.linkedin}>LinkedIn</a>
-          <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href={profile.email}>Email</a>
+        <div class="space-y-3 text-[13px]">
+          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
+          <button
+            class="flex items-center gap-2.5 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
+            type="button"
+            disabled={generatingCv}
+            on:click={handleSaveCv}
+          >
+            <AppIcon name="file-text" size={16}/>
+            {generatingCv ? 'Generating CV…' : 'Generate CV'}
+          </button>
+
+          {#if generatingCv}
+            <p class="text-[12px] leading-5 text-black/45" role="status" aria-live="polite">Preparing the PDF from verified portfolio content.</p>
+          {:else if cvGenerated}
+            <p class="text-[12px] leading-5 text-black/45" role="status">CV generated and downloaded.</p>
+          {/if}
+
+          {#if cvError}<p class="cv-error text-[12px] leading-5">{cvError}</p>{/if}
         </div>
       </aside>
 
-      <div>
+      <section class="min-w-0">
         <p class="text-[14px] font-medium text-black/48">About</p>
-        <h1 class="mt-3 max-w-[18ch] text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px]">
-          {page.subtitle}
-        </h1>
+        <h1 class="mt-3 max-w-[18ch] text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px]">{page.subtitle}</h1>
 
         <div class="mt-7 max-w-[66ch] text-[16px] leading-7 text-black/62">
           <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
         </div>
 
-        <section class="mt-12 border-t border-black/10 pt-8">
-          <h2 class="text-[24px] font-semibold tracking-[-0.015em]">Professional background</h2>
-          <div class="mt-6 divide-y divide-black/10 border-y border-black/10">
+        <section class="mt-10 border-t border-black/10 pt-7">
+          <h2 class="text-[22px] font-semibold tracking-[-0.015em]">Professional background</h2>
+          <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
             {#each experiences as item}
               <article class="grid gap-3 py-5 sm:grid-cols-[145px_1fr] sm:gap-7">
                 <p class="text-[13px] text-black/42">{item.year}</p>
@@ -86,9 +96,9 @@
           </div>
         </section>
 
-        <section class="mt-12 border-t border-black/10 pt-8">
-          <h2 class="text-[24px] font-semibold tracking-[-0.015em]">Technical focus</h2>
-          <div class="mt-6 grid gap-6 sm:grid-cols-2">
+        <section class="mt-10 border-t border-black/10 pt-7">
+          <h2 class="text-[22px] font-semibold tracking-[-0.015em]">Technical focus</h2>
+          <div class="mt-5 grid gap-x-8 gap-y-6 sm:grid-cols-2">
             {#each skillGroups as group}
               <article>
                 <h3 class="text-[15px] font-medium text-black/80">{group.title}</h3>
@@ -98,9 +108,9 @@
           </div>
         </section>
 
-        <section class="mt-12 border-t border-black/10 pt-8">
-          <h2 class="text-[24px] font-semibold tracking-[-0.015em]">Education</h2>
-          <div class="mt-6 divide-y divide-black/10 border-y border-black/10">
+        <section class="mt-10 border-t border-black/10 pt-7">
+          <h2 class="text-[22px] font-semibold tracking-[-0.015em]">Education</h2>
+          <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
             {#each education as item}
               <article class="grid gap-3 py-5 sm:grid-cols-[145px_1fr] sm:gap-7">
                 <p class="text-[13px] text-black/42">{item.year}</p>
@@ -114,9 +124,9 @@
         </section>
 
         {#if publications.length}
-          <section class="mt-12 border-t border-black/10 pt-8">
-            <h2 class="text-[24px] font-semibold tracking-[-0.015em]">Academic work</h2>
-            <div class="mt-6 divide-y divide-black/10 border-y border-black/10">
+          <section class="mt-10 border-t border-black/10 pt-7">
+            <h2 class="text-[22px] font-semibold tracking-[-0.015em]">Academic work</h2>
+            <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
               {#each publications as item}
                 <article class="grid gap-3 py-5 sm:grid-cols-[145px_1fr] sm:gap-7">
                   <p class="text-[13px] text-black/42">{item.year}</p>
@@ -131,30 +141,7 @@
             </div>
           </section>
         {/if}
-
-        <section class="mt-12 border-t border-black/10 pt-8">
-          <h2 class="text-[24px] font-semibold tracking-[-0.015em]">CV</h2>
-          <p class="mt-2 max-w-[56ch] text-[14px] leading-6 text-black/54">Generate a CV from the verified experience, education, and portfolio evidence stored in this site.</p>
-          <button
-            class="mt-4 text-[14px] font-medium underline decoration-black/20 underline-offset-4 hover:text-black disabled:cursor-wait disabled:opacity-45"
-            type="button"
-            disabled={generatingCv}
-            on:click={handleSaveCv}
-          >
-            {generatingCv ? 'Generating CV…' : 'Generate CV'}
-          </button>
-
-          {#if generatingCv}
-            <p class="mt-3 max-w-[52ch] text-[12px] leading-5 text-black/48" role="status" aria-live="polite">
-              Selecting verified portfolio evidence and preparing the PDF.
-            </p>
-          {:else if cvGenerated}
-            <p class="mt-3 text-[12px] leading-5 text-black/48" role="status">CV generated and downloaded.</p>
-          {/if}
-
-          {#if cvError}<p class="cv-error mt-3 text-[12px] leading-5">{cvError}</p>{/if}
-        </section>
-      </div>
-    </section>
+      </section>
+    </div>
   </PageShell>
 </main>

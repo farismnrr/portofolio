@@ -56,7 +56,9 @@ The important boundary is that capture, transcription, and interpretation are se
 
 The client supports both browser/PWA and native-mobile recording because those environments fail in different ways.
 
-On the web path, recording uses the browser media APIs together with a wake-lock strategy so a long meeting is less likely to be interrupted by background throttling. On native mobile, Capacitor bridges to a native audio-recorder path so recording can continue under mobile constraints that a normal browser tab cannot handle as reliably.
+On the web, recording uses browser media APIs and a wake-lock strategy so long sessions are less likely to be interrupted by background throttling.
+
+On native mobile, Capacitor bridges to a native audio-recorder path. That lets recording continue under mobile constraints that a normal browser tab cannot handle as reliably.
 
 After recording, the client does not rely on one large request. Audio is divided into small chunks and queued through the upload flow so a long file can move into object storage more safely over an unstable connection.
 
@@ -88,7 +90,9 @@ sequenceDiagram
     B-->>C: Meeting becomes reviewable
 ```
 
-The application uses PostgreSQL with relational schemas, indexed queries, and migration versioning for durable product data. Redis handles background job queues and pub/sub events. The client and backend are maintained as modular repositories so recording UX and client performance evolve independently from backend persistence and worker coordination.
+PostgreSQL stores durable product data with relational schemas, indexed queries, and migration versioning. Redis handles background job queues and pub/sub events.
+
+The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and worker coordination.
 
 ## From Transcript to Meeting Knowledge
 
@@ -110,11 +114,17 @@ Keeping those layers conceptually separate makes it easier for the product to ex
 
 Most of my work sits at the points where a long-running meeting flow can fail.
 
-On the backend, I built and maintained the meeting lifecycle in NestJS: data models, upload coordination, background transcription state, callbacks, and the APIs used by the web and mobile clients. For large recordings, I worked on chunked S3 uploads and resume-friendly flows so a weak connection would not force someone to start from zero.
+On the backend, I built and maintained the meeting lifecycle in NestJS: data models, upload coordination, background transcription state, callbacks, and the APIs used by the web and mobile clients.
 
-I also worked on the transcript-processing side. The LangGraph workflows take completed transcripts, split and structure the material, ask models for specific outputs, and validate those outputs against schemas before they are stored. The important part for me was keeping generated notes tied back to the transcript instead of treating model output as a replacement for the source.
+For large recordings, I worked on chunked S3 uploads and resume-friendly flows so a weak connection would not force someone to start from zero.
 
-On the client side, I connected the React and Capacitor recording paths to the same backend state machine. That meant dealing with wake locks, native recording behavior, upload progress, and the awkward cases where the app is backgrounded or the network disappears halfway through a meeting.
+I also worked on the transcript-processing side. LangGraph workflows take completed transcripts, split and structure the material, ask models for specific outputs, and validate those outputs against schemas before they are stored.
+
+I kept generated notes tied back to the transcript instead of treating model output as a replacement for the source.
+
+On the client side, I connected the React and Capacitor recording paths to the same backend state machine.
+
+That meant dealing with wake locks, native recording behavior, upload progress, and the awkward cases where the app is backgrounded or the network disappears halfway through a meeting.
 
 The production work is part of the same job. I use Docker for packaging, OpenTelemetry and structured logs to trace failures across the processing path, and Jira to keep implementation work tied to the product issues we are actually trying to solve.
 

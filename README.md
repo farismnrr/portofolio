@@ -1,17 +1,19 @@
 # Portfolio
 
-Personal portfolio implemented with Svelte and served by a Rust + Axum application.
+Personal portfolio implemented with Svelte and served by a Rust + Axum application. Public routes are prerendered at build time to crawlable HTML, then hydrated by Svelte in the browser; Axum embeds and serves the generated route documents and static assets.
 
 ## Stack
 
-- Svelte + Vite
+- Svelte + Vite with build-time prerendering and hydration
 - Rust + Axum
 - Repository-local Markdown content
 - Docker
 - GitHub Actions
 - GitHub Container Registry (GHCR)
 
-Portfolio data lives under `frontend/content/`. Profile, experience, education, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
+Portfolio data lives under `frontend/content/`. Profile, experience, education, publications, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
+
+The production frontend build generates per-route HTML plus search/discovery assets such as `sitemap.xml`, `robots.txt`, `feed.xml`, `llms.txt`, and `llms-full.txt`. Route-specific title, description, canonical, Open Graph/Twitter metadata, and JSON-LD are included in the prerendered HTML so crawlers do not depend on client-side JavaScript for core content or metadata.
 
 Static media lives under `frontend/public/`.
 

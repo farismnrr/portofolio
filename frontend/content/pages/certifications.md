@@ -1,9 +1,9 @@
 ---
 slug: certifications
-eyebrow: Resume · Growth · Recognition
-title: Certifications & Achievements
-subtitle: Credentials that validate my skills and continuous learning journey in software engineering, cloud, AI, and related technologies.
+eyebrow: Certifications
+title: Certifications
+subtitle: Formal learning that supports the work I do in software engineering, cloud, AI, and related areas.
 description: Professional certifications grouped by discipline.
 ---
 
-These credentials represent structured learning and practical validation across the areas I work in.
+I keep certificates here when they add useful context to the work elsewhere in the portfolio. They are supporting evidence, not a substitute for projects or experience.

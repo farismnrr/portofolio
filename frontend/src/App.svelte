@@ -287,10 +287,13 @@
   <meta property="og:description" content={seo.description} />
   <meta property="og:url" content={seo.canonical} />
   <meta property="og:image" content={seo.image} />
+  <meta property="og:image:secure_url" content={seo.image} />
   <meta property="og:image:alt" content={seo.imageAlt} />
   {#if seo.published}<meta property="article:published_time" content={seo.published} />{/if}
 
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:domain" content="farismnrr.com" />
+  <meta name="twitter:url" content={seo.canonical} />
   <meta name="twitter:title" content={seo.title} />
   <meta name="twitter:description" content={seo.description} />
   <meta name="twitter:image" content={seo.image} />

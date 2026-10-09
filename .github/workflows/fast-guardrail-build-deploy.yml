@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
@@ -47,6 +47,73 @@ jobs:
           clean: false
           fetch-depth: 0
 
+      - name: Generate raster branding assets and restore workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --user --quiet pillow
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont
+
+          root = Path('frontend/public')
+          bg = '#263526'
+          fg = '#f6f5ef'
+
+          def font(size, bold=False):
+              candidates = [
+                  '/usr/share/fonts/TTF/DejaVuSans-Bold.ttf' if bold else '/usr/share/fonts/TTF/DejaVuSans.ttf',
+                  '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf' if bold else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+              ]
+              for path in candidates:
+                  if Path(path).exists():
+                      return ImageFont.truetype(path, size=size)
+              return ImageFont.load_default()
+
+          def make_icon(size, path):
+              image = Image.new('RGB', (size, size), bg)
+              draw = ImageDraw.Draw(image)
+              f = font(round(size * 0.34), bold=True)
+              text = 'FM'
+              box = draw.textbbox((0, 0), text, font=f)
+              w, h = box[2] - box[0], box[3] - box[1]
+              draw.text(((size - w) / 2, (size - h) / 2 - size * 0.035), text, font=f, fill=fg)
+              image.save(root / path, format='PNG', optimize=True)
+
+          make_icon(180, 'apple-touch-icon.png')
+          make_icon(192, 'icon-192.png')
+          make_icon(512, 'icon-512.png')
+
+          image = Image.new('RGB', (1200, 630), '#f6f5ef')
+          draw = ImageDraw.Draw(image)
+          draw.rounded_rectangle((72, 72, 230, 230), radius=32, fill=bg)
+          fm = font(58, bold=True)
+          box = draw.textbbox((0, 0), 'FM', font=fm)
+          draw.text((151 - (box[2]-box[0])/2, 151 - (box[3]-box[1])/2 - 7), 'FM', font=fm, fill=fg)
+          name = font(66, bold=True)
+          role = font(34, bold=False)
+          focus = font(28, bold=False)
+          draw.text((72, 292), 'Faris Munir Mahdi', font=name, fill='#11130f')
+          draw.text((76, 390), 'Software Engineer', font=role, fill='#263526')
+          draw.text((76, 456), 'Backend · Cloud · IoT · Practical AI', font=focus, fill='#51584f')
+          draw.text((76, 532), 'farismnrr.com', font=font(24, bold=True), fill='#263526')
+          image.save(root / 'og-image.png', format='PNG', optimize=True)
+          PY
+
+          git show "${GITHUB_SHA}^:.github/workflows/fast-guardrail-build-deploy.yml" > .github/workflows/fast-guardrail-build-deploy.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            frontend/public/apple-touch-icon.png \
+            frontend/public/icon-192.png \
+            frontend/public/icon-512.png \
+            frontend/public/og-image.png \
+            .github/workflows/fast-guardrail-build-deploy.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(seo): add raster branding assets"
+            git push origin HEAD:dev
+          fi
+
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -74,7 +141,6 @@ jobs:
             "$CARGO_HOME/bin" \
             "$RUSTUP_HOME"
 
-          git reset --hard "$GITHUB_SHA"
           git clean -ffdx \
             -e frontend/node_modules/ \
             -e frontend/dist/ \

@@ -18,16 +18,16 @@
 
 <main>
   <PageShell>
-    <section class="grid gap-12 py-16 lg:grid-cols-[1.04fr_.96fr] lg:gap-24 lg:py-20">
+    <section class="grid gap-12 py-14 lg:grid-cols-[1.02fr_.98fr] lg:gap-20 lg:py-18">
       <div class="self-center">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/48">{profile.specialties}</p>
-        <h1 class="mt-6 text-[54px] font-semibold leading-[.98] tracking-[-0.05em] md:text-[68px]">{profile.name}</h1>
-        <p class="mt-4 max-w-[760px] text-[38px] font-light leading-[1.04] tracking-[-0.035em] text-black/64 md:text-[54px]">{profile.headline}</p>
-        <p class="mt-6 max-w-[680px] text-[16px] leading-7 text-black/56">{profile.intro}</p>
+        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/45">{profile.specialties}</p>
+        <h1 class="mt-5 text-[48px] font-semibold leading-[1] tracking-[-0.045em] md:text-[62px]">{profile.name}</h1>
+        <p class="mt-4 max-w-[18ch] text-[30px] font-light leading-[1.1] tracking-[-0.025em] text-black/62 md:text-[42px]">{profile.headline}</p>
+        <p class="mt-6 max-w-[62ch] text-[16px] leading-7 text-black/56">{profile.intro}</p>
 
         <div class="mt-8 flex flex-wrap gap-4">
           <a class="btn btn-neutral h-12 min-h-0 rounded-none border-0 bg-[#344534] px-7 text-[14px] font-normal text-white hover:bg-[#263526]" href="/projects" on:click={(e)=>navigate(e,'/projects')}>{page.primaryAction} <span class="ml-2">→</span></a>
-          <a class="btn btn-outline h-12 min-h-0 rounded-none border-black/20 px-8 text-[14px] font-normal hover:bg-black hover:text-white" href={profile.email}>{page.secondaryAction}</a>
+          <a class="h-12 border-b border-black/25 px-1 text-[14px] leading-[48px] text-black/68 hover:border-black hover:text-black" href={profile.email}>{page.secondaryAction}</a>
         </div>
 
         <div class="mt-8 flex flex-wrap gap-x-9 gap-y-3 border-t border-black/10 pt-5 text-[12px] text-black/55">
@@ -44,7 +44,6 @@
 
       <div>
         <MediaImage className="aspect-[1.36] w-full" src={profile.image} alt={profile.name} eager/>
-        {#if profile.quote}<blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“{profile.quote}”</blockquote>{/if}
       </div>
     </section>
 
@@ -59,7 +58,7 @@
               {#if i<selectedExperiences.length-1}<span class="absolute left-[10px] top-[15px] h-[116px] w-px bg-black/12"></span>{/if}
             </div>
             <div><h3 class="text-[17px] font-semibold">{item.role}</h3><p class="mt-1 text-[13px] text-black/45">{item.company}</p></div>
-            <p class="max-w-[650px] text-[14px] leading-6 text-black/52">{item.summary}</p>
+            <p class="max-w-[66ch] text-[14px] leading-6 text-black/52">{item.summary}</p>
           </article>
         {/each}
       </div>
@@ -74,10 +73,10 @@
 
     <section class="grid gap-10 border-t border-black/10 py-10 md:grid-cols-[.85fr_1.15fr]">
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">{page.aboutLabel}</p>
-        <h2 class="mt-5 text-[31px] font-light leading-[1.12] tracking-[-0.03em] text-black/78">{page.subtitle}</h2>
+        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/45">{page.aboutLabel}</p>
+        <h2 class="mt-5 max-w-[20ch] text-[28px] font-light leading-[1.18] tracking-[-0.025em] text-black/76">{page.subtitle}</h2>
       </div>
-      <div class="max-w-2xl self-end text-[14px] leading-6 text-black/56">
+      <div class="max-w-[66ch] self-end text-[14px] leading-6 text-black/56">
         <MarkdownArticle html={about.html} hasMermaid={about.hasMermaid}/>
         <a class="mt-4 inline-block text-[12px] text-black/70 underline underline-offset-4" href="/about" on:click={(e)=>navigate(e,'/about')}>{page.aboutAction} →</a>
       </div>

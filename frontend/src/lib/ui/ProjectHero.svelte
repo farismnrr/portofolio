@@ -11,7 +11,7 @@
     <div>
       <p class="text-[12px] text-black/44">{project.year} · {project.category}</p>
       <h1 class="mt-4 text-balance text-[44px] font-semibold leading-[1.04] tracking-[-0.035em] md:text-[58px]">{project.title}</h1>
-      <p class="mt-5 max-w-[64ch] hyphens-auto text-justify text-[15px] leading-7 text-black/58">{project.description}</p>
+      <p class="mt-5 hyphens-auto text-justify text-[15px] leading-7 text-black/58">{project.description}</p>
 
       {#if project.productUrl || project.repoUrl}
         <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[13px]">

@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Faris Munir Mahdi — Software Engineer",
   "short_name": "Faris Munir",
   "description": "Software engineering portfolio covering backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.",
@@ -12,7 +13,7 @@
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }

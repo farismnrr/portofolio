@@ -15,35 +15,19 @@ productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---
 
-## The Story
+## Why I Rebuilt It
 
-A portfolio usually starts simple.
+The first version of a portfolio is easy to hardcode. A few project cards, an experience section, and a gallery can live directly in UI components without causing much trouble.
 
-You create a few project cards, hardcode some experience, add a gallery, and ship it.
+That stops working once the content keeps changing. New projects arrive, job history grows, certifications need updates, and some projects deserve a full technical story instead of one short card.
 
-Then real life happens.
-
-A new project is added.
-
-A job changes.
-
-A certificate arrives.
-
-A project grows enough that one paragraph is no longer enough.
-
-At that point, the portfolio starts behaving like a small publishing system — except the codebase was never designed that way.
-
-This project was rebuilt around that realization.
+At that point, the site is already acting like a publishing system. I rebuilt this portfolio around that reality.
 
 ## The Core Idea
 
-The website is designed so content and presentation are separate.
+Content and presentation are separate.
 
-The UI should not know which projects exist.
-
-It should only know how to render a project.
-
-The content system decides what exists.
+The UI should know how to render a project, article, experience entry, or certification. It should not need a hardcoded list of which ones exist.
 
 ```mermaid
 mindmap
@@ -63,15 +47,11 @@ mindmap
       Deploy
 ```
 
-That sounds simple, but it changes how the whole site is maintained.
+The repository content decides what exists. The application turns that content into pages and summary views.
 
-## What Editing the Portfolio Should Feel Like
+## Editing Should Feel Like Publishing
 
-Adding a project should feel like writing an article.
-
-Not like modifying application state.
-
-The intended workflow is:
+Adding a project should mostly involve writing the project.
 
 ```text
 create Markdown
@@ -82,31 +62,15 @@ create Markdown
 → publish
 ```
 
-No project-specific component should be required.
+The same pattern is used for projects, blog posts, experience, education, certifications, gallery items, and profile copy.
 
-That same model applies to:
+A new entry should not require a new project-specific component or another hardcoded array in the UI.
 
-- projects;
-- blog posts;
-- experience;
-- education;
-- certifications;
-- gallery items;
-- profile copy.
+## Why Markdown Fits
 
-## Why Markdown Became the Center of the System
+Markdown works well here because it supports both structured metadata and long-form writing while staying readable in Git.
 
-Markdown fits this kind of site unusually well.
-
-It is readable without tooling.
-
-It works naturally with Git.
-
-It can carry both structured metadata and long-form writing.
-
-It can include code, diagrams, lists, links, and images.
-
-Most importantly, it keeps the source of truth close to the content itself.
+One file can provide card metadata for a listing page and the body for a full detail page.
 
 ```mermaid
 classDiagram
@@ -128,18 +92,18 @@ classDiagram
     MarkdownDocument --> DetailPage : body
 ```
 
-The same file can power both a summary card and a full article.
+It also gives project pages enough room for diagrams, links, code, and implementation notes without forcing those details into the component layer.
 
-## The General Content Algorithm
+## Content Flow
 
-The site follows a simple pattern:
+The build follows a predictable sequence:
 
 1. Discover content files.
-2. Parse their metadata.
-3. Parse their Markdown body.
+2. Parse metadata and body content.
+3. Normalize the records.
 4. Sort or group them where needed.
-5. Render summary views from metadata.
-6. Render detail views from the long-form body.
+5. Build summary views from metadata.
+6. Build detail views from the Markdown body.
 
 ```text
 files
@@ -149,82 +113,58 @@ files
 → render
 ```
 
-The important thing is that the list of content is derived from the repository.
+The important part is that there is one source of truth. The project list, homepage selection, and project detail route all derive from the same content collection.
 
-There should not be a second hardcoded list somewhere in the UI.
-
-## General System Design
+## System Design
 
 ```mermaid
 flowchart TD
     M[Markdown collections] --> B[Build process]
     S[Svelte UI] --> B
+    B --> P[Prerendered route HTML]
     B --> A[Static assets]
-    A --> R[Small runtime server]
+    P --> R[Rust + Axum runtime]
+    A --> R
     R --> U[Visitor]
 ```
 
-The build process turns content and UI into a static frontend.
+Public routes are prerendered during the build so crawlers and browsers receive useful HTML immediately. Svelte then hydrates that markup for client-side interaction.
 
-A small production server then serves that result.
+A small Rust and Axum server embeds the generated route documents and assets for production delivery.
 
-This keeps the runtime simple while still allowing the authoring experience to stay rich.
+## Why Project Detail Pages Are Long Form
 
-## Why Project Detail Pages Matter
+A screenshot and stack list usually do not explain why a project exists or how its design changed.
 
-A project is not only a screenshot and a stack list.
+The detail pages have room for the problem, product model, system boundaries, tradeoffs, and lessons from implementation. Mermaid is useful when a relationship or flow is clearer as a diagram than as another paragraph.
 
-A good project page should explain:
+That makes a project page closer to an engineering note than a marketing card.
 
-- what problem existed;
-- what the product tries to solve;
-- how the system thinks about that problem;
-- what tradeoffs shaped the design;
-- what was learned while building it.
+## Keeping Summary Views in Sync
 
-That is why project details are treated more like articles than product cards.
-
-Mermaid is useful here because some ideas are easier to understand as relationships and flows than as paragraphs.
-
-## Why the Homepage Stays Dynamic
-
-The homepage should reflect the current portfolio automatically.
-
-When a new project is added, recent projects can change without editing the homepage component.
-
-When experience changes, the site can derive the latest items from content order.
-
-The concept is:
+Homepage and listing content are derived from the same collections.
 
 ```text
 content changes
-→ views update
+→ derived views update
 ```
 
-not:
+There is no separate workflow where I update the project content and then remember to patch another hardcoded homepage list.
 
-```text
-content changes
-→ update content
-→ update homepage
-→ update project list
-→ update navigation
-```
+That removes a class of small maintenance bugs that becomes surprisingly common as a portfolio grows.
 
-That removes duplication.
+## Tradeoffs
 
-## Product Tradeoffs
+**Markdown vs CMS editing.** Markdown is comfortable for a technical author and works well with Git history, but it is less approachable for non-technical editors.
 
-**Markdown simplicity vs CMS convenience.** Markdown is excellent for a technical author, but less friendly for non-technical editors.
+**Repository ownership vs instant publishing.** Content changes are reviewable and versioned, but they still go through a build and deployment.
 
-**Repository ownership vs instant editing.** Git gives history and reviewability, but content updates still go through a build and deployment.
-
-**Flexible long-form content vs rigid schemas.** Markdown bodies are flexible, but too much freedom can make consistency harder if there are no editorial conventions.
+**Flexible long-form content vs consistency.** Markdown gives each project room to tell a different story, so editorial guardrails are needed to keep the overall site coherent.
 
 ## Implementation Notes
 
-The current site uses Svelte for presentation, Markdown for content, Mermaid for diagrams, and a small Rust server for production delivery.
+The current site uses Svelte 5 and Vite for the frontend, Markdown for content, Mermaid for diagrams, build-time prerendering for public routes, and Rust with Axum for production delivery. GitHub Actions runs the validation, build, and deployment pipelines.
 
 ## Stack
 
-Svelte, Vite, Markdown, Mermaid, Rust, Axum, and GitHub Actions.
+Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, and GitHub Actions.

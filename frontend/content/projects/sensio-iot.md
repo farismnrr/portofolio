@@ -49,7 +49,7 @@ Sensio IoT has gone through two main production architectures.
 
 The initial implementation used a fullstack React HMI with a NestJS backend. It centered the UI around physical rooms, synchronized device state through REST, WebSockets, and SSE, stored high-frequency sensor telemetry in PostgreSQL and TimescaleDB, and integrated a room-scoped LangGraph assistant capable of evaluating context and dispatching device automation routines.
 
-The newer implementation is a high-performance Rust rewrite designed for edge efficiency. Axum serves both HTTP APIs and server-rendered Askama templates, SQLx manages PostgreSQL connection pooling and transactional persistence, and the entire domain—identity, site memberships, rooms, device state, and local configuration—is unified into a single lightweight binary.
+The newer implementation is a Rust rewrite aimed at reducing runtime overhead on edge hardware. Axum serves HTTP APIs and Askama templates, SQLx manages PostgreSQL connection pooling and transactions, and the same service owns identity, site memberships, rooms, device state, and local configuration.
 
 ```mermaid
 flowchart TD
@@ -86,16 +86,14 @@ identity
 
 ## Device Integration: Tasmota and Zigbee Ecosystems
 
-The device communication layer is separated cleanly from the site and room domain model.
+The device communication layer is separated from the site and room domain model.
 
 The platform manages two primary hardware integration pipelines:
 
-1. **Tasmota-Flashed Smart Devices & Power Monitoring**:
-   Smart plugs, energy meters, relays, and power strips running open-source **Tasmota** firmware communicate over dedicated MQTT channels. The ingestion pipeline listens to `tele/%topic%/SENSOR` broadcasts to parse real-time power metrics (active power in Watts, line voltage, current, and accumulated energy consumption), tracks relay state changes via `stat/%topic%/POWER`, and issues low-latency switching commands via `cmnd/%topic%/Power` without external cloud dependencies.
-2. **Zigbee2MQTT Environmental & Presence Sensors**:
-   Coordinates Zigbee coordinators and edge routers to ingest environmental telemetry (ambient temperature, humidity, illuminance) and occupant presence (PIR motion detectors, magnetic door/window sensors).
+1. **Tasmota-flashed smart devices and power monitoring**: smart plugs, energy meters, relays, and power strips running Tasmota publish telemetry and state through MQTT. The ingestion path reads power metrics and relay state, while commands are sent back through provider-specific topics without depending on an external cloud service.
+2. **Zigbee2MQTT environmental and presence sensors**: Zigbee coordinators feed temperature, humidity, illuminance, motion, and door/window state into the same room-oriented model.
 
-In the Rust implementation, these integrations are structured into dedicated mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped domain state, while outgoing commands are translated into provider-specific payloads.
+In the Rust implementation, those integrations sit behind mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped state; outgoing actions are translated back into provider-specific payloads.
 
 ```mermaid
 sequenceDiagram
@@ -113,25 +111,27 @@ sequenceDiagram
     A-->>U: Real-time UI synchronization
 ```
 
-This decoupled boundary absorbs protocol-specific quirks, MQTT broker disconnects, and network retries instead of leaking them into the user interface or database schema.
+That boundary is where broker reconnects, protocol quirks, and message retries belong. Keeping them there prevents the UI and room model from having to understand every hardware-specific detail.
 
 ## On-Prem as Part of the Product
 
-For a smart-space system, deployment location directly impacts reliability and latency.
+For a smart-space system, deployment location affects both latency and reliability.
 
-Lighting, room controls, telemetry, and local automation cannot depend on distant cloud round-trips. Sensio IoT treats local on-premises deployment as a core architectural requirement.
+Lighting, room controls, telemetry, and local automation should keep working without depending on a distant cloud round-trip. Sensio IoT therefore treats on-premises deployment as part of the product rather than an afterthought.
 
-The Rust service is packaged as a multi-architecture Docker container (supporting both AMD64 and ARM64) and runs on edge hardware including NVIDIA Jetson and Linux single-board computers. OpenTelemetry distributed tracing, Prometheus metrics for ingestion latency and broker throughput, and container health checks ensure rock-solid uptime next to the physical equipment it manages.
+The Rust service is packaged as a multi-architecture Docker image for AMD64 and ARM64 and runs on Linux edge hardware, including NVIDIA Jetson devices and single-board computers. OpenTelemetry, Prometheus metrics, structured logs, and container health checks are used to see what is happening when a broker, device, or local service stops behaving as expected.
 
 ## My Contribution
 
-My work on Sensio IoT spans backend systems engineering, fullstack interfaces, device integrations, and production operations:
+My work has covered both generations of the product.
 
-- **Fullstack & Backend Engineering**: Built both the initial React + NestJS fullstack platform and the high-performance Rust (Axum + SQLx) rewrite, implementing relational schemas, connection pooling, and real-time state synchronization.
-- **Physical RBAC Authorization**: Designed site- and room-scoped access control with secure JWT/refresh token rotation, preventing unauthorized command dispatch across multi-tenant physical spaces.
-- **Hardware & Protocol Integration**: Engineered asynchronous MQTT message consumers, Tasmota telemetry parsers, and Zigbee2MQTT adapters that handle real-time power monitoring, sensor ingestion, device discovery, and low-latency actuation.
-- **Conversational AI & Automation**: Developed room-scoped LangGraph assistant workflows to parse contextual commands and trigger device state changes within verified safety constraints.
-- **Production Edge Deployment & Observability**: Packaged containerized multi-architecture images (AMD64 / ARM64), deployed services to on-premise edge hardware (Jetson / Linux servers), tracked agile deliverables in Jira, and established OpenTelemetry/Prometheus observability for production reliability.
+In the earlier React + NestJS version, I worked on the backend and fullstack pieces around room state, telemetry, real-time updates, and the LangGraph-based control flow. In the Rust rewrite, I moved more of that responsibility into a smaller edge-oriented service built with Axum and SQLx.
+
+A large part of the backend work is authorization. Site membership and room scope have to be checked before a command reaches a physical device, so I built the access-control path around those boundaries instead of treating permissions as a UI concern.
+
+I also work on the hardware-facing side: MQTT consumers, Tasmota telemetry and relay state, Zigbee2MQTT adapters, device discovery, and command dispatch. The goal is not to expose those protocols to the rest of the application; it is to turn them into a consistent room/device model that other parts of the product can use.
+
+The same ownership extends into deployment. I package the service for AMD64 and ARM64, run it on local edge hardware, and use OpenTelemetry, Prometheus, and logs to investigate issues that only show up when software is sitting next to real devices and imperfect networks.
 
 ## What I Took From It
 

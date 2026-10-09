@@ -15,7 +15,7 @@ productUrl: "https://iot.sensio.id"
 repoUrl: ""
 ---
 
-## The Problem
+## Rooms, not protocols
 
 People managing a room do not think in broker topics, hardware addresses, or database identifiers.
 
@@ -25,7 +25,7 @@ They think in physical language: *the lights in this meeting room, the sensor in
 
 The product has evolved through more than one implementation, but the underlying idea has stayed consistent: organize control around **sites and rooms**, keep device protocols behind an integration layer, and make local hardware state understandable from a human-facing interface.
 
-## Product Approach
+## Organizing control around spaces
 
 A user first enters the physical scope they are responsible for, then works with the devices and automation inside that scope.
 
@@ -43,7 +43,7 @@ flowchart LR
 
 That hierarchy matters more than any particular protocol. The same product-level action can eventually be translated to different providers without making the user learn how each device communicates.
 
-## How the Platform Evolved
+## How the platform evolved
 
 Sensio IoT has gone through two main production architectures.
 
@@ -69,7 +69,7 @@ flowchart TD
 
 I treat those as iterations of the same product rather than pretending they were one unchanged architecture. The rewrite built directly on the lessons of the earlier stack.
 
-## Identity and Physical Scope
+## Identity follows physical scope
 
 The platform makes physical scope an integral part of authorization.
 
@@ -86,14 +86,13 @@ identity
 → device action
 ```
 
-## Device Integration: Tasmota and Zigbee Ecosystems
+## Tasmota and Zigbee behind one room model
 
 The device communication layer is separated from the site and room domain model.
 
 The platform manages two primary hardware integration pipelines:
 
-1. **Tasmota-flashed smart devices and power monitoring**: smart plugs, energy meters, relays, and power strips running Tasmota publish telemetry and state through MQTT.
-   The ingestion path reads power metrics and relay state. Commands go back through provider-specific topics without depending on an external cloud service.
+1. **Tasmota-flashed smart devices and power monitoring**: smart plugs, energy meters, relays, and power strips running Tasmota publish telemetry and state through MQTT. The ingestion path reads power metrics and relay state. Commands go back through provider-specific topics without depending on an external cloud service.
 2. **Zigbee2MQTT environmental and presence sensors**: Zigbee coordinators feed temperature, humidity, illuminance, motion, and door/window state into the same room-oriented model.
 
 In the Rust implementation, those integrations sit behind mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped state; outgoing actions are translated back into provider-specific payloads.
@@ -116,7 +115,7 @@ sequenceDiagram
 
 That boundary is where broker reconnects, protocol quirks, and message retries belong. Keeping them there prevents the UI and room model from having to understand every hardware-specific detail.
 
-## On-Prem as Part of the Product
+## On-prem is part of the product
 
 For a smart-space system, deployment location affects both latency and reliability.
 
@@ -126,7 +125,7 @@ The Rust service is packaged as a multi-architecture Docker image for AMD64 and 
 
 OpenTelemetry, Prometheus metrics, structured logs, and container health checks help trace what happened when a broker, device, or local service stops behaving as expected.
 
-## My Contribution
+## My work across both generations
 
 My work has covered both generations of the product.
 
@@ -142,13 +141,13 @@ Those integrations are translated into one room/device model that the rest of th
 
 The same ownership extends into deployment. I package the service for AMD64 and ARM64, run it on local edge hardware, and use OpenTelemetry, Prometheus, and logs to investigate issues that only show up when software is sitting next to real devices and imperfect networks.
 
-## What I Took From It
+## The boundary that mattered most
 
 The recurring lesson in Sensio IoT is that the hardest part of connected-device software is not sending a command to a broker.
 
 The harder question is how to keep **identity, physical scope, device state, protocol translation, and local operations** consistent while the system evolves. Once those boundaries are clear, individual device integrations become much easier to reason about.
 
-## Product Links
+## Links
 
 - Sensio IoT: [iot.sensio.id](https://iot.sensio.id)
 - Sensio Platform: [sensio.id](https://sensio.id)

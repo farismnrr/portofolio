@@ -4,6 +4,7 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
+  // Project discovery stays on the dedicated Projects page; getLatestProjects is intentionally not rendered here.
   const page = pageCopy.home;
 </script>
 

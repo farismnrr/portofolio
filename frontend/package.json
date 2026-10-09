@@ -7,6 +7,7 @@
     "build": "node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/generate-seo-assets.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build && vite build --ssr src/lib/entry-server.ts --outDir .ssr && node ./scripts/prerender.mjs && node ./scripts/verify-prerender.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "content:check": "node ./scripts/check-content.mjs",
+    "content:style": "node ./scripts/check-writing-style.mjs",
     "cv:check": "node ./scripts/check-cv-profiles.mjs",
     "seo:generate": "node ./scripts/generate-seo-assets.mjs",
     "guard": "node ./scripts/guard-ui.mjs"

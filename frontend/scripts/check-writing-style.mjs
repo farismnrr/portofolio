@@ -69,10 +69,26 @@ async function walk(dir) {
   return paths.sort();
 }
 
+function ensureBaseRef(base) {
+  try {
+    execFileSync('git', ['rev-parse', '--verify', base], { cwd: repoRoot, stdio: 'ignore' });
+    return;
+  } catch {
+    if (base !== 'origin/main') throw new Error(`Git base ref not found: ${base}`);
+  }
+
+  execFileSync(
+    'git',
+    ['fetch', '--no-tags', '--depth=1', 'origin', 'main:refs/remotes/origin/main'],
+    { cwd: repoRoot, stdio: 'inherit' }
+  );
+}
+
 function changedMarkdownFiles(base) {
+  ensureBaseRef(base);
   const output = execFileSync(
     'git',
-    ['diff', '--name-only', `${base}...HEAD`, '--', 'frontend/content'],
+    ['diff', '--name-only', base, 'HEAD', '--', 'frontend/content'],
     { cwd: repoRoot, encoding: 'utf8' }
   );
   return new Set(

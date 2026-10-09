@@ -1,151 +1,130 @@
 ---
 slug: building-iotnet
-title: "Building IoTNet: Lessons from a Real-World IoT Dashboard"
-excerpt: "What I learned building a production IoT management platform, from choosing the right stack to handling real-time updates and multi-tenant architecture."
+title: "Building IoTNet: What Changed When Devices Became a Fleet"
+excerpt: "Notes on the architecture decisions behind IoTNet, especially identity, device state, MQTT, automation, and the gap between sending a command and knowing what happened."
 category: Engineering
 published: 2026-01-12
-readTime: 4 min read
+readTime: 5 min read
 cover: /images/blog/iot-mesh-networks.png
 featured: true
 ---
 
-## Why I Built This
+## The Problem Changed with Scale
 
-I started IoTNet because I was frustrated with existing IoT platforms. They either forced you into their ecosystem with limited customization, or required weeks of setup just to get basic device control working. I wanted something in between—easy to start, but flexible enough to grow.
+A single connected device is mostly an integration problem. A fleet is an operations problem.
 
-## The Stack Decision
+Once more users and devices share the same platform, the difficult questions move away from the protocol itself. The system has to know who owns a device, who may control it, how current state is represented, and what should happen when hardware disappears from the network.
 
-Choosing the tech stack was harder than I expected. Here's what I learned:
+That shift is what shaped IoTNet.
 
-### Why Next.js Over Pure React
+## A Command Is Not a State Change
 
-I initially prototyped with Create React App. Big mistake. The moment I needed server-side rendering for better SEO and faster initial loads, I had to rewrite everything. **Lesson learned**: Start with Next.js even if you think you don't need SSR yet.
+One of the most useful distinctions in the platform is between requesting an action and observing the result.
 
-### React Query Changed Everything
+When a user clicks a control, the application can validate the request and publish a command. That only proves that the platform attempted the action. It does not prove that the physical device changed state.
 
-Before React Query, my data fetching code was a mess:
-- Manual loading states everywhere
-- Cache invalidation bugs
-- Race conditions with multiple requests
-- Stale data issues
+The useful flow is closer to this:
 
-React Query solved all of this with literally 5 lines of code per query. The `refetchInterval` option made real-time updates trivial.
-
-### Zustand vs Redux
-
-I tried Redux first (because that's what I knew). After fighting with boilerplate for a day, I switched to Zustand. The entire global state is now ~50 lines of code. Sometimes simpler is better.
-
-## Real-World Challenges
-
-### Challenge 1: Real-Time Updates Without WebSockets
-
-I wanted real-time device updates but didn't want to manage WebSocket connections. React Query's polling was the perfect middle ground:
-
-```typescript
-useQuery({
-  queryKey: ['devices'],
-  queryFn: fetchDevices,
-  refetchInterval: 5000, // Good enough for most use cases
-});
+```text
+user intent
+→ authorization
+→ command publish
+→ device execution
+→ state or telemetry update
+→ UI reflects observed state
 ```
 
-Is it as instant as WebSockets? No. But it's **way** simpler to implement and maintain.
+That extra step matters in IoT because networks fail, devices restart, brokers reconnect, and hardware does not always behave like an in-memory object.
 
-### Challenge 2: Multi-Tenant Architecture
+## Why HTTP and MQTT Have Different Jobs
 
-The hardest part wasn't the code—it was the architecture decisions:
-- Should tenants share a database or have separate ones?
-- How do we prevent tenant A from accessing tenant B's data?
-- What happens when a tenant exceeds their device limit?
+I do not try to force user workflows and device communication through the same transport model.
 
-I ended up building a separate [authentication service](/projects/multitenant-user-management) in Rust. Separating auth from the frontend was the best decision I made. Each service can scale independently.
+HTTP works well for application actions such as signing in, loading resources, changing configuration, or asking the platform to perform an operation. MQTT is better suited to devices that publish state asynchronously and may disconnect without warning.
 
-### Challenge 3: Mobile Responsiveness
+In IoTNet, the conceptual boundary is simple:
 
-IoT dashboards are often used on-site, which means mobile devices. Tailwind CSS made responsive design painless:
-
-```tsx
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {/* Automatically adjusts to screen size */}
-</div>
+```text
+human workflow → application API
+device workflow → broker messaging
 ```
 
-But the real challenge was **touch interactions**. Buttons that work great with a mouse can be frustrating on mobile. I had to increase touch targets and add visual feedback for every interaction.
+The backend sits between those two sides. It turns product-level requests into device-level messages and turns incoming device events back into application state.
 
-## What I'd Do Differently
+## Identity Became Part of the Device Model
 
-### 1. Start with TypeScript
+Device control stopped being only a messaging problem as soon as more than one user or organization shared the platform.
 
-I added TypeScript halfway through. Migrating was painful. The type errors caught so many bugs, but I wish I'd started with it from day one.
+Before a command reaches a device, the backend needs enough context to answer questions such as:
 
-### 2. Write Tests Earlier
+- Which tenant or organization owns this device?
+- Is this user allowed to operate it?
+- Which target should receive the command?
+- Should this user be able to see the returned state?
 
-I wrote tests after the first production bug. Should've written them from the start. React Testing Library + Jest is now part of my workflow.
+That is why I treat identity, ownership, and device messaging as connected parts of the same system rather than separate features added later.
 
-### 3. Document API Contracts
+## Automation Works Better as Small Building Blocks
 
-When the auth service and frontend got out of sync, debugging took hours. Now I use TypeScript interfaces shared between services. Game changer.
+The automation model is intentionally plain:
 
-## Performance Wins
-
-### Code Splitting
-
-Next.js automatic code splitting reduced initial bundle size by 60%. Users only download what they need for the current page.
-
-### Image Optimization
-
-Using Next.js `<Image>` component:
-- Automatic WebP conversion
-- Lazy loading
-- Responsive images
-
-Page load time dropped from 3.2s to 1.1s.
-
-### Optimistic Updates
-
-Instead of waiting for the server response, I update the UI immediately:
-
-```typescript
-const mutation = useMutation({
-  mutationFn: updateDevice,
-  onMutate: async (newDevice) => {
-    // Update UI immediately
-    queryClient.setQueryData(['devices'], (old) => 
-      old.map(d => d.id === newDevice.id ? newDevice : d)
-    );
-  },
-});
+```text
+event
+→ condition
+→ decision
+→ action
 ```
 
-Feels instant to users, even on slow connections.
+The value comes from keeping those stages explicit.
 
-## Deployment Journey
+A temperature update can become an event. Occupancy or a threshold can become a condition. The rule decides whether anything should happen, and only then does the platform dispatch an action.
 
-### First Attempt: Self-Hosted
+This keeps the automation engine easier to inspect when a rule behaves unexpectedly. It also makes different use cases share the same model instead of growing a new feature path for every device type.
 
-I tried deploying on a VPS. Managing SSL certificates, PM2, and database backups was a nightmare. Not worth the $5/month savings.
+## The Platform Is a Coordination Layer
 
-### Current Setup: Vercel
+The architecture is easier to reason about when the platform owns product meaning and the broker owns message delivery.
 
-Deployed to Vercel in 5 minutes. Automatic HTTPS, edge functions, and instant rollbacks. The developer experience is incredible.
+```mermaid
+flowchart TD
+    U[User] --> API[Application API]
+    API --> AUTH[Identity and access]
+    API --> RULES[Rules and automation]
+    RULES --> MQTT[MQTT / EMQX]
+    API --> MQTT
+    MQTT --> DEV[Connected devices]
+    DEV --> MQTT
+    MQTT --> STATE[State and telemetry handling]
+    STATE --> API
+    API --> U
+```
 
-## What's Next
+That separation gives each layer a clearer responsibility. The application decides what an action means and whether it is allowed. The messaging layer moves commands and events. Device state is then folded back into the product model.
 
-I'm working on:
-- **Offline support**: PWA features for areas with poor connectivity
-- **Historical analytics**: Visualizing device data over time
-- **Voice control**: "Hey Google, turn on the lights"
+## What Became Harder Than Expected
 
-## Key Takeaways
+The difficult parts were not the ones that look impressive in a demo.
 
-1. **Choose boring technology**: Next.js, React Query, and Zustand are proven. Don't experiment in production.
-2. **Separate concerns**: Auth service in Rust, frontend in Next.js. Each does one thing well.
-3. **Developer experience matters**: Good DX leads to faster iterations and fewer bugs.
-4. **Ship early**: I waited too long for "perfect". Ship and iterate based on real feedback.
+Keeping state understandable after reconnects was harder than sending a command. Access boundaries mattered more as soon as multiple users shared the same environment. Automation needed enough flexibility to be useful without becoming impossible to predict.
 
----
+Observability also became more important as the system grew. When a device, broker, API request, or background process can all be part of one user-visible failure, logs and traces are not optional debugging extras. They are how the failure path becomes visible.
 
-**Live Demo**: [i-ot.net](https://i-ot.net/)  
-**Source Code**: [GitHub](https://github.com/farismnrr/iotnet)
+## What I Would Keep If I Rebuilt It
 
-Want to discuss IoT architecture or Next.js best practices? [Connect with me on LinkedIn](https://www.linkedin.com/in/farismnrr).
+I would keep the same high-level boundaries:
+
+1. Keep user-facing API work separate from device messaging.
+2. Treat authorization as part of every device action, not a frontend concern.
+3. Distinguish a published command from an observed device state.
+4. Keep automation rules explicit enough to inspect after the fact.
+5. Add observability early, before the number of integrations makes failures difficult to trace.
+
+The individual frameworks can change. Those boundaries are more durable than the stack around them.
+
+## Current Stack
+
+The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.
+
+The project page has the broader product and system overview: [IoTNet](/projects/iotnet).
+
+**Live product:** [i-ot.net](https://i-ot.net/)

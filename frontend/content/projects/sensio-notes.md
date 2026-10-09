@@ -15,7 +15,7 @@ productUrl: "https://notes.sensio.id"
 repoUrl: ""
 ---
 
-## The Problem
+## Protect the recording before asking AI to interpret it
 
 A meeting recording is useful evidence, but it is rarely useful by itself.
 
@@ -33,7 +33,7 @@ then
 interpret it carefully
 ```
 
-## Product Approach
+## The meeting lifecycle
 
 From the user's point of view, the flow stays simple: record or upload a meeting, wait while it is processed, then review the transcript and the structures derived from it.
 
@@ -52,7 +52,7 @@ flowchart LR
 
 The important boundary is that capture, transcription, and interpretation are separate stages. A summary should not be treated as the original evidence, and a failed processing step should not make the recording itself disappear.
 
-## Capture Before Interpretation
+## Capture before interpretation
 
 The client supports both browser/PWA and native-mobile recording because those environments fail in different ways.
 
@@ -64,7 +64,7 @@ After recording, the client does not rely on one large request. Audio is divided
 
 That design keeps the first promise of the product deliberately boring: **do not lose the meeting**.
 
-## Processing the Meeting
+## Processing after the media is durable
 
 Once media is durable, the backend becomes an orchestration layer rather than a synchronous request handler.
 
@@ -94,7 +94,7 @@ PostgreSQL stores durable product data with relational schemas, indexed queries,
 
 The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and worker coordination.
 
-## From Transcript to Meeting Knowledge
+## Turning transcripts into meeting knowledge
 
 Sensio Notes does not stop at producing raw text.
 
@@ -110,7 +110,7 @@ AI output = interpretation built on top of it
 
 Keeping those layers conceptually separate makes it easier for the product to expose useful automation without pretending generated text is more authoritative than the meeting itself. Every extracted insight links back to source transcript timestamps so users can verify decisions directly against what was said.
 
-## My Contribution
+## What I worked on
 
 Most of my work sits at the points where a long-running meeting flow can fail.
 
@@ -128,13 +128,13 @@ That meant dealing with wake locks, native recording behavior, upload progress, 
 
 The production work is part of the same job. I use Docker for packaging, OpenTelemetry and structured logs to trace failures across the processing path, and Jira to keep implementation work tied to the product issues we are actually trying to solve.
 
-## What I Took From It
+## The boundary that mattered most
 
 Sensio Notes made one design rule especially clear: **capture reliability and AI quality are different problems**.
 
 A clever summary cannot recover a recording that was never preserved, and a perfectly stored recording is still inconvenient if useful decisions remain buried inside an hour of audio. The system has to protect the evidence first and add interpretation second.
 
-## Product Links
+## Links
 
 - Sensio Notes: [notes.sensio.id](https://notes.sensio.id)
 - Sensio Platform: [sensio.id](https://sensio.id)

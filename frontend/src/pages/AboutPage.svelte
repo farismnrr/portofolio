@@ -76,9 +76,9 @@
       <section class="min-w-0">
         <header class="border-b border-black/10 pb-9">
           <p class="text-[14px] font-medium text-black/48">About</p>
-          <h1 class="mt-3 max-w-[24ch] text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px] xl:max-w-[28ch]">{page.subtitle}</h1>
+          <h1 class="mt-3 w-full max-w-none text-balance text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px]">{page.subtitle}</h1>
 
-          <div class="mt-7 text-[16px] leading-7 text-black/62 xl:[&_.project-markdown_article]:columns-2 xl:[&_.project-markdown_article]:gap-12 xl:[&_.project-markdown_article]:text-justify xl:[&_.project-markdown_article]:hyphens-auto xl:[&_.project-markdown_p]:mb-[1.1rem] xl:[&_.project-markdown_p]:mt-0 xl:[&_.project-markdown_p]:break-inside-avoid">
+          <div class="mt-7 w-full text-[16px] leading-7 text-black/62 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
@@ -114,7 +114,7 @@
                   <h3 class="text-[19px] font-semibold tracking-[-0.015em] text-black/84">{item.institution}</h3>
                   <p class="mt-1 text-[15px] text-black/58">{item.program}</p>
                   {#if item.description}
-                    <div class="mt-4 text-[14px] leading-6 text-black/56">
+                    <div class="mt-4 text-[14px] leading-6 text-black/56 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
                       <MarkdownArticle html={renderMarkdown(item.description).html}/>
                     </div>
                   {/if}
@@ -139,7 +139,7 @@
                       <a class="hover:opacity-60" href={item.url}>{item.title}</a>
                     </h3>
                     <p class="mt-1 text-[13px] text-black/50">{item.venue}</p>
-                    <p class="mt-3 max-w-none text-[14px] leading-6 text-black/56">{item.summary}</p>
+                    <p class="mt-3 max-w-none hyphens-auto text-justify text-[14px] leading-6 text-black/56">{item.summary}</p>
                     {#if item.doi}
                       <a class="mt-3 inline-block text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href={item.doi}>DOI</a>
                     {/if}

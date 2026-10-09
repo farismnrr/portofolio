@@ -50,6 +50,7 @@
         <div class="space-y-4 text-[14px]">
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.github}><AppIcon name="github" size={18}/>GitHub</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={18}/>LinkedIn</a>
+          <a class="flex items-center gap-3 hover:opacity-60" href={profile.googleCloudSkills}><AppIcon name="globe" size={18}/>Google Cloud Skills</a>
           <a class="flex items-center gap-3 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={18}/>Email</a>
           <button
             class="flex items-center gap-3 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
@@ -84,7 +85,7 @@
             <div class="cv-status rounded-2xl border p-4" role="status">
               <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
               <p class="mt-1 text-[12px] leading-5 text-black/50">
-                Your general CV was generated from verified portfolio content and downloaded.
+                Your CV was generated from verified portfolio content and downloaded.
               </p>
             </div>
           {/if}

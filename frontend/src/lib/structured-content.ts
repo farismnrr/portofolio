@@ -15,7 +15,7 @@ export interface PageCopy {
 }
 export interface ProfileContent {
   name: string; role: string; location: string; languages: string; image: string;
-  github: string; linkedin: string; email: string; resume: string;
+  github: string; linkedin: string; googleCloudSkills: string; email: string; resume: string;
   specialties: string; headline: string; intro: string; availability: string; quote: string;
 }
 export interface NavigationItem { order: number; label: string; href: string; matches: string[]; }
@@ -101,7 +101,7 @@ export function getLatestExperiences(limit:number){
 const profileSource = Object.entries(profileModules)[0];
 if (!profileSource) throw new Error('content/profile must contain a profile Markdown document.');
 const profileParsed = parseFrontmatter(profileSource[0], profileSource[1]);
-requireKeys(profileSource[0], profileParsed.values, ['name','role','location','languages','image','github','linkedin','email','resume','specialties','headline','intro','availability','quote']);
+requireKeys(profileSource[0], profileParsed.values, ['name','role','location','languages','image','github','linkedin','googleCloudSkills','email','resume','specialties','headline','intro','availability','quote']);
 
 export const profile: ProfileContent = {
   name: unquote(profileParsed.values.get('name') ?? ''),
@@ -111,6 +111,7 @@ export const profile: ProfileContent = {
   image: unquote(profileParsed.values.get('image') ?? ''),
   github: unquote(profileParsed.values.get('github') ?? ''),
   linkedin: unquote(profileParsed.values.get('linkedin') ?? ''),
+  googleCloudSkills: unquote(profileParsed.values.get('googleCloudSkills') ?? ''),
   email: unquote(profileParsed.values.get('email') ?? ''),
   resume: unquote(profileParsed.values.get('resume') ?? ''),
   specialties: unquote(profileParsed.values.get('specialties') ?? ''),

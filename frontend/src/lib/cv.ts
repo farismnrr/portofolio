@@ -130,7 +130,9 @@ async function retrieveNode(state: CvStateType) {
 
 function planEvidenceNode(state: CvStateType) {
   const cvProfile = getCvProfile(state.target);
-  const candidates = [...state.evidence];
+  const candidates = state.evidence.filter(
+    (item) => !(item.sourceType === 'experience' && item.sourceId === '2')
+  );
   const planned: Evidence[] = [];
   const selectedIds = new Set<string>();
   const projectCounts = new Map<string, number>();
@@ -225,10 +227,9 @@ function draftPrompt(cvProfile: CvProfile, evidence: Evidence[]) {
     '- PROJECTS and WORK EXPERIENCE are separate sections.',
     '- Projects contain the detailed technical narratives and are the main proof of technical work.',
     '- Work Experience stays concise and factual; summaries and bullets are attached deterministically from source Markdown.',
-    '- Related projects are attached only when the source Markdown contains an actual mapping. Never force a relationship.',
-    `- Select at most ${cvProfile.budgets.projects} projects, ${cvProfile.budgets.experiences} experience entries, and ${cvProfile.budgets.certifications} certifications.`,
-    '- Select at least one grounded project, experience, and certification. Education is attached deterministically and cannot be removed.',
-    '- Order selected records strongest or most relevant first because the renderer may trim lower-priority optional records.',
+    `- Select between ${cvProfile.layoutPolicy.minimumItems.projects} and ${cvProfile.budgets.projects} grounded projects, between ${cvProfile.layoutPolicy.minimumItems.experiences} and ${cvProfile.budgets.experiences} experience entries, and between ${cvProfile.layoutPolicy.minimumItems.certifications} and ${cvProfile.budgets.certifications} certifications to properly fill the ${cvProfile.maxPages}-page layout.`,
+    '- For WORK EXPERIENCE, select only software engineering, backend, and cloud roles (e.g. PT Perkasa Pilar Utama, Ruang Guru Academy, Codepolitan, Bangkit Academy). Do NOT select Machine Learning Engineer roles (exclude DBS Foundation from the CV).',
+    '- Order selected records strongest or most relevant first because the renderer may trim lower-priority optional records during layout fitting.',
     '- Do not invent titles, companies, dates, certificate names, URLs, or stack lines; those are attached deterministically later.',
     '- Do not output scope labels. The technical scope keys and labels are deterministic from the profile registry.',
     `- technicalScope must contain exactly these keys in this order: ${cvProfile.technicalScopes.map((scope) => scope.key).join(', ')}.`,
@@ -236,12 +237,14 @@ function draftPrompt(cvProfile: CvProfile, evidence: Evidence[]) {
     '',
     'WORK_PROJECT_LINKS:',
     JSON.stringify(
-      experiences.map((item) => ({
-        experienceSourceId: String(item.order),
-        role: item.role,
-        company: item.company,
-        projectSlugs: item.projects
-      }))
+      experiences
+        .filter((item) => !item.role.toLowerCase().includes('machine learning'))
+        .map((item) => ({
+          experienceSourceId: String(item.order),
+          role: item.role,
+          company: item.company,
+          projectSlugs: item.projects
+        }))
     ),
     '',
     'EVIDENCE:',
@@ -641,11 +644,7 @@ function absolutePortfolioUrl(value: string) {
 function projectWebUrl(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  return (
-    project.productUrl ||
-    project.repoUrl ||
-    `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`
-  );
+  return `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`;
 }
 
 function projectMeta(slug: string) {

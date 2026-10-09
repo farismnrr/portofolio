@@ -9,3 +9,4 @@ server/target/
 server/Cargo.lock
 .DS_Store
 .env
+*.pdf

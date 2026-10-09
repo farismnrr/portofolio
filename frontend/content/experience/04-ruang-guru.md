@@ -1,6 +1,6 @@
 ---
 order: 4
-year: Feb 2024 — Aug 2024
+year: Feb 2024 — Jun 2024
 company: Ruang Guru Academy
 role: Back End Developer
 location: ""
@@ -10,5 +10,3 @@ projects: [askin]
 ---
 
 - Worked through backend-focused learning and implementation around application APIs, service integration, data flow, and deployment.
-- Used **AskIn** as the main project context for understanding how a web application can coordinate model providers, retrieved knowledge, files, user-facing chat flows, and the backend services around them.
-- Focused on the backend and integration boundary rather than treating the AI model itself as the entire application.

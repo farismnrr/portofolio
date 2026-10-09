@@ -56,6 +56,7 @@ pub fn get(id: &str) -> Result<&'static CvProfile, String> {
     match registry() {
         Ok(profiles) => profiles
             .get(id)
+            .or_else(|| profiles.get("general"))
             .ok_or_else(|| format!("unknown CV profile: {id}")),
         Err(error) => Err(error.clone()),
     }
@@ -66,26 +67,20 @@ mod tests {
     use super::get;
 
     #[test]
-    fn registry_contains_all_supported_profiles() {
-        for id in ["general", "ai-engineer", "software-engineer", "devops"] {
-            let profile = get(id).expect("profile should exist");
-            assert_eq!(profile.id, id);
-            assert!(!profile.preferred_signals.is_empty());
-            assert!(!profile.retrieval_query.is_empty());
-        }
+    fn registry_contains_general_profile() {
+        let profile = get("general").expect("profile should exist");
+        assert_eq!(profile.id, "general");
+        assert!(!profile.preferred_signals.is_empty());
+        assert!(!profile.retrieval_query.is_empty());
     }
 
     #[test]
-    fn registry_keeps_profile_specific_layout_and_filename() {
+    fn registry_keeps_general_layout_and_filename() {
         let general = get("general").expect("general profile");
-        let ai = get("ai-engineer").expect("AI profile");
 
         assert_eq!(general.max_pages, 2);
-        assert_eq!(ai.max_pages, 1);
         assert!(general.layout_policy.min_second_page_fill > 0.0);
-        assert_eq!(ai.layout_policy.min_second_page_fill, 0.0);
-        assert_eq!(ai.filename, "Faris_Munir_Mahdi_AI_Engineer_CV.pdf");
+        assert_eq!(general.filename, "Faris_Munir_Mahdi_CV.pdf");
         assert!(general.layout_policy.min_body_size_pt >= 10.0);
-        assert!(ai.layout_policy.min_body_size_pt >= 10.0);
     }
 }

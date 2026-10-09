@@ -1,0 +1,43 @@
+# Faris Munir Mahdi
+
+> Software Engineer focused on backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.
+
+Canonical website: https://farismnrr.com/
+GitHub: https://github.com/farismnrr
+LinkedIn: https://www.linkedin.com/in/farismnrr
+
+## Core profile
+
+- Role: Software Engineer
+- Focus: Backend Engineering, Cloud Infrastructure, IoT, AI/Agentic Systems
+- Location: Asia/Jakarta
+- Languages: English, Bahasa Indonesia
+
+## Main portfolio sections
+
+- About: https://farismnrr.com/about
+- Experience: https://farismnrr.com/experience
+- Skills: https://farismnrr.com/skills
+- Projects: https://farismnrr.com/projects
+- Blog: https://farismnrr.com/blog
+- Certifications: https://farismnrr.com/certifications
+
+## Selected projects
+
+- Sensio Notes: https://farismnrr.com/projects/sensio-notes
+- Sensio IoT: https://farismnrr.com/projects/sensio-iot
+- Masih Awam AI Code: https://farismnrr.com/projects/masih-awam-ai-code
+- Masih Awam LMS: https://farismnrr.com/projects/masih-awam-lms
+- IoTNet: https://farismnrr.com/projects/iotnet
+- Multitenant User Management: https://farismnrr.com/projects/multitenant-user-management
+- Parentify: https://farismnrr.com/projects/parentify
+- GiziLens: https://farismnrr.com/projects/gizilens
+- Askin: https://farismnrr.com/projects/askin
+
+## Machine-readable discovery
+
+- Sitemap: https://farismnrr.com/sitemap.xml
+- Robots: https://farismnrr.com/robots.txt
+- Extended LLM context: https://farismnrr.com/llms-full.txt
+
+Use the canonical portfolio pages above as the primary source for current project and experience details.

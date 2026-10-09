@@ -10,5 +10,5 @@ projects: [parentify]
 ---
 
 - Completed the Cloud Computing learning path through self-paced coursework, instructor-led sessions, hands-on cloud labs, English practice, and soft-skill training.
-- Worked in a cross-functional cohort where technical decisions had to be communicated clearly across Cloud Computing, Mobile Development, and Machine Learning roles.
+- Worked in the **[Parentify](/projects/parentify)** cross-functional capstone team where technical decisions had to be communicated clearly across Cloud Computing, Mobile Development, and Machine Learning roles.
 - Practiced team delivery beyond implementation itself: defining ownership, coordinating hand-offs, documenting decisions, and keeping integration work aligned with a shared product goal.

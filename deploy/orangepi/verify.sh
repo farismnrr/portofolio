@@ -72,7 +72,7 @@ curl --fail --silent --show-error --retry 5 --retry-delay 2 \
 retrieve="$(curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
   -X POST http://127.0.0.1:3001/api/cv/retrieve \
   -H 'Content-Type: application/json' \
-  --data '{"target":"software-engineer","query":"backend PostgreSQL Rust Docker","limit":6}')"
+  --data '{"target":"general","query":"backend PostgreSQL Rust Docker","limit":6}')"
 printf '%s\n' "$retrieve" | python3 -c '
 import json, sys
 d=json.load(sys.stdin)

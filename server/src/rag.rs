@@ -680,37 +680,37 @@ mod tests {
 
     #[test]
     fn reranking_uses_profile_metadata_signals() {
-        let profile = profiles::get("ai-engineer").expect("AI profile");
+        let profile = profiles::get("general").expect("general profile");
         let ranked = rerank_evidence(
             profile,
-            "production AI retrieval",
+            "backend engineering",
             vec![
                 evidence(
                     "generic",
                     "project",
                     "generic",
-                    &["Docker"],
-                    &["Product"],
-                    0.95,
+                    &["Graphic Design"],
+                    &["Marketing"],
+                    0.80,
                 ),
                 evidence(
-                    "agentic",
+                    "systems",
                     "project",
-                    "agentic",
-                    &["MCP", "RAG", "LangGraph"],
-                    &["Applied AI"],
-                    0.78,
+                    "systems",
+                    &["Backend", "Database"],
+                    &["Software Engineering"],
+                    0.80,
                 ),
             ],
             2,
         );
 
-        assert_eq!(ranked[0].source_id, "agentic");
+        assert_eq!(ranked[0].source_id, "systems");
     }
 
     #[test]
     fn reranking_applies_a_per_project_evidence_cap() {
-        let profile = profiles::get("software-engineer").expect("software profile");
+        let profile = profiles::get("general").expect("general profile");
         let ranked = rerank_evidence(
             profile,
             "backend APIs",

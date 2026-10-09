@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { pageCopy, profile } from '../lib/structured-content';
+  import { education, getLatestExperiences, pageCopy, profile, skillGroups } from '../lib/structured-content';
+  import { getLatestProjects } from '../lib/project-content';
   import { renderMarkdown } from '../lib/markdown';
   import { navigate } from '../lib/router';
   import PageShell from '../lib/ui/PageShell.svelte';
@@ -8,6 +9,10 @@
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
+  const currentExperience = getLatestExperiences(1)[0];
+  const selectedProjects = getLatestProjects(3);
+  const educationEntry = education[0];
+  const skillFocus = skillGroups.slice(0, 3).map((group) => group.title).join(', ');
 
   let generatingCv = false;
   let cvError = '';
@@ -60,16 +65,38 @@
           <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
         </div>
 
-        <div class="mt-9 border-t border-black/10 pt-6">
-          <p class="text-[13px] font-medium text-black/76">Go deeper</p>
-          <div class="mt-3 flex flex-wrap gap-x-6 gap-y-3 text-[14px] text-black/62">
-            <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href="/experience" on:click={(e)=>navigate(e,'/experience')}>Experience</a>
-            <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href="/projects" on:click={(e)=>navigate(e,'/projects')}>Projects</a>
-            <a class="underline decoration-black/20 underline-offset-4 hover:text-black" href="/skills" on:click={(e)=>navigate(e,'/skills')}>Skills & education</a>
-          </div>
+        <div class="mt-10 border-t border-black/10">
+          {#if currentExperience}
+            <section class="grid gap-3 border-b border-black/10 py-6 sm:grid-cols-[120px_1fr] sm:gap-7">
+              <h2 class="text-[14px] font-medium text-black/78">Experience</h2>
+              <div>
+                <p class="text-[15px] font-medium text-black/84">{currentExperience.role} at {currentExperience.company}</p>
+                <p class="mt-2 max-w-[62ch] text-[14px] leading-6 text-black/56">{currentExperience.summary}</p>
+                <a class="mt-3 inline-block text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href="/experience" on:click={(e)=>navigate(e,'/experience')}>View experience →</a>
+              </div>
+            </section>
+          {/if}
+
+          <section class="grid gap-3 border-b border-black/10 py-6 sm:grid-cols-[120px_1fr] sm:gap-7">
+            <h2 class="text-[14px] font-medium text-black/78">Selected work</h2>
+            <div>
+              <p class="text-[15px] leading-6 text-black/72">{selectedProjects.map((project) => project.cardTitle).join(', ')}</p>
+              <p class="mt-2 max-w-[62ch] text-[14px] leading-6 text-black/56">Backend, cloud, IoT, and AI-related systems represented through project case studies.</p>
+              <a class="mt-3 inline-block text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href="/projects" on:click={(e)=>navigate(e,'/projects')}>View projects →</a>
+            </div>
+          </section>
+
+          <section class="grid gap-3 border-b border-black/10 py-6 sm:grid-cols-[120px_1fr] sm:gap-7">
+            <h2 class="text-[14px] font-medium text-black/78">Background</h2>
+            <div>
+              {#if skillFocus}<p class="text-[15px] leading-6 text-black/72">{skillFocus}</p>{/if}
+              {#if educationEntry}<p class="mt-2 max-w-[62ch] text-[14px] leading-6 text-black/56">{educationEntry.program}, {educationEntry.institution}</p>{/if}
+              <a class="mt-3 inline-block text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href="/skills" on:click={(e)=>navigate(e,'/skills')}>View skills & education →</a>
+            </div>
+          </section>
         </div>
 
-        <div class="mt-9 border-t border-black/10 pt-6">
+        <div class="mt-8">
           <button
             class="text-[14px] font-medium underline decoration-black/20 underline-offset-4 hover:text-black disabled:cursor-wait disabled:opacity-45"
             type="button"

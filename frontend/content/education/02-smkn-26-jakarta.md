@@ -5,4 +5,4 @@ institution: SMKN 26 Jakarta
 program: Degree in Power Electronics and Communications
 ---
 
-For my final-year project, **BERDIKARI SMK**, I built an automatic hand-washing device with proximity-based activation and temperature screening for COVID-19 prevention. The work covered the schematic and PCB through assembly, plus an embedded IoT layer for handling temperature readings and device behavior.
+Final-year project: [**BERDIKARI SMK**](https://repositori.kemendikdasmen.go.id/23137/1/1611582426558_43b86f8c-34f4-4068-9d79-4039ce36df4f.pdf), an automatic hand-washing and non-contact temperature-screening device developed for COVID-19 prevention. The system combined proximity-based activation, schematic and PCB design, device assembly, embedded IoT logic, and dual power from solar and PLN.

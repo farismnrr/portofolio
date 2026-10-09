@@ -108,14 +108,15 @@ Keeping those layers conceptually separate makes it easier for the product to ex
 
 ## My Contribution
 
-My work on Sensio Notes spans fullstack product engineering, production backend architecture, and AI pipeline orchestration:
+Most of my work sits at the points where a long-running meeting flow can fail.
 
-- **Backend Architecture & API Engineering**: Designed and shipped the core NestJS backend with structured domain modules, REST APIs, WebSocket gateways, and PostgreSQL data persistence with transactional safety and automated schema migrations.
-- **Resilient Media Ingestion**: Engineered chunked S3 audio upload pipelines with checksum verification, presigned URLs, and upload resumption that prevent data loss across spotty client connections.
-- **Asynchronous Worker Pipelines**: Orchestrated transcription worker lifecycles with queue backoff, idempotent callback handlers, and live WebSocket broadcasts to maintain transparent progress during multi-minute processing runs.
-- **Structured AI & RAG Workflows**: Built LangGraph pipelines that chunk transcripts, query LLMs for grounded summaries and action items, and enforce strict JSON schemas so generated outputs link directly to source evidence.
-- **Fullstack Client-Server Integration**: Bridged React and Capacitor mobile recording flows with backend state machines, ensuring consistent wake-lock behavior, offline resilience, and fluid review UX.
-- **Production Operations & Agile Delivery**: Containerized services with Docker, established OpenTelemetry distributed tracing and structured logging across audio processing pipelines, tracked sprint deliverables via Jira, and managed production deployments ensuring high availability and zero data loss.
+On the backend, I built and maintained the meeting lifecycle in NestJS: data models, upload coordination, background transcription state, callbacks, and the APIs used by the web and mobile clients. For large recordings, I worked on chunked S3 uploads and resume-friendly flows so a weak connection would not force someone to start from zero.
+
+I also worked on the transcript-processing side. The LangGraph workflows take completed transcripts, split and structure the material, ask models for specific outputs, and validate those outputs against schemas before they are stored. The important part for me was keeping generated notes tied back to the transcript instead of treating model output as a replacement for the source.
+
+On the client side, I connected the React and Capacitor recording paths to the same backend state machine. That meant dealing with wake locks, native recording behavior, upload progress, and the awkward cases where the app is backgrounded or the network disappears halfway through a meeting.
+
+The production work is part of the same job. I use Docker for packaging, OpenTelemetry and structured logs to trace failures across the processing path, and Jira to keep implementation work tied to the product issues we are actually trying to solve.
 
 ## What I Took From It
 

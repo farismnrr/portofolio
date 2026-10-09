@@ -15,7 +15,7 @@ productUrl: ""
 repoUrl: "https://github.com/farismnrr/askin"
 ---
 
-## The Problem
+## When chat becomes an application
 
 Using a language model is straightforward when the task is only sending a prompt and reading a response.
 
@@ -25,7 +25,7 @@ The experience becomes more complicated when the application also needs to work 
 
 Rather than treating the model itself as the product, the project focused on the application around it: how a user chooses a model, starts a conversation, brings external context into that conversation, and receives a response without needing to understand how each underlying service works.
 
-## Product Approach
+## Keeping the user flow simple
 
 From the user's perspective, the core flow stays intentionally simple.
 
@@ -44,7 +44,7 @@ flowchart LR
 
 The important part is that model access, retrieval, and supporting tools remain implementation details behind the interface. A user should be able to think about the question and the available context rather than the plumbing needed to connect each service.
 
-## How the System Worked
+## The backend as a coordination layer
 
 AskIn was built as a customized AI web application with a Svelte-based frontend and a Python/FastAPI backend.
 
@@ -52,31 +52,9 @@ The backend acts as the coordination layer between the web application and model
 
 The same application also contains a retrieval layer for adding external knowledge to a conversation. Instead of sending every question directly to a model with no context, the system can prepare relevant document or file context and include it in the generation flow.
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant W as Web UI
-    participant B as FastAPI backend
-    participant R as Retrieval layer
-    participant M as Model provider
-
-    U->>W: Ask a question
-    W->>B: Submit conversation and selected model
-
-    opt Additional knowledge is needed
-        B->>R: Resolve relevant context
-        R-->>B: Return retrieved context
-    end
-
-    B->>M: Generate completion with prepared context
-    M-->>B: Return model response
-    B-->>W: Stream or return response
-    W-->>U: Continue the conversation
-```
-
 This separation made the project useful as a learning exercise because the visible chat experience depended on several backend concerns working together: identity, model discovery, request preparation, retrieval, streaming responses, and persistence.
 
-## Model and Knowledge Integration
+## Model and knowledge integration
 
 The project supports more than one model path rather than coupling the interface to a single provider.
 
@@ -84,20 +62,9 @@ Its backend contains integrations for **Ollama-compatible models** and **OpenAI-
 
 AskIn also includes a **retrieval-augmented generation** path. Files or knowledge sources can be processed as supporting context, then relevant information can be attached to a conversation before the generation request is sent to the model.
 
-Conceptually, the flow is:
-
-```text
-user question
-→ identify model and conversation context
-→ retrieve additional knowledge when needed
-→ prepare model request
-→ generate response
-→ return the response to the same chat interface
-```
-
 The value of this structure is not that every question needs retrieval. It is that the application has a place to introduce trusted context when a plain model prompt is not enough.
 
-## Application Boundary
+## Where the AI boundary ends
 
 One of the useful lessons from AskIn was understanding where an AI feature ends and normal application engineering begins.
 
@@ -107,7 +74,7 @@ The backend therefore acts less like a thin proxy and more like an application b
 
 Docker-based packaging was also part of the repository so the frontend and backend could be distributed as one runnable application instead of requiring each service to be assembled manually by the user.
 
-## My Responsibility
+## What I worked on
 
 My work on AskIn was centered on the **backend and integration side** of the project during Ruangguru Academy.
 
@@ -117,6 +84,6 @@ I describe the complete application here because those pieces are necessary to e
 
 That distinction is important to me. The useful outcome was not presenting an existing foundation as something created from zero, but understanding its architecture well enough to adapt, run, and reason about the boundaries between the application and the AI services behind it.
 
-## Repository
+## Source
 
 The project source is available at [farismnrr/askin](https://github.com/farismnrr/askin).

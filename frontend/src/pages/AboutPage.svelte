@@ -52,6 +52,7 @@
         <div class="space-y-3 text-[13px]">
           <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
           <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
           <button
             class="flex items-center gap-2.5 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"

@@ -86,10 +86,12 @@ export function getSeo(currentPath: string) {
 
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
+    const aboutDescription =
+      'Software Engineer Faris Munir Mahdi builds backend, cloud, IoT, and practical AI systems, with public projects, research, and professional experience.';
     return {
       ...base,
       title: `About — ${profile.name}`,
-      description: profile.intro || defaultDescription,
+      description: aboutDescription,
       structuredData: graph(
         personNode(),
         {
@@ -97,7 +99,7 @@ export function getSeo(currentPath: string) {
           '@id': `${canonical}#profile-page`,
           url: canonical,
           name: `About ${profile.name}`,
-          description: profile.intro || defaultDescription,
+          description: aboutDescription,
           mainEntity: { '@id': personId },
           hasPart: publicationNodes.map((node) => ({ '@id': node['@id'] })),
           inLanguage: 'en'
@@ -186,10 +188,14 @@ export function getSeo(currentPath: string) {
       if (project.repoUrl) projectNode.codeRepository = project.repoUrl;
       if (project.productUrl) projectNode.workExample = project.productUrl;
 
+      const metaDescription = project.slug === 'sensio-iot'
+        ? 'An on-premises smart-space platform organizing users, rooms, device state, telemetry, and hardware control around the physical spaces people manage.'
+        : project.description;
+
       return {
         ...base,
         title: `${project.title} — ${profile.name}`,
-        description: project.description,
+        description: metaDescription,
         image: absoluteUrl(project.image),
         imageAlt: `${project.title} project by ${profile.name}`,
         structuredData: graph(projectNode, breadcrumb([
@@ -228,9 +234,12 @@ export function getSeo(currentPath: string) {
   if (cleanPath.startsWith('/blog/')) {
     const article = getArticleByPath(cleanPath);
     if (article) {
+      const metaTitle = article.slug === 'building-iotnet'
+        ? `Building IoTNet: Real-World IoT Lessons — ${profile.name}`
+        : `${article.title} — ${profile.name}`;
       return {
         ...base,
-        title: `${article.title} — ${profile.name}`,
+        title: metaTitle,
         description: article.excerpt,
         image: absoluteUrl(article.cover),
         imageAlt: `${article.title} cover image`,

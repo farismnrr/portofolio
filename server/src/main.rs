@@ -21,7 +21,10 @@ struct Assets;
 
 fn asset_response_with_status(path: &str, bytes: Vec<u8>, status: StatusCode) -> Response {
     let mime = mime_guess::from_path(path).first_or_octet_stream();
-    let cache_control = if path == "index.html" || status == StatusCode::NOT_FOUND {
+    let cache_control = if path == "index.html"
+        || path.ends_with("/index.html")
+        || status == StatusCode::NOT_FOUND
+    {
         "no-cache"
     } else if path.starts_with("assets/") {
         "public, max-age=31536000, immutable"
@@ -88,6 +91,16 @@ async fn embedded_asset(uri: Uri) -> Response {
     }
 
     if route_exists(uri_path) {
+        let prerendered_path = if requested.is_empty() {
+            "index.html".to_owned()
+        } else {
+            format!("{requested}/index.html")
+        };
+
+        if let Some(document) = Assets::get(&prerendered_path) {
+            return asset_response(&prerendered_path, document.data.into_owned());
+        }
+
         if let Some(index) = Assets::get("index.html") {
             return asset_response("index.html", index.data.into_owned());
         }

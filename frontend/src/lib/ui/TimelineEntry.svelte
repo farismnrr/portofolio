@@ -33,7 +33,7 @@
     <h3 class="text-[22px] font-semibold tracking-[-0.025em]">{item.company}</h3>
     <p class="mt-1 text-[16px] text-black/62">{item.role}</p>
     {#if item.location}<p class="mt-1 text-[13px] text-black/42">{item.location}</p>{/if}
-    <p class="mt-5 text-[15px] leading-7 text-black/58">{item.summary}</p>
+    <p class={wide ? "mt-5 hyphens-auto text-justify text-[15px] leading-7 text-black/58" : "mt-5 text-[15px] leading-7 text-black/58"}>{item.summary}</p>
 
     {#if linkedProjects.length || linkedCertificationGroups.length}
       <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
@@ -61,7 +61,7 @@
     {/if}
 
     {#if !compact}
-      <ul class="mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58">
+      <ul class={wide ? "mt-4 list-disc space-y-2 pl-5 hyphens-auto text-justify text-[14px] leading-6 text-black/58" : "mt-4 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/58"}>
         {#each item.bullets as bullet}
           <li class="[&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-black/5 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/75">
             {@html renderInlineMarkdown(bullet)}

@@ -5,7 +5,6 @@
   import { prefetchRoute } from '../routes';
 
   export let project: ProjectDocument;
-  export let featured=false;
 
   $: detailPath = '/projects/' + project.slug;
   $: preserveShowcase = project.slug === 'parentify';

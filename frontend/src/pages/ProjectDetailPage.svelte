@@ -17,7 +17,7 @@
     <a class="flex items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/projects"><AppIcon name="arrow-left" size={14}/>Projects</a>
     {#if project && rendered}
       <div class="mt-8"><ProjectHero {project}/></div>
-      <section class="grid gap-10 py-10 lg:grid-cols-[170px_minmax(0,1fr)] xl:gap-14">
+      <section class="grid gap-9 py-10 lg:grid-cols-[150px_minmax(0,1fr)] xl:gap-12">
         <ContentToc items={rendered.toc}/>
         <div class="min-w-0">{#key project.slug}<MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>{/key}</div>
       </section>

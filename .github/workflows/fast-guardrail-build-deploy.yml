@@ -19,6 +19,7 @@ permissions:
 env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
   RUSTUP_TOOLCHAIN: stable
+  RUSTFLAGS: -D warnings
   DEV_IMAGE: portfolio-app:dev
 
 concurrency:
@@ -57,7 +58,7 @@ jobs:
         shell: bash
         run: bash .github/scripts/setup-zig.sh
 
-      - name: Build
+      - name: Build and validate
         shell: bash
         run: |
           set -euo pipefail
@@ -85,6 +86,9 @@ jobs:
             cd frontend
             npm install --ignore-scripts --no-audit --no-fund --prefer-offline
             npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
+            npm run guard
+            npm run content:check
+            npm run check
             npm run build
           )
 
@@ -96,9 +100,14 @@ jobs:
           if ! rustup toolchain list | grep -q '^stable'; then
             rustup toolchain install stable \
               --profile minimal \
+              --component rustfmt \
+              --component clippy \
               --target "$RUST_TARGET_AMD64"
-          elif ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
-            rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+          else
+            rustup component add --toolchain stable rustfmt clippy
+            if ! rustup target list --toolchain stable --installed | grep -qx "$RUST_TARGET_AMD64"; then
+              rustup target add --toolchain stable "$RUST_TARGET_AMD64"
+            fi
           fi
 
           if ! command -v cargo-zigbuild >/dev/null 2>&1; then
@@ -107,6 +116,9 @@ jobs:
 
           (
             cd server
+            cargo fmt --check
+            cargo clippy --release --all-targets --all-features -- -D warnings
+            cargo test --release --all-targets --all-features
             cargo zigbuild --release --target "$RUST_TARGET_AMD64"
           )
 
@@ -119,7 +131,7 @@ jobs:
             --tag "$DEV_IMAGE" \
             .
 
-      - name: Deploy
+      - name: Deploy and verify
         env:
           PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"
@@ -137,5 +149,33 @@ jobs:
           docker compose -p portofolio config --quiet
           docker compose -p portofolio up -d --remove-orphans --no-build
           docker compose -p portofolio ps
+
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
+
+          retrieve="$(curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
+            -X POST http://127.0.0.1:3001/api/cv/retrieve \
+            -H 'Content-Type: application/json' \
+            --data '{"target":"general","query":"backend PostgreSQL Rust Docker","limit":6}')"
+          printf '%s\n' "$retrieve" | python3 -c '
+import json, sys
+d=json.load(sys.stdin)
+if d.get("backend") != "pgvector+postgres-fts":
+    raise SystemExit("retrieval backend is not pgvector+postgres-fts")
+if not d.get("evidence"):
+    raise SystemExit("retrieval evidence is empty")
+print("retrieval_backend=" + d["backend"])
+print("retrieval_evidence_count=" + str(len(d["evidence"])))
+'
+
+          ai_response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+            -X POST http://127.0.0.1:3001/api/ai/chat \
+            -H 'Content-Type: application/json' \
+            --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
+          printf '%s\n' "$ai_response" | python3 -c '
+import json, sys
+d=json.load(sys.stdin)
+if not d.get("message", "").strip():
+    raise SystemExit("AI response is empty")
+print("ai_response_nonempty=true")
+'

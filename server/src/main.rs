@@ -21,16 +21,15 @@ struct Assets;
 
 fn asset_response_with_status(path: &str, bytes: Vec<u8>, status: StatusCode) -> Response {
     let mime = mime_guess::from_path(path).first_or_octet_stream();
-    let cache_control = if path == "index.html"
-        || path.ends_with("/index.html")
-        || status == StatusCode::NOT_FOUND
-    {
-        "no-cache"
-    } else if path.starts_with("assets/") {
-        "public, max-age=31536000, immutable"
-    } else {
-        "public, max-age=3600"
-    };
+    let cache_control =
+        if path == "index.html" || path.ends_with("/index.html") || status == StatusCode::NOT_FOUND
+        {
+            "no-cache"
+        } else if path.starts_with("assets/") {
+            "public, max-age=31536000, immutable"
+        } else {
+            "public, max-age=3600"
+        };
 
     Response::builder()
         .status(status)

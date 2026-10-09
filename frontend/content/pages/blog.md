@@ -2,12 +2,12 @@
 slug: blog
 eyebrow: Engineering journal
 title: Notes on software, systems, and things
-subtitle: I learn while building them.
-description: Practical notes, technical deep dives, and lessons from building and operating real systems across backend, AI, cloud infrastructure, and connected devices.
+subtitle: Notes from systems I have actually worked on.
+description: Engineering notes on backend systems, cloud infrastructure, IoT, AI integration, and the decisions that shaped real projects.
 ---
 
-This journal is where I write down the reasoning behind systems I have actually built: what problem shaped the architecture, which tradeoffs mattered in practice, what failed, and what I would change the next time around. The focus is less on framework tutorials and more on engineering decisions that survive contact with real constraints.
+I use this journal for the details that usually disappear from a project summary: why I picked one boundary over another, which assumption turned out to be wrong, what became awkward to operate, and what I would change if I built the same thing again.
 
-Topics range from backend and API design to cloud infrastructure, IoT platforms, observability, data flow, and practical AI integration. When a project has a public case study, the article is meant to complement it with implementation lessons, operational context, and the thinking that does not fit cleanly into a project summary.
+Most posts come from work already represented elsewhere in the portfolio. A project page explains what the system is; an article can spend more time on one decision, one failure mode, or one piece of the architecture without pretending the whole project fits into a neat lesson.
 
-The goal is simple: make the useful parts of the work reusable. Expect diagrams, code, architecture notes, failure modes, and concise explanations of why a system ended up looking the way it does.
+Expect backend and API design, cloud infrastructure, IoT, data flow, observability, and practical AI integration. If a diagram or code sample makes the explanation clearer, I include it. If it does not, I leave it out.

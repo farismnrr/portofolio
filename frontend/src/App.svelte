@@ -23,6 +23,9 @@
   $: current = $path;
   $: active = resolveActiveNavigation(current);
   $: seo = getSeo(current);
+  $: structuredDataScript = seo.structuredData
+    ? `<script type="application/ld+json">${JSON.stringify(seo.structuredData).replace(/</g, '\\u003c')}<\/script>`
+    : '';
   $: if (current !== resolvedPath) void resolvePage(current);
 
   async function resolvePage(currentPath: string) {
@@ -58,9 +61,7 @@
   <meta name="twitter:description" content={seo.description} />
   <meta name="twitter:image" content={seo.image} />
   <meta name="twitter:image:alt" content={seo.imageAlt} />
-  {#if seo.structuredData}
-    <script type="application/ld+json">{JSON.stringify(seo.structuredData)}</script>
-  {/if}
+  {@html structuredDataScript}
 </svelte:head>
 
 <SiteHeader currentPath={active}/>

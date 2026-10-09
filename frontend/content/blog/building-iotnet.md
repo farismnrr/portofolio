@@ -13,7 +13,9 @@ featured: true
 
 A single connected device is mostly an integration problem. A fleet is an operations problem.
 
-Once more users and devices share the same platform, the difficult questions move away from the protocol itself. The system has to know who owns a device, who may control it, how current state is represented, and what should happen when hardware disappears from the network.
+Once more users and devices share the same platform, the difficult questions move away from the protocol itself.
+
+The system has to know who owns a device, who may control it, how current state is represented, and what should happen when hardware disappears from the network.
 
 That shift is what shaped IoTNet.
 

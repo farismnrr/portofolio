@@ -78,7 +78,7 @@
           <p class="text-[14px] font-medium text-black/48">About</p>
           <h1 class="mt-3 max-w-[24ch] text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px] xl:max-w-[28ch]">{page.subtitle}</h1>
 
-          <div class="about-copy mt-7 text-[16px] leading-7 text-black/62">
+          <div class="mt-7 text-[16px] leading-7 text-black/62 xl:[&_.project-markdown_article]:columns-2 xl:[&_.project-markdown_article]:gap-12 xl:[&_.project-markdown_article]:text-justify xl:[&_.project-markdown_article]:hyphens-auto xl:[&_.project-markdown_p]:mb-[1.1rem] xl:[&_.project-markdown_p]:mt-0 xl:[&_.project-markdown_p]:break-inside-avoid">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
@@ -114,7 +114,7 @@
                   <h3 class="text-[19px] font-semibold tracking-[-0.015em] text-black/84">{item.institution}</h3>
                   <p class="mt-1 text-[15px] text-black/58">{item.program}</p>
                   {#if item.description}
-                    <div class="education-copy mt-4 text-[14px] leading-6 text-black/56">
+                    <div class="mt-4 text-[14px] leading-6 text-black/56">
                       <MarkdownArticle html={renderMarkdown(item.description).html}/>
                     </div>
                   {/if}
@@ -153,25 +153,3 @@
     </div>
   </PageShell>
 </main>
-
-<style>
-  @media (min-width: 1280px) {
-    .about-copy :global(.project-markdown article) {
-      columns: 2;
-      column-gap: 3rem;
-      text-align: justify;
-      text-justify: inter-word;
-      hyphens: auto;
-    }
-
-    .about-copy :global(.project-markdown p) {
-      break-inside: avoid;
-      margin-top: 0;
-      margin-bottom: 1.1rem;
-    }
-  }
-
-  .education-copy :global(.project-markdown article) {
-    max-width: none;
-  }
-</style>

@@ -18,6 +18,31 @@ case "$(uname -s)-$(uname -m)" in
     ;;
 esac
 
+add_to_path() {
+  local dir="$1"
+  if [ -n "${GITHUB_PATH:-}" ]; then
+    printf '%s\n' "$dir" >> "$GITHUB_PATH"
+  else
+    export PATH="$dir:$PATH"
+  fi
+}
+
+existing_zig="$(command -v zig 2>/dev/null || true)"
+if [ -n "$existing_zig" ] && [ "$($existing_zig version 2>/dev/null || true)" = "$version" ]; then
+  add_to_path "$(dirname "$existing_zig")"
+  echo "Using existing Zig $version from $existing_zig"
+  exit 0
+fi
+
+if [ -n "${RUNNER_TOOL_CACHE:-}" ]; then
+  cached_zig="$RUNNER_TOOL_CACHE/zig/$version/x64/zig"
+  if [ -x "$cached_zig" ] && [ "$($cached_zig version 2>/dev/null || true)" = "$version" ]; then
+    add_to_path "$(dirname "$cached_zig")"
+    echo "Using runner-cached Zig $version from $cached_zig"
+    exit 0
+  fi
+fi
+
 install_root="${ZIG_INSTALL_ROOT:-$HOME/.cache/portfolio-ci/zig}"
 install_dir="$install_root/$version"
 zig_bin="$install_dir/zig"
@@ -43,10 +68,5 @@ if [ "$actual_version" != "$version" ]; then
   exit 1
 fi
 
-if [ -n "${GITHUB_PATH:-}" ]; then
-  printf '%s\n' "$install_dir" >> "$GITHUB_PATH"
-else
-  export PATH="$install_dir:$PATH"
-fi
-
+add_to_path "$install_dir"
 echo "Using Zig $actual_version from $zig_bin"

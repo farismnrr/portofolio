@@ -10,7 +10,7 @@
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
-
+  const roleMatchEnabled = import.meta.env.VITE_ROLE_MATCH_ENABLED === 'true';
 </script>
 
 <main>
@@ -36,9 +36,11 @@
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
         </div>
-        <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
-          <RoleMatchPanel/>
-        </div>
+        {#if roleMatchEnabled}
+          <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
+            <RoleMatchPanel/>
+          </div>
+        {/if}
       </aside>
 
       <section class="min-w-0">

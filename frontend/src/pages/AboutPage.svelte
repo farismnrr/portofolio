@@ -35,8 +35,8 @@
 
 <main>
   <PageShell className="py-10 sm:py-12 lg:py-14">
-    <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14">
-      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:block lg:border-r lg:border-black/10 lg:pr-8 xl:pr-10">
+    <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14 2xl:grid-cols-[280px_minmax(0,1fr)] 2xl:gap-16">
+      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:block lg:border-r lg:border-black/10 lg:pr-8 xl:pr-10 2xl:pr-12">
         <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
 
         <div class="min-w-0">
@@ -76,9 +76,9 @@
 
       <section class="min-w-0">
         <header class="border-b border-black/10 pb-8 sm:pb-9">
-          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px]">{page.subtitle}</h1>
+          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.subtitle}</h1>
 
-          <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
+          <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
@@ -94,7 +94,7 @@
 
         <section class="mt-10 border-t border-black/10 pt-7 sm:mt-11 sm:pt-8">
           <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Technical focus</h2>
-          <div class="mt-5 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 xl:grid-cols-3">
+          <div class="mt-5 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-12">
             {#each skillGroups as group}
               <article class="border-t border-black/10 pt-4">
                 <h3 class="text-[16px] font-medium text-black/82">{group.title}</h3>
@@ -108,7 +108,7 @@
           <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Education</h2>
           <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
             {#each education as item}
-              <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
+              <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
                 <p class="text-[13px] text-black/42">{item.year}</p>
                 <div class="min-w-0">
                   <h3 class="text-[18px] font-semibold tracking-[-0.015em] text-black/84 sm:text-[19px]">{item.institution}</h3>
@@ -129,7 +129,7 @@
             <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Academic work</h2>
             <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
               {#each publications as item}
-                <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
+                <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
                   <div>
                     <p class="text-[13px] text-black/42">{item.year}</p>
                     <p class="mt-1 text-[11px] uppercase tracking-[0.12em] text-black/35">{item.type.replace('-', ' ')}</p>

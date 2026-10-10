@@ -65,7 +65,7 @@
 </svelte:head>
 
 <SiteHeader currentPath={active}/>
-<div class="pb-[76px] lg:pb-0">
+<div class="pb-[calc(68px+max(env(safe-area-inset-bottom),0.5rem))] lg:pb-0">
   {#if loading || !Page}
     <RouteLoading/>
   {:else}

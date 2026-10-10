@@ -9,8 +9,15 @@
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
 
+  function responsiveCoverSrcset(src: string) {
+    const match = src.match(/^(.*)-1280\.webp$/);
+    if (!match) return '';
+    return [768, 1280, 1920].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+  }
+
   $: article = getArticleByPath($path);
   $: rendered = article ? renderMarkdown(article.markdown) : null;
+  $: coverSrcset = article ? responsiveCoverSrcset(article.cover) : '';
 </script>
 
 <main>
@@ -28,7 +35,14 @@
         <p class="text-[12px] leading-5 text-black/58 sm:text-[13px] 2xl:text-[14px]">{article.category} · {formatArticleDate(article.published)} · {article.readTime}</p>
         <h1 class="mt-4 w-full text-balance text-[36px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[44px] md:text-[58px] 2xl:text-[64px]">{article.title}</h1>
         <p class="mt-5 w-full hyphens-auto text-left text-[15px] leading-7 text-black/62 sm:text-justify sm:text-[17px] sm:leading-8 2xl:text-[18px]">{article.excerpt}</p>
-        <MediaImage className="mt-7 aspect-[1.8] w-full sm:mt-8 sm:aspect-[2.2] 2xl:mt-10 2xl:aspect-[2.45]" src={article.cover} alt={article.title} eager/>
+        <MediaImage
+          className="mt-7 aspect-[1.8] w-full sm:mt-8 sm:aspect-[2.2] 2xl:mt-10 2xl:aspect-[2.45]"
+          src={article.cover}
+          srcset={coverSrcset}
+          sizes="(min-width: 1536px) 1400px, (min-width: 1024px) calc(100vw - 6rem), calc(100vw - 3rem)"
+          alt={article.title}
+          eager
+        />
       </header>
 
       <section class="grid gap-8 py-8 sm:py-10 lg:grid-cols-[150px_minmax(0,1fr)] lg:gap-10 xl:gap-12 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-16 2xl:py-12">

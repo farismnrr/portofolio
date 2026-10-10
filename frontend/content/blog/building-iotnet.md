@@ -5,7 +5,7 @@ excerpt: "Notes on the architecture decisions behind IoTNet, especially identity
 category: Engineering
 published: 2026-01-12
 readTime: 5 min read
-cover: /images/blog/iot-mesh-networks.png
+cover: /images/blog/iot-mesh-networks-1280.webp
 featured: true
 ---
 

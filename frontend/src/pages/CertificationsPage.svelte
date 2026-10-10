@@ -7,8 +7,8 @@
 <main>
   <PageShell className="py-10 sm:py-12 lg:py-16">
     <header class="border-b border-black/10 pb-8 sm:pb-9">
-      <h1 class="text-[36px] font-semibold tracking-[-0.03em] sm:text-[40px] md:text-[48px]">{pageCopy.certifications.title}</h1>
-      <p class="mt-4 max-w-none hyphens-auto text-justify text-[15px] leading-7 text-black/58 sm:text-[16px]">{pageCopy.certifications.subtitle}</p>
+      <h1 class="text-[36px] font-semibold tracking-[-0.03em] sm:text-[40px] md:text-[48px] 2xl:text-[52px]">{pageCopy.certifications.title}</h1>
+      <p class="mt-4 max-w-none hyphens-auto text-justify text-[15px] leading-7 text-black/58 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8">{pageCopy.certifications.subtitle}</p>
     </header>
 
     {#each certificationGroups as group}
@@ -18,7 +18,7 @@
           <span class="shrink-0 pt-1 text-[12px] text-black/42 sm:pt-0 sm:text-[13px]">{group.items.length}</span>
         </div>
 
-        <div class="mt-6 grid gap-x-6 gap-y-9 sm:mt-7 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-3">
+        <div class="mt-6 grid gap-x-6 gap-y-9 sm:mt-7 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-10 2xl:gap-y-12">
           {#each group.items as cert}
             <article>
               <div class="aspect-[1.78] overflow-hidden border border-black/12 bg-white/55">

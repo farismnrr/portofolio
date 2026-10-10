@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        try {
+          const stored = window.localStorage.getItem('theme');
+          const theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {}
+      })();
+    </script>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#263526" />
     <meta name="application-name" content="Faris Munir Mahdi" />
@@ -13,12 +25,14 @@
     <link rel="manifest" href="/site.webmanifest" />
     <title>Page Not Found — Faris Munir Mahdi</title>
     <style>
-      :root { color-scheme: light dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f5ef; color: #111; }
+      :root { --page-bg: #f6f5ef; --page-fg: #111; --muted: #555; color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+      @media (prefers-color-scheme: dark) { :root { --page-bg: #11130f; --page-fg: #f3f3ee; --muted: #aaa; color-scheme: dark; } }
+      html[data-theme="light"] { --page-bg: #f6f5ef; --page-fg: #111; --muted: #555; color-scheme: light; }
+      html[data-theme="dark"] { --page-bg: #11130f; --page-fg: #f3f3ee; --muted: #aaa; color-scheme: dark; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--page-bg); color: var(--page-fg); }
       main { max-width: 42rem; padding: 3rem 1.5rem; }
-      p { line-height: 1.7; color: #555; }
+      p { line-height: 1.7; color: var(--muted); }
       a { color: inherit; text-underline-offset: 4px; }
-      @media (prefers-color-scheme: dark) { body { background: #11130f; color: #f3f3ee; } p { color: #aaa; } }
     </style>
   </head>
   <body>

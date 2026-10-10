@@ -154,7 +154,8 @@ jobs:
             http://127.0.0.1:3001/ > /dev/null
 
           mermaid_dom="$(mktemp)"
-          docker compose -p portofolio exec -T \
+          chromium_stderr="$(mktemp)"
+          if ! docker compose -p portofolio exec -T \
             -e XDG_CONFIG_HOME=/tmp/portfolio-chromium-config \
             -e XDG_CACHE_HOME=/tmp/portfolio-chromium-cache \
             portfolio chromium \
@@ -167,7 +168,12 @@ jobs:
             --virtual-time-budget=8000 \
             --dump-dom \
             http://127.0.0.1:3001/projects/sensio-notes \
-            > "$mermaid_dom"
+            > "$mermaid_dom" 2> "$chromium_stderr"; then
+            cat "$chromium_stderr" >&2
+            rm -f "$mermaid_dom" "$chromium_stderr"
+            exit 1
+          fi
+          rm -f "$chromium_stderr"
           python3 - "$mermaid_dom" <<'PY'
           import re
           import sys

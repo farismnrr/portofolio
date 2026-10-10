@@ -25,7 +25,7 @@
   }
 </script>
 
-<nav class="fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-[var(--page-bg)]/95 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1.5 backdrop-blur-md lg:hidden" aria-label="Mobile navigation">
+<nav class="fixed inset-x-0 bottom-0 z-50 border-t border-black/14 bg-[var(--page-bg)]/95 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1.5 backdrop-blur-md lg:hidden" aria-label="Mobile navigation">
   <div class="mx-auto grid w-full max-w-[640px] grid-cols-6 px-1 sm:px-2">
     {#each navigation as item}
       <a
@@ -35,7 +35,7 @@
         on:click={(event) => navigate(event, item.href)}
         aria-label={item.label}
         aria-current={currentPath === item.href ? 'page' : undefined}
-        class="relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-1.5 text-[9px] font-medium leading-none text-black/46 transition hover:text-black min-[390px]:text-[10px]"
+        class="relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-1.5 text-[9px] font-medium leading-none text-black/62 transition hover:text-black min-[390px]:text-[10px]"
         class:text-black={currentPath === item.href}
       >
         <span class="flex h-7 w-7 items-center justify-center">
@@ -43,7 +43,7 @@
         </span>
         <span class="w-full truncate text-center">{mobileLabel(item)}</span>
         {#if currentPath === item.href}
-          <span class="absolute inset-x-2 -top-[7px] h-[2px] bg-[#3f563f] sm:inset-x-3"></span>
+          <span class="absolute inset-x-2 -top-[7px] h-[2px] bg-[var(--accent)] sm:inset-x-3"></span>
         {/if}
       </a>
     {/each}

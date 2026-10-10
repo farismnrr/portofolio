@@ -37,10 +37,15 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'strict',
+    // SVG labels measure in diagram coordinates rather than browser pixels.
+    // HTML foreignObject labels can mismeasure under display scaling.
+    htmlLabels: false,
     theme: 'base',
     fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
     themeVariables: variables(theme)
   });
+
+  await document.fonts.ready;
 
   for (const node of nodes) {
     if (!node.dataset.mermaidSource) node.dataset.mermaidSource = node.textContent ?? '';

@@ -184,6 +184,16 @@ jobs:
           for name in ('viewBox', 'width', 'height', 'style'):
               match = re.search(rf'\b{name}="([^"]*)"', attrs)
               print(f'mermaid_live_{name}=' + (match.group(1) if match else '<missing>'))
+          viewbox = re.search(r'\bviewBox="([^"]*)"', attrs)
+          if not viewbox:
+              raise SystemExit('live Mermaid viewBox missing')
+          _, _, width, height = map(float, viewbox.group(1).split())
+          # This known eight-node lifecycle must not become a giant canvas.
+          if not (500 < width < 3000 and 50 < height < 800):
+              raise SystemExit(f'live Mermaid geometry abnormal: {width} x {height}')
+          nodes = re.findall(r'<g\b[^>]*class="node\b', pre.group(1))
+          if len(nodes) != 8 or '<foreignObject' in pre.group(1):
+              raise SystemExit('live Mermaid lifecycle needs eight SVG-labelled nodes')
           PY
           rm -f "$mermaid_dom"
 

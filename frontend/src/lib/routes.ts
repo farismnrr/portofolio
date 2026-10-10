@@ -40,7 +40,12 @@ function normalizePath(path: string) {
 
 function dynamicSlug(path: string, prefix: string) {
   const value = path.slice(prefix.length);
-  return value && !value.includes('/') ? decodeURIComponent(value) : '';
+  if (!value || value.includes('/')) return '';
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return '';
+  }
 }
 
 function keyForPath(path: string) {

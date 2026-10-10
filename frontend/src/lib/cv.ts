@@ -14,7 +14,7 @@ function contactLine() {
   const email = profile.email.replace(/^mailto:/, '');
   return [
     email,
-    'farismnrr.com',
+    'Portfolio: https://farismnrr.com',
     profile.github.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     profile.linkedin.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
   ].join(' | ');

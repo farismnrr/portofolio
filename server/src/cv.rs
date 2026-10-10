@@ -921,6 +921,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     <h1>{name_upper}</h1>
     <div class="headline">{headline}</div>
     <div class="contact">{contact}</div>
+    <div class="contact">Project details and implementation evidence: <a href="https://farismnrr.com/projects">https://farismnrr.com/projects</a></div>
   </header>
 
   {summary_section}
@@ -935,7 +936,10 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         name = escape(&document.name),
         name_upper = escape(&document.name.to_uppercase()),
         headline = escape(&document.headline),
-        contact = escape(&document.contact),
+        contact = escape(&document.contact).replace(
+            "Portfolio: https://farismnrr.com",
+            r#"Portfolio: <a href="https://farismnrr.com">https://farismnrr.com</a>"#,
+        ),
         summary_section = section(
             "Professional Summary",
             &format!(

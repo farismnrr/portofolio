@@ -2,6 +2,12 @@
   import { certificationGroupId, certificationGroups, pageCopy } from '../lib/structured-content';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
+
+  function responsiveCertificationSrcset(src: string) {
+    const match = src.match(/^(.*)-800\.webp$/);
+    if (!match) return '';
+    return [480, 800].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+  }
 </script>
 
 <main>
@@ -22,7 +28,14 @@
           {#each group.items as cert}
             <article>
               <div class="aspect-[1.78] overflow-hidden border border-black/16 bg-[var(--surface)]">
-                <MediaImage className="h-full w-full" src={cert.image} alt={cert.title} fit="contain"/>
+                <MediaImage
+                  className="h-full w-full"
+                  src={cert.image}
+                  srcset={responsiveCertificationSrcset(cert.image)}
+                  sizes="(min-width: 1536px) 320px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 3rem)"
+                  alt={cert.title}
+                  fit="contain"
+                />
               </div>
               <h3 class="mt-4 text-[16px] font-semibold leading-6">{cert.title}</h3>
               <p class="mt-1 text-[13px] text-black/58">{cert.issuer}</p>

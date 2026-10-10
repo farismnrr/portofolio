@@ -5,6 +5,7 @@ frontend/public/cv-corpus.json
 frontend/public/vendor/
 frontend/public/images/profile/*.webp
 frontend/public/images/blog/*.webp
+frontend/public/images/certifications/**/*.webp
 release/amd64/
 target/
 server/target/

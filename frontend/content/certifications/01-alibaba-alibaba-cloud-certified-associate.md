@@ -6,5 +6,5 @@ title: "Alibaba Cloud Certified Associate"
 year: ""
 credentialId: ""
 url: "/images/certifications/alibaba/alibaba-cloud-certified-associate.pdf"
-image: "/images/certifications/alibaba/alibaba-cloud-certified-associate.jpg"
+image: "/images/certifications/alibaba/alibaba-cloud-certified-associate-800.webp"
 ---

@@ -10,7 +10,7 @@
     "content:check": "node ./scripts/check-content.mjs && node ./scripts/check-writing-style.mjs --base origin/main",
     "content:style": "node ./scripts/check-writing-style.mjs",
     "cv:check": "node ./scripts/check-cv-profiles.mjs",
-    "media:prepare": "node ./scripts/prepare-profile-image.mjs && node ./scripts/prepare-blog-image.mjs",
+    "media:prepare": "node ./scripts/prepare-profile-image.mjs && node ./scripts/prepare-blog-image.mjs && node ./scripts/prepare-certification-images.mjs",
     "seo:generate": "node ./scripts/generate-seo-assets.mjs",
     "guard": "node ./scripts/guard-ui.mjs"
   },

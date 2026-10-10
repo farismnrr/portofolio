@@ -19,7 +19,7 @@
 
         <div class="mt-7 flex flex-wrap items-center gap-4 sm:mt-8 sm:gap-5">
           <a
-            class="btn btn-neutral min-h-12 rounded-none border-0 bg-[#344534] px-6 text-[14px] font-medium text-white hover:bg-[#263526] sm:px-7"
+            class="inline-flex min-h-12 items-center bg-[#344534] px-6 text-[14px] font-medium text-white transition hover:bg-[#263526] sm:px-7"
             href="/about"
             on:mouseenter={() => prefetchRoute('/about')}
             on:focus={() => prefetchRoute('/about')}

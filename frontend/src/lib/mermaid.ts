@@ -1,5 +1,20 @@
 import type { Theme } from './theme';
 
+export function fitMermaidCanvas(root: HTMLElement) {
+  for (const svg of root.querySelectorAll<SVGSVGElement>('.mermaid svg')) {
+    // Mermaid's initial bounds can omit the final node on some browsers.
+    // Measure the actual painted geometry after the shell enters normal flow.
+    const bounds = svg.getBBox();
+    if (bounds.width <= 0 || bounds.height <= 0) continue;
+    const padding = 12;
+    const width = bounds.width + padding * 2;
+    const height = bounds.height + padding * 2;
+    svg.setAttribute('viewBox', `${bounds.x - padding} ${bounds.y - padding} ${width} ${height}`);
+    const node = svg.parentElement;
+    if (node) node.style.aspectRatio = `${width} / ${height}`;
+  }
+}
+
 function variables(theme: Theme) {
   return theme === 'dark'
     ? {

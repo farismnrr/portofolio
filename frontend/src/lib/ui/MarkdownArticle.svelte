@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { navigate } from '../router';
   import { theme, type Theme } from '../theme';
-  import { renderMermaid } from '../mermaid';
+  import { fitMermaidCanvas, renderMermaid } from '../mermaid';
 
   export let html = '';
   export let hasMermaid = false;
@@ -46,7 +46,11 @@
 
     try {
       await renderMermaid(shell, currentTheme);
-      if (version === renderVersion && root?.contains(shell)) shell.dataset.state = 'rendered';
+      if (version === renderVersion && root?.contains(shell)) {
+        shell.dataset.state = 'rendered';
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        if (version === renderVersion && root?.contains(shell)) fitMermaidCanvas(shell);
+      }
     } catch {
       if (version === renderVersion && root?.contains(shell)) showDiagramError(shell);
     }

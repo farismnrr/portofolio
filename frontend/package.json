@@ -17,7 +17,6 @@
     "@tabler/icons-svelte-runes": "^3.48.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.1.0",
-    "daisyui": "^5.1.0",
     "marked": "^18.0.14",
     "mermaid": "^12.0.0",
     "svelte": "^5.0.0",

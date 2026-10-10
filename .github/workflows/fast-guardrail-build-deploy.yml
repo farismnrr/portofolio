@@ -153,6 +153,42 @@ jobs:
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
 
+          hydration_dom="$(mktemp)"
+          chromium_stderr="$(mktemp)"
+          if ! docker compose -p portofolio exec -T \
+            -e XDG_CONFIG_HOME=/tmp/portfolio-chromium-config \
+            -e XDG_CACHE_HOME=/tmp/portfolio-chromium-cache \
+            portfolio chromium \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --disable-dev-shm-usage \
+            --user-data-dir=/tmp/portfolio-hydration-check \
+            --window-size=1440,1200 \
+            --virtual-time-budget=6000 \
+            --dump-dom \
+            http://127.0.0.1:3001/ \
+            > "$hydration_dom" 2> "$chromium_stderr"; then
+            cat "$chromium_stderr" >&2
+            rm -f "$hydration_dom" "$chromium_stderr"
+            exit 1
+          fi
+          rm -f "$chromium_stderr"
+          python3 - "$hydration_dom" <<'PY'
+          import re
+          import sys
+
+          html = open(sys.argv[1], encoding='utf-8').read()
+          media = re.findall(r'<div\b[^>]*\bdata-media-image(?:="")?[^>]*>', html, re.S)
+          eager = [tag for tag in media if 'data-eager="true"' in tag]
+          if not eager:
+              raise SystemExit('hydrated eager media image not found')
+          if any('data-loaded="true"' not in tag for tag in eager):
+              raise SystemExit('eager media image remained in skeleton state after hydration')
+          print(f'media_hydration_eager_loaded={len(eager)}')
+          PY
+          rm -f "$hydration_dom"
+
           mermaid_dom="$(mktemp)"
           chromium_stderr="$(mktemp)"
           if ! docker compose -p portofolio exec -T \

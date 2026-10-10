@@ -954,7 +954,7 @@ mod tests {
             "educationLines": [
                 "UPN Veteran East Java | Bachelor of Computer Science | 2020 - 2024"
             ],
-            "maxPages": 2
+            "maxPages": 1
         });
 
         serde_json::from_value::<CvRenderRequest>(payload)
@@ -981,7 +981,7 @@ mod tests {
         let profile = profiles::get("general").expect("General profile");
 
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert_eq!(profile.max_pages, 2);
+        assert_eq!(profile.max_pages, 1);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
         assert_eq!(profile.layout_policy.minimum_items.projects, 3);
     }

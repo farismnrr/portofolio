@@ -5,13 +5,13 @@
 </script>
 
 <main>
-  <PageShell className="py-14 lg:py-16">
-    <header class="border-b border-black/10 pb-9">
-      <h1 class="text-[40px] font-semibold tracking-[-0.03em] md:text-[48px]">{pageCopy.gallery.title}</h1>
-      <p class="mt-4 max-w-none hyphens-auto text-justify text-[16px] leading-7 text-black/58">{pageCopy.gallery.subtitle}</p>
+  <PageShell className="py-10 sm:py-12 lg:py-16">
+    <header class="border-b border-black/10 pb-8 sm:pb-9">
+      <h1 class="text-[36px] font-semibold tracking-[-0.03em] sm:text-[40px] md:text-[48px]">{pageCopy.gallery.title}</h1>
+      <p class="mt-4 max-w-none hyphens-auto text-justify text-[15px] leading-7 text-black/58 sm:text-[16px]">{pageCopy.gallery.subtitle}</p>
     </header>
 
-    <div class="grid gap-x-5 gap-y-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-x-4 gap-y-7 pt-7 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-8 sm:pt-8 lg:grid-cols-3">
       {#each gallery as item}
         <figure>
           <MediaImage className="aspect-[4/3] w-full" src={item.image} alt={item.caption}/>

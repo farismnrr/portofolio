@@ -1,48 +1,39 @@
 <script lang="ts">
-  import { articles, featuredArticle, formatArticleDate } from '../lib/blog-content';
-  import { renderMarkdown } from '../lib/markdown';
+  import { articles, formatArticleDate } from '../lib/blog-content';
   import { navigate } from '../lib/router';
   import { pageCopy } from '../lib/structured-content';
-  import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
-  import MediaImage from '../lib/ui/MediaImage.svelte';
-  import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
-
-  const journalContext = renderMarkdown(pageCopy.blog.body);
-  $: featuredPath = featuredArticle ? '/blog/' + featuredArticle.slug : '/blog';
 </script>
 
 <main>
   <PageShell className="py-14 lg:py-16">
-    <div class="border-b border-black/10 pb-10">
-      <PageIntro eyebrow={pageCopy.blog.eyebrow} title={pageCopy.blog.title} subtitle={pageCopy.blog.subtitle} description={pageCopy.blog.description} compact/>
-      <div class="mt-7 max-w-4xl text-[14px] leading-7 text-black/55">
-        <MarkdownArticle html={journalContext.html} hasMermaid={journalContext.hasMermaid}/>
-      </div>
-    </div>
+    <header class="border-b border-black/10 pb-9">
+      <h1 class="text-[40px] font-semibold tracking-[-0.03em] md:text-[48px]">{pageCopy.blog.title}</h1>
+      <p class="mt-4 max-w-none hyphens-auto text-justify text-[16px] leading-7 text-black/58">{pageCopy.blog.subtitle}</p>
+    </header>
 
-    {#if featuredArticle}
-      <section class="grid gap-10 border-b border-black/10 py-10 lg:grid-cols-[1fr_1fr]">
-        <div class="self-center">
-          <p class="text-[11px] font-semibold uppercase tracking-[.2em] text-black/50">Featured</p>
-          <p class="mt-4 text-[13px] text-black/45">{featuredArticle.category} · {featuredArticle.readTime} · {formatArticleDate(featuredArticle.published)}</p>
-          <h2 class="mt-6 text-[30px] font-semibold tracking-[-0.03em]">{featuredArticle.title}</h2>
-          <p class="mt-4 max-w-xl text-[15px] leading-7 text-black/56">{featuredArticle.excerpt}</p>
-          <a class="btn btn-neutral mt-7 rounded-none border-0 bg-[#344534] px-7 font-normal" href={featuredPath} on:click={(e)=>navigate(e,featuredPath)}>Read article →</a>
-        </div>
-        <MediaImage className="aspect-[1.7] w-full" src={featuredArticle.cover} alt={featuredArticle.title} eager/>
-      </section>
-    {/if}
-
-    <section class="pt-8">
-      <div class="flex justify-between text-[12px]"><strong class="uppercase tracking-[.2em]">All articles</strong><span class="text-black/45">{articles.length} articles</span></div>
+    <section>
       {#each articles as article}
         {@const articlePath = '/blog/' + article.slug}
-        <a href={articlePath} on:click={(e)=>navigate(e,articlePath)} class="grid gap-5 border-b border-black/10 py-7 md:grid-cols-[150px_1fr_30px]">
-          <span class="pt-1 text-[13px] text-black/42">{formatArticleDate(article.published)}</span>
-          <div><p class="text-[12px] text-black/50">{article.category} · {article.readTime}</p><h2 class="mt-2 text-[22px] font-semibold tracking-[-0.02em]">{article.title}</h2><p class="mt-2 max-w-3xl text-[14px] leading-6 text-black/55">{article.excerpt}</p></div>
-          <span class="self-center text-lg">→</span>
-        </a>
+        <article class="border-b border-black/10 py-8 lg:py-9">
+          <a
+            href={articlePath}
+            on:click={(e)=>navigate(e,articlePath)}
+            class="grid gap-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-8"
+          >
+            <div class="text-[13px] leading-6 text-black/42">
+              <p>{formatArticleDate(article.published)}</p>
+              <p>{article.readTime}</p>
+            </div>
+
+            <div class="min-w-0">
+              <p class="text-[12px] text-black/46">{article.category}</p>
+              <h2 class="mt-2 text-balance text-[26px] font-semibold leading-tight tracking-[-0.025em] md:text-[30px]">{article.title}</h2>
+              <p class="mt-4 hyphens-auto text-justify text-[15px] leading-7 text-black/56">{article.excerpt}</p>
+              <span class="mt-5 inline-block text-[13px] underline decoration-black/20 underline-offset-4">Read article →</span>
+            </div>
+          </a>
+        </article>
       {/each}
     </section>
   </PageShell>

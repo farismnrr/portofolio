@@ -101,7 +101,7 @@
       "minSecondPageFill": 0.58,
       "minBodySizePt": 10,
       "minimumItems": {
-        "projects": 4,
+        "projects": 3,
         "experiences": 1,
         "certifications": 2
       }

@@ -586,7 +586,7 @@ mod tests {
         assert!(EXTRACT_POLICY.contains("normalize the list"));
         assert!(EXTRACT_POLICY.contains("substantially subsumed requirements"));
         assert!(EXTRACT_POLICY.contains("duplicate penalties"));
-        assert!(EXTRACT_POLICY.contains("generic catch-all wording"));
+        assert!(EXTRACT_POLICY.contains("Generic catch-all wording"));
     }
     #[test]
     fn extraction_policy_preserves_natural_groups() {

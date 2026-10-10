@@ -47,7 +47,7 @@
 <svelte:head>
   <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="robots" content={seo.robots} />
   <link rel="canonical" href={seo.canonical} />
   <meta property="og:type" content={seo.ogType} />
   <meta property="og:locale" content="en_US" />

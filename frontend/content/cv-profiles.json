@@ -3,7 +3,7 @@
     "id": "general",
     "label": "General",
     "headline": "Software Engineer | Backend & Systems",
-    "maxPages": 2,
+    "maxPages": 1,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
     "retrievalQuery": "software engineer backend systems production services real-time systems NestJS Rust PostgreSQL Redis APIs WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability on-premise IoT LangGraph RAG Alibaba Cloud Certified Professional Architecting on AWS Google Cloud Engineer",
     "preferredSignals": [
@@ -75,15 +75,15 @@
       }
     ],
     "budgets": {
-      "projects": 4,
+      "projects": 3,
       "experiences": 1,
       "certifications": 2
     },
     "writingPolicy": {
       "identity": "Present Faris as a production Software Engineer whose strongest evidence is professional backend and systems work at PT Perkasa Pilar Utama. Academy, cohort, and course programs are supporting background, not employment.",
       "focus": "Lead with production ownership, backend systems, real-time APIs, media-processing flows, IoT control services, observability, and deployment work. Use projects to add engineering depth instead of repeating employer descriptions.",
-      "summaryRange": "38-52 words",
-      "projectRange": "28-44 words",
+      "summaryRange": "34-46 words",
+      "projectRange": "24-38 words",
       "avoid": [
         "Machine Learning Engineer or Data Scientist positioning",
         "selecting DBS Foundation for this software engineering CV",
@@ -98,7 +98,7 @@
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.58,
+      "minSecondPageFill": 0.0,
       "minBodySizePt": 10,
       "minimumItems": {
         "projects": 3,

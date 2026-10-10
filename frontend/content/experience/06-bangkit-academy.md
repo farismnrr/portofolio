@@ -5,7 +5,7 @@ year: Aug 2023 — Jan 2024
 company: Bangkit Academy
 role: Cloud Computing Cohort
 location: Remote · Indonesia
-summary: Completed Bangkit 2023 Batch 2 on the Cloud Computing path, combining technical coursework with communication, collaboration, and team-based product delivery.
+summary: Completed Bangkit 2023 Batch 2 on the Cloud Computing path as a structured industry-backed learning program, combining technical coursework, cloud labs, communication training, and cross-functional capstone delivery.
 tech: [Google Cloud, Node.js, Express, MySQL, Docker]
 projects: [parentify]
 ---

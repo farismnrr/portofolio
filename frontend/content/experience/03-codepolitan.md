@@ -3,9 +3,9 @@ kind: program
 order: 3
 year: Sep 2024 — Dec 2024
 company: Codepolitan
-role: Full Stack Web Developer
+role: Full Stack Web Development Participant
 location: ""
-summary: Completed a full-stack web development learning program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
+summary: Completed an online full-stack development scholarship program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
 certificationGroups: [Alibaba Cloud]

@@ -3,9 +3,9 @@ kind: program
 order: 2
 year: Feb 2025 — July 2025
 company: DBS Foundation
-role: Machine Learning Engineer
+role: Machine Learning Track Participant
 location: ""
-summary: Completed the DBS Foundation program through a team capstone that combined food-image recognition with a deployable web application foundation.
+summary: Completed a semester-long intensive technology training program with a team capstone, combining machine-learning coursework with hands-on web application delivery.
 tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
 projects: [gizilens]
 ---

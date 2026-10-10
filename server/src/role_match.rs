@@ -573,7 +573,8 @@ mod tests {
     #[test]
     fn extraction_policy_uses_meaningful_atomicity() {
         assert!(EXTRACT_POLICY.contains("smallest faithful set of distinct hiring conditions"));
-        assert!(EXTRACT_POLICY.contains("Split only when the resulting requirements are independently meaningful"));
+        assert!(EXTRACT_POLICY
+            .contains("Split only when the resulting requirements are independently meaningful"));
         assert!(EXTRACT_POLICY.contains("Do not split merely because"));
         assert!(EXTRACT_POLICY.contains("Keep natural capability groups together"));
         assert!(EXTRACT_POLICY.contains("Named technologies or languages may be split"));
@@ -591,14 +592,22 @@ mod tests {
     fn extraction_policy_preserves_natural_groups() {
         assert!(EXTRACT_POLICY.contains("HTML/CSS as a web-markup-and-styling competency"));
         assert!(EXTRACT_POLICY.contains("timeline, budget, and business constraints"));
-        assert!(EXTRACT_POLICY.contains("fast-paced environment while learning and applying diverse technologies"));
-        assert!(EXTRACT_POLICY.contains("illustrate the grouping principle rather than special cases"));
+        assert!(EXTRACT_POLICY
+            .contains("fast-paced environment while learning and applying diverse technologies"));
+        assert!(
+            EXTRACT_POLICY.contains("illustrate the grouping principle rather than special cases")
+        );
     }
     #[test]
     fn assessment_policy_requires_direct_when_fully_supported() {
-        assert!(ASSESS_POLICY.contains("If all actual stated conditions are supported, classify direct"));
-        assert!(ASSESS_POLICY.contains("Never downgrade a fully supported requirement to transferable"));
-        assert!(ASSESS_POLICY.contains("Do not create a verification step for something already directly supported"));
+        assert!(ASSESS_POLICY
+            .contains("If all actual stated conditions are supported, classify direct"));
+        assert!(
+            ASSESS_POLICY.contains("Never downgrade a fully supported requirement to transferable")
+        );
+        assert!(ASSESS_POLICY.contains(
+            "Do not create a verification step for something already directly supported"
+        ));
         assert!(ASSESS_POLICY.contains("Never strengthen, narrow, or add a condition"));
     }
     #[test]
@@ -611,7 +620,8 @@ mod tests {
     #[test]
     fn requirement_limit_is_only_a_ceiling() {
         assert_eq!(MAX_REQUIREMENTS, 20);
-        assert!(EXTRACT_POLICY.contains("fewer faithful requirements are better than filling the limit"));
+        assert!(EXTRACT_POLICY
+            .contains("fewer faithful requirements are better than filling the limit"));
     }
     #[test]
     fn computes_weighted_score_and_mandatory_coverage() {

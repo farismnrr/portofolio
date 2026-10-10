@@ -11,7 +11,8 @@ const loaders: Record<string, PageLoader> = {
   blog: () => import('../pages/BlogPage.svelte'),
   article: () => import('../pages/ArticlePage.svelte'),
   certifications: () => import('../pages/CertificationsPage.svelte'),
-  gallery: () => import('../pages/GalleryPage.svelte')
+  gallery: () => import('../pages/GalleryPage.svelte'),
+  notFound: () => import('../pages/NotFoundPage.svelte')
 };
 
 const cache = new Map<string, Promise<PageModule>>();
@@ -27,7 +28,7 @@ function keyForPath(path: string) {
   if (path.startsWith('/blog/')) return 'article';
   if (path === '/certifications') return 'certifications';
   if (path === '/gallery') return 'gallery';
-  return 'home';
+  return 'notFound';
 }
 
 export function loadRoute(path: string) {

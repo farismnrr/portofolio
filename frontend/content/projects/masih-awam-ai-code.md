@@ -149,7 +149,7 @@ flowchart TD
     M --> F[Final integrated result]
 ```
 
-The interesting part is not spawning multiple agents. The interesting part is deciding how their work becomes one reliable result.
+Spawning multiple agents is straightforward. The harder part is deciding how their work becomes one reliable result.
 
 The parent must reconcile disagreements, reject weak evidence, and avoid merging competing changes blindly.
 

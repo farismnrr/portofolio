@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { navigate } from '../router';
   import { theme, type Theme } from '../theme';
   import { renderMermaid } from '../mermaid';
 
@@ -10,6 +11,24 @@
   let observer: IntersectionObserver | null = null;
   let renderVersion = 0;
   let renderQueue: Promise<void> = Promise.resolve();
+
+  function interceptLinks(node: HTMLElement) {
+    const handleClick = (event: MouseEvent) => {
+      const anchor = event.target instanceof Element
+        ? event.target.closest<HTMLAnchorElement>('a[href]')
+        : null;
+      if (!anchor || !node.contains(anchor)) return;
+      const href = anchor.getAttribute('href');
+      if (href) navigate(event, href);
+    };
+
+    node.addEventListener('click', handleClick);
+    return {
+      destroy() {
+        node.removeEventListener('click', handleClick);
+      }
+    };
+  }
 
   function showDiagramError(shell: HTMLElement) {
     shell.dataset.state = 'error';
@@ -78,7 +97,7 @@
   });
 </script>
 
-<div bind:this={root} class="project-markdown">
+<div bind:this={root} use:interceptLinks class="project-markdown">
   <article class="prose prose-neutral max-w-none prose-headings:scroll-mt-28 prose-headings:text-balance prose-headings:tracking-[-0.025em] prose-h2:mt-12 prose-h2:border-t prose-h2:border-black/10 prose-h2:pt-8 prose-h2:text-[27px] sm:prose-h2:mt-14 sm:prose-h2:pt-10 sm:prose-h2:text-[30px] 2xl:prose-h2:text-[32px] prose-h3:mt-8 prose-h3:text-[20px] sm:prose-h3:mt-9 sm:prose-h3:text-[22px] 2xl:prose-h3:text-[24px] prose-p:hyphens-auto prose-p:text-left prose-p:text-[15px] prose-p:leading-7 prose-p:text-black/62 sm:prose-p:text-justify 2xl:prose-p:text-[16px] 2xl:prose-p:leading-8 prose-li:hyphens-auto prose-li:text-left prose-li:text-[15px] prose-li:leading-7 prose-li:text-black/62 sm:prose-li:text-justify 2xl:prose-li:text-[16px] 2xl:prose-li:leading-8 prose-a:text-[var(--accent)] prose-a:underline prose-a:underline-offset-4 prose-blockquote:border-[var(--accent)] prose-blockquote:bg-black/[0.025] prose-blockquote:px-4 prose-blockquote:py-1 sm:prose-blockquote:px-5 prose-blockquote:not-italic prose-code:text-[13px] prose-pre:overflow-x-auto prose-pre:border prose-pre:border-black/10 prose-pre:bg-black/[0.035] prose-pre:text-black prose-pre:shadow-none prose-table:text-[13px] 2xl:prose-table:text-[14px] prose-img:my-7 sm:prose-img:my-8">
     {@html html}
   </article>

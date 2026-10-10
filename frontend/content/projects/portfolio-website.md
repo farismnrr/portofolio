@@ -96,7 +96,7 @@ A small Rust and Axum server embeds the generated route documents and assets for
 
 Prerendering is only useful if client-side behavior does not make the site harder to use afterwards.
 
-The runtime keeps public navigation client-side while preserving normal browser link behavior. Route modules are loaded lazily, and hash navigation waits for the requested page to render before scrolling to its target. The same-page hash path is handled separately so repeating an in-page navigation still reaches the intended section.
+The runtime keeps public navigation client-side while preserving normal browser link behavior. Route modules load lazily. Hash navigation waits for the requested page to render before scrolling to its target. Same-page hash navigation has its own path, so repeating an in-page navigation still reaches the intended section.
 
 The layout also has separate desktop and mobile navigation surfaces. Mobile spacing accounts for the bottom navigation and safe-area inset instead of letting page content disappear underneath the controls.
 

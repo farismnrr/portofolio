@@ -12,6 +12,6 @@ resume: ""
 specialties: Software Engineer · Backend · Cloud · IoT
 headline: Software Engineer focused on backend, cloud, and connected systems.
 intro: I build APIs, production infrastructure, IoT platforms, and practical AI features. Most of my work is about making software, data, and devices behave predictably together.
-availability: ""
+availability: "Open to full-time, part-time, contract, hybrid, and remote opportunities. Available for on-site work across Jakarta."
 quote: ""
 ---

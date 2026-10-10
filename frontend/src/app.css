@@ -134,8 +134,9 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   --mermaid-border: color-mix(in srgb, var(--page-fg) 34%, transparent);
   --mermaid-node-bg: color-mix(in srgb, var(--surface) 86%, var(--page-bg));
   --mermaid-label-bg: var(--page-bg);
-  --mermaid-min-width: 0px;
   max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
   border-color: color-mix(in srgb, var(--page-fg) 16%, transparent);
   background: color-mix(in srgb, var(--surface) 78%, var(--page-bg));
   scrollbar-gutter: stable;
@@ -143,19 +144,14 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   transition: background-color 180ms ease, border-color 180ms ease;
 }
 
-.mermaid-shell[data-diagram-layout="wide"] {
-  background: color-mix(in srgb, var(--surface) 68%, var(--page-bg));
-}
-
 .mermaid-shell .mermaid {
   box-sizing: border-box;
-  min-width: var(--mermaid-min-width);
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
 }
 
 .mermaid-shell .mermaid svg {
   display: block;
-  width: max(100%, var(--mermaid-min-width)) !important;
   height: auto !important;
   max-width: none !important;
   overflow: visible;
@@ -238,12 +234,6 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 
 html[data-theme="dark"] .cv-error {
   color: #ff9b9b;
-}
-
-@media (max-width: 639px) {
-  .mermaid-shell[data-diagram-layout="wide"] {
-    margin-inline: -0.25rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

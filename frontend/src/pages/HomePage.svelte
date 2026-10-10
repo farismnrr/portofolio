@@ -1,6 +1,7 @@
 <script lang="ts">
   import { pageCopy, profile } from '../lib/structured-content';
   import { navigate } from '../lib/router';
+  import { prefetchRoute } from '../lib/routes';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
@@ -17,7 +18,14 @@
         <p class="mt-5 hyphens-auto text-justify text-[15px] font-normal leading-7 text-black/58 sm:mt-6 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8">{profile.intro}</p>
 
         <div class="mt-7 flex flex-wrap items-center gap-4 sm:mt-8 sm:gap-5">
-          <a class="btn btn-neutral min-h-12 rounded-none border-0 bg-[#344534] px-6 text-[14px] font-medium text-white hover:bg-[#263526] sm:px-7" href="/about" on:click={(e)=>navigate(e,'/about')}>{page.primaryAction} <span class="ml-2">→</span></a>
+          <a
+            class="btn btn-neutral min-h-12 rounded-none border-0 bg-[#344534] px-6 text-[14px] font-medium text-white hover:bg-[#263526] sm:px-7"
+            href="/about"
+            on:mouseenter={() => prefetchRoute('/about')}
+            on:focus={() => prefetchRoute('/about')}
+            on:pointerdown={() => prefetchRoute('/about')}
+            on:click={(e)=>navigate(e,'/about')}
+          >{page.primaryAction} <span class="ml-2">→</span></a>
           <a class="inline-flex min-h-11 items-center text-[14px] font-normal text-black/65 underline decoration-black/25 underline-offset-4 hover:text-black" href={profile.email}>{page.secondaryAction}</a>
         </div>
       </div>

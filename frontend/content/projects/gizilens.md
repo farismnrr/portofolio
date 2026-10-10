@@ -46,14 +46,13 @@ Its dataset combined several public image sources and grouped the supported labe
 
 A separate prediction script shows the inference boundary clearly: load the trained Keras model, prepare an input image, run the model, and map the highest-scoring output to an ingredient label.
 
-This subsystem is part of the GiziLens team project, but I do **not** present its model training as my individual implementation. The repository history attributes that machine-learning work to another team member.
+This subsystem belongs to the GiziLens team project, but it was not my individual implementation. The repository history attributes the machine-learning work to another team member.
 
-## My implementation centered on the web application
+## My contribution centered on the web application
 
-My implementation work is much more visible in the separate **Web-App** repository.
+Within the capstone team, my implementation work is most visible in the separate **Web-App** repository.
 
-I worked on the foundation needed for GiziLens to behave like an actual web application.
-Users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
+I worked on the foundation needed for GiziLens to behave like an actual web application. Users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
 
 The application repository is split into a Nuxt frontend and a Bun/TypeScript backend built with Hapi.
 
@@ -77,17 +76,17 @@ The current frontend is primarily an identity and account shell: registration, l
 
 ## Visual identity as a product system
 
-The current GiziLens repository also contains visual-design work that I can point to directly rather than describing the interface only in technical terms.
+The current GiziLens repository also contains visual-design work that I contributed within the capstone team and can point to directly rather than describing the interface only in technical terms.
 
-I built an original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing. The identity is carried through a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
+I designed the original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing. The identity is carried through a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
 
 I also documented how that identity should behave in the application: a teal, lime, and ink palette, clear-space guidance, a smaller icon treatment for constrained placements, and a reverse treatment for dark surfaces. The same geometry is reused in the frontend rather than treating the logo as a disconnected asset.
 
-That work is useful evidence of visual judgement in a web product: the goal was not decoration for its own sake, but a recognizable identity that remains legible across different sizes, backgrounds, and interface contexts.
+This was my visual-design contribution to a broader team product. It shows visual judgement without implying that I owned every part of the product interface or the machine-learning subsystem.
 
 ## Authentication is a lifecycle, not one endpoint
 
-A large part of the application work was making authentication more than a single login endpoint.
+A large part of my application contribution was making authentication more than a single login endpoint.
 
 The backend exposes user registration for different roles, login, authenticated user retrieval and update, logout, account deletion/restore, and token refresh. JWT authentication protects authenticated routes, while persisted sessions give the application a server-side lifecycle for validating and revoking access.
 
@@ -127,7 +126,7 @@ PostgreSQL is used as the durable application store for users and sessions, whil
 
 The server startup sequence reflects that separation: establish PostgreSQL and Redis connections, register the application's dependencies, build the Hapi server, register its plugins and authentication extensions, then start serving requests.
 
-This structure was useful to me because it kept application rules, HTTP transport, and infrastructure from collapsing into one layer as the project grew.
+This structure was useful to me because it kept application rules, HTTP transport, and infrastructure from collapsing into one layer as my part of the project grew.
 
 ## Running the web stack as a service
 
@@ -135,19 +134,19 @@ Frontend and backend have their own container build paths. The runtime configura
 
 Nginx configuration covers reverse-proxy concerns and HTTPS certificate setup, while the deployment scripts provide a repeatable way to build, update, and restart the GiziLens services.
 
-This was the part of the capstone where the project stopped feeling like a collection of local files and started behaving like a small deployed system with clear service boundaries.
+This was the part of my capstone contribution where the web application stopped feeling like a collection of local files and started behaving like a small deployed system with clear service boundaries.
 
 ## What I can directly attribute to my work
 
-My contribution to GiziLens centered on the **Web-App and its runtime foundation**.
+Within the team, my contribution to GiziLens centered on the **Web-App and its runtime foundation**.
 
 I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend.
 The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
 
-The current repository also contains the original GiziLens vector identity and its application rules described above. I treat that as visual-design work on the product presentation, separate from the machine-learning subsystem that belonged to the team.
+The current repository also contains the original GiziLens vector identity and its application rules described above. I treat that as my visual-design contribution to the team's product presentation, separate from the machine-learning subsystem maintained by another part of the team.
 
 The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support.
-The part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual implementation here.
+The part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual contribution here.
 
 ## What the capstone clarified for me
 

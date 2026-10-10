@@ -21,6 +21,7 @@ env:
   RUSTUP_TOOLCHAIN: stable
   RUSTFLAGS: -D warnings
   DEV_IMAGE: portfolio-app:dev
+  VITE_ROLE_MATCH_ENABLED: "true"
 
 concurrency:
   group: fast-dev-${{ github.ref }}
@@ -117,9 +118,9 @@ jobs:
           (
             cd server
             cargo fmt --check
-            cargo clippy --release --all-targets --all-features -- -D warnings
-            cargo test --release --all-targets --all-features
-            cargo zigbuild --release --target "$RUST_TARGET_AMD64"
+            cargo clippy --release --all-targets --features role-match -- -D warnings
+            cargo test --release --all-targets --features role-match
+            cargo zigbuild --release --target "$RUST_TARGET_AMD64" --features role-match
           )
 
           mkdir -p release/amd64
@@ -230,7 +231,6 @@ jobs:
           if not viewbox:
               raise SystemExit('live Mermaid viewBox missing')
           _, _, width, height = map(float, viewbox.group(1).split())
-          # This known eight-node lifecycle must not become a giant canvas.
           if not (500 < width < 3000 and 50 < height < 800):
               raise SystemExit(f'live Mermaid geometry abnormal: {width} x {height}')
           nodes = re.findall(r'<g\b[^>]*class="node\b', pre.group(1))
@@ -265,3 +265,10 @@ jobs:
             -H 'Content-Type: application/json' \
             --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
           printf '%s\n' "$ai_response" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("message", "").strip(), "AI response is empty"; print("ai_response_nonempty=true")'
+
+          role_match_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            -X POST http://127.0.0.1:3001/api/role-match/report \
+            -H 'Content-Type: application/json' \
+            --data '{"jobDescription":"short"}')"
+          test "$role_match_status" = "400"
+          printf 'role_match_dev_endpoint_status=%s\n' "$role_match_status"

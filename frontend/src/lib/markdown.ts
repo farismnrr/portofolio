@@ -6,13 +6,13 @@ export interface RenderedMarkdown { html: string; toc: TocItem[]; hasMermaid: bo
 function stripTags(value: string) { return value.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'"); }
 function slugify(value: string) { return stripTags(value).toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); }
 
-const mermaidPlaceholder = `<div class="mermaid-shell group not-prose relative my-8 min-h-[200px] max-w-full overflow-x-auto overflow-y-hidden border p-4 sm:my-10 sm:min-h-[220px] sm:p-5 md:p-8" data-state="pending">
-  <div class="mermaid-skeleton absolute inset-0 flex animate-pulse flex-col justify-center gap-4 p-5 group-data-[state=rendered]:hidden sm:p-6 md:p-10" aria-hidden="true">
+const mermaidPlaceholder = `<div class="mermaid-shell group not-prose relative my-10 min-h-[220px] overflow-hidden border p-5 md:p-8" data-state="pending">
+  <div class="mermaid-skeleton absolute inset-0 flex animate-pulse flex-col justify-center gap-4 p-6 group-data-[state=rendered]:hidden md:p-10" aria-hidden="true">
     <div class="mermaid-skeleton-bar h-4 w-1/3 rounded"></div>
     <div class="mermaid-skeleton-block h-16 w-3/4 rounded"></div>
     <div class="mermaid-skeleton-bar h-4 w-1/2 rounded"></div>
   </div>
-  <pre class="mermaid invisible pointer-events-none absolute inset-0 m-0 bg-transparent p-0 group-data-[state=rendered]:visible group-data-[state=rendered]:pointer-events-auto group-data-[state=rendered]:static">$1</pre>
+  <pre class="mermaid invisible pointer-events-none absolute inset-0 m-0 bg-transparent p-0 group-data-[state=rendered]:visible group-data-[state=rendered]:pointer-events-auto group-data-[state=rendered]:static [&_svg]:h-auto [&_svg]:max-w-full">$1</pre>
 </div>`;
 
 export function renderInlineMarkdown(markdown: string): string {

@@ -1,4 +1,5 @@
 import { createServer } from 'vite';
+import { PDFDocument } from 'pdf-lib';
 import { mkdir, writeFile, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -10,15 +11,24 @@ const output = path.resolve('public/downloads/Faris_Munir_Mahdi_CV.pdf');
 const pending = `${output}.pending.pdf`;
 try {
   const { buildLatestCv } = await server.ssrLoadModule('/src/lib/cv.ts');
+  const document = buildLatestCv();
   const response = await fetch(endpoint, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(buildLatestCv()), signal: AbortSignal.timeout(120000)
+    body: JSON.stringify(document), signal: AbortSignal.timeout(120000)
   });
   if (!response.ok) throw new Error(`CV render failed (${response.status}): ${await response.text()}`);
   const bytes = Buffer.from(await response.arrayBuffer());
   if (!bytes.subarray(0, 4).equals(Buffer.from('%PDF'))) throw new Error('Invalid PDF response.');
   await mkdir(path.dirname(output), { recursive: true });
-  await writeFile(pending, bytes);
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false });
+  pdf.setTitle(`${document.name} - CV`);
+  pdf.setAuthor(document.name);
+  pdf.setSubject(`${document.profileSummary} Portfolio: https://farismnrr.com`);
+  pdf.setKeywords(['https://farismnrr.com', document.headline, ...document.technicalScope.map((scope) => scope.text)]);
+  const published = await pdf.save();
+  const verified = await PDFDocument.load(published, { updateMetadata: false });
+  if (!verified.getSubject()?.includes('https://farismnrr.com') || verified.getAuthor() !== document.name) throw new Error('PDF metadata verification failed.');
+  await writeFile(pending, published);
   const info = execFileSync('pdfinfo', [pending], { encoding: 'utf8' });
   if (!/^Pages:\s+2\s*$/m.test(info)) throw new Error('Published CV must have exactly two pages.');
   const text = execFileSync('pdftotext', [pending, '-'], { encoding: 'utf8' });

@@ -5,8 +5,14 @@
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
-  // Project discovery stays on the dedicated Projects page; getLatestProjects is intentionally not rendered here.
   const page = pageCopy.home;
+  const profileSrcset = [
+    '/images/profile/faris-munir-640.webp 640w',
+    '/images/profile/faris-munir-1024.webp 1024w',
+    '/images/profile/faris-munir-1536.webp 1536w'
+  ].join(', ');
+
+  // Project discovery stays on the dedicated Projects page; getLatestProjects is intentionally not rendered here.
 </script>
 
 <main>
@@ -30,7 +36,14 @@
         </div>
       </div>
 
-      <MediaImage className="aspect-[1.36] w-full max-w-[620px] justify-self-center lg:justify-self-end 2xl:max-w-[760px]" src={profile.image} alt={profile.name} eager/>
+      <MediaImage
+        className="aspect-[1.36] w-full max-w-[620px] justify-self-center lg:justify-self-end 2xl:max-w-[760px]"
+        src={profile.image}
+        srcset={profileSrcset}
+        sizes="(min-width: 1536px) 760px, (min-width: 1024px) 44vw, calc(100vw - 3rem)"
+        alt={profile.name}
+        eager
+      />
     </section>
   </PageShell>
 </main>

@@ -1,5 +1,7 @@
 <script lang="ts">
   export let src = '';
+  export let srcset = '';
+  export let sizes = '';
   export let alt = '';
   export let className = '';
   export let eager = false;
@@ -14,6 +16,8 @@
   <img
     class={"h-full w-full " + (fit === 'contain' ? 'object-contain' : 'object-cover') + " transition-[opacity,transform] duration-500 ease-out " + (loaded ? "scale-100 opacity-100" : "scale-[1.015] opacity-0")}
     {src}
+    srcset={srcset || undefined}
+    sizes={sizes || undefined}
     {alt}
     loading={eager ? 'eager' : 'lazy'}
     decoding="async"

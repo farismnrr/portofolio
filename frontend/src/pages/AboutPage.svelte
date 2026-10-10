@@ -34,28 +34,28 @@
 </script>
 
 <main>
-  <PageShell className="py-12 lg:py-14">
-    <div class="grid gap-10 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14">
-      <aside class="self-start lg:sticky lg:top-28 lg:border-r lg:border-black/10 lg:pr-8 xl:pr-10">
-        <MediaImage className="aspect-[.8] w-full" src={profile.image} alt={profile.name}/>
+  <PageShell className="py-10 sm:py-12 lg:py-14">
+    <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14">
+      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:block lg:border-r lg:border-black/10 lg:pr-8 xl:pr-10">
+        <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
 
-        <h2 class="mt-5 text-[25px] font-semibold leading-tight tracking-[-0.025em]">{profile.name}</h2>
-        <p class="mt-1 text-[15px] text-black/55">{profile.role}</p>
+        <div class="min-w-0">
+          <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[25px] lg:mt-5">{profile.name}</h2>
+          <p class="mt-1 text-[14px] text-black/55 sm:text-[15px]">{profile.role}</p>
 
-        <div class="mt-5 space-y-3 text-[13px] text-black/60">
-          <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
-          <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
+          <div class="mt-4 space-y-2.5 text-[12px] text-black/60 sm:mt-5 sm:text-[13px]">
+            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
+          </div>
         </div>
 
-        <div class="my-5 h-px bg-black/10"></div>
-
-        <div class="space-y-3 text-[13px]">
-          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
-          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
-          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
-          <a class="flex items-center gap-2.5 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
+        <div class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/10 pt-3 text-[13px] sm:grid-cols-3 lg:mt-5 lg:block lg:space-y-1 lg:border-t lg:pt-4">
+          <a class="flex min-h-10 items-center gap-2.5 hover:opacity-60" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:opacity-60" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
           <button
-            class="flex items-center gap-2.5 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
+            class="flex min-h-10 items-center gap-2.5 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
             type="button"
             disabled={generatingCv}
             on:click={handleSaveCv}
@@ -65,26 +65,26 @@
           </button>
 
           {#if generatingCv}
-            <p class="text-[12px] leading-5 text-black/45" role="status" aria-live="polite">Preparing the PDF from verified portfolio content.</p>
+            <p class="col-span-full text-[12px] leading-5 text-black/45" role="status" aria-live="polite">Preparing the PDF from verified portfolio content.</p>
           {:else if cvGenerated}
-            <p class="text-[12px] leading-5 text-black/45" role="status">CV generated and downloaded.</p>
+            <p class="col-span-full text-[12px] leading-5 text-black/45" role="status">CV generated and downloaded.</p>
           {/if}
 
-          {#if cvError}<p class="cv-error text-[12px] leading-5">{cvError}</p>{/if}
+          {#if cvError}<p class="cv-error col-span-full text-[12px] leading-5">{cvError}</p>{/if}
         </div>
       </aside>
 
       <section class="min-w-0">
-        <header class="border-b border-black/10 pb-9">
-          <h1 class="w-full max-w-none text-balance text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] md:text-[48px]">{page.subtitle}</h1>
+        <header class="border-b border-black/10 pb-8 sm:pb-9">
+          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px]">{page.subtitle}</h1>
 
-          <div class="mt-7 w-full text-[16px] leading-7 text-black/62 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
+          <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
 
-        <section class="pt-9">
-          <h2 class="text-[25px] font-semibold tracking-[-0.018em]">Professional background</h2>
+        <section class="pt-8 sm:pt-9">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Professional background</h2>
           <div class="mt-4 border-t border-black/10">
             {#each experiences as item, i}
               <TimelineEntry {item} first={i===0} last={i===experiences.length-1} wide/>
@@ -92,9 +92,9 @@
           </div>
         </section>
 
-        <section class="mt-11 border-t border-black/10 pt-8">
-          <h2 class="text-[25px] font-semibold tracking-[-0.018em]">Technical focus</h2>
-          <div class="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 xl:grid-cols-3">
+        <section class="mt-10 border-t border-black/10 pt-7 sm:mt-11 sm:pt-8">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Technical focus</h2>
+          <div class="mt-5 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 xl:grid-cols-3">
             {#each skillGroups as group}
               <article class="border-t border-black/10 pt-4">
                 <h3 class="text-[16px] font-medium text-black/82">{group.title}</h3>
@@ -104,14 +104,14 @@
           </div>
         </section>
 
-        <section class="mt-11 border-t border-black/10 pt-8">
-          <h2 class="text-[25px] font-semibold tracking-[-0.018em]">Education</h2>
+        <section class="mt-10 border-t border-black/10 pt-7 sm:mt-11 sm:pt-8">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Education</h2>
           <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
             {#each education as item}
-              <article class="grid gap-4 py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
+              <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
                 <p class="text-[13px] text-black/42">{item.year}</p>
                 <div class="min-w-0">
-                  <h3 class="text-[19px] font-semibold tracking-[-0.015em] text-black/84">{item.institution}</h3>
+                  <h3 class="text-[18px] font-semibold tracking-[-0.015em] text-black/84 sm:text-[19px]">{item.institution}</h3>
                   <p class="mt-1 text-[15px] text-black/58">{item.program}</p>
                   {#if item.description}
                     <div class="mt-4 text-[14px] leading-6 text-black/56 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
@@ -125,23 +125,23 @@
         </section>
 
         {#if publications.length}
-          <section class="mt-11 border-t border-black/10 pt-8">
-            <h2 class="text-[25px] font-semibold tracking-[-0.018em]">Academic work</h2>
+          <section class="mt-10 border-t border-black/10 pt-7 sm:mt-11 sm:pt-8">
+            <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Academic work</h2>
             <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
               {#each publications as item}
-                <article class="grid gap-4 py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
+                <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
                   <div>
                     <p class="text-[13px] text-black/42">{item.year}</p>
                     <p class="mt-1 text-[11px] uppercase tracking-[0.12em] text-black/35">{item.type.replace('-', ' ')}</p>
                   </div>
                   <div class="min-w-0">
-                    <h3 class="text-[18px] font-semibold leading-7 tracking-[-0.012em] text-black/84">
+                    <h3 class="text-[17px] font-semibold leading-7 tracking-[-0.012em] text-black/84 sm:text-[18px]">
                       <a class="hover:opacity-60" href={item.url}>{item.title}</a>
                     </h3>
                     <p class="mt-1 text-[13px] text-black/50">{item.venue}</p>
                     <p class="mt-3 max-w-none hyphens-auto text-justify text-[14px] leading-6 text-black/56">{item.summary}</p>
                     {#if item.doi}
-                      <a class="mt-3 inline-block text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href={item.doi}>DOI</a>
+                      <a class="mt-3 inline-flex min-h-10 items-center text-[13px] underline decoration-black/20 underline-offset-4 hover:text-black" href={item.doi}>DOI</a>
                     {/if}
                   </div>
                 </article>

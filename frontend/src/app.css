@@ -65,6 +65,10 @@ a, button { -webkit-tap-highlight-color: transparent; }
 html[data-theme="dark"] .brand-logo__light { display: none; }
 html[data-theme="dark"] .brand-logo__dark { display: block; }
 
+.project-markdown {
+  min-width: 0;
+}
+
 .project-markdown .prose {
   --tw-prose-body: color-mix(in srgb, var(--page-fg) 62%, transparent);
   --tw-prose-headings: var(--page-fg);
@@ -84,7 +88,27 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 12%, transparent);
 }
 
+.project-markdown .prose p,
+.project-markdown .prose li,
+.project-markdown .prose blockquote,
+.project-markdown .prose a {
+  overflow-wrap: anywhere;
+}
+
+.project-markdown .prose pre,
+.project-markdown .prose table {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.project-markdown .prose table {
+  display: block;
+  width: 100%;
+}
+
 .mermaid-shell {
+  max-width: 100%;
   border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
   background: color-mix(in srgb, var(--surface) 72%, var(--page-bg));
   transition: background-color 180ms ease, border-color 180ms ease;

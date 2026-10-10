@@ -8,13 +8,49 @@ if (typeof window !== 'undefined') {
 }
 
 export function navigate(event: MouseEvent | null, href: string) {
+  if (typeof window === 'undefined') return;
+
+  const url = new URL(href, window.location.href);
+
   if (event) {
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    const anchor = event.currentTarget instanceof HTMLAnchorElement ? event.currentTarget : null;
+    if (anchor?.target && anchor.target !== '_self') return;
+    if (anchor?.hasAttribute('download')) return;
+    if (url.origin !== window.location.origin) return;
+
     event.preventDefault();
   }
-  if (window.location.pathname !== href) {
-    history.pushState({}, '', href);
-    path.set(href);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+
+  if (url.origin !== window.location.origin) {
+    window.location.assign(url.href);
+    return;
   }
+
+  const nextLocation = `${url.pathname}${url.search}${url.hash}`;
+  const currentLocation = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  if (nextLocation === currentLocation) return;
+
+  history.pushState({}, '', nextLocation);
+  path.set(url.pathname);
+
+  if (url.hash) {
+    requestAnimationFrame(() => {
+      document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
+    });
+    return;
+  }
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }

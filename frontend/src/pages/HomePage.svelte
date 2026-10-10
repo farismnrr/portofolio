@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { pageCopy, profile } from '../lib/structured-content';
+  import { homeContent as page } from '../lib/home-content';
   import { navigate } from '../lib/router';
   import { prefetchRoute } from '../lib/routes';
+  import { profile } from '../lib/site-content';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
 
-  const page = pageCopy.home;
   const profileSrcset = [
     '/images/profile/faris-munir-640.webp 640w',
     '/images/profile/faris-munir-1024.webp 1024w',

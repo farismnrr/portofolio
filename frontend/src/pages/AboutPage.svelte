@@ -13,6 +13,12 @@
   let generatingCv = false;
   let cvError = '';
   let cvGenerated = false;
+  let cvModulePromise: Promise<typeof import('../lib/cv')> | null = null;
+
+  function preloadCv() {
+    cvModulePromise ??= import('../lib/cv');
+    return cvModulePromise;
+  }
 
   async function handleSaveCv() {
     if (generatingCv) return;
@@ -22,7 +28,7 @@
     cvGenerated = false;
 
     try {
-      const { generateGeneralCv } = await import('../lib/cv');
+      const { generateGeneralCv } = await preloadCv();
       await generateGeneralCv();
       cvGenerated = true;
     } catch (error) {
@@ -58,6 +64,9 @@
             class="flex min-h-10 items-center gap-2.5 text-left hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-55"
             type="button"
             disabled={generatingCv}
+            on:mouseenter={() => void preloadCv()}
+            on:focus={() => void preloadCv()}
+            on:pointerdown={() => void preloadCv()}
             on:click={handleSaveCv}
           >
             <AppIcon name="file-text" size={16}/>

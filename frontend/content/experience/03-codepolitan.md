@@ -1,4 +1,5 @@
 ---
+kind: program
 order: 3
 year: Sep 2024 — Dec 2024
 company: Codepolitan

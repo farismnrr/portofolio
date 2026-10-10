@@ -1,7 +1,7 @@
 ---
 order: 1
 title: Languages
-items: [Go, Rust, TypeScript, Python, C++]
+items: [Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML]
 ---
 
-Proficient in writing high-performance, memory-safe code for system-level applications and ensuring type safety across the entire stack.
+Languages used across backend services, web applications, Android development, database queries, automation scripts, and embedded or plugin projects.

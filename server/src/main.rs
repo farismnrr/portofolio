@@ -14,13 +14,18 @@ mod ai;
 mod cv;
 mod profiles;
 mod rag;
+mod role_match;
 
 #[derive(RustEmbed)]
 #[folder = "../frontend/dist/"]
 struct Assets;
 
 fn cache_control_for(path: &str, status: StatusCode) -> &'static str {
-    if path == "index.html" || path.ends_with("/index.html") || status == StatusCode::NOT_FOUND {
+    if path == "index.html"
+        || path.ends_with("/index.html")
+        || path == "downloads/Faris_Munir_Mahdi_CV.pdf"
+        || status == StatusCode::NOT_FOUND
+    {
         "no-cache"
     } else if path.starts_with("assets/") {
         "public, max-age=31536000, immutable"
@@ -179,6 +184,12 @@ async fn main() {
     let rag_state = rag::RagState::from_env(ai_state.clone(), corpus.data.as_ref())
         .expect("valid CV retrieval configuration");
 
+    let match_state = role_match::MatchState::new(ai_state.clone(), corpus.data.as_ref())
+        .expect("valid role-match corpus");
+    let match_routes = Router::new()
+        .route("/api/role-match/report", post(role_match::report))
+        .with_state(match_state);
+
     let ai_routes = Router::new()
         .route("/api/ai/chat", post(ai::chat))
         .with_state(ai_state);
@@ -188,6 +199,7 @@ async fn main() {
         .with_state(rag_state);
 
     let app = Router::new()
+        .merge(match_routes)
         .merge(ai_routes)
         .merge(rag_routes)
         .route("/api/cv/render", post(cv::render))
@@ -210,7 +222,22 @@ async fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::etag_matches;
+    use super::{cache_control_for, etag_matches};
+
+    #[test]
+    fn latest_cv_revalidates_while_fingerprinted_assets_are_immutable() {
+        assert_eq!(
+            cache_control_for(
+                "downloads/Faris_Munir_Mahdi_CV.pdf",
+                axum::http::StatusCode::OK
+            ),
+            "no-cache"
+        );
+        assert_eq!(
+            cache_control_for("assets/app-hash.js", axum::http::StatusCode::OK),
+            "public, max-age=31536000, immutable"
+        );
+    }
 
     #[test]
     fn etag_matching_supports_lists_and_wildcards() {

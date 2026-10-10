@@ -6,37 +6,11 @@
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
+  import RoleMatchPanel from '../lib/ui/RoleMatchPanel.svelte';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
 
-  let generatingCv = false;
-  let cvError = '';
-  let cvGenerated = false;
-  let cvModulePromise: Promise<typeof import('../lib/cv')> | null = null;
-
-  function preloadCv() {
-    cvModulePromise ??= import('../lib/cv');
-    return cvModulePromise;
-  }
-
-  async function handleSaveCv() {
-    if (generatingCv) return;
-
-    generatingCv = true;
-    cvError = '';
-    cvGenerated = false;
-
-    try {
-      const { generateGeneralCv } = await preloadCv();
-      await generateGeneralCv();
-      cvGenerated = true;
-    } catch (error) {
-      cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
-    } finally {
-      generatingCv = false;
-    }
-  }
 </script>
 
 <main>
@@ -60,26 +34,8 @@
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
-          <button
-            class="flex min-h-10 items-center gap-2.5 text-left hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-55"
-            type="button"
-            disabled={generatingCv}
-            on:mouseenter={() => void preloadCv()}
-            on:focus={() => void preloadCv()}
-            on:pointerdown={() => void preloadCv()}
-            on:click={handleSaveCv}
-          >
-            <AppIcon name="file-text" size={16}/>
-            {generatingCv ? 'Generating CV…' : 'Generate CV'}
-          </button>
-
-          {#if generatingCv}
-            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status" aria-live="polite">Preparing the PDF from verified portfolio content.</p>
-          {:else if cvGenerated}
-            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status">CV generated and downloaded.</p>
-          {/if}
-
-          {#if cvError}<p class="cv-error col-span-full text-[12px] leading-5">{cvError}</p>{/if}
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="#role-match"><AppIcon name="projects" size={16}/>Match a role</a>
         </div>
       </aside>
 
@@ -91,6 +47,8 @@
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
+
+        <RoleMatchPanel/>
 
         <section class="pt-8 sm:pt-9">
           <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Professional background</h2>

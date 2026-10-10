@@ -1,0 +1,34 @@
+{
+  "profileSummary": {
+    "text": "Software Engineer focused on backend and systems engineering, with production experience across real-time applications, media-processing pipelines, IoT services, and containerized deployments. Builds Rust and TypeScript services backed by PostgreSQL, connects web and mobile clients to asynchronous workflows, and integrates practical AI capabilities with attention to authorization, observability, and operational boundaries."
+  },
+  "projects": [
+    {
+      "sourceId": "masih-awam-ai-code",
+      "narrative": "Built a coding workspace that connects repository inspection, file changes, command execution, and verification through bounded capabilities. Separated agent reasoning from execution authority with Rust, MCP, and Bubblewrap so repository operations pass through explicit policy boundaries, while the workspace exposes progress and evidence from the actual development environment."
+    },
+    {
+      "sourceId": "masih-awam-lms",
+      "narrative": "Built Rust and Axum services backed by PostgreSQL for courses, enrollment, and lesson completion. Separated auditable progress state from worlds, quests, and story presentation, allowing learner dashboards to show the next step while public course pages and private progress views follow different data ownership and rendering boundaries."
+    },
+    {
+      "sourceId": "iotnet",
+      "narrative": "Built an IoT management platform using TypeScript, Hapi, PostgreSQL, MQTT, and EMQX to connect user workflows with asynchronous device communication. Separated requested commands from observed device state and checked ownership before control, giving the application a clear model for device operations, automation decisions, and operational visibility through OpenTelemetry."
+    },
+    {
+      "sourceId": "askin",
+      "narrative": "Adapted the backend and integration layer of an Open WebUI-based application during Ruangguru Academy. Worked with FastAPI request handling, authenticated sessions, model discovery, Ollama-compatible and OpenAI-compatible routing, and retrieval context to connect the Svelte chat interface with configurable model services and Docker-based deployment."
+    }
+  ],
+  "certifications": [
+    {
+      "sourceId": "2"
+    },
+    {
+      "sourceId": "4"
+    },
+    {
+      "sourceId": "10"
+    }
+  ]
+}

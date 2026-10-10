@@ -1,4 +1,5 @@
 ---
+kind: employment
 order: 5
 year: Jan 2024 — Mar 2024
 company: PT Tradeasia International Indonesia

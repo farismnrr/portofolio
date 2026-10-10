@@ -15,3 +15,5 @@ server/Cargo.lock
 .DS_Store
 .env
 *.pdf
+
+!frontend/public/downloads/*.pdf

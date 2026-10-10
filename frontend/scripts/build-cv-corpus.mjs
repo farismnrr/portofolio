@@ -172,6 +172,7 @@ for (const { file, source } of experienceSources) {
   chunks.push({
     id: 'experience:' + id + ':summary',
     sourceType: 'experience',
+    kind: meta.kind || 'employment',
     sourceId: id,
     section: 'summary',
     company: meta.company || '',
@@ -243,6 +244,31 @@ for (const { file, source } of await readDir('certifications')) {
         .join('. ')
     )
   });
+}
+
+for (const { file, source } of await readDir('publications')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = String(meta.order || path.basename(file, '.md'));
+  chunks.push({
+    id: 'publication:' + id + ':summary', sourceType: 'publication', sourceId: id,
+    section: meta.type || 'publication', company: meta.venue || '', skills: [], roleTags: ['research'],
+    content: cleanMarkdown([meta.title, meta.year, meta.venue, meta.doi, body].filter(Boolean).join('. '))
+  });
+}
+
+for (const { file, source } of await readDir('blog')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = meta.slug || path.basename(file, '.md');
+  chunks.push({ id: 'blog:' + id + ':article', sourceType: 'blog', sourceId: id,
+    section: 'article', company: '', skills: [], roleTags: [meta.category].filter(Boolean),
+    content: cleanMarkdown([meta.title, meta.excerpt, body].filter(Boolean).join('. ')) });
+}
+for (const { file, source } of await readDir('principles')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = String(meta.order || path.basename(file, '.md'));
+  chunks.push({ id: 'principle:' + id + ':summary', sourceType: 'principle', sourceId: id,
+    section: 'engineering principle', company: '', skills: [], roleTags: ['engineering approach'],
+    content: cleanMarkdown([meta.title, body].filter(Boolean).join('. ')) });
 }
 
 for (const { file, source } of await readDir('profile')) {

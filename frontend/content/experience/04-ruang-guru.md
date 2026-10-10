@@ -1,4 +1,5 @@
 ---
+kind: program
 order: 4
 year: Feb 2024 — Jun 2024
 company: Ruang Guru Academy

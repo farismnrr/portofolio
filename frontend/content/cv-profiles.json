@@ -2,7 +2,7 @@
   "general": {
     "id": "general",
     "label": "General",
-    "headline": "Software Engineer — Backend & Systems Architecture",
+    "headline": "Software Engineer | Backend & Systems Architecture",
     "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
     "retrievalQuery": "software engineer backend systems distributed architecture fullstack web NestJS Rust PostgreSQL Redis APIs system design concurrency WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability Jira production on-premise LangGraph RAG",
@@ -48,46 +48,55 @@
     "projectChunkCap": 2,
     "enrichmentCaps": {
       "profile": 1,
-      "experience": 4,
+      "experience": 6,
       "skill": 4,
       "education": 1,
       "certification": 3
     },
     "technicalScopes": [
       {
-        "key": "backend-systems",
-        "label": "Backend Systems & Architecture",
-        "guidance": "High-performance backend services in Rust (Axum) and NestJS, REST and WebSocket APIs, concurrency, PostgreSQL schema design, TimescaleDB, and Redis caching."
+        "key": "languages",
+        "label": "Programming",
+        "guidance": "Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML"
       },
       {
-        "key": "fullstack-web",
-        "label": "Fullstack Web Development",
-        "guidance": "End-to-end web engineering in React and TypeScript, responsive PWAs, mobile Capacitor bridges, real-time client state synchronization, and seamless API integration."
+        "key": "web-mobile",
+        "label": "Web & Mobile",
+        "guidance": "Svelte, Vue, Nuxt, React, HTML, CSS, Android"
+      },
+      {
+        "key": "backend-systems",
+        "label": "Backend",
+        "guidance": "Axum, NestJS, FastAPI, Hapi, REST APIs, WebSockets, MQTT"
+      },
+      {
+        "key": "data-storage",
+        "label": "Data & Storage",
+        "guidance": "PostgreSQL, MySQL, Redis, TimescaleDB, pgvector"
       },
       {
         "key": "cloud-devops",
-        "label": "Cloud, DevOps & Observability",
-        "guidance": "Linux system administration, Docker multi-arch containers (AMD64/ARM64), CI/CD automation, Jira agile project tracking, and OpenTelemetry/Prometheus observability."
+        "label": "Infrastructure",
+        "guidance": "Docker, Linux, GitHub Actions, OpenTelemetry, Prometheus, Grafana"
       },
       {
         "key": "applied-ai-rag",
-        "label": "Applied AI, RAG & Intelligent Systems",
-        "guidance": "Evidence-grounded RAG pipelines, LangGraph structured extraction, vector databases (pgvector), and contextual automation integrated into production software."
+        "label": "AI Systems",
+        "guidance": "LangGraph, RAG, MCP, Ollama"
       }
     ],
     "budgets": {
       "projects": 4,
-      "experiences": 3,
+      "experiences": 6,
       "certifications": 3
     },
     "writingPolicy": {
-      "identity": "Present Faris clearly as a Software Engineer specialized in Backend Systems & Fullstack Web Development, with solid production engineering experience across robust backend architectures, distributed services, databases, and modern web applications. Machine learning is not his identity; applied AI/RAG is treated strictly as an integrated software capability.",
-      "focus": "Emphasize high-performance backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), production observability (OpenTelemetry, Prometheus, Grafana), agile delivery (Jira), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
-      "summaryRange": "70-88 words",
-      "projectRange": "55-75 words",
+      "identity": "Present Faris clearly as a Software Engineer specialized in Backend Systems & Fullstack Web Development, with production engineering experience across backend architectures, distributed services, databases, and modern web applications. Machine learning is not his identity; applied AI/RAG is treated strictly as an integrated software capability.",
+      "focus": "Emphasize backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), production observability (OpenTelemetry, Prometheus, Grafana), agile delivery (Jira), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
+      "summaryRange": "40-60 words",
+      "projectRange": "45-50 words in two substantive sentences: contribution, design decision, and supported outcome",
       "avoid": [
         "Machine Learning Engineer or Data Scientist positioning",
-        "selecting or including DBS Foundation or any Machine Learning Engineer roles in the CV; focus exclusively on backend, fullstack, and cloud software engineering roles",
         "generic filler such as passionate, hardworking, cutting-edge, innovative",
         "appearing only as a superficial or hobbyist developer without production ownership",
         "AI-only identity that obscures strong core backend and software craft",
@@ -95,11 +104,11 @@
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.65,
+      "minSecondPageFill": 0.82,
       "minBodySizePt": 10,
       "minimumItems": {
-        "projects": 3,
-        "experiences": 2,
+        "projects": 4,
+        "experiences": 6,
         "certifications": 2
       }
     }

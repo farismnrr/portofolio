@@ -49,6 +49,8 @@ pub struct ProjectSection {
 #[derive(Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExperienceSection {
+    #[serde(default)]
+    kind: String,
     title: String,
     meta: String,
     summary: String,
@@ -297,10 +299,6 @@ async fn render_validated_pdf(
             continue;
         }
 
-        if tighten_lowest_priority_narrative(&mut document) {
-            continue;
-        }
-
         return Err(format!(
             "document still exceeds {} pages after bounded fitting",
             profile.max_pages
@@ -315,16 +313,54 @@ async fn render_candidate(
     profile: DensityProfile,
     pass: usize,
 ) -> Result<(Vec<u8>, PdfInspection), String> {
-    let suffix = unique_suffix();
-    let html_path = format!("/tmp/portfolio-cv-{suffix}-{pass}-{}.html", profile.name);
-    let pdf_path = format!("/tmp/portfolio-cv-{suffix}-{pass}-{}.pdf", profile.name);
-    let profile_path = format!("/tmp/chromium-profile-{suffix}-{pass}-{}", profile.name);
+    let _ = pass;
+    render_pdf_html(&render_html(document, profile)).await
+}
 
-    fs::write(&html_path, render_html(document, profile))
+pub(crate) async fn render_report_pdf(html: &str, required: &[String]) -> Result<Vec<u8>, String> {
+    let (bytes, inspection) = render_pdf_html(html).await?;
+    if inspection.pages > 12 {
+        return Err("report exceeds the 12-page limit".into());
+    }
+    let normalized = normalize_text(&inspection.text);
+    for value in required {
+        ensure_text_present(&normalized, value, "report content")?;
+    }
+    Ok(bytes)
+}
+
+struct PdfTempFiles {
+    html: String,
+    pdf: String,
+    profile: String,
+}
+impl Drop for PdfTempFiles {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.html);
+        let _ = std::fs::remove_file(&self.pdf);
+        let _ = std::fs::remove_file(format!("{}.bbox.html", self.pdf));
+        let _ = std::fs::remove_dir_all(&self.profile);
+    }
+}
+
+async fn render_pdf_html(html: &str) -> Result<(Vec<u8>, PdfInspection), String> {
+    let suffix = unique_suffix();
+    let html_path = format!("/tmp/portfolio-pdf-{suffix}.html");
+    let pdf_path = format!("/tmp/portfolio-pdf-{suffix}.pdf");
+    let profile_path = format!("/tmp/chromium-profile-{suffix}");
+
+    let _temporary_files = PdfTempFiles {
+        html: html_path.clone(),
+        pdf: pdf_path.clone(),
+        profile: profile_path.clone(),
+    };
+
+    fs::write(&html_path, html)
         .await
         .map_err(|error| format!("failed to write temporary CV HTML: {error}"))?;
 
     let output = Command::new("chromium")
+        .kill_on_drop(true)
         .env("HOME", "/tmp")
         .env("XDG_CONFIG_HOME", "/tmp/chromium-config")
         .env("XDG_CACHE_HOME", "/tmp/chromium-cache")
@@ -438,7 +474,7 @@ fn validate_pdf_contents(
     for heading in [
         "PROFESSIONAL SUMMARY",
         "SKILLS",
-        "WORK EXPERIENCE",
+        "PROFESSIONAL EXPERIENCE",
         "PROJECTS",
         "CERTIFICATIONS",
         "EDUCATION",
@@ -448,6 +484,13 @@ fn validate_pdf_contents(
         }
     }
 
+    if document
+        .experiences
+        .iter()
+        .any(|item| item.kind == "program")
+    {
+        ensure_text_present(&normalized, "TECHNICAL PROGRAMS", "section")?;
+    }
     for experience in &document.experiences {
         ensure_text_present(&normalized, &experience.title, "experience")?;
     }
@@ -524,43 +567,6 @@ fn trim_lowest_priority_optional_item(document: &mut CvRenderRequest, profile: &
     }
 
     false
-}
-
-fn tighten_lowest_priority_narrative(document: &mut CvRenderRequest) -> bool {
-    for project in document.projects.iter_mut().rev() {
-        if let Some(shortened) = shorten_text(&project.narrative) {
-            project.narrative = shortened;
-            return true;
-        }
-    }
-
-    shorten_text(&document.profile_summary).map(|shortened| {
-        document.profile_summary = shortened;
-        true
-    }) == Some(true)
-}
-
-fn shorten_text(value: &str) -> Option<String> {
-    let sentences = value
-        .split_inclusive(['.', '!', '?'])
-        .map(str::trim)
-        .filter(|sentence| !sentence.is_empty())
-        .collect::<Vec<_>>();
-
-    if sentences.len() > 1 {
-        let keep = sentences.len().div_ceil(2);
-        let shortened = sentences[..keep].join(" ");
-        if shortened.len() < value.len() {
-            return Some(shortened);
-        }
-    }
-
-    let words = value.split_whitespace().collect::<Vec<_>>();
-    if words.len() > 28 {
-        return Some(words[..words.len().div_ceil(2).max(20)].join(" "));
-    }
-
-    None
 }
 
 async fn cleanup_attempt(html_path: &str, pdf_path: &str, profile_path: &str) {
@@ -688,7 +694,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         .iter()
         .map(|line| {
             format!(
-                r#"<div class="skill-line"><strong>{}:</strong> {}</div>"#,
+                r#"<div class="skill-line"><strong class="skill-label">{}</strong><span class="skill-value">{}</span></div>"#,
                 escape(&line.label),
                 escape(&line.text)
             )
@@ -699,6 +705,15 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     let experiences = document
         .experiences
         .iter()
+        .filter(|item| item.kind != "program")
+        .map(experience_html)
+        .collect::<Vec<_>>()
+        .join("");
+
+    let programs = document
+        .experiences
+        .iter()
+        .filter(|item| item.kind == "program")
         .map(experience_html)
         .collect::<Vec<_>>()
         .join("");
@@ -797,14 +812,24 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .project-narrative {{
     margin: 0;
     text-align: justify;
-    text-justify: inter-word;
+    text-align-last: start;
+    hyphens: none;
     orphans: 3;
     widows: 3;
   }}
 
   .skill-line {{
-    margin: 3px 0;
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 3px 0;
+    border-bottom: 0.5px solid #dddddd;
+    break-inside: avoid;
   }}
+
+  .skill-line:last-child {{ border-bottom: 0; }}
+  .skill-label {{ font-weight: 700; }}
+  .skill-value {{ text-align: justify; text-align-last: start; }}
 
   .experience,
   .project,
@@ -852,7 +877,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     margin: 0 0 {bullet_gap}px;
     padding-left: 2px;
     text-align: justify;
-    text-justify: inter-word;
+    text-align-last: start;
+    hyphens: none;
     orphans: 3;
     widows: 3;
   }}
@@ -870,16 +896,13 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .cert-list {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 22px;
-    row-gap: 10px;
+    display: block;
   }}
 
   .certification {{
     font-size: 10pt;
     line-height: 1.42;
-    padding-bottom: 2px;
+    padding-bottom: 10px;
   }}
 
   .cert-title {{
@@ -904,8 +927,9 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   {skills_section}
   {experience_section}
   {projects_section}
-  {certifications_section}
+  {programs_section}
   {education_section}
+  {certifications_section}
 </body>
 </html>"#,
         name = escape(&document.name),
@@ -920,8 +944,9 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
             ),
         ),
         skills_section = section("Skills", &scopes),
-        experience_section = section("Work Experience", &experiences),
-        projects_section = section("Projects", &projects),
+        experience_section = section("Professional Experience", &experiences),
+        projects_section = section("Selected Projects", &projects),
+        programs_section = section("Technical Programs", &programs),
         certifications_section = section(
             "Certifications",
             &format!(r#"<div class="cert-list">{certifications}</div>"#),
@@ -950,6 +975,36 @@ fn escape(value: &str) -> String {
 mod tests {
     use super::{last_page_fill_ratio, CvRenderRequest};
     use crate::profiles;
+
+    #[tokio::test]
+    #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
+    async fn renders_two_page_evidence_fixture() {
+        let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
+        let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
+        let request: CvRenderRequest =
+            serde_json::from_slice(&tokio::fs::read(fixture).await.unwrap()).unwrap();
+        assert_eq!(
+            request
+                .experiences
+                .iter()
+                .filter(|item| item.kind == "employment")
+                .count(),
+            2
+        );
+        assert_eq!(
+            request
+                .experiences
+                .iter()
+                .filter(|item| item.kind == "program")
+                .count(),
+            4
+        );
+        let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
+            .await
+            .unwrap();
+        assert!(candidate.fill_ratio >= 0.82);
+        tokio::fs::write(output, candidate.bytes).await.unwrap();
+    }
 
     #[test]
     fn accepts_frontend_camel_case_render_payload() {
@@ -1024,6 +1079,6 @@ mod tests {
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
         assert_eq!(profile.max_pages, 2);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 3);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 4);
     }
 }

@@ -25,11 +25,17 @@ Visible portfolio copy is checked by `frontend/scripts/check-writing-style.mjs`.
 
 Date/period metadata and similar factual range fields are intentionally exempt from the em-dash rule; code and Mermaid fences are also ignored so the guard only evaluates visible prose.
 
-## Generate CV with AI
+## Latest CV and AI role matching
 
-The About page uses one evidence-grounded CV pipeline with a deterministic General profile. The shared registry lives in [`frontend/content/cv-profiles.json`](frontend/content/cv-profiles.json) and is consumed by the Svelte workflow and Rust retrieval/PDF renderer.
+The About page downloads the reviewed, versioned PDF at `frontend/public/downloads/Faris_Munir_Mahdi_CV.pdf` directly. Downloading the CV does not call AI or the PDF renderer. Editorial summary and project copy live in `frontend/content/cv-editorial.json`; identity, work history, dates, programs, education, and credentials are attached from portfolio Markdown. Layout and skills follow `frontend/content/cv-profiles.json`.
 
-The pipeline keeps portfolio Markdown as the source of truth, then performs hybrid retrieval, metadata reranking, evidence planning, AI wording, grounding validation, deterministic source enrichment, and validated PDF rendering. AI cannot choose technical-scope labels or provide factual identity fields; those come from the profile and portfolio content. The output uses a deterministic filename and page budget, with a minimum 10pt body typography floor.
+To publish an updated CV, run `CV_RENDER_URL=http://127.0.0.1:PORT/api/cv/render npm run cv:publish` from `frontend`, visually inspect both PDF pages, and commit the PDF with its editorial/source changes. The publishing script builds source-backed content without AI and replaces the PDF only after its two-page/text checks succeed. The CV keeps justified paragraphs, readable typography of at least 10pt, and separate employment and technical programs.
+
+`Match a role` sends a job description to `POST /api/role-match/report`. A bounded server workflow extracts requirements, compares them against the entire embedded portfolio corpus (including every project section, academic work, engineering articles, and principles), validates exact source quotations and requirement coverage, computes a fixed evidence score, and renders a downloadable PDF. It reuses the configured 9router provider in the Rust runtime. Job descriptions and portfolio records are treated as data, not executable instructions. Invalid structured output gets one repair attempt per stage; there is no invented fallback report.
+
+The report separates direct evidence, transferable/partial evidence, and requirements not evidenced in the portfolio. Must-have requirements have weight 3 and preferred requirements weight 1; direct evidence receives full credit and partial evidence half credit. The report includes mandatory coverage, unresolved must-haves, requirement explanations, exact portfolio quotes and links, verification questions, the scoring method, a portfolio snapshot hash, and the submitted JD. The score is evidence coverage rather than a hiring probability. Classification is AI-assisted and should be reviewed by a person. The request has a 180-second limit and at most two reports run concurrently; PDFs are returned with `no-store` and are not persisted by the application.
+
+The existing `/api/cv/retrieve` hybrid retrieval route and `/api/ai/chat` remain available for runtime health checks. CV downloading and role matching do not use the old browser AI CV-generation flow.
 
 ## Branch workflow
 

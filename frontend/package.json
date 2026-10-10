@@ -12,7 +12,8 @@
     "cv:check": "node ./scripts/check-cv-profiles.mjs",
     "media:prepare": "node ./scripts/prepare-profile-image.mjs && node ./scripts/prepare-blog-image.mjs && node ./scripts/prepare-certification-images.mjs && node ./scripts/prepare-project-images.mjs",
     "seo:generate": "node ./scripts/generate-seo-assets.mjs",
-    "guard": "node ./scripts/guard-ui.mjs"
+    "guard": "node ./scripts/guard-ui.mjs",
+    "cv:publish": "node ./scripts/publish-cv.mjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",

@@ -1,4 +1,5 @@
 ---
+kind: program
 order: 6
 year: Aug 2023 — Jan 2024
 company: Bangkit Academy

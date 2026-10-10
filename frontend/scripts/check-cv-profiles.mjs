@@ -10,7 +10,7 @@ const registry = JSON.parse(
 const expected = {
   general: {
     maxPages: 2,
-    scopes: 4,
+    scopes: 6,
     filename: 'Faris_Munir_Mahdi_CV.pdf'
   }
 };

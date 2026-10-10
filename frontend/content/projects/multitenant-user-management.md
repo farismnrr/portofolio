@@ -7,8 +7,8 @@ title: "Multi-Tenant User Management Service"
 cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
 role: "Lead Engineer"
-category: "Backend · Security · Team Project"
-description: "A team-built identity service where I led engineering work around authentication, tenant membership, roles, and session logic shared across multiple applications."
+category: "Backend · Security"
+description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
 image: "/images/projects/user-management/cover.png"
 tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
@@ -111,14 +111,6 @@ one person
 → many tenant contexts
 → many applications
 ```
-
-## Leading one service inside a team project
-
-This was not a solo project. I led the engineering work around the identity service, so this case study focuses on the architecture and implementation decisions inside that boundary rather than treating the broader system as something I built alone.
-
-My responsibility covered the service-level design for authentication, tenant-aware authorization, sessions, storage, and the API contract consumed by other applications. Working in a team meant those boundaries had to stay explicit: the identity service needed to provide predictable behavior without assuming ownership of every consuming application's product logic.
-
-That distinction matters here because technical ownership and total product ownership are not the same thing. I can explain the decisions inside the service directly while still describing the surrounding applications as collaborative system boundaries.
 
 ## Tradeoffs that shape the service
 

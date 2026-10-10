@@ -13,11 +13,11 @@
 </script>
 
 <main>
-  <PageShell className="py-8 sm:py-10 lg:py-12">
+  <PageShell className="py-8 sm:py-10 lg:py-12 2xl:py-14">
     <a class="inline-flex min-h-11 items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/projects"><AppIcon name="arrow-left" size={14}/>Projects</a>
     {#if project && rendered}
       <div class="mt-5 sm:mt-7 lg:mt-8"><ProjectHero {project}/></div>
-      <section class="grid gap-8 py-8 sm:py-10 lg:grid-cols-[150px_minmax(0,1fr)] lg:gap-9 xl:gap-12">
+      <section class="grid gap-8 py-8 sm:py-10 lg:grid-cols-[150px_minmax(0,1fr)] lg:gap-9 xl:gap-12 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-16 2xl:py-12">
         <ContentToc items={rendered.toc}/>
         <div class="min-w-0">{#key project.slug}<MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>{/key}</div>
       </section>

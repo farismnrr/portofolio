@@ -78,9 +78,13 @@ The current frontend is primarily an identity and account shell: registration, l
 
 The current GiziLens repository also contains visual-design work that I contributed within the capstone team and can point to directly rather than describing the interface only in technical terms.
 
-I designed the original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing. The identity is carried through a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
+I designed the original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing.
 
-I also documented how that identity should behave in the application: a teal, lime, and ink palette, clear-space guidance, a smaller icon treatment for constrained placements, and a reverse treatment for dark surfaces. The same geometry is reused in the frontend rather than treating the logo as a disconnected asset.
+The identity includes a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
+
+I also documented how that identity should behave in the application. The guidance covers a teal, lime, and ink palette, clear-space rules, a smaller icon treatment for constrained placements, and a reverse treatment for dark surfaces.
+
+The frontend reuses the same geometry so the logo remains part of the product system instead of becoming a disconnected asset.
 
 This was my visual-design contribution to a broader team product. It shows visual judgement without implying that I owned every part of the product interface or the machine-learning subsystem.
 

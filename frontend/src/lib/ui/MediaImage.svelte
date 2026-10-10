@@ -23,7 +23,12 @@
   });
 </script>
 
-<div class={"relative overflow-hidden bg-black/[0.045] " + className}>
+<div
+  class={"relative overflow-hidden bg-black/[0.045] " + className}
+  data-media-image
+  data-eager={eager ? 'true' : 'false'}
+  data-loaded={loaded ? 'true' : 'false'}
+>
   {#if !loaded}
     <div class="absolute inset-0 animate-pulse bg-gradient-to-br from-black/[0.035] via-black/[0.075] to-black/[0.035]"></div>
   {/if}

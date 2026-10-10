@@ -89,53 +89,6 @@ function variables(theme: Theme) {
   };
 }
 
-function readViewBox(svg: SVGSVGElement) {
-  const base = svg.viewBox?.baseVal;
-  if (base?.width && base?.height) return { width: base.width, height: base.height };
-
-  const raw = svg.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number);
-  if (raw?.length === 4 && raw.every(Number.isFinite) && raw[2] > 0 && raw[3] > 0) {
-    return { width: raw[2], height: raw[3] };
-  }
-
-  const width = Number.parseFloat(svg.getAttribute('width') ?? '0');
-  const height = Number.parseFloat(svg.getAttribute('height') ?? '0');
-  return { width, height };
-}
-
-function readableMinWidth(type: MermaidDiagramType, width: number, height: number) {
-  const ratio = width > 0 && height > 0 ? width / height : 1;
-  const naturallyWide = ratio >= 2.15 || type === 'sequence' || type === 'journey';
-  if (!naturallyWide) return 0;
-
-  // Mermaid's labels are sized in SVG user units. Displaying a wide SVG much
-  // narrower than its intrinsic viewBox scales the text down with the graph,
-  // which makes labels unreadable even though horizontal scrolling exists.
-  // Keep the rendered width close to the intrinsic viewBox so a ~16-unit label
-  // remains roughly a ~16px label, and let the shell provide horizontal scroll.
-  const typeFloor = type === 'sequence' || type === 'journey' ? 960 : 840;
-  const intrinsicWidth = Math.round(width);
-  return Math.min(4200, Math.max(typeFloor, intrinsicWidth));
-}
-
-function applyPresentation(node: HTMLElement) {
-  const source = node.dataset.mermaidSource ?? node.textContent ?? '';
-  const type = diagramType(source);
-  const shell = node.closest<HTMLElement>('.mermaid-shell');
-  const svg = node.querySelector<SVGSVGElement>('svg');
-  if (!shell || !svg) return;
-
-  const { width, height } = readViewBox(svg);
-  const minWidth = readableMinWidth(type, width, height);
-
-  shell.dataset.diagramType = type;
-  shell.dataset.diagramLayout = minWidth > 0 ? 'wide' : 'compact';
-  shell.style.setProperty('--mermaid-min-width', `${minWidth}px`);
-  svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-  svg.removeAttribute('height');
-  svg.removeAttribute('width');
-}
-
 export async function renderMermaid(root: HTMLElement, theme: Theme) {
   const nodes = [...root.querySelectorAll<HTMLElement>('.mermaid')];
   if (!nodes.length) return;
@@ -146,22 +99,27 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
     startOnLoad: false,
     securityLevel: 'strict',
     theme: 'base',
+    htmlLabels: true,
     fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
-    themeVariables: variables(theme)
+    themeVariables: variables(theme),
+    flowchart: {
+      useMaxWidth: false,
+      wrappingWidth: 180,
+      minNodeWidth: 120
+    },
+    sequence: {
+      useMaxWidth: false,
+      wrap: true
+    }
   });
 
   for (const node of nodes) {
     if (!node.dataset.mermaidSource) node.dataset.mermaidSource = node.textContent ?? '';
     const shell = node.closest<HTMLElement>('.mermaid-shell');
-    if (shell) {
-      shell.dataset.diagramType = diagramType(node.dataset.mermaidSource);
-      shell.removeAttribute('data-diagram-layout');
-      shell.style.removeProperty('--mermaid-min-width');
-    }
+    if (shell) shell.dataset.diagramType = diagramType(node.dataset.mermaidSource);
     node.removeAttribute('data-processed');
     node.textContent = node.dataset.mermaidSource;
   }
 
   await mermaid.run({ nodes });
-  for (const node of nodes) applyPresentation(node);
 }

@@ -1,4 +1,3 @@
-import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
 import {
   certifications,
   education,
@@ -82,16 +81,6 @@ interface CvDraft {
   certifications: CertificationDraft[];
 }
 
-const CvState = Annotation.Root({
-  target: Annotation<CvTarget>(),
-  evidence: Annotation<Evidence[]>(),
-  retrievalBackend: Annotation<string>(),
-  draft: Annotation<CvDraft>(),
-  validationErrors: Annotation<string[]>()
-});
-
-type CvStateType = typeof CvState.State;
-
 function contactLine() {
   const email = profile.email.replace(/^mailto:/, '');
   return [
@@ -102,7 +91,7 @@ function contactLine() {
   ].join(' | ');
 }
 
-async function retrieveNode(state: CvStateType) {
+async function retrieveNode(state: { target: CvTarget }) {
   const cvProfile = getCvProfile(state.target);
   const response = await fetch('/api/cv/retrieve', {
     method: 'POST',
@@ -128,7 +117,7 @@ async function retrieveNode(state: CvStateType) {
   };
 }
 
-function planEvidenceNode(state: CvStateType) {
+function planEvidenceNode(state: { target: CvTarget; evidence: Evidence[] }) {
   const cvProfile = getCvProfile(state.target);
   const candidates = state.evidence.filter(
     (item) => !(item.sourceType === 'experience' && item.sourceId === '2')
@@ -349,7 +338,7 @@ function normalizeDraft(value: unknown, cvProfile: CvProfile): CvDraft {
   };
 }
 
-async function draftNode(state: CvStateType) {
+async function draftNode(state: { target: CvTarget; evidence: Evidence[] }) {
   const cvProfile = getCvProfile(state.target);
   const response = await fetch('/api/ai/chat', {
     method: 'POST',
@@ -494,7 +483,7 @@ function validateMatchingSource(
   }
 }
 
-function validateNode(state: CvStateType) {
+function validateNode(state: { target: CvTarget; evidence: Evidence[]; draft: CvDraft }) {
   const cvProfile = getCvProfile(state.target);
   const errors: string[] = [];
   const evidenceMap = new Map(state.evidence.map((item) => [item.id, item]));
@@ -623,18 +612,6 @@ function validateNode(state: CvStateType) {
   return { validationErrors: errors };
 }
 
-const workflow = new StateGraph(CvState)
-  .addNode('retrieve', retrieveNode)
-  .addNode('planEvidence', planEvidenceNode)
-  .addNode('composeCv', draftNode)
-  .addNode('validate', validateNode)
-  .addEdge(START, 'retrieve')
-  .addEdge('retrieve', 'planEvidence')
-  .addEdge('planEvidence', 'composeCv')
-  .addEdge('composeCv', 'validate')
-  .addEdge('validate', END)
-  .compile();
-
 function absolutePortfolioUrl(value: string) {
   if (!value) return '';
   if (/^https?:\/\//i.test(value)) return value;
@@ -762,14 +739,16 @@ async function renderPdf(draft: CvDraft, target: CvTarget) {
 }
 
 export async function generateCv(target: CvTarget = 'general') {
-  const result = await workflow.invoke({ target });
+  const retrieved = await retrieveNode({ target });
+  const planned = planEvidenceNode({ target, evidence: retrieved.evidence });
+  const composed = await draftNode({ target, evidence: planned.evidence });
+  const validated = validateNode({ target, evidence: planned.evidence, draft: composed.draft });
 
-  if (!result.draft) throw new Error('CV workflow completed without a grounded draft.');
-  if (result.validationErrors?.length) {
-    throw new Error(`CV grounding validation failed: ${result.validationErrors.join('; ')}`);
+  if (validated.validationErrors.length) {
+    throw new Error(`CV grounding validation failed: ${validated.validationErrors.join('; ')}`);
   }
 
-  await renderPdf(result.draft, target);
+  await renderPdf(composed.draft, target);
 }
 
 export function generateGeneralCv() {

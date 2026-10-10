@@ -1,6 +1,7 @@
 <script lang="ts">
   import { articles, formatArticleDate } from '../lib/blog-content';
   import { navigate } from '../lib/router';
+  import { prefetchRoute } from '../lib/routes';
   import { pageCopy } from '../lib/structured-content';
   import PageShell from '../lib/ui/PageShell.svelte';
 </script>
@@ -18,6 +19,9 @@
         <article class="border-b border-black/14 py-7 sm:py-8 lg:py-9">
           <a
             href={articlePath}
+            on:mouseenter={() => prefetchRoute(articlePath)}
+            on:focus={() => prefetchRoute(articlePath)}
+            on:pointerdown={() => prefetchRoute(articlePath)}
             on:click={(e)=>navigate(e,articlePath)}
             class="grid gap-3 sm:gap-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-8"
           >

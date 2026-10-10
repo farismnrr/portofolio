@@ -19,7 +19,8 @@ repoUrl: "https://github.com/farismnrr/askin"
 
 Using a language model is straightforward when the task is only sending a prompt and reading a response.
 
-The experience becomes more complicated when the application also needs to work with different model providers, uploaded files, retrieved knowledge, tools, chat history, and user access. At that point, the problem is no longer just calling an AI API. The application needs a consistent layer that turns several AI capabilities into one understandable workflow.
+The experience becomes more complicated when the application also needs to work with different model providers, uploaded files, retrieved knowledge, tools, chat history, and user access.
+At that point, the problem is no longer just calling an AI API. The application needs a consistent layer that turns several AI capabilities into one understandable workflow.
 
 **AskIn** was the project I used during Ruangguru Academy to explore that problem.
 
@@ -80,7 +81,8 @@ My work on AskIn was centered on the **backend and integration side** of the pro
 
 The project gave me a practical environment to understand how an AI-oriented application is connected end to end: from the web interface, through backend request handling and model routing, to retrieval and deployment concerns.
 
-I describe the complete application here because those pieces are necessary to explain how AskIn works as a product. It should not be read as a claim that every subsystem originated from me; the repository is a customized application built on top of the Open WebUI codebase, and my focus was learning from and adapting that system for the project context.
+I describe the complete application here because those pieces are necessary to explain how AskIn works as a product.
+It should not be read as a claim that every subsystem originated from me. The repository is a customized application built on top of the Open WebUI codebase, and my focus was learning from and adapting that system for the project context.
 
 That distinction is important to me. The useful outcome was not presenting an existing foundation as something created from zero, but understanding its architecture well enough to adapt, run, and reason about the boundaries between the application and the AI services behind it.
 

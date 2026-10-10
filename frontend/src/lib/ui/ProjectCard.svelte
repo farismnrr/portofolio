@@ -10,7 +10,7 @@
   $: preserveShowcase = project.slug === 'parentify';
 </script>
 
-<article class="border-b border-black/10 pb-8 sm:pb-9">
+<article class="border-b border-black/14 pb-8 sm:pb-9">
   <a
     href={detailPath}
     on:mouseenter={()=>prefetchRoute(detailPath)}
@@ -30,20 +30,20 @@
     <div class="flex items-start justify-between gap-4 sm:items-baseline">
       <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[24px]">
         <a
-          class="hover:opacity-60"
+          class="hover:opacity-70"
           href={detailPath}
           on:mouseenter={()=>prefetchRoute(detailPath)}
           on:focus={()=>prefetchRoute(detailPath)}
           on:click={(e)=>navigate(e,detailPath)}
         >{project.cardTitle}</a>
       </h2>
-      <p class="shrink-0 pt-1 text-[12px] text-black/40 sm:pt-0">{project.year}</p>
+      <p class="shrink-0 pt-1 text-[12px] text-black/58 sm:pt-0">{project.year}</p>
     </div>
 
-    <p class="mt-3 line-clamp-3 text-[14px] leading-6 text-black/56 sm:line-clamp-2">{project.description}</p>
+    <p class="mt-3 line-clamp-3 text-[14px] leading-6 text-black/60 sm:line-clamp-2">{project.description}</p>
 
     <a
-      class="mt-3 inline-flex min-h-10 items-center text-[12px] font-medium text-black/68 underline decoration-black/20 underline-offset-4 hover:text-black sm:mt-4"
+      class="mt-3 inline-flex min-h-10 items-center text-[12px] font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black sm:mt-4"
       href={detailPath}
       on:mouseenter={()=>prefetchRoute(detailPath)}
       on:focus={()=>prefetchRoute(detailPath)}

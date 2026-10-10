@@ -32,7 +32,7 @@ function optimizedProjectImage(value: string) {
 export function projectImageSrcset(value: string) {
   const match = value.match(/^(.*)-1280\.webp$/);
   if (!match) return '';
-  return [640, 1280, 1920].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+  return [640, 1280].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
 }
 
 function parseProject(path: string, source: string): ProjectDocument {

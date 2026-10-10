@@ -4,9 +4,9 @@ import sharp from 'sharp';
 
 const projectDir = resolve(new URL('../content/projects', import.meta.url).pathname);
 const publicDir = resolve(new URL('../public', import.meta.url).pathname);
-const variants = [640, 1280, 1920];
+const variants = [640, 1280];
 const defaultVariantMaxBytes = 300_000;
-const totalVariantsMaxBytes = 3_000_000;
+const totalVariantsMaxBytes = 2_000_000;
 const sourceManifest = resolve(publicDir, 'project-source-images.txt');
 
 function unquote(value) {
@@ -58,7 +58,7 @@ for (const { file, image } of uniqueCovers) {
     const info = await sharp(source)
       .autoOrient()
       .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 80, effort: 5 })
+      .webp({ quality: 80, effort: 3 })
       .toFile(output);
     results.push({ width, size: info.size });
   }

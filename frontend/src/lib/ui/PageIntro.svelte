@@ -6,9 +6,9 @@
   export let compact=false;
 </script>
 
-<section class="max-w-5xl">
-  {#if eyebrow}<p class="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-black/45">{eyebrow}</p>{/if}
-  <h1 class={compact ? "max-w-[18ch] text-[40px] font-semibold leading-[1.04] tracking-[-0.035em] md:text-[52px]" : "max-w-[18ch] text-[44px] font-semibold leading-[1.03] tracking-[-0.04em] md:text-[60px]"}>{title}</h1>
-  {#if subtitle}<p class="mt-4 max-w-[28ch] text-[22px] font-light leading-[1.18] tracking-[-0.02em] text-black/60 md:text-[30px]">{subtitle}</p>{/if}
-  {#if description}<p class="mt-5 max-w-[66ch] text-[15px] leading-7 text-black/56 md:text-[16px]">{description}</p>{/if}
+<section class="w-full max-w-none">
+  {#if eyebrow}<p class="mb-3 text-[12px] font-medium text-black/45">{eyebrow}</p>{/if}
+  <h1 class={compact ? "w-full text-balance text-[38px] font-semibold leading-[1.06] tracking-[-0.025em] md:text-[48px]" : "w-full text-balance text-[42px] font-semibold leading-[1.04] tracking-[-0.03em] md:text-[56px]"}>{title}</h1>
+  {#if subtitle}<p class="mt-4 w-full text-balance text-[20px] font-normal leading-[1.3] tracking-[-0.01em] text-black/62 md:text-[26px]">{subtitle}</p>{/if}
+  {#if description}<p class="mt-5 w-full hyphens-auto text-justify text-[15px] leading-7 text-black/56 md:text-[16px]">{description}</p>{/if}
 </section>

@@ -67,7 +67,7 @@
       {
         "key": "backend-systems",
         "label": "Backend",
-        "guidance": "Axum, NestJS, FastAPI, Hapi, REST APIs, WebSockets, MQTT"
+        "guidance": "Axum, Actix-web, NestJS, Express, FastAPI, Hapi, REST, WebSockets, MQTT, Object-Oriented Design"
       },
       {
         "key": "data-storage",

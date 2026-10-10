@@ -7,6 +7,7 @@ interface CvDraft {
   profileSummary: { text: string };
   projects: { sourceId: string; narrative: string }[];
   certifications: { sourceId: string }[];
+  employmentBullets?: string[];
 }
 
 function contactLine() {
@@ -66,7 +67,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
         meta: [source.year, source.location].filter(Boolean).join(' | '),
         summary: source.kind === 'program' ? '' : cvPlainText(source.summary),
         relatedProjects,
-        bullets: source.bullets.slice(0, source.kind === 'employment' ? 4 : source.order === 2 || source.order === 6 ? 2 : 1).map(cvPlainText)
+        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : source.bullets.slice(0, source.kind === 'employment' ? 4 : source.order === 2 || source.order === 6 ? 2 : 1).map(cvPlainText)
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

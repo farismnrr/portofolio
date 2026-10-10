@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { navigate } from '../router';
   import { theme, type Theme } from '../theme';
   import { renderMermaid } from '../mermaid';
@@ -11,6 +11,7 @@
   let observer: IntersectionObserver | null = null;
   let renderVersion = 0;
   let renderQueue: Promise<void> = Promise.resolve();
+  let resizeObserver: ResizeObserver | null = null;
 
   function interceptLinks(node: HTMLElement) {
     const handleClick = (event: MouseEvent) => {
@@ -91,9 +92,22 @@
 
   $: if (root && hasMermaid) void hydrateDiagrams($theme);
 
+  onMount(() => {
+    if (!root || typeof ResizeObserver === 'undefined') return;
+    let narrow = root.clientWidth < 640;
+    resizeObserver = new ResizeObserver(() => {
+      const next = root.clientWidth < 640;
+      if (next === narrow) return;
+      narrow = next;
+      hydrateDiagrams($theme);
+    });
+    resizeObserver.observe(root);
+  });
+
   onDestroy(() => {
     renderVersion += 1;
     observer?.disconnect();
+    resizeObserver?.disconnect();
   });
 </script>
 

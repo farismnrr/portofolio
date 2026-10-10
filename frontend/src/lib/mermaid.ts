@@ -50,7 +50,11 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   for (const node of nodes) {
     if (!node.dataset.mermaidSource) node.dataset.mermaidSource = node.textContent ?? '';
     node.removeAttribute('data-processed');
-    node.textContent = node.dataset.mermaidSource;
+    // Stack horizontal flowcharts in narrow article columns so fitting the
+    // SVG does not turn a long row of nodes into a tiny mobile thumbnail.
+    node.textContent = root.clientWidth < 640
+      ? node.dataset.mermaidSource.replace(/^(\s*(?:flowchart|graph)\s+)(?:LR|RL)\b/m, '$1TB')
+      : node.dataset.mermaidSource;
   }
 
   await mermaid.run({ nodes });
@@ -58,9 +62,8 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   for (const node of nodes) {
     const svg = node.querySelector('svg');
     if (!svg) continue;
-    const width = svg.viewBox.baseVal.width;
-    // Keep 16px labels at least 14px wide on screen. Long diagrams scroll
-    // inside their shell instead of shrinking to unreadable mobile thumbnails.
-    if (Number.isFinite(width) && width > 0) svg.style.minWidth = `${width * 0.875}px`;
+    svg.style.width = '100%';
+    svg.style.height = 'auto';
+    svg.style.minWidth = '0';
   }
 }

@@ -129,8 +129,7 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 }
 
 .mermaid-shell {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
   background: color-mix(in srgb, var(--surface) 72%, var(--page-bg));
   transition: background-color 180ms ease, border-color 180ms ease;

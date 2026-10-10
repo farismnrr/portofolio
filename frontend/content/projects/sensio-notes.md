@@ -124,7 +124,9 @@ Sensio Notes is a team product, even where I have substantial ownership of the a
 
 My responsibility is centered on the application backend, recording and upload lifecycle, asynchronous state, integration boundaries, and the web/mobile behavior that connects those pieces into one product. The ingestion pipeline and Graph/RAG capabilities are external service boundaries maintained by other team members, so my work is to integrate them reliably rather than present their internal implementation as my own.
 
-The same applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints. For the user-facing application, UI/UX designers define the product's visual and interaction direction, while I implement and connect those designs to the application state and backend behavior.
+The same applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints. UI/UX designers define the product's visual and interaction direction; my responsibility is to translate that direction into production React and Capacitor behavior and connect it to the actual application state underneath.
+
+That translation includes states that a static design cannot solve by itself: recording and upload progress, asynchronous processing, loading and failure feedback, recovery after interrupted work, and differences between browser and native-mobile behavior. I do not present that as independent UI/UX ownership. It is engineering work done in close collaboration with the designers who own the product design.
 
 That division of responsibility is important to how I describe the project: substantial ownership does not mean pretending a production system is a one-person stack.
 

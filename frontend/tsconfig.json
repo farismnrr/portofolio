@@ -10,10 +10,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@langchain/langgraph": ["./src/lib/langgraph-lite.ts"]
-    },
     "types": ["vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte", "src/**/*.js"]

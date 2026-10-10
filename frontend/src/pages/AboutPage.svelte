@@ -33,8 +33,7 @@
       const { generateGeneralCv } = await preloadCv();
       await generateGeneralCv(targetJobDescription);
       cvGenerated = true;
-    } catch (error) {
-      console.error('CV generation failed', error);
+    } catch {
       cvError = 'Could not prepare the CV. Please try again.';
     } finally {
       generatingCv = false;

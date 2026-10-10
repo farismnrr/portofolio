@@ -16,7 +16,7 @@
 <main>
   <PageShell className="py-10 sm:py-12 lg:py-14">
     <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14 2xl:grid-cols-[280px_minmax(0,1fr)] 2xl:gap-16">
-      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:block lg:border-r lg:border-black/14 lg:pr-8 xl:pr-10 2xl:pr-12">
+      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:block lg:border-r lg:border-black/14 lg:pr-8 xl:pr-10 2xl:pr-12">
         <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
 
         <div class="min-w-0">
@@ -35,7 +35,9 @@
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="#role-match"><AppIcon name="projects" size={16}/>Match a role</a>
+        </div>
+        <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
+          <RoleMatchPanel/>
         </div>
       </aside>
 
@@ -47,8 +49,6 @@
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
         </header>
-
-        <RoleMatchPanel/>
 
         <section class="pt-8 sm:pt-9">
           <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Professional background</h2>

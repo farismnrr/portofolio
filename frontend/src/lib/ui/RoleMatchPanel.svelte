@@ -55,15 +55,15 @@
   });
 </script>
 
-<section id="role-match" class="scroll-mt-28 border-b border-black/14 py-8 sm:py-9" aria-labelledby="role-match-title">
-  <h2 id="role-match-title" class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Match a role</h2>
-  <p class="mt-3 max-w-[65ch] text-[14px] leading-6 text-black/62">Compare a job description with my full portfolio. Get a PDF with matching experience, supporting sources, gaps, and questions to verify.</p>
-  <form class="mt-5 space-y-3" on:submit|preventDefault={() => void prepareReport()}>
+<details id="role-match" class="scroll-mt-28">
+  <summary class="min-h-10 cursor-pointer content-center text-[13px] font-medium hover:text-[var(--accent)]">Match a role</summary>
+  <p class="mt-2 text-[12px] leading-5 text-black/62">Paste a job description to get a PDF comparing it with my full portfolio, including evidence and gaps.</p>
+  <form class="mt-3 space-y-2" on:submit|preventDefault={() => void prepareReport()}>
     <label for="role-job-description" class="block text-[13px] font-medium">Job description</label>
-    <textarea id="role-job-description" class="min-h-48 w-full resize-y rounded-sm border border-black/20 bg-transparent p-3 text-[14px] leading-6 focus:outline-2 focus:outline-[var(--accent)]" rows="8" minlength="80" maxlength="12000" required disabled={preparing} bind:value={jobDescription} on:input={clearReport} placeholder="Paste the responsibilities, required skills, experience, and preferred qualifications." aria-describedby="role-match-help"></textarea>
-    <p id="role-match-help" class="text-[12px] leading-5 text-black/58">The description is sent to an AI service for this comparison. The score measures documented evidence, not hiring probability. Your CV stays the same.</p>
-    <div class="flex flex-wrap items-center gap-4">
-      <button class="min-h-11 rounded-sm bg-[var(--accent)] px-5 text-[13px] font-medium text-white disabled:cursor-wait disabled:opacity-55" type="submit" disabled={preparing || jobDescription.trim().length < 80}>{preparing ? 'Comparing portfolio…' : 'Prepare role match report'}</button>
+    <textarea id="role-job-description" class="min-h-36 w-full resize-y rounded-sm border border-black/20 bg-transparent p-2.5 text-[12px] leading-5 focus:outline-2 focus:outline-[var(--accent)]" rows="6" minlength="80" maxlength="12000" required disabled={preparing} bind:value={jobDescription} on:input={clearReport} placeholder="Paste the job description…" aria-describedby="role-match-help"></textarea>
+    <p id="role-match-help" class="text-[12px] leading-5 text-black/58">Uses an AI service. The score reflects portfolio evidence, not hiring probability.</p>
+    <div class="flex flex-wrap items-center gap-2">
+      <button class="min-h-11 w-full rounded-sm bg-[var(--accent)] px-3 text-[13px] font-medium text-white disabled:cursor-wait disabled:opacity-55" type="submit" disabled={preparing || jobDescription.trim().length < 80}>{preparing ? 'Comparing portfolio…' : 'Prepare report'}</button>
       {#if preparing}<button class="min-h-11 px-2 text-[13px] underline" type="button" on:click={() => controller?.abort()}>Cancel</button>{/if}
       <span class="text-[12px] text-black/58">{jobDescription.length.toLocaleString()} / 12,000 characters</span>
     </div>
@@ -72,9 +72,9 @@
   {#if error}<p class="mt-4 text-[13px] leading-6 text-[var(--accent)]" role="alert">{error}</p>{/if}
   {#if status}<p class="mt-4 text-[13px] leading-6" role="status" aria-live="polite">{status}</p>{/if}
   {#if reportUrl}
-    <div class="mt-4 flex flex-wrap items-center gap-5 border border-black/14 p-4">
+    <div class="mt-4 flex flex-wrap items-center gap-3 border border-black/14 p-3">
       <div><p class="text-[27px] font-semibold">{coverage}%</p><p class="text-[12px] text-black/58">Portfolio evidence coverage</p></div>
       <a class="min-h-11 content-center text-[13px] font-medium underline hover:text-[var(--accent)]" href={reportUrl} download="Faris_Munir_Mahdi_Role_Match.pdf">Download match report PDF</a>
     </div>
   {/if}
-</section>
+</details>

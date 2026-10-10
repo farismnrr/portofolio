@@ -27,9 +27,9 @@ The product has evolved through more than one implementation, but the underlying
 
 ## Client delivery is part of the architecture
 
-Sensio IoT is not operated as one shared SaaS instance for every customer. It is delivered into client-owned environments and runs on-premises alongside the spaces and hardware it controls.
+Sensio IoT is delivered into client-owned environments and runs on-premises alongside the spaces and hardware it controls. Each deployment is its own operating environment instead of one shared SaaS instance.
 
-That changes the engineering boundary. Deployment, configuration, observability, hardware connectivity, and upgrades have to work inside each client environment rather than assuming one centrally managed cloud runtime.
+That changes the engineering boundary. Deployment, configuration, observability, hardware connectivity, and upgrades have to work inside each client environment instead of assuming one centrally managed cloud runtime.
 
 The product team treats that client delivery model as part of the product itself. The application has to remain understandable and operable after it leaves a development machine, including on edge hardware where local network conditions and device integrations are part of normal production behavior.
 
@@ -75,13 +75,15 @@ flowchart TD
     CURRENT --> OPS[On-prem runtime + observability]
 ```
 
-These are iterations of the same team product rather than one unchanged architecture. The rewrite builds directly on lessons from the earlier stack.
+Both architectures are iterations of the same team product. The rewrite builds directly on lessons from the earlier stack.
 
 ## Edge constraints shape the architecture
 
-The rewrite is not only a language change. The application runs beside the hardware it controls, on machines where runtime overhead, local service dependencies, broker connectivity, and deployment architecture are product constraints.
+The rewrite changes more than the programming language. The application runs beside the hardware it controls, on machines where runtime overhead, local service dependencies, broker connectivity, and deployment architecture are product constraints.
 
-Moving more responsibility into the Rust service reduces the number of boundaries the edge runtime has to coordinate while keeping identity, room state, device integration, and local configuration in one operational unit. Packaging the same service for AMD64 and ARM64 keeps that runtime model usable across larger Linux hosts and smaller edge devices.
+Moving more responsibility into the Rust service reduces the number of boundaries the edge runtime has to coordinate. Identity, room state, device integration, and local configuration stay in one operational unit.
+
+Packaging the same service for AMD64 and ARM64 keeps that runtime model usable across larger Linux hosts and smaller edge devices.
 
 That is the tradeoff behind the newer architecture: accept a more systems-oriented implementation in exchange for a smaller edge-oriented runtime and fewer moving pieces at the deployment boundary.
 
@@ -135,7 +137,7 @@ That boundary is where broker reconnects, protocol quirks, and message retries b
 
 For a smart-space system, deployment location affects both latency and reliability.
 
-Lighting, room controls, telemetry, and local automation should keep working without depending on a distant cloud round-trip. Sensio IoT therefore treats on-premises deployment as part of the product rather than an afterthought.
+Lighting, room controls, telemetry, and local automation should keep working without depending on a distant cloud round-trip. Sensio IoT therefore makes on-premises deployment part of the product.
 
 The Rust service is packaged as a multi-architecture Docker image for AMD64 and ARM64. It runs on Linux edge hardware, including NVIDIA Jetson devices and single-board computers.
 
@@ -145,17 +147,23 @@ OpenTelemetry, Prometheus metrics, structured logs, and container health checks 
 
 A connected-device failure can surface in several places at once: the user-facing state, the application service, the MQTT broker, a provider adapter, or the physical device itself. Treating every symptom as an HTTP problem would hide the boundary that actually failed.
 
-Within the software side of the product team, I use OpenTelemetry, Prometheus, structured logs, health checks, and the device telemetry path to narrow those failures across the edge runtime. Broker reconnects and message retries stay inside the integration boundary, while room-scoped application state remains separate from provider-specific transport behavior.
+Within the software side of the product team, I use OpenTelemetry, Prometheus, structured logs, health checks, and device telemetry to narrow failures across the edge runtime.
 
-This does not turn observability into a substitute for network tooling. It does make production diagnosis explicit: first identify whether the failure is application state, authorization, broker connectivity, protocol translation, or hardware state, then follow the evidence at that boundary.
+Broker reconnects and message retries stay inside the integration boundary. Room-scoped application state remains separate from provider-specific transport behavior.
+
+Observability supports this production diagnosis, while dedicated network tooling remains a separate capability. I first identify whether the failure is application state, authorization, broker connectivity, protocol translation, or hardware state, then follow the evidence at that boundary.
 
 ## Ownership inside a cross-functional team
 
 Sensio IoT is a cross-functional product. My role has substantial ownership of the software platform, but the complete production system depends on work across software, physical IoT, infrastructure, security, and UI/UX.
 
-Within that team, I own major backend and systems work around identity, room state, authorization, device integration, telemetry, protocol adapters, edge runtime behavior, and the Rust rewrite. The physical installation and provisioning of devices is handled collaboratively with the IoT team, so I do not describe hardware installation as a one-person responsibility.
+Within that team, I own major backend and systems work around identity, room state, authorization, device integration, telemetry, protocol adapters, edge runtime behavior, and the Rust rewrite.
 
-I also work with infrastructure and security engineers around the on-premises runtime, server access, deployment, and operational constraints. UI/UX designers provide the visual and interaction direction for the human-facing control surface; my engineering responsibility is to connect that design to live room and device state and make it work within the constraints of the actual platform.
+The IoT team handles physical installation and device provisioning collaboratively with the software side. I keep that hardware work separate from my own software ownership.
+
+I also work with infrastructure and security engineers around the on-premises runtime, server access, deployment, and operational constraints.
+
+UI/UX designers provide the visual and interaction direction for the human-facing control surface. My engineering responsibility is to connect that design to live room and device state within the constraints of the actual platform.
 
 The production deployments span client-owned residential and office environments. That is evidence of client delivery in different operating environments, but I do not present it as proof of delivery across multiple commercial industries.
 
@@ -177,7 +185,7 @@ My deployment contribution includes packaging the service for AMD64 and ARM64, r
 
 ## The boundary that mattered most
 
-The recurring lesson in Sensio IoT is that the hardest part of connected-device software is not sending a command to a broker.
+The recurring lesson in Sensio IoT is that sending a command to a broker is the straightforward part of connected-device software.
 
 The harder question is how to keep **identity, physical scope, device state, protocol translation, and local operations** consistent while the system evolves. Once those boundaries are clear, individual device integrations become much easier to reason about.
 

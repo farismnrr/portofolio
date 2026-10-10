@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { path } from './lib/router';
+  import { onMount, tick } from 'svelte';
+  import { path, scrollToCurrentHash } from './lib/router';
   import { loadRoute } from './lib/routes';
   import { getSeo } from './lib/seo';
   import { profile, resolveActiveNavigation } from './lib/structured-content';
@@ -18,7 +18,10 @@
   let loading = !Page;
   let requestId = 0;
 
-  onMount(() => initializeTheme());
+  onMount(() => {
+    initializeTheme();
+    scrollToCurrentHash();
+  });
 
   $: current = $path;
   $: active = resolveActiveNavigation(current);
@@ -36,6 +39,8 @@
     Page = module.default;
     resolvedPath = currentPath;
     loading = false;
+    await tick();
+    if (id === requestId) scrollToCurrentHash();
   }
 </script>
 

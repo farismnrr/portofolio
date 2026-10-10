@@ -21,7 +21,8 @@ repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"
 
 The project explored that idea through two different technical responsibilities.
 
-One side of the team worked on **food-image recognition**, turning an image into one of the supported ingredient labels. The other side worked on the **application around that capability**: how a user enters the system, how identity and sessions are managed, where application data lives, and how the web stack can be run as a deployable service.
+One side of the team worked on **food-image recognition**, turning an image into one of the supported ingredient labels.
+The other side worked on the **application around that capability**: how a user enters the system, how identity and sessions are managed, where application data lives, and how the web stack can be run as a deployable service.
 
 Those responsibilities lived in separate repositories, and they were not fully integrated into a single end-to-end production flow in the repository state preserved today. GiziLens was a team system in progress, not a finished product where every subsystem had already been connected.
 
@@ -51,7 +52,8 @@ This subsystem is part of the GiziLens team project, but I do **not** present it
 
 My implementation work is much more visible in the separate **Web-App** repository.
 
-Rather than starting from the classifier, I worked on the foundation needed for GiziLens to behave like an actual web application: users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
+I worked on the foundation needed for GiziLens to behave like an actual web application.
+Users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
 
 The application repository is split into a Nuxt frontend and a Bun/TypeScript backend built with Hapi.
 
@@ -129,9 +131,11 @@ This was the part of the capstone where the project stopped feeling like a colle
 
 My contribution to GiziLens centered on the **Web-App and its runtime foundation**.
 
-I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend. The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
+I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend.
+The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
 
-The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support. But the part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual implementation here.
+The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support.
+The part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual implementation here.
 
 ## What the capstone clarified for me
 

@@ -62,8 +62,14 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   for (const node of nodes) {
     const svg = node.querySelector('svg');
     if (!svg) continue;
+    const { width, height } = svg.viewBox.baseVal;
+    // Reserve the full diagram height in normal document flow, including
+    // when the layout changes from a horizontal row to a vertical flow.
+    if (width > 0 && height > 0) node.style.aspectRatio = `${width} / ${height}`;
     svg.style.width = '100%';
-    svg.style.height = 'auto';
+    svg.style.height = '100%';
+    svg.style.maxWidth = 'none';
     svg.style.minWidth = '0';
+    svg.style.display = 'block';
   }
 }

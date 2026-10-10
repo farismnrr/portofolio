@@ -12,7 +12,7 @@ const mermaidPlaceholder = `<div class="mermaid-shell group not-prose relative m
     <div class="mermaid-skeleton-block h-16 w-3/4 rounded"></div>
     <div class="mermaid-skeleton-bar h-4 w-1/2 rounded"></div>
   </div>
-  <pre class="mermaid invisible pointer-events-none absolute inset-0 m-0 bg-transparent p-0 group-data-[state=rendered]:visible group-data-[state=rendered]:pointer-events-auto group-data-[state=rendered]:static [&_svg]:h-auto [&_svg]:max-w-full">$1</pre>
+  <pre class="mermaid invisible pointer-events-none m-0 bg-transparent p-0 group-data-[state=rendered]:visible group-data-[state=rendered]:pointer-events-auto">$1</pre>
 </div>`;
 
 export function renderInlineMarkdown(markdown: string): string {

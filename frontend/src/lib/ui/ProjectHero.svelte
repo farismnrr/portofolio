@@ -6,17 +6,17 @@
   $: preserveShowcase = project.slug === 'parentify';
 </script>
 
-<section class="border-b border-black/10 pb-12">
-  <div class="grid gap-10 lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)] lg:items-end lg:gap-14">
+<section class="border-b border-black/10 pb-10 sm:pb-12">
+  <div class="grid gap-8 sm:gap-10 lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)] lg:items-end lg:gap-14">
     <div>
       <p class="text-[12px] text-black/44">{project.year} · {project.category}</p>
-      <h1 class="mt-4 text-balance text-[44px] font-semibold leading-[1.04] tracking-[-0.035em] md:text-[58px]">{project.title}</h1>
+      <h1 class="mt-4 text-balance text-[36px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[44px] md:text-[58px]">{project.title}</h1>
       <p class="mt-5 hyphens-auto text-justify text-[15px] leading-7 text-black/58">{project.description}</p>
 
       {#if project.productUrl || project.repoUrl}
-        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[13px]">
-          {#if project.productUrl}<a class="underline decoration-black/20 underline-offset-4 hover:text-black" href={project.productUrl}>Visit product ↗</a>{/if}
-          {#if project.repoUrl}<a class="underline decoration-black/20 underline-offset-4 hover:text-black" href={project.repoUrl}>View source ↗</a>{/if}
+        <div class="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-[13px] sm:mt-6 sm:gap-x-6">
+          {#if project.productUrl}<a class="inline-flex min-h-10 items-center underline decoration-black/20 underline-offset-4 hover:text-black" href={project.productUrl}>Visit product ↗</a>{/if}
+          {#if project.repoUrl}<a class="inline-flex min-h-10 items-center underline decoration-black/20 underline-offset-4 hover:text-black" href={project.repoUrl}>View source ↗</a>{/if}
         </div>
       {/if}
     </div>

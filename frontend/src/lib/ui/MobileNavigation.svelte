@@ -30,6 +30,7 @@
     {#each navigation as item}
       <a
         href={item.href}
+        on:pointerdown={() => prefetchRoute(item.href)}
         on:mouseenter={() => prefetchRoute(item.href)}
         on:focus={() => prefetchRoute(item.href)}
         on:click={(event) => navigate(event, item.href)}

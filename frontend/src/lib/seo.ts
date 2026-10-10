@@ -1,6 +1,7 @@
 import { articles, getArticleByPath } from './blog-content';
 import { getProjectByPath, projects } from './project-content';
-import { certifications, profile, publications } from './structured-content';
+import { certifications, publications } from './seo-content';
+import { profile } from './site-content';
 
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;

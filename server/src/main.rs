@@ -14,6 +14,7 @@ mod ai;
 mod cv;
 mod profiles;
 mod rag;
+#[cfg(feature = "role-match")]
 mod role_match;
 
 #[derive(RustEmbed)]
@@ -184,25 +185,30 @@ async fn main() {
     let rag_state = rag::RagState::from_env(ai_state.clone(), corpus.data.as_ref())
         .expect("valid CV retrieval configuration");
 
-    let match_state = role_match::MatchState::new(ai_state.clone(), corpus.data.as_ref())
-        .expect("valid role-match corpus");
-    let match_routes = Router::new()
-        .route("/api/role-match/report", post(role_match::report))
-        .with_state(match_state);
-
     let ai_routes = Router::new()
         .route("/api/ai/chat", post(ai::chat))
-        .with_state(ai_state);
+        .with_state(ai_state.clone());
 
     let rag_routes = Router::new()
         .route("/api/cv/retrieve", post(rag::retrieve))
         .with_state(rag_state);
 
     let app = Router::new()
-        .merge(match_routes)
         .merge(ai_routes)
         .merge(rag_routes)
-        .route("/api/cv/render", post(cv::render))
+        .route("/api/cv/render", post(cv::render));
+
+    #[cfg(feature = "role-match")]
+    let app = {
+        let match_state = role_match::MatchState::new(ai_state, corpus.data.as_ref())
+            .expect("valid role-match corpus");
+        let match_routes = Router::new()
+            .route("/api/role-match/report", post(role_match::report))
+            .with_state(match_state);
+        app.merge(match_routes)
+    };
+
+    let app = app
         .fallback(embedded_asset)
         .layer(TraceLayer::new_for_http());
 

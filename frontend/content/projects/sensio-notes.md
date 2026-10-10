@@ -94,6 +94,14 @@ PostgreSQL stores durable product data with relational schemas, indexed queries,
 
 The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and worker coordination.
 
+## Failure handling is part of the product flow
+
+The difficult cases are not the clean request paths. They are the boundaries where the browser is backgrounded, a mobile recorder behaves differently from the web recorder, a network disappears during upload, or a background processing step finishes later than the request that started it.
+
+The system handles those cases by keeping durable media, upload progress, transcription state, and generated output as separate concerns. Chunked and resume-friendly uploads reduce the amount of work a weak connection can invalidate. Asynchronous processing state lets the client reconnect to a meeting without pretending the transcription work belongs to one long-lived HTTP request.
+
+When that flow misbehaves in production, I use OpenTelemetry and structured logs to follow work across the processing path rather than diagnosing each service in isolation. The important operational question is not only which component returned an error, but which stage of the meeting lifecycle stopped progressing and what durable state was already preserved.
+
 ## Turning transcripts into meeting knowledge
 
 Sensio Notes does not stop at producing raw text.

@@ -69,6 +69,14 @@ flowchart TD
 
 I treat those as iterations of the same product rather than pretending they were one unchanged architecture. The rewrite built directly on the lessons of the earlier stack.
 
+## Edge constraints shape the architecture
+
+The rewrite is not only a language change. The application runs beside the hardware it controls, on machines where runtime overhead, local service dependencies, broker connectivity, and deployment architecture are product constraints.
+
+Moving more responsibility into the Rust service reduces the number of boundaries the edge runtime has to coordinate while keeping identity, room state, device integration, and local configuration in one operational unit. Packaging the same service for AMD64 and ARM64 keeps that runtime model usable across larger Linux hosts and smaller edge devices.
+
+That is the tradeoff behind the newer architecture: accept a more systems-oriented implementation in exchange for a smaller edge-oriented runtime and fewer moving pieces at the deployment boundary.
+
 ## Identity follows physical scope
 
 The platform makes physical scope an integral part of authorization.
@@ -124,6 +132,14 @@ Lighting, room controls, telemetry, and local automation should keep working wit
 The Rust service is packaged as a multi-architecture Docker image for AMD64 and ARM64. It runs on Linux edge hardware, including NVIDIA Jetson devices and single-board computers.
 
 OpenTelemetry, Prometheus metrics, structured logs, and container health checks help trace what happened when a broker, device, or local service stops behaving as expected.
+
+## Diagnosing failures across software and hardware boundaries
+
+A connected-device failure can surface in several places at once: the user-facing state, the application service, the MQTT broker, a provider adapter, or the physical device itself. Treating every symptom as an HTTP problem would hide the boundary that actually failed.
+
+I use OpenTelemetry, Prometheus, structured logs, health checks, and the device telemetry path together to narrow those failures across the edge runtime. Broker reconnects and message retries stay inside the integration boundary, while room-scoped application state remains separate from provider-specific transport behavior.
+
+This does not turn observability into a substitute for network tooling. It does make production diagnosis explicit: first identify whether the failure is application state, authorization, broker connectivity, protocol translation, or hardware state, then follow the evidence at that boundary.
 
 ## My work across both generations
 

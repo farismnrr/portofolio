@@ -92,6 +92,22 @@ Public routes are prerendered during the build so crawlers and browsers receive 
 
 A small Rust and Axum server embeds the generated route documents and assets for production delivery.
 
+## Navigation and interaction still behave like the web
+
+Prerendering is only useful if client-side behavior does not make the site harder to use afterwards.
+
+The runtime keeps public navigation client-side while preserving normal browser link behavior. Route modules are loaded lazily, and hash navigation waits for the requested page to render before scrolling to its target. The same-page hash path is handled separately so repeating an in-page navigation still reaches the intended section.
+
+The layout also has separate desktop and mobile navigation surfaces. Mobile spacing accounts for the bottom navigation and safe-area inset instead of letting page content disappear underneath the controls.
+
+Theme state is initialized when the application starts so the saved or system preference can be applied consistently across the site.
+
+## Accessibility starts with predictable structure
+
+The application shell exposes a skip link that jumps directly to the main content area. That target can receive focus, which keeps the shortcut useful for keyboard navigation instead of moving only the viewport.
+
+I treat that as a baseline rather than a claim that accessibility is finished. The goal is to keep navigation, focus, page structure, and responsive behavior predictable while the content system continues to grow.
+
 ## Project pages are engineering notes, not stack cards
 
 A screenshot and stack list usually do not explain why a project exists or how its design changed.
@@ -120,6 +136,8 @@ That removes a class of small maintenance bugs that becomes surprisingly common 
 **Repository ownership vs instant publishing.** Content changes are reviewable and versioned, but they still go through a build and deployment.
 
 **Flexible long-form content vs consistency.** Markdown gives each project room to tell a different story, so editorial guardrails are needed to keep the overall site coherent.
+
+**Prerendering vs client interaction.** Public HTML needs to remain useful before JavaScript runs, while hydrated navigation still has to preserve browser expectations such as modifier clicks and in-page anchors.
 
 ## Current implementation
 

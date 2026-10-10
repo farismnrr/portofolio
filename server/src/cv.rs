@@ -785,6 +785,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     font-weight: 700;
   }}
 
+  .contact a {{ color: inherit; text-decoration: none; }}
+
   .contact {{
     margin-top: 5px;
     color: #444444;
@@ -921,7 +923,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     <h1>{name_upper}</h1>
     <div class="headline">{headline}</div>
     <div class="contact">{contact}</div>
-    <div class="contact">Project details and implementation evidence: <a href="https://farismnrr.com/projects">https://farismnrr.com/projects</a></div>
   </header>
 
   {summary_section}

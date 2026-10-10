@@ -68,37 +68,37 @@ That design keeps the first promise of the product deliberately boring: **do not
 
 Once media is durable, the backend becomes an orchestration layer rather than a synchronous request handler.
 
-The NestJS backend owns the complete meeting lifecycle and authentication, coordinates presigned S3 multipart uploads, dispatches and tracks asynchronous transcription tasks, receives processing callbacks, persists application state in PostgreSQL, and sends live progress updates to clients through real-time WebSocket channels.
+The NestJS backend owns the application-side meeting lifecycle and authentication, coordinates presigned S3 multipart uploads, tracks asynchronous processing state, receives callbacks from services maintained elsewhere in the product team, persists application state in PostgreSQL, and sends live progress updates to clients through real-time WebSocket channels.
 
 ```mermaid
 sequenceDiagram
     participant C as Client
     participant B as NestJS backend
     participant S as S3
-    participant W as Transcription worker
-    participant A as AI workflow
+    participant W as Ingestion / transcription service
+    participant A as Graph / RAG service
 
     C->>B: Create meeting / request upload
     B-->>C: Upload instructions
     C->>S: Upload recording chunks
     C->>B: Finish upload
-    B->>W: Start transcription work
+    B->>W: Start processing work
     W-->>B: Processing status / transcript callback
     B-->>C: Real-time progress
-    B->>A: Process finished transcript
-    A-->>B: Summary / decisions / actions / structure
+    B->>A: Send completed transcript
+    A-->>B: Structured meeting output
     B-->>C: Meeting becomes reviewable
 ```
 
 PostgreSQL stores durable product data with relational schemas, indexed queries, and migration versioning. Redis handles background job queues and pub/sub events.
 
-The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and worker coordination.
+The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and service coordination.
 
 ## Failure handling is part of the product flow
 
 The difficult cases are not the clean request paths. They are the boundaries where the browser is backgrounded, a mobile recorder behaves differently from the web recorder, a network disappears during upload, or a background processing step finishes later than the request that started it.
 
-The system handles those cases by keeping durable media, upload progress, transcription state, and generated output as separate concerns. Chunked and resume-friendly uploads reduce the amount of work a weak connection can invalidate. Asynchronous processing state lets the client reconnect to a meeting without pretending the transcription work belongs to one long-lived HTTP request.
+The system handles those cases by keeping durable media, upload progress, processing state, and generated output as separate concerns. Chunked and resume-friendly uploads reduce the amount of work a weak connection can invalidate. Asynchronous processing state lets the client reconnect to a meeting without pretending the work belongs to one long-lived HTTP request.
 
 When that flow misbehaves in production, I use OpenTelemetry and structured logs to follow work across the processing path rather than diagnosing each service in isolation. The important operational question is not only which component returned an error, but which stage of the meeting lifecycle stopped progressing and what durable state was already preserved.
 
@@ -106,7 +106,7 @@ When that flow misbehaves in production, I use OpenTelemetry and structured logs
 
 Sensio Notes does not stop at producing raw text.
 
-The completed transcript is processed through structured LangChain/LangGraph workflows to produce higher-level views such as summaries, action items, decisions, discussion structure, and PPP-style progress/issues/plans context.
+Completed transcripts are passed to structured Graph/RAG services maintained by other members of the product team. Those services produce higher-level views such as summaries, action items, decisions, discussion structure, and PPP-style progress/issues/plans context, while the application backend owns the integration state around those outputs and makes them reviewable in the product.
 
 The useful distinction is:
 
@@ -116,19 +116,27 @@ transcript = searchable representation of that evidence
 AI output = interpretation built on top of it
 ```
 
-Keeping those layers conceptually separate makes it easier for the product to expose useful automation without pretending generated text is more authoritative than the meeting itself. Every extracted insight links back to source transcript timestamps so users can verify decisions directly against what was said.
+Keeping those layers conceptually separate makes it easier for the product to expose useful automation without pretending generated text is more authoritative than the meeting itself. Extracted insights can be linked back to transcript timestamps so users can verify decisions against what was said.
+
+## Ownership inside a cross-functional team
+
+Sensio Notes is a team product, even where I have substantial ownership of the application flow.
+
+My responsibility is centered on the application backend, recording and upload lifecycle, asynchronous state, integration boundaries, and the web/mobile behavior that connects those pieces into one product. The ingestion pipeline and Graph/RAG capabilities are external service boundaries maintained by other team members, so my work is to integrate them reliably rather than present their internal implementation as my own.
+
+The same applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints. For the user-facing application, UI/UX designers define the product's visual and interaction direction, while I implement and connect those designs to the application state and backend behavior.
+
+That division of responsibility is important to how I describe the project: substantial ownership does not mean pretending a production system is a one-person stack.
 
 ## What I worked on
 
 Most of my work sits at the points where a long-running meeting flow can fail.
 
-On the backend, I built and maintained the meeting lifecycle in NestJS: data models, upload coordination, background transcription state, callbacks, and the APIs used by the web and mobile clients.
+On the backend, I built and maintained the application-side meeting lifecycle in NestJS: data models, upload coordination, background processing state, callbacks, and the APIs used by the web and mobile clients.
 
 For large recordings, I worked on chunked S3 uploads and resume-friendly flows so a weak connection would not force someone to start from zero.
 
-I also worked on the transcript-processing side. LangGraph workflows take completed transcripts, split and structure the material, ask models for specific outputs, and validate those outputs against schemas before they are stored.
-
-I kept generated notes tied back to the transcript instead of treating model output as a replacement for the source.
+I integrated the ingestion and Graph/RAG service boundaries into that lifecycle, including the state transitions around when processing starts, when callbacks arrive, when structured outputs are ready, and how those results become available to users.
 
 On the client side, I connected the React and Capacitor recording paths to the same backend state machine.
 

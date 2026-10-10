@@ -2,6 +2,7 @@
   import { navigate, path } from '../lib/router';
   import { prefetchRoute } from '../lib/routes';
   import { formatArticleDate, getArticleByPath } from '../lib/blog-content';
+  import { getArticleMarkdownByPath } from '../lib/blog-markdown';
   import { renderMarkdown } from '../lib/markdown';
   import AppIcon from '../lib/ui/AppIcon.svelte';
   import ContentToc from '../lib/ui/ContentToc.svelte';
@@ -16,7 +17,8 @@
   }
 
   $: article = getArticleByPath($path);
-  $: rendered = article ? renderMarkdown(article.markdown) : null;
+  $: articleMarkdown = getArticleMarkdownByPath($path);
+  $: rendered = article && articleMarkdown ? renderMarkdown(articleMarkdown) : null;
   $: coverSrcset = article ? responsiveCoverSrcset(article.cover) : '';
 </script>
 

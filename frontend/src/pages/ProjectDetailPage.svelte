@@ -2,6 +2,7 @@
   import { navigate, path } from '../lib/router';
   import { prefetchRoute } from '../lib/routes';
   import { getProjectByPath } from '../lib/project-content';
+  import { getProjectMarkdownByPath } from '../lib/project-markdown';
   import { renderMarkdown } from '../lib/markdown';
   import AppIcon from '../lib/ui/AppIcon.svelte';
   import ContentToc from '../lib/ui/ContentToc.svelte';
@@ -10,7 +11,8 @@
   import ProjectHero from '../lib/ui/ProjectHero.svelte';
 
   $: project = getProjectByPath($path);
-  $: rendered = project ? renderMarkdown(project.markdown) : null;
+  $: projectMarkdown = getProjectMarkdownByPath($path);
+  $: rendered = project && projectMarkdown ? renderMarkdown(projectMarkdown) : null;
 </script>
 
 <main>

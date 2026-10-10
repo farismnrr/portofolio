@@ -15,12 +15,11 @@ export interface ProjectDocument {
   tech: string[];
   productUrl: string;
   repoUrl: string;
-  markdown: string;
 }
 
 const modules = import.meta.glob('../../content/projects/*.md', {
   eager: true,
-  query: '?raw',
+  query: '?meta',
   import: 'default'
 }) as Record<string, string>;
 
@@ -36,7 +35,7 @@ export function projectImageSrcset(value: string) {
 }
 
 function parseProject(path: string, source: string): ProjectDocument {
-  const { values, body } = parseFrontmatter(path, source);
+  const { values } = parseFrontmatter(path, source);
   const required = ['id','order','slug','year','title','cardTitle','subtitle','role','category','description','image','tech','productUrl','repoUrl'];
   requireKeys(path, values, required);
 
@@ -60,8 +59,7 @@ function parseProject(path: string, source: string): ProjectDocument {
     image: optimizedProjectImage(unquote(values.get('image') ?? '')),
     tech,
     productUrl: unquote(values.get('productUrl') ?? ''),
-    repoUrl: unquote(values.get('repoUrl') ?? ''),
-    markdown: body
+    repoUrl: unquote(values.get('repoUrl') ?? '')
   };
 }
 

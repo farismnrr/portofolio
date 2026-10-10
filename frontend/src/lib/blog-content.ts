@@ -9,17 +9,16 @@ export interface BlogArticle {
   readTime: string;
   cover: string;
   featured: boolean;
-  markdown: string;
 }
 
 const modules = import.meta.glob('../../content/blog/*.md', {
   eager: true,
-  query: '?raw',
+  query: '?meta',
   import: 'default'
 }) as Record<string, string>;
 
 function parseArticle(path: string, source: string): BlogArticle {
-  const { values, body } = parseFrontmatter(path, source);
+  const { values } = parseFrontmatter(path, source);
   const required = ['slug', 'title', 'excerpt', 'category', 'published', 'readTime', 'cover', 'featured'];
   requireKeys(path, values, required);
 
@@ -34,8 +33,7 @@ function parseArticle(path: string, source: string): BlogArticle {
     published,
     readTime: unquote(values.get('readTime') ?? ''),
     cover: unquote(values.get('cover') ?? ''),
-    featured: parseBoolean(values.get('featured') ?? 'false'),
-    markdown: body
+    featured: parseBoolean(values.get('featured') ?? 'false')
   };
 }
 

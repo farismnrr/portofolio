@@ -8,7 +8,7 @@ cardTitle: "GiziLens"
 subtitle: "Connecting a Food-Recognition Idea with the Application Infrastructure Around It"
 role: "Web & Backend Engineering · Team Capstone"
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, and deployment."
+description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, deployment, and a documented visual identity system."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
@@ -75,6 +75,16 @@ flowchart TB
 
 The current frontend is primarily an identity and account shell: registration, login, authenticated user information, token refresh, logout, and a dashboard. It does not currently expose a complete image-upload-to-classification user journey, so I avoid describing that intended integration as if it were already implemented.
 
+## Visual identity as a product system
+
+The current GiziLens repository also contains visual-design work that I can point to directly rather than describing the interface only in technical terms.
+
+I built an original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing. The identity is carried through a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
+
+I also documented how that identity should behave in the application: a teal, lime, and ink palette, clear-space guidance, a smaller icon treatment for constrained placements, and a reverse treatment for dark surfaces. The same geometry is reused in the frontend rather than treating the logo as a disconnected asset.
+
+That work is useful evidence of visual judgement in a web product: the goal was not decoration for its own sake, but a recognizable identity that remains legible across different sizes, backgrounds, and interface contexts.
+
 ## Authentication is a lifecycle, not one endpoint
 
 A large part of the application work was making authentication more than a single login endpoint.
@@ -133,6 +143,8 @@ My contribution to GiziLens centered on the **Web-App and its runtime foundation
 
 I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend.
 The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
+
+The current repository also contains the original GiziLens vector identity and its application rules described above. I treat that as visual-design work on the product presentation, separate from the machine-learning subsystem that belonged to the team.
 
 The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support.
 The part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual implementation here.

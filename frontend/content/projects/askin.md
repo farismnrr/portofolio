@@ -45,6 +45,16 @@ flowchart LR
 
 The important part is that model access, retrieval, and supporting tools remain implementation details behind the interface. A user should be able to think about the question and the available context rather than the plumbing needed to connect each service.
 
+## Interface composition and product presentation
+
+The current AskIn repository also includes interface and showcase work where the visual decisions are explicit rather than accidental.
+
+I kept the visual language tied to the application's real light-theme palette and treated the new-chat screen as the primary point of attention. Supporting views for code conversations, prompt workspaces, model selection, and settings are composed as secondary panels so the product can be understood without turning the showcase into a wall of screenshots.
+
+The composition uses a consistent grid, spacing, corner radius, and restrained borders and shadows. Crops emphasize real product details without changing the underlying UI, and model selection is surfaced as a focused detail instead of competing with the main conversation flow.
+
+That work reflects the kind of visual judgement I apply when presenting a web product: establish hierarchy first, keep navigation and supporting controls from overpowering the main task, and make multiple screens feel like one coherent interface rather than unrelated pages.
+
 ## The backend as a coordination layer
 
 AskIn was built as a customized AI web application with a Svelte-based frontend and a Python/FastAPI backend.
@@ -80,6 +90,8 @@ Docker-based packaging was also part of the repository so the frontend and backe
 My work on AskIn was centered on the **backend and integration side** of the project during Ruangguru Academy.
 
 The project gave me a practical environment to understand how an AI-oriented application is connected end to end: from the web interface, through backend request handling and model routing, to retrieval and deployment concerns.
+
+The current repository and showcase also document the interface-composition decisions described above. I treat those as product-presentation and visual-hierarchy work on the customized application, not as a claim that I originated the entire inherited interface system.
 
 I describe the complete application here because those pieces are necessary to explain how AskIn works as a product.
 It should not be read as a claim that every subsystem originated from me. The repository is a customized application built on top of the Open WebUI codebase, and my focus was learning from and adapting that system for the project context.

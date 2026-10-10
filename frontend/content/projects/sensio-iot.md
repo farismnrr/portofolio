@@ -8,7 +8,7 @@ cardTitle: "Sensio IoT"
 subtitle: "Local Control Organized Around Real Spaces"
 role: "Backend & Systems Engineer · Rust / IoT / Platform Architecture"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A production on-premises smart-space platform that organizes users, rooms, device state, telemetry, and hardware control around the physical spaces people manage."
+description: "A production client-delivered, on-premises smart-space platform that organizes users, rooms, device state, telemetry, and hardware control around the physical spaces people manage."
 image: "/images/projects/featured/sensio-iot.png"
 tech: [Rust, Axum, NestJS, TypeScript, React, PostgreSQL, TimescaleDB, MQTT, Zigbee2MQTT, Tasmota, Docker, Linux, OpenTelemetry, Jira, LangGraph]
 productUrl: "https://iot.sensio.id"
@@ -24,6 +24,14 @@ They think in physical language: *the lights in this meeting room, the sensor in
 **Sensio IoT** is built around translating those real-world boundaries into software boundaries.
 
 The product has evolved through more than one implementation, but the underlying idea has stayed consistent: organize control around **sites and rooms**, keep device protocols behind an integration layer, and make local hardware state understandable from a human-facing interface.
+
+## Client delivery is part of the architecture
+
+Sensio IoT is not operated as one shared SaaS instance for every customer. It is delivered into client-owned environments and runs on-premises alongside the spaces and hardware it controls.
+
+That changes the engineering boundary. Deployment, configuration, observability, hardware connectivity, and upgrades have to work inside each client environment rather than assuming one centrally managed cloud runtime.
+
+I treat that client delivery model as part of the product itself. The application has to remain understandable and operable after it leaves a development machine, including on edge hardware where local network conditions and device integrations are part of normal production behavior.
 
 ## Organizing control around spaces
 

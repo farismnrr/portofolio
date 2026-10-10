@@ -14,17 +14,17 @@
 
 <main>
   <PageShell className="py-10">
-    <a class="flex items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/blog"><AppIcon name="arrow-left" size={14}/>View all articles</a>
+    <a class="flex items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/blog"><AppIcon name="arrow-left" size={14}/>Blog</a>
 
     {#if article && rendered}
-      <header class="mx-auto mt-10 max-w-[1050px] border-b border-black/10 pb-10">
-        <p class="text-[11px] font-semibold uppercase tracking-[.18em] text-black/45">{article.category} · {formatArticleDate(article.published)} · {article.readTime}</p>
-        <h1 class="mt-4 max-w-5xl text-[48px] font-semibold leading-[1.02] tracking-[-0.045em] md:text-[62px]">{article.title}</h1>
-        <p class="mt-5 max-w-4xl text-[20px] leading-8 text-black/56">{article.excerpt}</p>
-        <MediaImage className="mt-8 aspect-[2.45] w-full" src={article.cover} alt={article.title} eager/>
+      <header class="mt-8 border-b border-black/10 pb-10">
+        <p class="text-[13px] text-black/45">{article.category} · {formatArticleDate(article.published)} · {article.readTime}</p>
+        <h1 class="mt-4 w-full text-balance text-[44px] font-semibold leading-[1.04] tracking-[-0.035em] md:text-[58px]">{article.title}</h1>
+        <p class="mt-5 w-full hyphens-auto text-justify text-[17px] leading-8 text-black/56">{article.excerpt}</p>
+        <MediaImage className="mt-8 aspect-[2.2] w-full" src={article.cover} alt={article.title} eager/>
       </header>
 
-      <section class="grid gap-12 py-10 lg:grid-cols-[190px_minmax(0,1fr)] xl:gap-16">
+      <section class="grid gap-10 py-10 lg:grid-cols-[150px_minmax(0,1fr)] xl:gap-12">
         <ContentToc items={rendered.toc}/>
         <div class="min-w-0">{#key article.slug}<MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>{/key}</div>
       </section>

@@ -11,9 +11,9 @@
 
 <header class="sticky top-0 z-50 border-b border-black/10 bg-[var(--page-bg)]/95 backdrop-blur-md">
   <PageShell>
-    <div class="flex h-[72px] items-center justify-between">
-      <a href="/" aria-label="Faris Munir home" on:mouseenter={()=>prefetchRoute('/')} on:focus={()=>prefetchRoute('/')} on:click={(e)=>navigate(e,'/')} class="block h-[24px] w-[126px]">
-        <BrandLogo className="h-full w-full"/>
+    <div class="flex h-[68px] items-center justify-between sm:h-[72px]">
+      <a href="/" aria-label="Faris Munir home" on:mouseenter={()=>prefetchRoute('/')} on:focus={()=>prefetchRoute('/')} on:click={(e)=>navigate(e,'/')} class="flex min-h-11 items-center">
+        <BrandLogo className="h-[22px] w-[116px] sm:h-[24px] sm:w-[126px]"/>
       </a>
       <nav class="hidden h-full items-center lg:flex" aria-label="Primary navigation">
         {#each navigation as item}
@@ -24,11 +24,11 @@
         {/each}
       </nav>
       <div class="flex items-center gap-1">
-        <a class="btn btn-circle btn-ghost btn-sm hidden sm:inline-flex" aria-label="GitHub" href={profile.github}><AppIcon name="github" size={18}/></a>
-        <a class="btn btn-circle btn-ghost btn-sm hidden sm:inline-flex" aria-label="LinkedIn" href={profile.linkedin}><AppIcon name="linkedin" size={18}/></a>
-        <span class="mx-2 hidden h-6 w-px bg-black/12 sm:block"></span>
+        <a class="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-black/[0.035] sm:inline-flex" aria-label="GitHub" href={profile.github}><AppIcon name="github" size={18}/></a>
+        <a class="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-black/[0.035] sm:inline-flex" aria-label="LinkedIn" href={profile.linkedin}><AppIcon name="linkedin" size={18}/></a>
+        <span class="mx-1 hidden h-6 w-px bg-black/12 sm:block"></span>
         <button
-          class="btn btn-circle btn-ghost btn-sm"
+          class="flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/[0.035]"
           aria-label={"Switch to " + ($theme === 'dark' ? 'light' : 'dark') + " mode"}
           title={"Switch to " + ($theme === 'dark' ? 'light' : 'dark') + " mode"}
           on:click={() => toggleTheme($theme)}

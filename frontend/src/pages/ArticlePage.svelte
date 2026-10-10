@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { path } from '../lib/router';
+  import { navigate, path } from '../lib/router';
+  import { prefetchRoute } from '../lib/routes';
   import { formatArticleDate, getArticleByPath } from '../lib/blog-content';
   import { renderMarkdown } from '../lib/markdown';
   import AppIcon from '../lib/ui/AppIcon.svelte';
@@ -14,7 +15,13 @@
 
 <main>
   <PageShell className="py-8 sm:py-10 2xl:py-14">
-    <a class="inline-flex min-h-11 items-center gap-2 text-[12px] text-black/60 hover:text-black" href="/blog"><AppIcon name="arrow-left" size={14}/>Blog</a>
+    <a
+      class="inline-flex min-h-11 items-center gap-2 text-[12px] text-black/60 hover:text-black"
+      href="/blog"
+      on:mouseenter={() => prefetchRoute('/blog')}
+      on:focus={() => prefetchRoute('/blog')}
+      on:click={(event) => navigate(event, '/blog')}
+    ><AppIcon name="arrow-left" size={14}/>Blog</a>
 
     {#if article && rendered}
       <header class="mt-5 border-b border-black/14 pb-8 sm:mt-8 sm:pb-10 2xl:pb-12">
@@ -32,7 +39,13 @@
       <section class="py-20 sm:py-24">
         <p class="text-[11px] uppercase tracking-[.2em] text-black/58">Article not found</p>
         <h1 class="mt-4 text-[36px] font-semibold tracking-[-0.04em] sm:text-[44px]">This article does not exist.</h1>
-        <a class="mt-6 inline-flex min-h-11 items-center text-[13px] text-[var(--accent)] underline underline-offset-4" href="/blog">Back to blog →</a>
+        <a
+          class="mt-6 inline-flex min-h-11 items-center text-[13px] text-[var(--accent)] underline underline-offset-4"
+          href="/blog"
+          on:mouseenter={() => prefetchRoute('/blog')}
+          on:focus={() => prefetchRoute('/blog')}
+          on:click={(event) => navigate(event, '/blog')}
+        >Back to blog →</a>
       </section>
     {/if}
   </PageShell>

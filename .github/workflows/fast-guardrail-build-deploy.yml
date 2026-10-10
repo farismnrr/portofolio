@@ -154,11 +154,16 @@ jobs:
             http://127.0.0.1:3001/ > /dev/null
 
           mermaid_dom="$(mktemp)"
-          docker compose -p portofolio exec -T portfolio chromium \
+          docker compose -p portofolio exec -T \
+            -e XDG_CONFIG_HOME=/tmp/portfolio-chromium-config \
+            -e XDG_CACHE_HOME=/tmp/portfolio-chromium-cache \
+            portfolio chromium \
             --headless \
             --no-sandbox \
             --disable-gpu \
             --disable-dev-shm-usage \
+            --user-data-dir=/tmp/portfolio-mermaid-check \
+            --window-size=1920,2000 \
             --virtual-time-budget=8000 \
             --dump-dom \
             http://127.0.0.1:3001/projects/sensio-notes \

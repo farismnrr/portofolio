@@ -14,13 +14,13 @@
 
 <main>
   <PageShell className="py-8 sm:py-10 2xl:py-14">
-    <a class="inline-flex min-h-11 items-center gap-2 text-[12px] text-black/55 hover:text-black" href="/blog"><AppIcon name="arrow-left" size={14}/>Blog</a>
+    <a class="inline-flex min-h-11 items-center gap-2 text-[12px] text-black/60 hover:text-black" href="/blog"><AppIcon name="arrow-left" size={14}/>Blog</a>
 
     {#if article && rendered}
-      <header class="mt-5 border-b border-black/10 pb-8 sm:mt-8 sm:pb-10 2xl:pb-12">
-        <p class="text-[12px] leading-5 text-black/45 sm:text-[13px] 2xl:text-[14px]">{article.category} · {formatArticleDate(article.published)} · {article.readTime}</p>
+      <header class="mt-5 border-b border-black/14 pb-8 sm:mt-8 sm:pb-10 2xl:pb-12">
+        <p class="text-[12px] leading-5 text-black/58 sm:text-[13px] 2xl:text-[14px]">{article.category} · {formatArticleDate(article.published)} · {article.readTime}</p>
         <h1 class="mt-4 w-full text-balance text-[36px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[44px] md:text-[58px] 2xl:text-[64px]">{article.title}</h1>
-        <p class="mt-5 w-full hyphens-auto text-left text-[15px] leading-7 text-black/56 sm:text-justify sm:text-[17px] sm:leading-8 2xl:text-[18px]">{article.excerpt}</p>
+        <p class="mt-5 w-full hyphens-auto text-left text-[15px] leading-7 text-black/62 sm:text-justify sm:text-[17px] sm:leading-8 2xl:text-[18px]">{article.excerpt}</p>
         <MediaImage className="mt-7 aspect-[1.8] w-full sm:mt-8 sm:aspect-[2.2] 2xl:mt-10 2xl:aspect-[2.45]" src={article.cover} alt={article.title} eager/>
       </header>
 
@@ -30,9 +30,9 @@
       </section>
     {:else}
       <section class="py-20 sm:py-24">
-        <p class="text-[11px] uppercase tracking-[.2em] text-black/45">Article not found</p>
+        <p class="text-[11px] uppercase tracking-[.2em] text-black/58">Article not found</p>
         <h1 class="mt-4 text-[36px] font-semibold tracking-[-0.04em] sm:text-[44px]">This article does not exist.</h1>
-        <a class="mt-6 inline-flex min-h-11 items-center text-[13px] underline underline-offset-4" href="/blog">Back to blog →</a>
+        <a class="mt-6 inline-flex min-h-11 items-center text-[13px] text-[var(--accent)] underline underline-offset-4" href="/blog">Back to blog →</a>
       </section>
     {/if}
   </PageShell>

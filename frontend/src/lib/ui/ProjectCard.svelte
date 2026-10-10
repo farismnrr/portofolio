@@ -13,6 +13,7 @@
 <article class="border-b border-black/14 pb-8 sm:pb-9">
   <a
     href={detailPath}
+    on:pointerdown={()=>prefetchRoute(detailPath)}
     on:mouseenter={()=>prefetchRoute(detailPath)}
     on:focus={()=>prefetchRoute(detailPath)}
     on:click={(e)=>navigate(e,detailPath)}
@@ -32,6 +33,7 @@
         <a
           class="hover:opacity-70"
           href={detailPath}
+          on:pointerdown={()=>prefetchRoute(detailPath)}
           on:mouseenter={()=>prefetchRoute(detailPath)}
           on:focus={()=>prefetchRoute(detailPath)}
           on:click={(e)=>navigate(e,detailPath)}
@@ -45,6 +47,7 @@
     <a
       class="mt-3 inline-flex min-h-10 items-center text-[12px] font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black sm:mt-4"
       href={detailPath}
+      on:pointerdown={()=>prefetchRoute(detailPath)}
       on:mouseenter={()=>prefetchRoute(detailPath)}
       on:focus={()=>prefetchRoute(detailPath)}
       on:click={(e)=>navigate(e,detailPath)}

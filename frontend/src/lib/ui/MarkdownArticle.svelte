@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
+  import { afterUpdate, onDestroy, onMount } from 'svelte';
   import { navigate } from '../router';
   import { theme, type Theme } from '../theme';
   import { fitMermaidCanvas, renderMermaid } from '../mermaid';
@@ -12,6 +12,8 @@
   let renderVersion = 0;
   let renderQueue: Promise<void> = Promise.resolve();
   let resizeObserver: ResizeObserver | null = null;
+  let hydratedHtml: string | null = null;
+  let hydratedTheme: Theme | null = null;
 
   function interceptLinks(node: HTMLElement) {
     const handleClick = (event: MouseEvent) => {
@@ -94,7 +96,23 @@
     for (const shell of pending) observer.observe(shell);
   }
 
-  $: if (root && hasMermaid) void hydrateDiagrams($theme);
+  afterUpdate(() => {
+    if (!root) return;
+
+    if (!hasMermaid) {
+      observer?.disconnect();
+      observer = null;
+      renderVersion += 1;
+      hydratedHtml = html;
+      hydratedTheme = $theme;
+      return;
+    }
+
+    if (hydratedHtml === html && hydratedTheme === $theme) return;
+    hydratedHtml = html;
+    hydratedTheme = $theme;
+    hydrateDiagrams($theme);
+  });
 
   onMount(() => {
     if (!root || typeof ResizeObserver === 'undefined') return;

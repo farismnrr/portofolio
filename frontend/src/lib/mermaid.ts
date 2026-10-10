@@ -4,12 +4,12 @@ type MermaidDiagramType = 'flowchart' | 'sequence' | 'state' | 'er' | 'journey' 
 
 function diagramType(source: string): MermaidDiagramType {
   const firstLine = source.trimStart().split(/\r?\n/, 1)[0]?.trim().toLowerCase() ?? '';
-  if (firstLine.startsWith('sequenceDiagram'.toLowerCase())) return 'sequence';
-  if (firstLine.startsWith('stateDiagram'.toLowerCase())) return 'state';
-  if (firstLine.startsWith('erDiagram'.toLowerCase())) return 'er';
+  if (firstLine.startsWith('sequencediagram')) return 'sequence';
+  if (firstLine.startsWith('statediagram')) return 'state';
+  if (firstLine.startsWith('erdiagram')) return 'er';
   if (firstLine.startsWith('journey')) return 'journey';
   if (firstLine.startsWith('mindmap')) return 'mindmap';
-  if (firstLine.startsWith('classDiagram'.toLowerCase())) return 'class';
+  if (firstLine.startsWith('classdiagram')) return 'class';
   if (firstLine.startsWith('flowchart') || firstLine.startsWith('graph')) return 'flowchart';
   return 'generic';
 }
@@ -108,9 +108,14 @@ function readableMinWidth(type: MermaidDiagramType, width: number, height: numbe
   const naturallyWide = ratio >= 2.15 || type === 'sequence' || type === 'journey';
   if (!naturallyWide) return 0;
 
-  const ratioDriven = Math.round(ratio * 230);
-  const typeFloor = type === 'sequence' || type === 'journey' ? 920 : 820;
-  return Math.min(1600, Math.max(typeFloor, ratioDriven));
+  // Mermaid's labels are sized in SVG user units. Displaying a wide SVG much
+  // narrower than its intrinsic viewBox scales the text down with the graph,
+  // which makes labels unreadable even though horizontal scrolling exists.
+  // Keep the rendered width close to the intrinsic viewBox so a ~16-unit label
+  // remains roughly a ~16px label, and let the shell provide horizontal scroll.
+  const typeFloor = type === 'sequence' || type === 'journey' ? 960 : 840;
+  const intrinsicWidth = Math.round(width);
+  return Math.min(4200, Math.max(typeFloor, intrinsicWidth));
 }
 
 function applyPresentation(node: HTMLElement) {

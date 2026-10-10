@@ -51,6 +51,7 @@ impl AiState {
         })
     }
 
+    #[cfg(feature = "role-match")]
     pub async fn complete(&self, system: &str, data: &serde_json::Value) -> Result<String, String> {
         let message = serde_json::to_string(data).map_err(|_| "invalid_ai_input")?;
         let id = request_id();

@@ -153,6 +153,35 @@ jobs:
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
 
+          mermaid_dom="$(mktemp)"
+          docker compose -p portofolio exec -T portfolio chromium \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --disable-dev-shm-usage \
+            --virtual-time-budget=8000 \
+            --dump-dom \
+            http://127.0.0.1:3001/projects/sensio-notes \
+            > "$mermaid_dom" 2>/dev/null
+          python3 - "$mermaid_dom" <<'PY'
+          import re
+          import sys
+
+          html = open(sys.argv[1], encoding='utf-8').read()
+          pre = re.search(r'<pre class="[^"]*\bmermaid\b[^"]*"[^>]*>(.*?)</pre>', html, re.S)
+          if not pre:
+              raise SystemExit('live Mermaid <pre> not found')
+          svg = re.search(r'<svg\b([^>]*)>', pre.group(1), re.S)
+          if not svg:
+              raise SystemExit('live Mermaid SVG not rendered')
+          attrs = svg.group(1)
+          print('mermaid_live_svg=' + re.sub(r'\s+', ' ', attrs).strip())
+          for name in ('viewBox', 'width', 'height', 'style'):
+              match = re.search(rf'\b{name}="([^"]*)"', attrs)
+              print(f'mermaid_live_{name}=' + (match.group(1) if match else '<missing>'))
+          PY
+          rm -f "$mermaid_dom"
+
           asset_url="http://127.0.0.1:3001/images/profile/faris-munir-1024.webp"
           asset_headers="$(mktemp)"
           trap 'rm -f "$asset_headers"' EXIT

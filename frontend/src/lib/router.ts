@@ -12,6 +12,20 @@ function anchorForEvent(event: MouseEvent) {
   return event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null;
 }
 
+function scrollToHash(hash: string, attempt = 0) {
+  const id = decodeURIComponent(hash.replace(/^#/, ''));
+  if (!id) return;
+
+  const target = document.getElementById(id);
+  if (target) {
+    target.scrollIntoView();
+    return;
+  }
+
+  if (attempt >= 12) return;
+  window.setTimeout(() => scrollToHash(hash, attempt + 1), 50);
+}
+
 export function navigate(event: MouseEvent | null, href: string) {
   if (typeof window === 'undefined') return;
 
@@ -46,9 +60,7 @@ export function navigate(event: MouseEvent | null, href: string) {
   const currentLocation = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
   if (nextLocation === currentLocation) {
-    if (url.hash) {
-      document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
-    }
+    if (url.hash) scrollToHash(url.hash);
     return;
   }
 
@@ -56,9 +68,7 @@ export function navigate(event: MouseEvent | null, href: string) {
   path.set(url.pathname);
 
   if (url.hash) {
-    requestAnimationFrame(() => {
-      document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
-    });
+    scrollToHash(url.hash);
     return;
   }
 

@@ -49,7 +49,9 @@ The important part is that model access, retrieval, and supporting tools remain 
 
 The current AskIn repository also includes interface and showcase work where the visual decisions are explicit.
 
-I kept the visual language tied to the application's real light-theme palette and treated the new-chat screen as the primary point of attention. Code conversations, prompt workspaces, model selection, and settings appear as secondary panels. That keeps the product understandable without turning the showcase into a wall of screenshots.
+I kept the visual language tied to the application's real light-theme palette and treated the new-chat screen as the primary point of attention.
+
+Code conversations, prompt workspaces, model selection, and settings appear as secondary panels. That keeps the product understandable without turning the showcase into a wall of screenshots.
 
 The composition uses a consistent grid, spacing, corner radius, and restrained borders and shadows. Crops emphasize real product details without changing the underlying UI, and model selection is surfaced as a focused detail instead of competing with the main conversation flow.
 

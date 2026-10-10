@@ -64,8 +64,9 @@
   {@html structuredDataScript}
 </svelte:head>
 
+<a class="skip-link" href="#main-content">Skip to content</a>
 <SiteHeader currentPath={active}/>
-<div class="pb-[calc(68px+max(env(safe-area-inset-bottom),0.5rem))] lg:pb-0">
+<div id="main-content" tabindex="-1" class="pb-[calc(68px+max(env(safe-area-inset-bottom),0.5rem))] lg:pb-0">
   {#if loading || !Page}
     <RouteLoading/>
   {:else}

@@ -116,7 +116,7 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   overflow-wrap: anywhere;
 }
 
-.project-markdown .prose pre,
+.project-markdown .prose pre:not(.mermaid),
 .project-markdown .prose table {
   max-width: 100%;
   overflow-x: auto;

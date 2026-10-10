@@ -6,6 +6,7 @@ const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
   'Portfolio of Faris Munir Mahdi, a Software Engineer focused on backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.';
+const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
   if (!value) return `${siteUrl}${profile.image}`;
@@ -71,7 +72,7 @@ function publicationNode(publication: (typeof publications)[number], index: numb
 }
 
 export function getSeo(currentPath: string) {
-  const cleanPath = currentPath === '/' ? '/' : currentPath.replace(/\/$/, '');
+  const cleanPath = currentPath === '/' ? '/' : currentPath.replace(/\/+$/, '');
   const canonical = `${siteUrl}${cleanPath}`;
   const base = {
     title: `${profile.name} — ${profile.role}`,
@@ -81,8 +82,13 @@ export function getSeo(currentPath: string) {
     imageAlt: `${profile.name} — ${profile.role}`,
     ogType: 'website',
     published: '',
+    robots: indexRobots,
     structuredData: null as Record<string, unknown> | null
   };
+
+  if (cleanPath === '/') {
+    return base;
+  }
 
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
@@ -320,5 +326,11 @@ export function getSeo(currentPath: string) {
     };
   }
 
-  return { ...base, canonical: `${siteUrl}/` };
+  return {
+    ...base,
+    title: `Page Not Found — ${profile.name}`,
+    description: 'The requested page is not part of this portfolio.',
+    robots: 'noindex, nofollow',
+    structuredData: null
+  };
 }

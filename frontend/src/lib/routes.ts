@@ -1,6 +1,3 @@
-import { getArticleByPath } from './blog-content';
-import { getProjectByPath } from './project-content';
-
 type PageModule = { default: any };
 type PageLoader = () => Promise<PageModule>;
 
@@ -18,10 +15,32 @@ const loaders: Record<string, PageLoader> = {
   notFound: () => import('../pages/NotFoundPage.svelte')
 };
 
+const projectDocuments = import.meta.glob('../../content/projects/*.md', {
+  query: '?raw',
+  import: 'default'
+});
+const articleDocuments = import.meta.glob('../../content/blog/*.md', {
+  query: '?raw',
+  import: 'default'
+});
+
+const projectSlugs = slugsFromDocuments(projectDocuments);
+const articleSlugs = slugsFromDocuments(articleDocuments);
 const cache = new Map<string, Promise<PageModule>>();
+
+function slugsFromDocuments(documents: Record<string, unknown>) {
+  return new Set(
+    Object.keys(documents).map((path) => path.split('/').at(-1)?.replace(/\.md$/, '') ?? '')
+  );
+}
 
 function normalizePath(path: string) {
   return path === '/' ? '/' : path.replace(/\/+$/, '');
+}
+
+function dynamicSlug(path: string, prefix: string) {
+  const value = path.slice(prefix.length);
+  return value && !value.includes('/') ? decodeURIComponent(value) : '';
 }
 
 function keyForPath(path: string) {
@@ -31,9 +50,13 @@ function keyForPath(path: string) {
   if (cleanPath === '/experience') return 'experience';
   if (cleanPath === '/skills') return 'skills';
   if (cleanPath === '/projects') return 'projects';
-  if (cleanPath.startsWith('/projects/')) return getProjectByPath(cleanPath) ? 'projectDetail' : 'notFound';
+  if (cleanPath.startsWith('/projects/')) {
+    return projectSlugs.has(dynamicSlug(cleanPath, '/projects/')) ? 'projectDetail' : 'notFound';
+  }
   if (cleanPath === '/blog') return 'blog';
-  if (cleanPath.startsWith('/blog/')) return getArticleByPath(cleanPath) ? 'article' : 'notFound';
+  if (cleanPath.startsWith('/blog/')) {
+    return articleSlugs.has(dynamicSlug(cleanPath, '/blog/')) ? 'article' : 'notFound';
+  }
   if (cleanPath === '/certifications') return 'certifications';
   if (cleanPath === '/gallery') return 'gallery';
   return 'notFound';

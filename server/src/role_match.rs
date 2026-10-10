@@ -173,9 +173,25 @@ fn decode<T: serde::de::DeserializeOwned>(text: &str) -> Result<T, String> {
 
 fn capability_terms(text: &str) -> HashSet<String> {
     const STOPWORDS: &[&str] = &[
-        "a", "adequate", "ability", "and", "basic", "experience", "familiarity", "hands",
-        "in", "knowledge", "language", "modern", "of", "programming", "proficiency", "the",
-        "to", "understanding", "with",
+        "a",
+        "adequate",
+        "ability",
+        "and",
+        "basic",
+        "experience",
+        "familiarity",
+        "hands",
+        "in",
+        "knowledge",
+        "language",
+        "modern",
+        "of",
+        "programming",
+        "proficiency",
+        "the",
+        "to",
+        "understanding",
+        "with",
     ];
     text.to_lowercase()
         .split(|character: char| {
@@ -684,7 +700,8 @@ mod tests {
     }
     #[test]
     fn allows_independent_named_technologies() {
-        let jd = "Proficiency in Java Spring Boot is required. Proficiency in JavaScript is required.";
+        let jd =
+            "Proficiency in Java Spring Boot is required. Proficiency in JavaScript is required.";
         let mut req = vec![
             Requirement {
                 id: String::new(),

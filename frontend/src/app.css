@@ -50,6 +50,25 @@ a, button { -webkit-tap-highlight-color: transparent; }
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  transform: translateY(calc(-100% - 2rem));
+  border: 1px solid color-mix(in srgb, var(--page-fg) 18%, transparent);
+  background: var(--page-bg);
+  color: var(--page-fg);
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: transform 140ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 25%, transparent);
   color: var(--page-fg);
@@ -138,4 +157,18 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 
 html[data-theme="dark"] .cv-error {
   color: #ff9b9b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -70,6 +70,8 @@ Once media is durable, the backend becomes an orchestration layer rather than a 
 
 The NestJS backend owns the application-side meeting lifecycle and authentication, coordinates presigned S3 multipart uploads, tracks asynchronous processing state, receives callbacks from services maintained elsewhere in the product team, persists application state in PostgreSQL, and sends live progress updates to clients through real-time WebSocket channels.
 
+Within the NestJS areas I maintain, application behavior is organized through the framework's class-based modules, controllers, and services with dependency injection. That gives the backend a practical object-oriented structure for separating responsibilities and composing dependencies without treating one large handler or service as the whole application.
+
 ```mermaid
 sequenceDiagram
     participant C as Client

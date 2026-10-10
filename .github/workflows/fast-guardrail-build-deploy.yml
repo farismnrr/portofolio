@@ -167,7 +167,7 @@ jobs:
             --virtual-time-budget=8000 \
             --dump-dom \
             http://127.0.0.1:3001/projects/sensio-notes \
-            > "$mermaid_dom" 2>/dev/null
+            > "$mermaid_dom"
           python3 - "$mermaid_dom" <<'PY'
           import re
           import sys

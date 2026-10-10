@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ProjectDocument } from '../project-content';
+  import { projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';
@@ -22,6 +23,8 @@
     <MediaImage
       className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.78] w-full"}
       src={project.image}
+      srcset={projectImageSrcset(project.image)}
+      sizes="(min-width: 1536px) 420px, (min-width: 1024px) 31vw, (min-width: 640px) 45vw, calc(100vw - 3rem)"
       alt={project.cardTitle}
       fit={preserveShowcase ? 'contain' : 'cover'}
     />

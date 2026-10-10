@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "npm run media:prepare && vite",
-    "build": "npm run media:prepare && node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/generate-seo-assets.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build && vite build --ssr src/lib/entry-server.ts --outDir .ssr && node ./scripts/prerender.mjs && node ./scripts/verify-prerender.mjs",
+    "build": "npm run media:prepare && node ./scripts/check-cv-profiles.mjs && node ./scripts/build-cv-corpus.mjs && node ./scripts/generate-seo-assets.mjs && node ./scripts/prepare-mermaid-vendor.mjs && vite build && node ./scripts/prune-project-source-images.mjs && vite build --ssr src/lib/entry-server.ts --outDir .ssr && node ./scripts/prerender.mjs && node ./scripts/verify-prerender.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "content:check": "node ./scripts/check-content.mjs && node ./scripts/check-writing-style.mjs --base origin/main",
     "content:style": "node ./scripts/check-writing-style.mjs",
     "cv:check": "node ./scripts/check-cv-profiles.mjs",
-    "media:prepare": "node ./scripts/prepare-profile-image.mjs && node ./scripts/prepare-blog-image.mjs && node ./scripts/prepare-certification-images.mjs",
+    "media:prepare": "node ./scripts/prepare-profile-image.mjs && node ./scripts/prepare-blog-image.mjs && node ./scripts/prepare-certification-images.mjs && node ./scripts/prepare-project-images.mjs",
     "seo:generate": "node ./scripts/generate-seo-assets.mjs",
     "guard": "node ./scripts/guard-ui.mjs"
   },

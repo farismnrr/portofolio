@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ProjectDocument } from '../project-content';
+  import { projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
 
   export let project: ProjectDocument;
@@ -24,6 +25,8 @@
     <MediaImage
       className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.72] w-full"}
       src={project.image}
+      srcset={projectImageSrcset(project.image)}
+      sizes="(min-width: 1536px) 760px, (min-width: 1024px) 55vw, calc(100vw - 3rem)"
       alt={project.cardTitle}
       eager
       fit={preserveShowcase ? 'contain' : 'cover'}

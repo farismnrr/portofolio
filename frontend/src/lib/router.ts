@@ -7,6 +7,11 @@ if (typeof window !== 'undefined') {
   window.addEventListener('popstate', () => path.set(window.location.pathname));
 }
 
+function anchorForEvent(event: MouseEvent) {
+  if (event.currentTarget instanceof HTMLAnchorElement) return event.currentTarget;
+  return event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null;
+}
+
 export function navigate(event: MouseEvent | null, href: string) {
   if (typeof window === 'undefined') return;
 
@@ -24,7 +29,7 @@ export function navigate(event: MouseEvent | null, href: string) {
       return;
     }
 
-    const anchor = event.currentTarget instanceof HTMLAnchorElement ? event.currentTarget : null;
+    const anchor = anchorForEvent(event);
     if (anchor?.target && anchor.target !== '_self') return;
     if (anchor?.hasAttribute('download')) return;
     if (url.origin !== window.location.origin) return;
@@ -40,7 +45,12 @@ export function navigate(event: MouseEvent | null, href: string) {
   const nextLocation = `${url.pathname}${url.search}${url.hash}`;
   const currentLocation = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
-  if (nextLocation === currentLocation) return;
+  if (nextLocation === currentLocation) {
+    if (url.hash) {
+      document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
+    }
+    return;
+  }
 
   history.pushState({}, '', nextLocation);
   path.set(url.pathname);

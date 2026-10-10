@@ -61,9 +61,9 @@ The reviewed CV PDF is stored at:
 
 The About page downloads that file directly.
 
-`Match a role` compares a supplied job description with the published portfolio evidence and produces a source-backed PDF report. The application distinguishes direct evidence, transferable evidence, and requirements that are not established by the portfolio. Scoring arithmetic is handled in application code; the evidence classification is AI-assisted.
+`Match a role` is a private development utility. It is enabled only by the Fast AMD64 development build on `dev`, where it compares a supplied job description with published portfolio evidence and produces a source-backed PDF report. The production build does not render the Role Match UI and does not compile or expose the `/api/role-match/report` endpoint.
 
-Portfolio evidence for retrieval and role matching is generated from the same published content rather than maintained as a separate manual dataset.
+Portfolio evidence for retrieval and development role matching is generated from the same published content rather than maintained as a separate manual dataset.
 
 ## Branches
 
@@ -81,7 +81,7 @@ There are two workflows:
 
 Runs automatically for application/runtime changes on `dev`.
 
-It validates the frontend and content, runs Rust formatting/clippy/tests, builds the AMD64 runtime and local Docker image, deploys it to the Arch development host, then verifies the live application, database-backed retrieval, and AI endpoint.
+It validates the frontend and content, runs Rust formatting/clippy/tests, builds the AMD64 runtime and local Docker image, deploys it to the Arch development host, then verifies the live application, database-backed retrieval, AI endpoint, and dev-only Role Match route. The Fast build enables the Rust `role-match` feature and the Role Match frontend panel.
 
 Documentation-only changes do not trigger this application pipeline.
 
@@ -89,13 +89,13 @@ Documentation-only changes do not trigger this application pipeline.
 
 Manual production release from `dev`.
 
-It performs the full validation and cross-architecture build, merges `dev` into `main` through the release flow, publishes the immutable production image, and deploys the exact release SHA to the Orange Pi. Production verification includes the application, PostgreSQL/pgvector retrieval, 9router, and AI response. Failed verification rolls the application back to the previous known-good SHA.
+It performs the full validation and cross-architecture build, merges `dev` into `main` through the release flow, publishes the immutable production image, and deploys the exact release SHA to the Orange Pi. Production builds leave the Rust `role-match` feature disabled and hide the Role Match panel. Production verification also checks that the Role Match endpoint is absent. Failed verification rolls the application back to the previous known-good SHA.
 
 ## Runtime environments
 
 ### Development
 
-The Arch development deployment reuses the infrastructure-managed `shared-postgres` instance. The fast workflow provides the application database URL through repository secrets.
+The Arch development deployment reuses the infrastructure-managed `shared-postgres` instance. The fast workflow provides the application database URL through repository secrets. `Match a role` is available only in this development deployment.
 
 ### Production
 
@@ -105,7 +105,7 @@ Production runs on the ARM64 Orange Pi under `/opt/portfolio/` with:
 - PostgreSQL 17 + pgvector
 - 9router
 
-The production `.env` stays on the host and is not committed to the repository. Application releases recreate only the Portfolio service; PostgreSQL and 9router remain persistent.
+The production `.env` stays on the host and is not committed to the repository. Application releases recreate only the Portfolio service; PostgreSQL and 9router remain persistent. Role Match is intentionally not part of the production runtime.
 
 ## SEO and discovery
 

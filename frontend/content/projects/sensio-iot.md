@@ -31,7 +31,7 @@ Sensio IoT is not operated as one shared SaaS instance for every customer. It is
 
 That changes the engineering boundary. Deployment, configuration, observability, hardware connectivity, and upgrades have to work inside each client environment rather than assuming one centrally managed cloud runtime.
 
-I treat that client delivery model as part of the product itself. The application has to remain understandable and operable after it leaves a development machine, including on edge hardware where local network conditions and device integrations are part of normal production behavior.
+The product team treats that client delivery model as part of the product itself. The application has to remain understandable and operable after it leaves a development machine, including on edge hardware where local network conditions and device integrations are part of normal production behavior.
 
 ## Organizing control around spaces
 
@@ -75,7 +75,7 @@ flowchart TD
     CURRENT --> OPS[On-prem runtime + observability]
 ```
 
-I treat those as iterations of the same product rather than pretending they were one unchanged architecture. The rewrite built directly on the lessons of the earlier stack.
+These are iterations of the same team product rather than one unchanged architecture. The rewrite builds directly on lessons from the earlier stack.
 
 ## Edge constraints shape the architecture
 
@@ -145,25 +145,35 @@ OpenTelemetry, Prometheus metrics, structured logs, and container health checks 
 
 A connected-device failure can surface in several places at once: the user-facing state, the application service, the MQTT broker, a provider adapter, or the physical device itself. Treating every symptom as an HTTP problem would hide the boundary that actually failed.
 
-I use OpenTelemetry, Prometheus, structured logs, health checks, and the device telemetry path together to narrow those failures across the edge runtime. Broker reconnects and message retries stay inside the integration boundary, while room-scoped application state remains separate from provider-specific transport behavior.
+Within the software side of the product team, I use OpenTelemetry, Prometheus, structured logs, health checks, and the device telemetry path to narrow those failures across the edge runtime. Broker reconnects and message retries stay inside the integration boundary, while room-scoped application state remains separate from provider-specific transport behavior.
 
 This does not turn observability into a substitute for network tooling. It does make production diagnosis explicit: first identify whether the failure is application state, authorization, broker connectivity, protocol translation, or hardware state, then follow the evidence at that boundary.
 
+## Ownership inside a cross-functional team
+
+Sensio IoT is a cross-functional product. My role has substantial ownership of the software platform, but the complete production system depends on work across software, physical IoT, infrastructure, security, and UI/UX.
+
+Within that team, I own major backend and systems work around identity, room state, authorization, device integration, telemetry, protocol adapters, edge runtime behavior, and the Rust rewrite. The physical installation and provisioning of devices is handled collaboratively with the IoT team, so I do not describe hardware installation as a one-person responsibility.
+
+I also work with infrastructure and security engineers around the on-premises runtime, server access, deployment, and operational constraints. UI/UX designers provide the visual and interaction direction for the human-facing control surface; my engineering responsibility is to connect that design to live room and device state and make it work within the constraints of the actual platform.
+
+The production deployments span client-owned residential and office environments. That is evidence of client delivery in different operating environments, but I do not present it as proof of delivery across multiple commercial industries.
+
 ## My work across both generations
 
-My work has covered both generations of the product.
+Within that team, my work has covered both generations of the product.
 
 In the earlier React + NestJS version, I worked on backend and fullstack pieces around room state, telemetry, real-time updates, and the LangGraph control flow.
 
-In the Rust rewrite, I moved more of that responsibility into a smaller edge-oriented service built with Axum and SQLx.
+In the Rust rewrite, I moved more of that software responsibility into a smaller edge-oriented service built with Axum and SQLx.
 
-A large part of the backend work is authorization. Site membership and room scope have to be checked before a command reaches a physical device, so I built the access-control path around those boundaries instead of treating permissions as a UI concern.
+A large part of my backend work is authorization. Site membership and room scope have to be checked before a command reaches a physical device, so I built the access-control path around those boundaries instead of treating permissions as a UI concern.
 
-I also work on the hardware-facing side: MQTT consumers, Tasmota telemetry and relay state, Zigbee2MQTT adapters, device discovery, and command dispatch.
+I also work on the software side of the hardware integration boundary: MQTT consumers, Tasmota telemetry and relay state, Zigbee2MQTT adapters, device discovery, and command dispatch.
 
 Those integrations are translated into one room/device model that the rest of the product can use without knowing the underlying protocol details.
 
-The same ownership extends into deployment. I package the service for AMD64 and ARM64, run it on local edge hardware, and use OpenTelemetry, Prometheus, and logs to investigate issues that only show up when software is sitting next to real devices and imperfect networks.
+My deployment contribution includes packaging the service for AMD64 and ARM64, running it on local edge hardware, and using OpenTelemetry, Prometheus, and logs to investigate issues that only show up when software is sitting next to real devices and imperfect networks.
 
 ## The boundary that mattered most
 

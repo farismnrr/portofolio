@@ -49,4 +49,13 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   }
 
   await mermaid.run({ nodes });
+
+  for (const node of nodes) {
+    const svg = node.querySelector('svg');
+    if (!svg) continue;
+    const width = svg.viewBox.baseVal.width;
+    // Keep 16px labels at least 14px wide on screen. Long diagrams scroll
+    // inside their shell instead of shrinking to unreadable mobile thumbnails.
+    if (Number.isFinite(width) && width > 0) svg.style.minWidth = `${width * 0.875}px`;
+  }
 }

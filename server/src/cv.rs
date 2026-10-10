@@ -297,12 +297,8 @@ async fn render_validated_pdf(
             continue;
         }
 
-        if tighten_lowest_priority_narrative(&mut document) {
-            continue;
-        }
-
         return Err(format!(
-            "document still exceeds {} pages after bounded fitting",
+            "document still exceeds {} pages after bounded fitting without mutating prose",
             profile.max_pages
         ));
     }
@@ -526,43 +522,6 @@ fn trim_lowest_priority_optional_item(document: &mut CvRenderRequest, profile: &
     false
 }
 
-fn tighten_lowest_priority_narrative(document: &mut CvRenderRequest) -> bool {
-    for project in document.projects.iter_mut().rev() {
-        if let Some(shortened) = shorten_text(&project.narrative) {
-            project.narrative = shortened;
-            return true;
-        }
-    }
-
-    shorten_text(&document.profile_summary).map(|shortened| {
-        document.profile_summary = shortened;
-        true
-    }) == Some(true)
-}
-
-fn shorten_text(value: &str) -> Option<String> {
-    let sentences = value
-        .split_inclusive(['.', '!', '?'])
-        .map(str::trim)
-        .filter(|sentence| !sentence.is_empty())
-        .collect::<Vec<_>>();
-
-    if sentences.len() > 1 {
-        let keep = sentences.len().div_ceil(2);
-        let shortened = sentences[..keep].join(" ");
-        if shortened.len() < value.len() {
-            return Some(shortened);
-        }
-    }
-
-    let words = value.split_whitespace().collect::<Vec<_>>();
-    if words.len() > 28 {
-        return Some(words[..words.len().div_ceil(2).max(20)].join(" "));
-    }
-
-    None
-}
-
 async fn cleanup_attempt(html_path: &str, pdf_path: &str, profile_path: &str) {
     let _ = fs::remove_file(html_path).await;
     let _ = fs::remove_file(pdf_path).await;
@@ -612,7 +571,7 @@ fn experience_html(experience: &ExperienceSection) -> String {
             .join(", ");
 
         format!(
-            r#"<div class="related-projects"><strong>Related projects:</strong> {links}</div>"#,
+            r#"<div class="related-projects"><strong>Selected projects:</strong> {links}</div>"#,
             links = links
         )
     };
@@ -639,8 +598,8 @@ fn experience_html(experience: &ExperienceSection) -> String {
             <span class="item-meta">{meta}</span>
           </div>
           <p class="experience-summary">{summary}</p>
-          {related_projects}
           {bullets}
+          {related_projects}
         </article>
         "#,
         title = escape(&experience.title),
@@ -796,8 +755,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .experience-summary,
   .project-narrative {{
     margin: 0;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
     orphans: 3;
     widows: 3;
   }}
@@ -851,8 +809,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .bullets li {{
     margin: 0 0 {bullet_gap}px;
     padding-left: 2px;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
     orphans: 3;
     widows: 3;
   }}
@@ -870,22 +827,21 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .cert-list {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 22px;
-    row-gap: 10px;
+    display: block;
   }}
 
   .certification {{
     font-size: 10pt;
     line-height: 1.42;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
   }}
 
   .cert-title {{
-    color: #1d466f;
+    color: #111111;
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
   }}
 
   .education {{
@@ -961,7 +917,10 @@ mod tests {
             "contact": "farismnrr.com",
             "profileSummary": "General software engineering profile.",
             "technicalScope": [
-                { "label": "Software Engineering", "text": "Rust, Go, TypeScript" }
+                { "label": "Backend Systems", "text": "Rust, Go, TypeScript" },
+                { "label": "Web Engineering", "text": "React, TypeScript" },
+                { "label": "Infrastructure & Observability", "text": "Docker, Linux" },
+                { "label": "Applied AI", "text": "RAG, pgvector" }
             ],
             "projects": [
                 {
@@ -982,7 +941,7 @@ mod tests {
                             "url": "https://farismnrr.com/projects/sensio-notes"
                         }
                     ],
-                    "bullets": []
+                    "bullets": ["Built backend integrations from verified source content."]
                 }
             ],
             "certifications": [

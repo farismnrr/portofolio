@@ -13,6 +13,8 @@
   let generatingCv = false;
   let cvError = '';
   let cvGenerated = false;
+  let tailorCvOpen = false;
+  let jobDescription = '';
   let cvModulePromise: Promise<typeof import('../lib/cv')> | null = null;
 
   function preloadCv() {
@@ -20,7 +22,7 @@
     return cvModulePromise;
   }
 
-  async function handleSaveCv() {
+  async function handleSaveCv(targetJobDescription = '') {
     if (generatingCv) return;
 
     generatingCv = true;
@@ -29,13 +31,23 @@
 
     try {
       const { generateGeneralCv } = await preloadCv();
-      await generateGeneralCv();
+      await generateGeneralCv(targetJobDescription);
       cvGenerated = true;
     } catch (error) {
-      cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
+      console.error('CV generation failed', error);
+      cvError = 'Could not prepare the CV. Please try again.';
     } finally {
       generatingCv = false;
     }
+  }
+
+  async function handleTailoredCv() {
+    const normalized = jobDescription.replace(/\s+/g, ' ').trim();
+    if (!normalized) {
+      cvError = 'Paste the job description before tailoring the CV.';
+      return;
+    }
+    await handleSaveCv(normalized);
   }
 </script>
 
@@ -67,19 +79,56 @@
             on:mouseenter={() => void preloadCv()}
             on:focus={() => void preloadCv()}
             on:pointerdown={() => void preloadCv()}
-            on:click={handleSaveCv}
+            on:click={() => void handleSaveCv()}
           >
             <AppIcon name="file-text" size={16}/>
-            {generatingCv ? 'Generating CV…' : 'Generate CV'}
+            {generatingCv ? 'Preparing CV…' : 'Download CV'}
+          </button>
+          <button
+            class="flex min-h-10 items-center gap-2.5 text-left hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-55"
+            type="button"
+            disabled={generatingCv}
+            aria-expanded={tailorCvOpen}
+            on:click={() => {
+              tailorCvOpen = !tailorCvOpen;
+              cvError = '';
+            }}
+          >
+            <AppIcon name="file-text" size={16}/>
+            Tailor to a role
           </button>
 
-          {#if generatingCv}
-            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status" aria-live="polite">Preparing the PDF from verified portfolio content.</p>
-          {:else if cvGenerated}
-            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status">CV generated and downloaded.</p>
+          {#if tailorCvOpen}
+            <div class="col-span-full mt-2 space-y-2 lg:mt-3">
+              <label class="block text-[12px] font-medium text-black/70" for="cv-job-description">Job description</label>
+              <textarea
+                id="cv-job-description"
+                class="min-h-32 w-full resize-y rounded-md border border-black/16 bg-transparent p-3 text-[12px] leading-5 outline-none transition focus:border-[var(--accent)]"
+                bind:value={jobDescription}
+                maxlength="4000"
+                placeholder="Paste the role description. It is used only to rank verified portfolio evidence and ATS vocabulary."
+              ></textarea>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-[11px] text-black/50">{jobDescription.length}/4000</span>
+                <button
+                  class="min-h-9 border border-black/16 px-3 text-[12px] font-medium hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-55"
+                  type="button"
+                  disabled={generatingCv || !jobDescription.trim()}
+                  on:click={() => void handleTailoredCv()}
+                >
+                  Prepare tailored CV
+                </button>
+              </div>
+            </div>
           {/if}
 
-          {#if cvError}<p class="cv-error col-span-full text-[12px] leading-5">{cvError}</p>{/if}
+          {#if generatingCv}
+            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status" aria-live="polite">Preparing a validated, ATS-friendly PDF from verified portfolio content.</p>
+          {:else if cvGenerated}
+            <p class="col-span-full text-[12px] leading-5 text-black/58" role="status">CV downloaded.</p>
+          {/if}
+
+          {#if cvError}<p class="cv-error col-span-full text-[12px] leading-5" role="alert">{cvError}</p>{/if}
         </div>
       </aside>
 

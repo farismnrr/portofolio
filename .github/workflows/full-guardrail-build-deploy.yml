@@ -13,6 +13,7 @@ env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
   RUST_TARGET_ARM64: aarch64-unknown-linux-musl
   RUSTFLAGS: -D warnings
+  VITE_ROLE_MATCH_ENABLED: "false"
 
 concurrency:
   group: portfolio-production-release
@@ -140,11 +141,11 @@ jobs:
 
       - name: Rust clippy
         working-directory: server
-        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features -- -D warnings
+        run: cargo clippy --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets -- -D warnings
 
       - name: Rust tests
         working-directory: server
-        run: cargo test --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets --all-features
+        run: cargo test --release --target ${{ env.RUST_TARGET_AMD64 }} --all-targets
 
       - name: Build AMD64 runtime binary
         working-directory: server

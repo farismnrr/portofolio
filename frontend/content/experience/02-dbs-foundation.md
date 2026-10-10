@@ -1,14 +1,15 @@
 ---
+kind: program
 order: 2
 year: Feb 2025 — July 2025
 company: DBS Foundation
-role: Machine Learning Engineer
+role: Machine Learning Track Participant
 location: ""
-summary: Completed the DBS Foundation program through a team capstone that combined food-image recognition with a deployable web application foundation.
+summary: Completed a semester-long intensive technology training program with a team capstone, combining machine-learning coursework with hands-on web application delivery.
 tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
 projects: [gizilens]
 ---
 
-- Worked in the **[GiziLens](/projects/gizilens)** capstone team, where the project was split between a food-recognition subsystem and the web application surrounding it.
-- Contributed primarily to the application side: authentication and session flows, user APIs, PostgreSQL and Redis integration, the Nuxt frontend boundary, and the containerized runtime around the services.
+- Contributed to the application side of the **[GiziLens](/projects/gizilens)** team capstone, implementing authentication, sessions, and user APIs around a food-recognition subsystem developed within the team.
+- Integrated PostgreSQL and Redis with the Nuxt frontend and containerized services, providing a deployable web application around the team’s food-recognition subsystem.
 - Kept the machine-learning classifier as a team subsystem in the project story rather than presenting another member's model-training work as my individual implementation.

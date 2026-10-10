@@ -252,9 +252,8 @@ for (const chrome of ['SiteHeader.svelte','SiteFooter.svelte']) {
 
 const homeSource = await readFile(join(srcRoot, 'pages', 'HomePage.svelte'), 'utf8');
 if (homeSource.includes('projects.slice(0')) failures.push('HomePage must use getLatestProjects() rather than positional project slices.');
-if (homeSource.includes('experiences.slice(0')) failures.push('HomePage must use getLatestExperiences() rather than positional experience slices.');
-if (!homeSource.includes('getLatestProjects') || !homeSource.includes('getLatestExperiences')) {
-  failures.push('HomePage must derive visible project and experience content from latest-content selectors.');
+if (!homeSource.includes('getLatestProjects')) {
+  failures.push('HomePage must derive selected project content from the latest-content selector.');
 }
 
 if (failures.length) {

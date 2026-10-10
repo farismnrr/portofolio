@@ -1,9 +1,9 @@
 ---
 slug: skills
 eyebrow: Technical foundation
-title: Academic Foundation
-subtitle: A strong foundation in computer science and electronics shaped my problem-solving mindset and interest in real-world systems.
-description: Tools, principles, and academic foundations behind the systems I build.
+title: Skills & foundations
+subtitle: The tools I use, the subjects I studied, and the habits I rely on when a system gets complicated.
+description: Technical skills, education, and engineering principles behind the work in this portfolio.
 ---
 
-The page combines education, technical skills, and the engineering principles I use when making trade-offs.
+I do not treat this as a keyword inventory. The sections below group the technologies I use with the education and engineering principles that help me decide when to use them and when not to.

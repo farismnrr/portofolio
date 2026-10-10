@@ -51,6 +51,73 @@ impl AiState {
         })
     }
 
+    #[cfg(feature = "role-match")]
+    pub async fn complete(&self, system: &str, data: &serde_json::Value) -> Result<String, String> {
+        let message = serde_json::to_string(data).map_err(|_| "invalid_ai_input")?;
+        let id = request_id();
+        for attempt in 1..=MAX_CHAT_ATTEMPTS {
+            let request = NineRouterRequest {
+                model: &self.model,
+                messages: vec![
+                    NineRouterMessage {
+                        role: "system",
+                        content: system,
+                    },
+                    NineRouterMessage {
+                        role: "user",
+                        content: &message,
+                    },
+                ],
+                reasoning_effort: "medium",
+            };
+            let result = self
+                .auth(
+                    self.client
+                        .post(format!("{}/chat/completions", self.base_url))
+                        .json(&request),
+                )
+                .send()
+                .await;
+            match result {
+                Ok(response) if response.status().is_success() => {
+                    let payload = response
+                        .json::<NineRouterResponse>()
+                        .await
+                        .map_err(|_| "ai_invalid_response")?;
+                    return payload
+                        .choices
+                        .into_iter()
+                        .next()
+                        .map(|choice| choice.message.content)
+                        .filter(|content| !content.trim().is_empty())
+                        .ok_or_else(|| "ai_empty_response".into());
+                }
+                Ok(response) => {
+                    let status = response.status();
+                    tracing::warn!(request_id = %id, attempt, status = status.as_u16(), "role-match provider request failed");
+                    if retryable_status(status) && attempt < MAX_CHAT_ATTEMPTS {
+                        sleep(retry_delay(&id)).await;
+                        continue;
+                    }
+                    return Err("ai_upstream_error".into());
+                }
+                Err(error) => {
+                    if (error.is_timeout() || error.is_connect()) && attempt < MAX_CHAT_ATTEMPTS {
+                        sleep(retry_delay(&id)).await;
+                        continue;
+                    }
+                    return Err(if error.is_timeout() {
+                        "ai_upstream_timeout"
+                    } else {
+                        "ai_upstream_unavailable"
+                    }
+                    .into());
+                }
+            }
+        }
+        Err("ai_upstream_unavailable".into())
+    }
+
     fn auth(&self, builder: RequestBuilder) -> RequestBuilder {
         match &self.api_key {
             Some(api_key) => builder.bearer_auth(api_key),

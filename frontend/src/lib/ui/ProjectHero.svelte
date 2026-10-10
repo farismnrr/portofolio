@@ -1,31 +1,35 @@
 <script lang="ts">
   import type { ProjectDocument } from '../project-content';
+  import { projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
-  import TechChips from './TechChips.svelte';
+
   export let project: ProjectDocument;
   $: preserveShowcase = project.slug === 'parentify';
 </script>
 
-<section class="grid gap-12 border-b border-black/10 pb-12 lg:grid-cols-[.72fr_1.28fr]">
-  <div class="self-center">
-    <p class="text-[11px] uppercase tracking-[.2em] text-black/45">{project.year} · {project.category}</p>
-    <h1 class="mt-5 text-[52px] font-semibold leading-[1] tracking-[-0.045em] md:text-[64px]">{project.title}</h1>
-    <p class="mt-3 text-[27px] font-light leading-tight text-black/58">{project.subtitle}</p>
-    <p class="mt-4 text-[13px] text-black/48">{project.role}</p>
-    <p class="mt-6 max-w-xl text-[15px] leading-7 text-black/57">{project.description}</p>
-    {#if project.productUrl || project.repoUrl}
-      <div class="mt-7 flex flex-wrap gap-3">
-        {#if project.productUrl}<a class="btn btn-neutral rounded-none border-0 bg-[#344534] px-7 font-normal" href={project.productUrl}>Visit Product ↗</a>{/if}
-        {#if project.repoUrl}<a class="btn btn-outline rounded-none border-black/20 px-7 font-normal" href={project.repoUrl}>View Code ↗</a>{/if}
-      </div>
-    {/if}
-    <div class="mt-7 border-t border-black/10 pt-5"><TechChips items={project.tech} pills/></div>
+<section class="border-b border-black/14 pb-10 sm:pb-12 2xl:pb-14">
+  <div class="grid gap-8 sm:gap-10 lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)] lg:items-end lg:gap-14 2xl:grid-cols-[minmax(0,.72fr)_minmax(0,1.28fr)] 2xl:gap-20">
+    <div>
+      <p class="text-[12px] text-black/60 2xl:text-[13px]">{project.year} · {project.category}</p>
+      <h1 class="mt-4 text-balance text-[36px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[44px] md:text-[58px] 2xl:text-[64px]">{project.title}</h1>
+      <p class="mt-5 hyphens-auto text-left text-[15px] leading-7 text-black/62 sm:text-justify 2xl:text-[16px] 2xl:leading-8">{project.description}</p>
+
+      {#if project.productUrl || project.repoUrl}
+        <div class="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-[13px] sm:mt-6 sm:gap-x-6 2xl:text-[14px]">
+          {#if project.productUrl}<a class="inline-flex min-h-11 items-center text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black" href={project.productUrl}>Visit product ↗</a>{/if}
+          {#if project.repoUrl}<a class="inline-flex min-h-11 items-center text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black" href={project.repoUrl}>View source ↗</a>{/if}
+        </div>
+      {/if}
+    </div>
+
+    <MediaImage
+      className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.72] w-full"}
+      src={project.image}
+      srcset={projectImageSrcset(project.image)}
+      sizes="(min-width: 1536px) 760px, (min-width: 1024px) 55vw, calc(100vw - 3rem)"
+      alt={project.cardTitle}
+      eager
+      fit={preserveShowcase ? 'contain' : 'cover'}
+    />
   </div>
-  <MediaImage
-    className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.72] w-full"}
-    src={project.image}
-    alt={project.cardTitle}
-    eager
-    fit={preserveShowcase ? 'contain' : 'cover'}
-  />
 </section>

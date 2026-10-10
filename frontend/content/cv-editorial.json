@@ -1,0 +1,40 @@
+{
+  "profileSummary": {
+    "text": "Software Engineer focused on backend and systems engineering, with production experience in meeting-processing and client-delivered IoT applications. Builds Rust and TypeScript services, PostgreSQL data models, and real-time web and mobile integrations. Works across software, infrastructure, security, and UI/UX teams to deliver observable applications while keeping service ownership and authorization boundaries explicit."
+  },
+  "projects": [
+    {
+      "sourceId": "masih-awam-ai-code",
+      "narrative": "Built a coding workspace that connects repository inspection, file changes, command execution, and verification through bounded capabilities. Separated agent reasoning from execution authority with Rust, MCP, and Bubblewrap so repository operations pass through explicit policy boundaries, while the workspace exposes progress and evidence from the actual development environment."
+    },
+    {
+      "sourceId": "masih-awam-lms",
+      "narrative": "Built Rust and Axum services backed by PostgreSQL for courses, enrollment, and lesson completion. Separated auditable progress state from worlds, quests, and story presentation, allowing learner dashboards to show the next step while public course pages and private progress views follow different data ownership and rendering boundaries."
+    },
+    {
+      "sourceId": "iotnet",
+      "narrative": "Built an IoT management platform using TypeScript, Hapi, PostgreSQL, MQTT, and EMQX to connect user workflows with asynchronous device communication. Separated requested commands from observed device state and checked ownership before control, giving the application a clear model for device operations, automation decisions, and operational visibility through OpenTelemetry."
+    },
+    {
+      "sourceId": "multitenant-user-management",
+      "narrative": "Built a reusable identity service in Rust and Actix-web with PostgreSQL, JWT sessions, and Argon2 password hashing. Separated global accounts from tenant membership and role assignments so applications can share authentication while evaluating permissions within each tenant, with RocksDB caching and Docker packaging supporting the service runtime."
+    }
+  ],
+  "certifications": [
+    {
+      "sourceId": "2"
+    },
+    {
+      "sourceId": "4"
+    },
+    {
+      "sourceId": "10"
+    }
+  ],
+  "employmentBullets": [
+    "Built the Sensio Notes backend in NestJS with PostgreSQL models, chunked S3 uploads, processing callbacks, and WebSocket updates. Integrated team-owned ingestion and Graph/RAG services into the meeting lifecycle used by web and mobile clients.",
+    "Built major Sensio IoT components in NestJS and Rust/Axum for identity, room state, telemetry, and device integration. Enforced site- and room-scoped authorization before commands and connected MQTT and Zigbee2MQTT to application state.",
+    "Implemented React and Capacitor interfaces from UI/UX designs, handling recording, upload, processing, and recovery states. Collaborated with IoT engineers so software behavior matched device installation and provisioning.",
+    "Packaged services with Docker and diagnosed failures using OpenTelemetry and structured logs. Coordinated with infrastructure and security engineers on on-premises delivery into client-owned residential and office environments."
+  ]
+}

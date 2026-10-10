@@ -1,37 +1,50 @@
 <script lang="ts">
   import { certificationGroupId, certificationGroups, pageCopy } from '../lib/structured-content';
-  import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
+
+  function responsiveCertificationSrcset(src: string) {
+    const match = src.match(/^(.*)-800\.webp$/);
+    if (!match) return '';
+    return [480, 800].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+  }
 </script>
 
 <main>
-  <PageShell className="py-14 lg:py-16">
-    <div class="border-b border-black/10 pb-10">
-      <PageIntro eyebrow={pageCopy.certifications.eyebrow} title={pageCopy.certifications.title} subtitle={pageCopy.certifications.subtitle} description={pageCopy.certifications.description} compact/>
-    </div>
+  <PageShell className="py-10 sm:py-12 lg:py-16">
+    <header class="border-b border-black/10 pb-8 sm:pb-9">
+      <h1 class="text-[36px] font-semibold tracking-[-0.03em] sm:text-[40px] md:text-[48px] 2xl:text-[52px]">{pageCopy.certifications.title}</h1>
+      <p class="mt-4 max-w-none hyphens-auto text-justify text-[15px] leading-7 text-black/58 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8">{pageCopy.certifications.subtitle}</p>
+    </header>
 
     {#each certificationGroups as group}
-      <section id={certificationGroupId(group.group)} class="scroll-mt-28 border-b border-black/10 py-9">
-        <div class="flex items-baseline justify-between gap-6">
-          <h2 class="text-[28px] font-semibold tracking-[-0.03em]">{group.group}</h2>
-          <span class="shrink-0 text-[13px] text-black/45">{group.items.length} credentials</span>
+      <section id={certificationGroupId(group.group)} class="scroll-mt-28 border-b border-black/10 py-8 sm:py-9">
+        <div class="flex items-start justify-between gap-4 sm:items-baseline sm:gap-6">
+          <h2 class="text-[24px] font-semibold tracking-[-0.03em] sm:text-[28px]">{group.group}</h2>
+          <span class="shrink-0 pt-1 text-[12px] text-black/58 sm:pt-0 sm:text-[13px]">{group.items.length}</span>
         </div>
-        <p class="mt-3 max-w-2xl text-[14px] leading-6 text-black/52">{pageCopy.certifications.body}</p>
-        <div class="mt-7 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+        <div class="mt-6 grid gap-x-6 gap-y-9 sm:mt-7 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-10 2xl:gap-y-12">
           {#each group.items as cert}
             <article>
-              <div class="aspect-[1.78] overflow-hidden border border-black/12 bg-white/55 shadow-[0_1px_8px_rgba(0,0,0,.035)]">
-                <MediaImage className="h-full w-full bg-[#fff]" src={cert.image} alt={cert.title} fit="contain"/>
+              <div class="aspect-[1.78] overflow-hidden border border-black/16 bg-[var(--surface)]">
+                <MediaImage
+                  className="h-full w-full"
+                  src={cert.image}
+                  srcset={responsiveCertificationSrcset(cert.image)}
+                  sizes="(min-width: 1536px) 320px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 3rem)"
+                  alt={cert.title}
+                  fit="contain"
+                />
               </div>
-              <h3 class="mt-4 text-[16px] font-semibold">{cert.title}</h3>
-              <p class="mt-1 text-[13px] text-black/52">{cert.issuer}</p>
+              <h3 class="mt-4 text-[16px] font-semibold leading-6">{cert.title}</h3>
+              <p class="mt-1 text-[13px] text-black/58">{cert.issuer}</p>
               {#if cert.year || cert.credentialId}
-                <p class="mt-1 text-[12px] text-black/42">
+                <p class="mt-1 break-words text-[12px] leading-5 text-black/58">
                   {cert.year}{#if cert.year && cert.credentialId} · {/if}{#if cert.credentialId}Credential ID: {cert.credentialId}{/if}
                 </p>
               {/if}
-              {#if cert.url}<a class="mt-3 inline-block text-[12px] text-black/68 underline underline-offset-4" href={cert.url}>View Credential →</a>{/if}
+              {#if cert.url}<a class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3" href={cert.url}>View credential →</a>{/if}
             </article>
           {/each}
         </div>

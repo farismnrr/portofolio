@@ -1,8 +1,5 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@plugin "daisyui" {
-  themes: light --default, dark;
-}
 
 @theme {
   --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -45,6 +42,30 @@ body {
 img { display: block; max-width: 100%; }
 a, button { -webkit-tap-highlight-color: transparent; }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  transform: translateY(calc(-100% - 2rem));
+  border: 1px solid color-mix(in srgb, var(--page-fg) 18%, transparent);
+  background: var(--page-bg);
+  color: var(--page-fg);
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: transform 140ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 25%, transparent);
   color: var(--page-fg);
@@ -65,29 +86,57 @@ a, button { -webkit-tap-highlight-color: transparent; }
 html[data-theme="dark"] .brand-logo__light { display: none; }
 html[data-theme="dark"] .brand-logo__dark { display: block; }
 
+.project-markdown {
+  min-width: 0;
+}
+
 .project-markdown .prose {
   --tw-prose-body: color-mix(in srgb, var(--page-fg) 62%, transparent);
   --tw-prose-headings: var(--page-fg);
   --tw-prose-lead: color-mix(in srgb, var(--page-fg) 60%, transparent);
   --tw-prose-links: var(--accent);
   --tw-prose-bold: var(--page-fg);
-  --tw-prose-counters: color-mix(in srgb, var(--page-fg) 50%, transparent);
-  --tw-prose-bullets: color-mix(in srgb, var(--page-fg) 40%, transparent);
-  --tw-prose-hr: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  --tw-prose-counters: color-mix(in srgb, var(--page-fg) 55%, transparent);
+  --tw-prose-bullets: color-mix(in srgb, var(--page-fg) 50%, transparent);
+  --tw-prose-hr: color-mix(in srgb, var(--page-fg) 16%, transparent);
   --tw-prose-quotes: var(--page-fg);
   --tw-prose-quote-borders: var(--accent);
-  --tw-prose-captions: color-mix(in srgb, var(--page-fg) 50%, transparent);
+  --tw-prose-captions: color-mix(in srgb, var(--page-fg) 58%, transparent);
   --tw-prose-code: var(--page-fg);
   --tw-prose-pre-code: var(--page-fg);
-  --tw-prose-pre-bg: color-mix(in srgb, var(--page-fg) 3.5%, transparent);
-  --tw-prose-th-borders: color-mix(in srgb, var(--page-fg) 20%, transparent);
-  --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  --tw-prose-pre-bg: color-mix(in srgb, var(--page-fg) 4.5%, transparent);
+  --tw-prose-th-borders: color-mix(in srgb, var(--page-fg) 24%, transparent);
+  --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 16%, transparent);
+}
+
+.project-markdown .prose p,
+.project-markdown .prose li,
+.project-markdown .prose blockquote,
+.project-markdown .prose a {
+  overflow-wrap: anywhere;
+}
+
+.project-markdown .prose pre:not(.mermaid),
+.project-markdown .prose table {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.project-markdown .prose table {
+  display: block;
+  width: 100%;
 }
 
 .mermaid-shell {
+  overflow: hidden;
   border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
   background: color-mix(in srgb, var(--surface) 72%, var(--page-bg));
   transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.mermaid-shell .mermaid {
+  white-space: normal;
 }
 
 .mermaid-skeleton-bar {
@@ -99,8 +148,8 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 }
 
 .cv-status {
-  border-color: color-mix(in srgb, var(--page-fg) 10%, transparent);
-  background: color-mix(in srgb, var(--page-fg) 2.5%, transparent);
+  border-color: color-mix(in srgb, var(--page-fg) 14%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 3.5%, transparent);
 }
 
 .cv-error {
@@ -109,4 +158,18 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 
 html[data-theme="dark"] .cv-error {
   color: #ff9b9b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

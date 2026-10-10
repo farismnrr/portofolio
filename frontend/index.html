@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        try {
+          const stored = window.localStorage.getItem('theme');
+          const theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {}
+      })();
+    </script>
     <meta name="theme-color" content="#263526" />
     <meta name="application-name" content="Faris Munir Mahdi" />
     <meta name="apple-mobile-web-app-title" content="Faris Munir Mahdi" />
@@ -49,7 +61,7 @@
             "@id": "https://farismnrr.com/#person",
             "name": "Faris Munir Mahdi",
             "url": "https://farismnrr.com/",
-            "image": "https://farismnrr.com/images/profile/faris-munir.png",
+            "image": "https://farismnrr.com/images/profile/faris-munir-1024.webp",
             "jobTitle": "Software Engineer",
             "email": "mailto:farismnrrbusiness@gmail.com",
             "sameAs": [

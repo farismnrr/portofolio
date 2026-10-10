@@ -1,9 +1,9 @@
 ---
 slug: blog
-eyebrow: Engineering journal
-title: Notes on software, systems, and things
-subtitle: I learn while building them.
-description: Practical notes, technical deep dives, and lessons from building and operating real systems across backend, AI, cloud infrastructure, and connected devices.
+eyebrow: Blog
+title: Blog
+subtitle: Engineering notes on backend systems, cloud infrastructure, IoT, and AI integration.
+description: Engineering notes from systems and projects I have worked on.
 ---
 
-Long-form engineering notes rendered from Markdown with code, diagrams, tables, and automatically generated navigation.
+These notes focus on decisions, failure modes, and implementation details that need more room than a project summary.

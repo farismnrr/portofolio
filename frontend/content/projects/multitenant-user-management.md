@@ -15,35 +15,23 @@ productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
 
-## The Story
+## One account can belong to more than one tenant
 
 User management looks simple when an application is small.
 
 You create a users table, add login, store a role, and move on.
 
-Then the product grows.
-
-A second tenant appears.
-
-A user needs access to both tenants.
-
-The same person is an admin in one organization and a normal user in another.
-
-Another application needs the same login system.
+Then the product grows. A second tenant appears. A user needs access to both tenants. The same person is an admin in one organization and a normal user in another. Another application needs the same login system.
 
 Suddenly, “users” is no longer one table.
 
 That is the problem this service was built to solve.
 
-## The Core Idea
+## Identity is global; permissions are contextual
 
 The service separates **identity** from **context**.
 
-A person has one global account.
-
-That account can participate in multiple tenants.
-
-Each tenant membership can carry its own roles.
+A person has one global account. That account can participate in multiple tenants. Each tenant membership can carry its own roles.
 
 ```mermaid
 erDiagram
@@ -55,29 +43,17 @@ erDiagram
 
 That means the answer to “who are you?” stays stable, while the answer to “what can you do here?” depends on the tenant context.
 
-## Why This Matters
+Without this separation, applications often duplicate identity. The same person may end up with different user rows, different passwords, and different role logic across products.
 
-Without this separation, applications often duplicate identity.
+That creates security drift. One application rotates sessions correctly while another does not. One product uses tenant-scoped roles while another stores one global role field.
 
-The same person may end up with different user rows, different passwords, and different role logic across products.
+Centralizing identity gives consuming applications one consistent model.
 
-That creates security drift.
-
-One application rotates sessions correctly while another does not.
-
-One product uses tenant-scoped roles while another stores one global role field.
-
-Centralizing identity gives all consuming applications one consistent model.
-
-## The Authentication Story
+## Login stays ordinary even when authorization is not
 
 From the user's point of view, login should still feel ordinary.
 
-They enter credentials.
-
-The system identifies the account.
-
-Then the tenant context determines what that account is allowed to do.
+They enter credentials. The system identifies the account. Then the tenant context determines what that account is allowed to do.
 
 ```mermaid
 sequenceDiagram
@@ -96,19 +72,9 @@ sequenceDiagram
 
 The extra complexity exists so the user does not have to think about it.
 
-## The General Authorization Algorithm
+## Authorization follows a fixed chain
 
-Every protected action can be described with the same logic.
-
-```text
-Who is this?
-Which tenant are they acting in?
-Do they belong to that tenant?
-Which roles do they have there?
-Does one of those roles allow this action?
-```
-
-Or more compactly:
+Every protected action can be described with the same logic:
 
 ```text
 identity
@@ -119,25 +85,11 @@ identity
 → allow / deny
 ```
 
-This is the heart of the system.
+A successful login only proves identity. It does not prove permission.
 
-## Why Authentication and Authorization Are Separate
+A user may be valid but still have no access to a specific tenant, resource, or action. Treating authorization as a separate decision prevents the common mistake of equating “logged in” with “allowed to do everything.”
 
-A successful login only proves identity.
-
-It does not prove permission.
-
-A user may be valid but still have no access to a specific tenant, resource, or action.
-
-That distinction prevents a common design mistake:
-
-```text
-logged in ≠ allowed to do everything
-```
-
-The service treats authorization as a separate decision.
-
-## General System Design
+## One identity service, many applications
 
 ```mermaid
 flowchart LR
@@ -149,17 +101,9 @@ flowchart LR
     P --> A
 ```
 
-Applications do not need to reimplement the same account logic.
+Applications do not need to reimplement the same account logic. They ask one identity system for consistent answers.
 
-They ask one identity system for consistent answers.
-
-## The SSO Idea
-
-Once identity is centralized, multiple applications can share the same account.
-
-The user authenticates once, then moves between products while the consuming application applies its own tenant context.
-
-The mental model is:
+Once identity is centralized, multiple applications can share the same account while each consuming application still applies its own tenant context.
 
 ```text
 one person
@@ -168,7 +112,7 @@ one person
 → many applications
 ```
 
-## Product Tradeoffs
+## Tradeoffs that shape the service
 
 **Central consistency vs dependency.** A shared identity service reduces duplication, but consuming applications now depend on it being available.
 
@@ -176,10 +120,6 @@ one person
 
 **Flexible roles vs simple permissions.** Rich role models support more cases, but become harder to reason about if they are not kept disciplined.
 
-## Implementation Notes
+## Current implementation
 
-The current service uses Rust, PostgreSQL, JWT-based sessions, tenant-aware APIs, and a local cache for frequently accessed data.
-
-## Stack
-
-Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, and Docker.
+The current service uses Rust with Actix-web, PostgreSQL for durable identity data, RocksDB for local caching, JWT-based sessions, Argon2 for password hashing, tenant-aware APIs, and Docker for packaging.

@@ -15,7 +15,7 @@ productUrl: ""
 repoUrl: "https://github.com/farismnrr/agentic-ai-code"
 ---
 
-## The Story
+## A coding agent has to work against real state
 
 Most AI coding tools are very good at telling you what code *should* look like.
 
@@ -39,7 +39,7 @@ At that point, a chat assistant that only generates code becomes limited.
 
 > What would an AI coding assistant look like if it could actually work inside a real repository, but still had clear boundaries around what it is allowed to do?
 
-## The Core Idea
+## Reasoning and authority are separate
 
 The product separates **reasoning** from **authority**.
 
@@ -63,11 +63,9 @@ sequenceDiagram
     A-->>U: Progress or completed result
 ```
 
-That split is the most important concept in the application.
+That split is the most important concept in the application. It allows the agent to be useful without treating unrestricted shell access as the default trust model.
 
-It allows the agent to be useful without treating unrestricted shell access as the default trust model.
-
-## What the User Experiences
+## The user gives a goal, not a command script
 
 The user gives the system a goal, not a sequence of commands.
 
@@ -92,7 +90,7 @@ stateDiagram-v2
     Complete --> [*]
 ```
 
-## The General Agent Algorithm
+## Observe, decide, act, verify
 
 At a high level, the agent loop is simple:
 
@@ -116,7 +114,7 @@ But each step matters.
 
 Without verification, an agent is just an automated code generator.
 
-## Why Structured Tools Matter
+## Prefer narrow tools over unrestricted shell access
 
 A terminal can do almost anything.
 
@@ -132,13 +130,9 @@ The terminal remains useful for things that are genuinely command-oriented:
 - interpreters;
 - project-specific tooling.
 
-The philosophy is:
+The philosophy is simple: use the narrowest capability that can solve the task.
 
-```text
-use the narrowest capability that can solve the task
-```
-
-## Multi-Agent Work
+## Reconciling parallel agent work
 
 Some tasks are easier to solve when they are decomposed.
 
@@ -155,13 +149,11 @@ flowchart TD
     M --> F[Final integrated result]
 ```
 
-The interesting part is not spawning multiple agents.
-
-The interesting part is deciding how their work becomes one reliable result.
+Spawning multiple agents is straightforward. The harder part is deciding how their work becomes one reliable result.
 
 The parent must reconcile disagreements, reject weak evidence, and avoid merging competing changes blindly.
 
-## General System Design
+## Interaction, orchestration, execution
 
 The product has three conceptual zones.
 
@@ -181,7 +173,7 @@ flowchart TD
 
 This separation keeps product logic away from native authority.
 
-## Why Evidence Matters
+## Evidence is part of the result
 
 An AI saying “I fixed it” is not enough.
 
@@ -197,7 +189,7 @@ The system should be able to show what supports that claim:
 
 That makes the assistant easier to trust because the result is attached to observable work.
 
-## Product Tradeoffs
+## Tradeoffs that shape the product
 
 **Freedom vs safety.** A more powerful agent can solve more tasks, but every new capability expands the risk surface.
 
@@ -207,10 +199,6 @@ That makes the assistant easier to trust because the result is attached to obser
 
 The product is built around managing those tradeoffs explicitly instead of hiding them.
 
-## Implementation Notes
+## Current implementation
 
-The current system uses a web application for chat and orchestration, plus a native Rust execution relay for trusted machine operations.
-
-## Stack
-
-Nuxt, Vue, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, and OpenTelemetry.
+The current system uses a web application for chat and orchestration, plus a native Rust execution relay for trusted machine operations. The main stack is Nuxt, Vue, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, and OpenTelemetry.

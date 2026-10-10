@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { path } from './lib/router';
+  import { onMount, tick } from 'svelte';
+  import { path, scrollToCurrentHash } from './lib/router';
   import { loadRoute } from './lib/routes';
   import { getSeo } from './lib/seo';
-  import { profile, resolveActiveNavigation } from './lib/structured-content';
+  import { profile, resolveActiveNavigation } from './lib/site-content';
   import SiteHeader from './lib/ui/SiteHeader.svelte';
   import SiteFooter from './lib/ui/SiteFooter.svelte';
   import RouteLoading from './lib/ui/RouteLoading.svelte';
@@ -18,7 +18,10 @@
   let loading = !Page;
   let requestId = 0;
 
-  onMount(() => initializeTheme());
+  onMount(() => {
+    initializeTheme();
+    scrollToCurrentHash();
+  });
 
   $: current = $path;
   $: active = resolveActiveNavigation(current);
@@ -36,13 +39,15 @@
     Page = module.default;
     resolvedPath = currentPath;
     loading = false;
+    await tick();
+    if (id === requestId) scrollToCurrentHash();
   }
 </script>
 
 <svelte:head>
   <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="robots" content={seo.robots} />
   <link rel="canonical" href={seo.canonical} />
   <meta property="og:type" content={seo.ogType} />
   <meta property="og:locale" content="en_US" />
@@ -64,8 +69,9 @@
   {@html structuredDataScript}
 </svelte:head>
 
+<a class="skip-link" href="#main-content">Skip to content</a>
 <SiteHeader currentPath={active}/>
-<div class="pb-[76px] lg:pb-0">
+<div id="main-content" tabindex="-1" class="pb-[calc(68px+max(env(safe-area-inset-bottom),0.5rem))] lg:pb-0">
   {#if loading || !Page}
     <RouteLoading/>
   {:else}

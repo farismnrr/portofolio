@@ -2,12 +2,14 @@
 slug: about
 eyebrow: About me
 title: About
-subtitle: Software engineering across backend architecture, cloud infrastructure, AI, and IoT systems.
-description: Building scalable, high-performance systems that connect intelligent hardware with robust software ecosystems.
+subtitle: Backend, cloud, IoT, and applied AI when the product actually needs it.
+description: I build backend services, cloud infrastructure, and IoT systems, with a focus on making the parts between software, data, and devices easier to reason about.
 ---
 
-I am a Software Engineer specializing in backend architecture, cloud infrastructure, and IoT systems, with practical experience integrating AI capabilities into production-oriented applications. I focus on engineering scalable, high-performance systems that connect intelligent hardware with robust software ecosystems.
+I am a Software Engineer who spends most of my time around backend services, cloud infrastructure, and IoT systems.
 
-My work is strongest where backend services, cloud infrastructure, device connectivity, and applied AI meet: designing APIs and service boundaries, operating containerized systems, building IoT platforms, and turning model access or retrieval pipelines into usable product capabilities.
+I enjoy the work between the obvious layers. An API has to reflect a real workflow. Deployment decisions affect reliability. Device behavior has to make sense to the software above it.
 
-For implementation evidence, explore my [selected projects](/projects), [engineering writing](/blog), and [technical certifications](/certifications).
+A lot of my projects start with integration problems. That might mean deciding where service boundaries should live, making device state understandable to an application, wiring retrieval or model access into an existing product, or simplifying a system that has grown too many moving parts.
+
+I use this portfolio to document that work rather than just list technologies. The [projects](/projects) cover the systems themselves, the [blog](/blog) goes deeper into decisions and trade-offs, and [certifications](/certifications) collect the formal learning behind some of those areas.

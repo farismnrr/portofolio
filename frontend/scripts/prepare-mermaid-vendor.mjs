@@ -1,4 +1,4 @@
-import { copyFile, cp, mkdir, rm } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +14,9 @@ const chunksSource = fileURLToPath(
 const chunksDestination = fileURLToPath(
   new URL('../public/vendor/chunks/mermaid.esm.min/', import.meta.url)
 );
+const packageJsonPath = fileURLToPath(
+  new URL('../node_modules/mermaid/package.json', import.meta.url)
+);
 
 await mkdir(dirname(destination), { recursive: true });
 await copyFile(source, destination);
@@ -24,4 +27,5 @@ await copyFile(source, destination);
 await rm(chunksDestination, { recursive: true, force: true });
 await cp(chunksSource, chunksDestination, { recursive: true });
 
-console.log('Prepared Mermaid runtime and lazy chunks -> public/vendor/');
+const mermaidPackage = JSON.parse(await readFile(packageJsonPath, 'utf8'));
+console.log(`Prepared Mermaid ${mermaidPackage.version} runtime and lazy chunks -> public/vendor/`);

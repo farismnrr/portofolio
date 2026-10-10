@@ -1,86 +1,124 @@
 # Portfolio
 
-Personal portfolio implemented with Svelte and served by a Rust + Axum application. Public routes are prerendered at build time to crawlable HTML, then hydrated by Svelte in the browser; Axum embeds and serves the generated route documents and static assets.
+Personal portfolio for Faris Munir Mahdi.
 
-## Stack
+The site uses Svelte for the frontend and a small Rust + Axum runtime for production delivery. Public pages are prerendered at build time, then hydrated in the browser for client-side navigation and interaction.
 
-- Svelte + Vite with build-time prerendering and hydration
+## What lives here
+
+- Portfolio pages and UI: `frontend/src/`
+- Portfolio content: `frontend/content/`
+- Static media and generated public assets: `frontend/public/`
+- Rust server: `server/`
+- Development and release workflows: `.github/workflows/`
+- Orange Pi production deployment files: `deploy/orangepi/`
+
+Most portfolio data is Markdown-driven. Projects, experience, education, skills, certifications, gallery entries, and page copy can be updated without hardcoding new UI data.
+
+## Main stack
+
+- Svelte 5 + Vite
+- TypeScript
+- Markdown + Mermaid
 - Rust + Axum
-- Repository-local Markdown content
 - Docker
+- PostgreSQL + pgvector for portfolio retrieval
 - GitHub Actions
-- GitHub Container Registry (GHCR)
 
-Portfolio data lives under `frontend/content/`. Profile, experience, education, publications, skills, projects, blog posts, certifications, gallery entries, navigation, and page copy are loaded from Markdown at build time.
+## Local frontend development
 
-The production frontend build generates per-route HTML plus search/discovery assets such as `sitemap.xml`, `robots.txt`, `feed.xml`, `llms.txt`, and `llms-full.txt`. Route-specific title, description, canonical, Open Graph/Twitter metadata, and JSON-LD are included in the prerendered HTML so crawlers do not depend on client-side JavaScript for core content or metadata.
+From `frontend/`:
 
-Static media lives under `frontend/public/`.
+```bash
+npm install
+npm run dev
+```
 
-## Generate CV with AI
+Useful checks:
 
-The About page uses one evidence-grounded CV pipeline with a deterministic General profile. The shared registry lives in [`frontend/content/cv-profiles.json`](frontend/content/cv-profiles.json) and is consumed by the Svelte workflow and Rust retrieval/PDF renderer.
+```bash
+npm run guard
+npm run content:check
+npm run check
+npm run build
+```
 
-The pipeline keeps portfolio Markdown as the source of truth, then performs hybrid retrieval, metadata reranking, evidence planning, AI wording, grounding validation, deterministic source enrichment, and validated PDF rendering. AI cannot choose technical-scope labels or provide factual identity fields; those come from the profile and portfolio content. The output uses a deterministic filename and page budget, with a minimum 10pt body typography floor.
+`npm run build` also generates the prerendered HTML, SEO/discovery files, responsive media, CV evidence corpus, and Mermaid runtime assets used by production.
 
-## Branch workflow
+## Editing portfolio content
+
+Content is stored under `frontend/content/`.
+
+Project pages are regular Markdown files with frontmatter. The same content collection drives project listings, homepage selections, and detail pages, so adding or changing a project normally does not require a project-specific Svelte component.
+
+Visible Markdown copy is checked by the repository writing-style guard. It catches a small set of high-confidence style problems and reports softer warnings such as overly long sentences or repeated writing patterns.
+
+## CV and role matching
+
+The reviewed CV PDF is stored at:
+
+`frontend/public/downloads/Faris_Munir_Mahdi_CV.pdf`
+
+The About page downloads that file directly.
+
+`Match a role` is a private development utility. It is enabled only by the Fast AMD64 development build on `dev`, where it compares a supplied job description with published portfolio evidence and produces a source-backed PDF report. The production build does not render the Role Match UI and does not compile or expose the `/api/role-match/report` endpoint.
+
+Portfolio evidence for retrieval and development role matching is generated from the same published content rather than maintained as a separate manual dataset.
+
+## Branches
 
 Development happens on `dev`.
 
-- Use `dev` for feature work, fixes, refactors, content edits, documentation, and CI/CD changes.
-- Do not develop directly on `main`.
-- `main` is the production release branch and is only updated by the explicit full production release workflow through a pull request from `dev` to `main`.
-- The release flow never deletes `dev` after merge, so development continues on the same branch after every release.
+`main` is reserved for production releases and is updated through the explicit release workflow. Normal fixes, content changes, refactors, documentation, and CI work should go to `dev`.
 
-## CI / deployment
+See `AGENTS.md` for the repository working rules.
 
-The repository has two CI/CD workflows with deliberately different responsibilities:
+## CI and deployment
 
-- `Fast AMD64 Build + Deploy` is the development and pre-release validation loop on the X64 self-hosted runner. For application/runtime changes it reuses machine-local npm, Cargo, Rustup, Zig, and Docker caches, then runs the same frontend source/content gates that protect the full release (`guard`, content validation, strict Svelte/TypeScript diagnostics, and the production prerender build). It also runs Rust formatting, clippy with warnings denied, and the Rust test suite before producing the AMD64 MUSL runtime with `cargo-zigbuild`. After building the local `portfolio-app:dev` image it deploys to the Arch development host and verifies the homepage, PostgreSQL/pgvector retrieval with non-empty evidence, and a non-empty AI response through the application. Documentation-only changes do not trigger the application pipeline. This fast path still intentionally skips ARM64, QEMU, multi-architecture container validation, GHCR publishing, `dev` -> `main` merging, and Orange Pi production deployment.
-- `Full Guardrail + Build + Publish` is the explicit production release workflow. It remains manual-only via `workflow_dispatch` from `dev`. Its full validation is defined inline: frontend guardrail/build, Rust format/clippy/tests, configured AI smoke check, AMD64 and ARM64 production builds, and a multi-architecture container build. Only after all full checks pass does it create or reuse the `dev` -> `main` release pull request, merge it without deleting `dev`, publish the validated multi-architecture runtime image (AMD64 + ARM64) to GHCR, and deploy the exact immutable `main` SHA to the Orange Pi. The release job then verifies the live application, PostgreSQL/pgvector retrieval, 9router, AI response, public site, and error-free startup; a failed verification restores the previous known-good application SHA and fails the workflow.
+There are two workflows:
 
-There is no standalone `Full Guardrail + Build` workflow. The fast path now catches frontend, formatting, clippy, test, development database, and AI failures before a release is attempted; the full release remains the clean cross-architecture and production verification boundary.
+### Fast AMD64 Build + Deploy
 
-Production container image:
+Runs automatically for application/runtime changes on `dev`.
 
-`ghcr.io/farismnrr/portofolio/portfolio-app:latest`
+It validates the frontend and content, runs Rust formatting/clippy/tests, builds the AMD64 runtime and local Docker image, deploys it to the Arch development host, then verifies the live application, database-backed retrieval, AI endpoint, and dev-only Role Match route. The Fast build enables the Rust `role-match` feature and the Role Match frontend panel.
 
-Fast development deployment uses the local `portfolio-app:dev` AMD64 image on the Arch Linux X64 self-hosted runner. Full production release additionally verifies and publishes ARM64 compatibility for future ARM deployments.
+Documentation-only changes do not trigger this application pipeline.
 
-The application is exposed on port `3001` by the repository Compose configuration. The Orange Pi production Compose definition lives at [`deploy/orangepi/compose.yaml`](deploy/orangepi/compose.yaml); it publishes only loopback ports for the application (`3001`), PostgreSQL (`5432`), and 9router (`20128`). Cloudflare continues to route the public site to the loopback application port.
+### Full Guardrail + Build + Publish
 
-## AI runtime configuration
+Manual production release from `dev`.
 
-AI runtime configuration is supplied by GitHub Actions Repository Variables and deployment secrets. The server intentionally has no URL, model, or timeout fallback.
+It performs the full validation and cross-architecture build, merges `dev` into `main` through the release flow, publishes the immutable production image, and deploys the exact release SHA to the Orange Pi. Production builds leave the Rust `role-match` feature disabled and hide the Role Match panel. Production verification also checks that the Role Match endpoint is absent. Failed verification rolls the application back to the previous known-good SHA.
 
-Required repository variables:
+## Runtime environments
 
-- `NINE_ROUTER_URL`
-- `NINE_ROUTER_MODEL`
-- `NINE_ROUTER_CONNECT_TIMEOUT_SECONDS`
-- `NINE_ROUTER_TIMEOUT_SECONDS`
+### Development
 
-The 9router API key remains a repository secret.
+The Arch development deployment reuses the infrastructure-managed `shared-postgres` instance. The fast workflow provides the application database URL through repository secrets. `Match a role` is available only in this development deployment.
 
-## Production runtime on Orange Pi
+### Production
 
-Production is self-contained on the ARM64 Orange Pi under `/opt/portfolio/`:
+Production runs on the ARM64 Orange Pi under `/opt/portfolio/` with:
 
-- the immutable Portfolio application image;
-- PostgreSQL 17 with the `vector` extension and the `portfolio` database/role;
-- 9router `0.5.95` with its persisted state;
-- a mode-600 `.env`, Compose state, and deployment backups.
+- Portfolio application
+- PostgreSQL 17 + pgvector
+- 9router
 
-The production `.env` is created and maintained on the Orange Pi. It is never committed to Git. The deployment scripts in [`deploy/orangepi/`](deploy/orangepi/) update only the application image during a release, leave PostgreSQL and 9router running, and keep the previous application SHA for rollback.
+The production `.env` stays on the host and is not committed to the repository. Application releases recreate only the Portfolio service; PostgreSQL and 9router remain persistent. Role Match is intentionally not part of the production runtime.
 
-The full workflow currently uses the existing Arch self-hosted runner as the SSH/Tailscale transport because this repository has no GitHub-hosted Tailscale/OIDC credentials configured. The Arch host is not a production database or AI dependency; the deployed application connects to the local Compose services on Orange Pi.
+## SEO and discovery
 
-## Shared PostgreSQL on Arch (development)
- 
-The development deployment reuses the existing `shared-postgres` infrastructure container on Arch. The application uses host networking and connects through `127.0.0.1:5432` to the dedicated `portfolio` database using its own `portfolio` login role. Compose does not create a database container or database volume.
- 
-Set the repository secret `PORTFOLIO_DATABASE_URL` to the password-authenticated PostgreSQL connection URL for that database. The fast deploy workflow passes it to Compose, which supplies `DATABASE_URL` to the server. `DATABASE_URL` is required; the server does not fall back to the retired local database on port 5433. Keep credentials out of tracked files and repository variables.
- 
-Before deploying to a new host, provision the `portfolio` database and role and enable the `vector` extension as a database administrator. The runtime role owns its `cv_chunks` table and creates its GIN text-search and HNSW vector indexes. The shared infrastructure container and its data volume are managed separately from this application.
- 
-The fast deploy workflow requires `shared-postgres` to be healthy and checks `/api/cv/retrieve` after deployment. The check requires nonempty evidence and backend `pgvector+postgres-fts`; HTTP 200 with `memory-fallback` fails the deployment verification. It also checks a non-empty `/api/ai/chat` response. This shared Arch database is a development/fast-run dependency only; production uses the Orange Pi database described above. Removing the old `cv-db` service allows Compose to remove its orphan container. Remove the old `portofolio_portfolio-cv-pgdata` volume only after backing up, migrating, and verifying the shared database.
+The production build prerenders public routes and generates crawlable assets including:
+
+- `sitemap.xml`
+- `robots.txt`
+- `feed.xml`
+- `llms.txt`
+- `llms-full.txt`
+
+Route metadata and JSON-LD are included in prerendered HTML so the core site content does not depend on client-side JavaScript for indexing.
+
+## More detail
+
+Operational rules and repository conventions live in `AGENTS.md`. The active workflow files are the source of truth for CI/CD behavior.

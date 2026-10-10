@@ -15,17 +15,27 @@ export interface ProjectDocument {
   tech: string[];
   productUrl: string;
   repoUrl: string;
-  markdown: string;
 }
 
 const modules = import.meta.glob('../../content/projects/*.md', {
   eager: true,
-  query: '?raw',
+  query: '?meta',
   import: 'default'
 }) as Record<string, string>;
 
+function optimizedProjectImage(value: string) {
+  if (!value.startsWith('/images/projects/')) return value;
+  return value.replace(/\.(?:png|jpe?g)$/i, '-1280.webp');
+}
+
+export function projectImageSrcset(value: string) {
+  const match = value.match(/^(.*)-1280\.webp$/);
+  if (!match) return '';
+  return [640, 1280].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+}
+
 function parseProject(path: string, source: string): ProjectDocument {
-  const { values, body } = parseFrontmatter(path, source);
+  const { values } = parseFrontmatter(path, source);
   const required = ['id','order','slug','year','title','cardTitle','subtitle','role','category','description','image','tech','productUrl','repoUrl'];
   requireKeys(path, values, required);
 
@@ -46,11 +56,10 @@ function parseProject(path: string, source: string): ProjectDocument {
     role: unquote(values.get('role') ?? ''),
     category: unquote(values.get('category') ?? ''),
     description: unquote(values.get('description') ?? ''),
-    image: unquote(values.get('image') ?? ''),
+    image: optimizedProjectImage(unquote(values.get('image') ?? '')),
     tech,
     productUrl: unquote(values.get('productUrl') ?? ''),
-    repoUrl: unquote(values.get('repoUrl') ?? ''),
-    markdown: body
+    repoUrl: unquote(values.get('repoUrl') ?? '')
   };
 }
 

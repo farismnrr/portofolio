@@ -15,37 +15,17 @@ productUrl: "https://i-ot.net/"
 repoUrl: ""
 ---
 
-## The Story
+## Operating a fleet is different from connecting one device
 
-Building one IoT device is relatively easy.
+Building one connected device is mostly an integration task. Operating a fleet introduces a different set of problems.
 
-Operating hundreds of devices is a different problem.
+The platform has to know who owns each device, who may control it, what state the hardware is actually in, how automation rules are evaluated, and what to do when a device disappears from the network.
 
-The moment a project grows, new questions appear:
+**IoTNet** was built around that operational layer. It sits between people and connected hardware so users can work with product concepts instead of broker topics and raw protocol messages.
 
-- Who owns this device?
-- Who is allowed to control it?
-- What happens when it goes offline?
-- How do we know its current state?
-- How do automation rules work?
-- How do multiple users share the same environment?
-- How do we keep all of this understandable?
+## Command sent is not state observed
 
-**IoTNet** was built around that operational layer.
-
-It is not only a dashboard for devices. It is a platform that sits between people and a fleet of connected hardware.
-
-## The Core Idea
-
-The platform translates **human intent** into **device behavior**.
-
-A user thinks in product terms:
-
-> “Turn this device on.”
-
-The hardware understands protocol messages.
-
-IoTNet is the layer in the middle that applies identity, rules, messaging, and state.
+A user asks for an outcome. The platform turns that request into a device action, applies the relevant access rules, and waits for state or telemetry to show what happened.
 
 ```mermaid
 stateDiagram-v2
@@ -58,25 +38,13 @@ stateDiagram-v2
     ReflectedToUser --> [*]
 ```
 
-That translation is the heart of the system.
+The distinction between **command published** and **state observed** is deliberate. In a physical system, sending a message is not the same thing as proving that a device changed state.
 
-## The Device Control Story
+## Device control path
 
-Imagine a user clicking “turn on.”
+A control request passes through application context before it reaches the broker.
 
-The system should not immediately publish a raw command.
-
-It first needs to understand the context.
-
-Who is the user?
-
-Which tenant owns the device?
-
-Is this action allowed?
-
-What target should receive the command?
-
-Once the action is sent, the system should wait for state or telemetry to confirm what happened.
+The backend identifies the user, resolves the device and its owner, checks whether the action is allowed, publishes the command, and then consumes the returned state or telemetry.
 
 ```mermaid
 sequenceDiagram
@@ -94,13 +62,11 @@ sequenceDiagram
     Platform-->>User: Show updated state
 ```
 
-The system does not assume that “command sent” means “device changed.”
+That flow keeps device behavior grounded in what the system observes instead of assuming every command succeeds.
 
-That distinction is important in the physical world.
+## Automation as event, condition, decision, action
 
-## The Automation Model
-
-Automation sounds complicated, but the core model is simple.
+Automation uses a small set of reusable stages:
 
 ```text
 event
@@ -109,51 +75,24 @@ event
 → action
 ```
 
-For example:
+A temperature reading can be the event, occupancy and thresholds can become conditions, and the matching rule decides whether an action should be dispatched.
 
-```text
-temperature rises
-→ room is occupied
-→ threshold exceeded
-→ turn cooling on
-```
+The same model can describe security alerts, environmental control, scheduling, and other IoT behavior without creating a separate automation concept for each device type.
 
-or:
+## Ownership before control
 
-```text
-door opens
-→ outside office hours
-→ security rule matches
-→ send alert
-```
+Access control is part of the device model because hardware always belongs to some scope: a tenant, organization, site, project, or user group.
 
-This pattern is intentionally generic because many IoT use cases can be expressed with the same building blocks.
-
-## Why Identity Is Part of an IoT Platform
-
-It is tempting to think IoT is mostly about devices.
-
-In practice, access control becomes just as important.
-
-A device usually belongs to someone or something:
-
-- a tenant;
-- an organization;
-- a site;
-- a project;
-- a user group.
-
-The platform therefore has to answer both sides:
+Every control path therefore has to answer two things:
 
 ```text
 what can this device do?
-and
 who is allowed to ask it to do that?
 ```
 
-That is why identity, device ownership, and messaging belong in one larger system concept.
+Keeping ownership and messaging in the same product model makes those checks explicit before a command reaches physical hardware.
 
-## General System Design
+## Separating product meaning from message delivery
 
 ```mermaid
 flowchart TD
@@ -167,39 +106,28 @@ flowchart TD
     A --> H
 ```
 
-The platform becomes the coordination point.
+The application platform owns the meaning of an action. The messaging layer handles delivery to and from devices.
 
-It owns the product meaning of the action, while the messaging layer handles device communication.
+That boundary is useful when devices reconnect, publish state independently, or fail in ways that do not map cleanly to a synchronous request.
 
-## Why HTTP and MQTT Both Exist
+## HTTP for people, MQTT for devices
 
-These two protocols solve different problems.
+HTTP and MQTT stay separate because they solve different problems.
 
-HTTP is good for user-driven application workflows.
+HTTP fits user-driven workflows such as loading resources, changing configuration, or requesting an operation. MQTT fits device communication where messages arrive asynchronously and connections can come and go.
 
-MQTT is good for asynchronous communication with devices that may connect, disconnect, or publish state independently.
+The backend connects those two sides without forcing either one to behave like the other.
 
-The conceptual split is:
+## Tradeoffs that shape the platform
 
-```text
-human workflow → application API
-device workflow → messaging
-```
+**Real-time feedback vs operational complexity.** Faster feedback usually means more event-driven state and more failure paths to observe.
 
-Trying to use one model for both makes the system harder to reason about.
+**Central control vs device independence.** Central orchestration makes policy easier to enforce, but devices still need to tolerate temporary disconnection.
 
-## Product Tradeoffs
+**Flexible automation vs predictable behavior.** Rules become harder to understand as the automation model gains more expressive power.
 
-**Real-time behavior vs complexity.** Faster feedback usually means more event-driven state to manage.
+Those tradeoffs matter more to the long-term platform than adding another device protocol.
 
-**Central control vs device independence.** Central orchestration is easier to govern, but devices should still tolerate temporary disconnection.
+## Current implementation
 
-**Powerful automation vs understandable rules.** The more expressive the automation engine becomes, the harder it is for users to predict behavior.
-
-## Implementation Notes
-
-The current platform uses a Nuxt frontend, a TypeScript backend, PostgreSQL, MQTT/EMQX, and supporting device and broker integrations.
-
-## Stack
-
-Nuxt, Vue, TypeScript, Hapi, PostgreSQL, MQTT, EMQX, Go plugins, and OpenTelemetry.
+The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.

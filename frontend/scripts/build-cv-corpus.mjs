@@ -1,8 +1,15 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import {
+  coveredMonths,
+  durationMonths,
+  formatMonthKey,
+  parseExperiencePeriod
+} from './lib/experience-duration.mjs';
 
 const root = path.resolve(process.cwd(), 'content');
 const out = path.resolve(process.cwd(), 'public/cv-corpus.json');
+const buildNow = new Date();
 
 function parseFrontmatter(source) {
   const match = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
@@ -97,9 +104,21 @@ async function readDir(name) {
 const chunks = [];
 
 const experienceSources = await readDir('experience');
+const experienceEntries = experienceSources.map(({ file, source }) => {
+  const parsed = parseFrontmatter(source);
+  if (!parsed.meta.year) throw new Error(`${file}: experience year is required`);
+  let period;
+  try {
+    period = parseExperiencePeriod(parsed.meta.year, buildNow);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`${file}: ${message}`);
+  }
+  return { file, ...parsed, period };
+});
+
 const projectCompanies = new Map();
-for (const { source } of experienceSources) {
-  const { meta } = parseFrontmatter(source);
+for (const { meta } of experienceEntries) {
   for (const slug of inlineList(meta.projects)) {
     const companies = projectCompanies.get(slug) ?? new Set();
     if (meta.company) companies.add(meta.company);
@@ -150,16 +169,19 @@ for (const { file, source } of await readDir('projects')) {
   }
 }
 
-for (const { file, source } of experienceSources) {
-  const { meta, body } = parseFrontmatter(source);
+for (const { file, meta, body, period } of experienceEntries) {
   const id = String(meta.order || path.basename(file, '.md'));
   const tech = inlineList(meta.tech);
   const projects = inlineList(meta.projects);
+  const durationLabel = period.isPresent
+    ? `Calculated duration through ${formatMonthKey(period.end)}: ${durationMonths(period)} calendar months`
+    : `Calculated duration: ${durationMonths(period)} calendar months`;
   const content = cleanMarkdown(
     [
       meta.role,
       meta.company,
       meta.year,
+      durationLabel,
       meta.location,
       meta.summary,
       body,
@@ -172,6 +194,7 @@ for (const { file, source } of experienceSources) {
   chunks.push({
     id: 'experience:' + id + ':summary',
     sourceType: 'experience',
+    kind: meta.kind || 'employment',
     sourceId: id,
     section: 'summary',
     company: meta.company || '',
@@ -180,6 +203,33 @@ for (const { file, source } of experienceSources) {
     content
   });
 }
+
+const employmentEntries = experienceEntries.filter(({ meta }) => (meta.kind || 'employment') === 'employment');
+const programEntries = experienceEntries.filter(({ meta }) => meta.kind === 'program');
+const asOf = formatMonthKey(Math.max(...experienceEntries.map(({ period }) => period.end)));
+const individualDurations = experienceEntries
+  .map(({ meta, period }) => `${meta.role || 'Experience'} at ${meta.company || 'Unknown'} (${meta.kind || 'employment'}, ${meta.year}): ${durationMonths(period)} calendar months`)
+  .join('; ');
+
+chunks.push({
+  id: 'experience:duration-summary',
+  sourceType: 'experience',
+  kind: 'computed-duration',
+  sourceId: 'duration-summary',
+  section: 'computed-duration',
+  company: '',
+  skills: [],
+  roleTags: ['experience duration'],
+  content: cleanMarkdown(
+    [
+      `Deterministic calendar-month duration summary as of ${asOf}`,
+      `Employment history covers ${coveredMonths(employmentEntries.map(({ period }) => period))} calendar months after overlapping employment periods are counted once. This is role-agnostic employment-history arithmetic; role relevance must be assessed separately`,
+      `Structured program history covers ${coveredMonths(programEntries.map(({ period }) => period))} calendar months after overlaps are counted once. Program time is not professional employment tenure`,
+      `Combined dated employment and structured programs cover ${coveredMonths(experienceEntries.map(({ period }) => period))} calendar months after overlaps are counted once. This broader dated coverage must not be described as professional employment tenure`,
+      `Individual dated records: ${individualDurations}`
+    ].join('. ')
+  )
+});
 
 for (const { file, source } of await readDir('skills')) {
   const { meta, body } = parseFrontmatter(source);
@@ -218,7 +268,6 @@ for (const { file, source } of await readDir('education')) {
   });
 }
 
-
 for (const { file, source } of await readDir('certifications')) {
   const { meta } = parseFrontmatter(source);
   const id = String(meta.order || path.basename(file, '.md'));
@@ -243,6 +292,31 @@ for (const { file, source } of await readDir('certifications')) {
         .join('. ')
     )
   });
+}
+
+for (const { file, source } of await readDir('publications')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = String(meta.order || path.basename(file, '.md'));
+  chunks.push({
+    id: 'publication:' + id + ':summary', sourceType: 'publication', sourceId: id,
+    section: meta.type || 'publication', company: meta.venue || '', skills: [], roleTags: ['research'],
+    content: cleanMarkdown([meta.title, meta.year, meta.venue, meta.doi, body].filter(Boolean).join('. '))
+  });
+}
+
+for (const { file, source } of await readDir('blog')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = meta.slug || path.basename(file, '.md');
+  chunks.push({ id: 'blog:' + id + ':article', sourceType: 'blog', sourceId: id,
+    section: 'article', company: '', skills: [], roleTags: [meta.category].filter(Boolean),
+    content: cleanMarkdown([meta.title, meta.excerpt, body].filter(Boolean).join('. ')) });
+}
+for (const { file, source } of await readDir('principles')) {
+  const { meta, body } = parseFrontmatter(source);
+  const id = String(meta.order || path.basename(file, '.md'));
+  chunks.push({ id: 'principle:' + id + ':summary', sourceType: 'principle', sourceId: id,
+    section: 'engineering principle', company: '', skills: [], roleTags: ['engineering approach'],
+    content: cleanMarkdown([meta.title, body].filter(Boolean).join('. ')) });
 }
 
 for (const { file, source } of await readDir('profile')) {

@@ -1,5 +1,20 @@
 import type { Theme } from './theme';
 
+export function fitMermaidCanvas(root: HTMLElement) {
+  for (const svg of root.querySelectorAll<SVGSVGElement>('.mermaid svg')) {
+    // Mermaid's initial bounds can omit the final node on some browsers.
+    // Measure the actual painted geometry after the shell enters normal flow.
+    const bounds = svg.getBBox();
+    if (bounds.width <= 0 || bounds.height <= 0) continue;
+    const padding = 12;
+    const width = bounds.width + padding * 2;
+    const height = bounds.height + padding * 2;
+    svg.setAttribute('viewBox', `${bounds.x - padding} ${bounds.y - padding} ${width} ${height}`);
+    const node = svg.parentElement;
+    if (node) node.style.aspectRatio = `${width} / ${height}`;
+  }
+}
+
 function variables(theme: Theme) {
   return theme === 'dark'
     ? {
@@ -37,16 +52,39 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'strict',
+    // SVG labels measure in diagram coordinates rather than browser pixels.
+    // HTML foreignObject labels can mismeasure under display scaling.
+    htmlLabels: false,
     theme: 'base',
     fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
     themeVariables: variables(theme)
   });
 
+  await document.fonts.ready;
+
   for (const node of nodes) {
     if (!node.dataset.mermaidSource) node.dataset.mermaidSource = node.textContent ?? '';
     node.removeAttribute('data-processed');
-    node.textContent = node.dataset.mermaidSource;
+    // Stack horizontal flowcharts in narrow article columns so fitting the
+    // SVG does not turn a long row of nodes into a tiny mobile thumbnail.
+    node.textContent = root.clientWidth < 640
+      ? node.dataset.mermaidSource.replace(/^(\s*(?:flowchart|graph)\s+)(?:LR|RL)\b/m, '$1TB')
+      : node.dataset.mermaidSource;
   }
 
   await mermaid.run({ nodes });
+
+  for (const node of nodes) {
+    const svg = node.querySelector('svg');
+    if (!svg) continue;
+    const { width, height } = svg.viewBox.baseVal;
+    // Reserve the full diagram height in normal document flow, including
+    // when the layout changes from a horizontal row to a vertical flow.
+    if (width > 0 && height > 0) node.style.aspectRatio = `${width} / ${height}`;
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.maxWidth = 'none';
+    svg.style.minWidth = '0';
+    svg.style.display = 'block';
+  }
 }

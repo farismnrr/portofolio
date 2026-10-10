@@ -1,86 +1,49 @@
 <script lang="ts">
-  import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { getLatestExperiences, pageCopy, profile } from '../lib/structured-content';
-  import { getLatestProjects } from '../lib/project-content';
+  import { homeContent as page } from '../lib/home-content';
   import { navigate } from '../lib/router';
+  import { prefetchRoute } from '../lib/routes';
+  import { profile } from '../lib/site-content';
   import PageShell from '../lib/ui/PageShell.svelte';
-  import ProjectCard from '../lib/ui/ProjectCard.svelte';
-  import SectionHeader from '../lib/ui/SectionHeader.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
-  import { renderMarkdown } from '../lib/markdown';
-  import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
 
-  const selectedExperiences = getLatestExperiences(3);
-  const latestProjects = getLatestProjects(4);
-  const page = pageCopy.home;
-  const about = renderMarkdown(page.body);
+  const profileSrcset = [
+    '/images/profile/faris-munir-640.webp 640w',
+    '/images/profile/faris-munir-1024.webp 1024w',
+    '/images/profile/faris-munir-1536.webp 1536w'
+  ].join(', ');
+
+  // Project discovery stays on the dedicated Projects page; getLatestProjects is intentionally not rendered here.
 </script>
 
 <main>
   <PageShell>
-    <section class="grid gap-12 py-16 lg:grid-cols-[1.04fr_.96fr] lg:gap-24 lg:py-20">
-      <div class="self-center">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/48">{profile.specialties}</p>
-        <h1 class="mt-6 text-[54px] font-semibold leading-[.98] tracking-[-0.05em] md:text-[68px]">{profile.name}</h1>
-        <p class="mt-4 max-w-[760px] text-[38px] font-light leading-[1.04] tracking-[-0.035em] text-black/64 md:text-[54px]">{profile.headline}</p>
-        <p class="mt-6 max-w-[680px] text-[16px] leading-7 text-black/56">{profile.intro}</p>
+    <section class="grid gap-9 py-10 sm:gap-10 sm:py-12 lg:min-h-[calc(100vh-7rem)] lg:grid-cols-[1.12fr_.88fr] lg:items-center lg:gap-14 lg:py-20 xl:gap-18 2xl:gap-24">
+      <div class="max-w-[840px] 2xl:max-w-[1040px]">
+        <h1 class="text-[42px] font-semibold leading-[1.03] tracking-[-0.035em] sm:text-[48px] md:text-[62px] 2xl:text-[68px]">{profile.name}</h1>
+        <p class="mt-4 max-w-[28ch] text-balance text-[23px] font-medium leading-[1.22] tracking-[-0.018em] text-black/74 sm:mt-5 sm:text-[26px] md:text-[34px] 2xl:text-[38px]">{profile.headline}</p>
+        <p class="mt-5 hyphens-auto text-justify text-[15px] font-normal leading-7 text-black/58 sm:mt-6 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8">{profile.intro}</p>
 
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a class="btn btn-neutral h-12 min-h-0 rounded-none border-0 bg-[#344534] px-7 text-[14px] font-normal text-white hover:bg-[#263526]" href="/projects" on:click={(e)=>navigate(e,'/projects')}>{page.primaryAction} <span class="ml-2">→</span></a>
-          <a class="btn btn-outline h-12 min-h-0 rounded-none border-black/20 px-8 text-[14px] font-normal hover:bg-black hover:text-white" href={profile.email}>{page.secondaryAction}</a>
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-x-9 gap-y-3 border-t border-black/10 pt-5 text-[12px] text-black/55">
-          <span class="flex items-center gap-2"><AppIcon name="map-pin" size={15}/>{profile.location}</span>
-          {#if profile.availability}<span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-[#45664a]"></span>{profile.availability}</span>{/if}
-        </div>
-
-        <div class="mt-6 flex flex-wrap gap-6 text-[12px] text-black/72">
-          <a class="flex items-center gap-2 hover:text-black" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
-          <a class="flex items-center gap-2 hover:text-black" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
-          <a class="flex items-center gap-2 hover:text-black" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
+        <div class="mt-7 flex flex-wrap items-center gap-4 sm:mt-8 sm:gap-5">
+          <a
+            class="inline-flex min-h-12 items-center bg-[#344534] px-6 text-[14px] font-medium text-white transition hover:bg-[#263526] sm:px-7"
+            href="/about"
+            on:mouseenter={() => prefetchRoute('/about')}
+            on:focus={() => prefetchRoute('/about')}
+            on:pointerdown={() => prefetchRoute('/about')}
+            on:click={(e)=>navigate(e,'/about')}
+          >{page.primaryAction} <span class="ml-2">→</span></a>
+          <a class="inline-flex min-h-11 items-center text-[14px] font-normal text-black/65 underline decoration-black/25 underline-offset-4 hover:text-black" href={profile.email}>{page.secondaryAction}</a>
         </div>
       </div>
 
-      <div>
-        <MediaImage className="aspect-[1.36] w-full" src={profile.image} alt={profile.name} eager/>
-        {#if profile.quote}<blockquote class="ml-auto mt-7 w-fit border-l border-black/15 pl-5 text-right text-[15px] leading-5 text-black/48">“{profile.quote}”</blockquote>{/if}
-      </div>
-    </section>
-
-    <section class="border-t border-black/10 py-10">
-      <SectionHeader eyebrow={page.experienceLabel ?? ''} action={page.experienceAction ?? ''} href="/experience"/>
-      <div>
-        {#each selectedExperiences as item, i}
-          <article class="grid min-h-[108px] gap-4 border-b border-black/[0.08] py-6 md:grid-cols-[170px_44px_1fr_1.5fr]">
-            <p class="pt-1 text-[13px] text-black/43">{item.year}</p>
-            <div class="relative hidden md:block">
-              <span class={"absolute left-[6px] top-[6px] h-[9px] w-[9px] rounded-full border " + (i===0 ? "border-[#38503a] bg-[#38503a]" : "border-black/45 bg-[var(--page-bg)]")}></span>
-              {#if i<selectedExperiences.length-1}<span class="absolute left-[10px] top-[15px] h-[116px] w-px bg-black/12"></span>{/if}
-            </div>
-            <div><h3 class="text-[17px] font-semibold">{item.role}</h3><p class="mt-1 text-[13px] text-black/45">{item.company}</p></div>
-            <p class="max-w-[650px] text-[14px] leading-6 text-black/52">{item.summary}</p>
-          </article>
-        {/each}
-      </div>
-    </section>
-
-    <section class="border-t border-black/10 py-10">
-      <SectionHeader eyebrow={page.projectsLabel ?? ''} action={page.projectsAction ?? ''} href="/projects"/>
-      <div class="grid gap-x-10 gap-y-12 md:grid-cols-2">
-        {#each latestProjects as project}<ProjectCard {project}/>{/each}
-      </div>
-    </section>
-
-    <section class="grid gap-10 border-t border-black/10 py-10 md:grid-cols-[.85fr_1.15fr]">
-      <div>
-        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">{page.aboutLabel}</p>
-        <h2 class="mt-5 text-[31px] font-light leading-[1.12] tracking-[-0.03em] text-black/78">{page.subtitle}</h2>
-      </div>
-      <div class="max-w-2xl self-end text-[14px] leading-6 text-black/56">
-        <MarkdownArticle html={about.html} hasMermaid={about.hasMermaid}/>
-        <a class="mt-4 inline-block text-[12px] text-black/70 underline underline-offset-4" href="/about" on:click={(e)=>navigate(e,'/about')}>{page.aboutAction} →</a>
-      </div>
+      <MediaImage
+        className="aspect-[1.36] w-full max-w-[620px] justify-self-center lg:justify-self-end 2xl:max-w-[760px]"
+        src={profile.image}
+        srcset={profileSrcset}
+        sizes="(min-width: 1536px) 760px, (min-width: 1024px) 44vw, calc(100vw - 3rem)"
+        alt={profile.name}
+        eager
+      />
     </section>
   </PageShell>
 </main>

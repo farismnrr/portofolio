@@ -1,131 +1,91 @@
 <script lang="ts">
   import AppIcon from '../lib/ui/AppIcon.svelte';
-  import { education, experiences, pageCopy, profile, publications } from '../lib/structured-content';
+  import { education, experiences, pageCopy, profile, publications, skillGroups } from '../lib/structured-content';
   import { renderMarkdown } from '../lib/markdown';
-  import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
-  import PageIntro from '../lib/ui/PageIntro.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
+  import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
+  import RoleMatchPanel from '../lib/ui/RoleMatchPanel.svelte';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
-  const selectedExperience = experiences;
-
-  let generatingCv = false;
-  let cvError = '';
-  let cvGenerated = false;
-
-  async function handleSaveCv() {
-    if (generatingCv) return;
-
-    generatingCv = true;
-    cvError = '';
-    cvGenerated = false;
-
-    try {
-      const { generateGeneralCv } = await import('../lib/cv');
-      await generateGeneralCv();
-      cvGenerated = true;
-    } catch (error) {
-      cvError = error instanceof Error ? error.message : 'Unable to generate CV.';
-    } finally {
-      generatingCv = false;
-    }
-  }
+  const roleMatchEnabled = import.meta.env.VITE_ROLE_MATCH_ENABLED === 'true';
 </script>
 
 <main>
-  <PageShell className="py-14 lg:py-16">
-    <div class="grid gap-12 lg:grid-cols-[300px_1fr] lg:gap-16">
-      <aside class="lg:border-r lg:border-black/10 lg:pr-10">
-        <MediaImage className="aspect-[.8] w-full" src={profile.image} alt={profile.name}/>
-        <h2 class="mt-6 text-[34px] font-semibold tracking-[-0.04em]">{profile.name}</h2>
-        <p class="mt-1 text-[18px] text-black/55">{profile.role}</p>
-        <div class="mt-8 space-y-4 text-[14px] text-black/62">
-          <p class="flex items-center gap-3"><AppIcon name="map-pin" size={17}/>{profile.location}</p>
-          <p class="flex items-center gap-3"><AppIcon name="globe" size={17}/>{profile.languages}</p>
-        </div>
-        <div class="my-8 h-px bg-black/10"></div>
-        <div class="space-y-4 text-[14px]">
-          <a class="flex items-center gap-3 hover:opacity-60" href={profile.github}><AppIcon name="github" size={18}/>GitHub</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href={profile.linkedin}><AppIcon name="linkedin" size={18}/>LinkedIn</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href={profile.googleCloudSkills}><AppIcon name="globe" size={18}/>Google Cloud Skills</a>
-          <a class="flex items-center gap-3 hover:opacity-60" href={profile.email}><AppIcon name="mail" size={18}/>Email</a>
-          <button
-            class="flex items-center gap-3 text-left hover:opacity-60 disabled:cursor-wait disabled:opacity-45"
-            type="button"
-            disabled={generatingCv}
-            on:click={handleSaveCv}
-          >
-            <AppIcon name="file-text" size={18}/>
-            {generatingCv ? 'Generating CV with AI…' : 'Save CV'}
-          </button>
+  <PageShell className="py-10 sm:py-12 lg:py-14">
+    <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14 2xl:grid-cols-[280px_minmax(0,1fr)] 2xl:gap-16">
+      <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:block lg:border-r lg:border-black/14 lg:pr-8 xl:pr-10 2xl:pr-12">
+        <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
 
-          {#if generatingCv}
-            <div
-              class="cv-status rounded-2xl border p-4"
-              role="status"
-              aria-live="polite"
-            >
-              <div class="flex items-start gap-3">
-                <span
-                  class="mt-0.5 block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-black/15 border-t-black/70"
-                  aria-hidden="true"
-                ></span>
-                <div>
-                  <p class="text-[13px] font-semibold text-black/78">Generating CV with AI</p>
-                  <p class="mt-1 text-[12px] leading-5 text-black/50">
-                    Selecting verified portfolio evidence, writing the CV, and preparing the PDF.
-                  </p>
-                </div>
-              </div>
-            </div>
-          {:else if cvGenerated}
-            <div class="cv-status rounded-2xl border p-4" role="status">
-              <p class="text-[13px] font-semibold text-black/78">CV generated with AI</p>
-              <p class="mt-1 text-[12px] leading-5 text-black/50">
-                Your CV was generated from verified portfolio content and downloaded.
-              </p>
-            </div>
-          {/if}
+        <div class="min-w-0">
+          <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[25px] lg:mt-5">{profile.name}</h2>
+          <p class="mt-1 text-[14px] text-black/62 sm:text-[15px]">{profile.role}</p>
 
-          {#if cvError}<p class="cv-error text-[12px] leading-5">{cvError}</p>{/if}
+          <div class="mt-4 space-y-2.5 text-[12px] text-black/62 sm:mt-5 sm:text-[13px]">
+            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
+          </div>
         </div>
+
+        <div class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-3 lg:mt-5 lg:block lg:space-y-1 lg:border-t lg:pt-4">
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
+        </div>
+        {#if roleMatchEnabled}
+          <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
+            <RoleMatchPanel/>
+          </div>
+        {/if}
       </aside>
 
-      <section>
-        <PageIntro eyebrow={page.eyebrow} title={page.title} subtitle={page.subtitle} description={page.description}/>
-        <div class="mt-8 max-w-5xl"><MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/></div>
+      <section class="min-w-0">
+        <header class="border-b border-black/14 pb-8 sm:pb-9">
+          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.subtitle}</h1>
 
-        <div class="mt-10 border-t border-black/10 pt-7">
-          <div class="flex items-center justify-between">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">Work experience</p>
+          <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
+            <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
           </div>
-          {#each selectedExperience as item, i}<TimelineEntry {item} first={i===0} last={i===selectedExperience.length-1}/>{/each}
-        </div>
+        </header>
 
-        <section class="mt-12 border-t border-black/10 pt-10">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">Public academic work</p>
-          <h2 class="mt-3 text-[30px] font-semibold tracking-[-0.035em]">Publications & research</h2>
-          <p class="mt-2 max-w-3xl text-[15px] leading-7 text-black/55">
-            Publicly verifiable academic work spanning IoT firmware delivery, cloud-connected devices, and AI-backed backend systems.
-          </p>
-          <div class="mt-6">
-            {#each publications as item}
-              <article class="grid gap-5 border-b border-black/10 py-7 md:grid-cols-[170px_1fr]">
-                <div>
-                  <p class="text-[14px] text-black/45">{item.year}</p>
-                  <p class="mt-1 text-[11px] uppercase tracking-[0.14em] text-black/38">{item.type.replace('-', ' ')}</p>
-                </div>
-                <div>
-                  <h3 class="text-[21px] font-semibold tracking-[-0.02em]">
-                    <a class="hover:opacity-60" href={item.url}>{item.title}</a>
-                  </h3>
-                  <p class="mt-1 text-[14px] text-black/52">{item.venue}</p>
-                  <p class="mt-3 max-w-3xl text-[14px] leading-6 text-black/55">{item.summary}</p>
-                  {#if item.doi}
-                    <a class="mt-3 inline-block text-[13px] underline underline-offset-4 hover:opacity-60" href={item.doi}>DOI</a>
+        <section class="pt-8 sm:pt-9">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Professional background</h2>
+          <div class="mt-4 border-t border-black/14">
+            {#each experiences as item, i}
+              <TimelineEntry {item} first={i===0} last={i===experiences.length-1} wide/>
+            {/each}
+          </div>
+        </section>
+
+        <section class="mt-10 border-t border-black/14 pt-7 sm:mt-11 sm:pt-8">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Technical focus</h2>
+          <div class="mt-5 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-12">
+            {#each skillGroups as group}
+              <article class="border-t border-black/14 pt-4">
+                <h3 class="text-[16px] font-medium text-black/84">{group.title}</h3>
+                <p class="mt-2 text-[13px] leading-6 text-black/60">{group.items.join(', ')}</p>
+              </article>
+            {/each}
+          </div>
+        </section>
+
+        <section class="mt-10 border-t border-black/14 pt-7 sm:mt-11 sm:pt-8">
+          <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Education</h2>
+          <div class="mt-5 divide-y divide-black/14 border-y border-black/14">
+            {#each education as item}
+              <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
+                <p class="text-[13px] text-black/58">{item.year}</p>
+                <div class="min-w-0">
+                  <h3 class="text-[18px] font-semibold tracking-[-0.015em] text-black/86 sm:text-[19px]">{item.institution}</h3>
+                  <p class="mt-1 text-[15px] text-black/62">{item.program}</p>
+                  {#if item.description}
+                    <div class="mt-4 text-[14px] leading-6 text-black/60 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
+                      <MarkdownArticle html={renderMarkdown(item.description).html}/>
+                    </div>
                   {/if}
                 </div>
               </article>
@@ -133,23 +93,31 @@
           </div>
         </section>
 
-        <section class="mt-12 border-t border-black/10 pt-10">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/48">{pageCopy.education.eyebrow}</p>
-          <h2 class="mt-3 text-[30px] font-semibold tracking-[-0.035em]">{pageCopy.education.title}</h2>
-          <p class="mt-2 max-w-3xl text-[15px] leading-7 text-black/55">{pageCopy.education.description}</p>
-          <div class="mt-6">
-            {#each education as item}
-              <article class="grid gap-5 border-b border-black/10 py-7 md:grid-cols-[170px_1fr]">
-                <p class="text-[14px] text-black/45">{item.year}</p>
-                <div>
-                  <h3 class="text-[21px] font-semibold tracking-[-0.02em]">{item.institution}</h3>
-                  <p class="mt-1 text-[16px] text-black/62">{item.program}</p>
-                  {#if item.description}<div class="mt-3 max-w-3xl text-[14px] leading-6 text-black/55"><MarkdownArticle html={renderMarkdown(item.description).html}/></div>{/if}
-                </div>
-              </article>
-            {/each}
-          </div>
-        </section>
+        {#if publications.length}
+          <section class="mt-10 border-t border-black/14 pt-7 sm:mt-11 sm:pt-8">
+            <h2 class="text-[23px] font-semibold tracking-[-0.018em] sm:text-[25px]">Academic work</h2>
+            <div class="mt-5 divide-y divide-black/14 border-y border-black/14">
+              {#each publications as item}
+                <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
+                  <div>
+                    <p class="text-[13px] text-black/58">{item.year}</p>
+                    <p class="mt-1 text-[11px] uppercase tracking-[0.12em] text-black/58">{item.type.replace('-', ' ')}</p>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-[17px] font-semibold leading-7 tracking-[-0.012em] text-black/86 sm:text-[18px]">
+                      <a class="hover:text-[var(--accent)]" href={item.url}>{item.title}</a>
+                    </h3>
+                    <p class="mt-1 text-[13px] text-black/58">{item.venue}</p>
+                    <p class="mt-3 max-w-none hyphens-auto text-justify text-[14px] leading-6 text-black/60">{item.summary}</p>
+                    {#if item.doi}
+                      <a class="mt-3 inline-flex min-h-10 items-center text-[13px] text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black" href={item.doi}>DOI</a>
+                    {/if}
+                  </div>
+                </article>
+              {/each}
+            </div>
+          </section>
+        {/if}
       </section>
     </div>
   </PageShell>

@@ -69,6 +69,24 @@ PY
 curl --fail --silent --show-error --retry 5 --retry-delay 2 \
   https://farismnrr.com/ > /dev/null
 
+about_html="$(mktemp)"
+trap 'rm -f "$about_html"' EXIT
+curl --fail --silent --show-error --retry 5 --retry-delay 2 \
+  http://127.0.0.1:3001/about > "$about_html"
+if grep -Fq 'Match a role' "$about_html"; then
+  echo "production About page exposes the dev-only role-match UI" >&2
+  exit 1
+fi
+role_match_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+  -X POST http://127.0.0.1:3001/api/role-match/report \
+  -H 'Content-Type: application/json' \
+  --data '{"jobDescription":"This endpoint must not exist in production."}')"
+if [[ "$role_match_status" != "404" ]]; then
+  echo "production role-match endpoint must return 404, got ${role_match_status}" >&2
+  exit 1
+fi
+printf 'role_match_production_status=%s\n' "$role_match_status"
+
 retrieve="$(curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
   -X POST http://127.0.0.1:3001/api/cv/retrieve \
   -H 'Content-Type: application/json' \

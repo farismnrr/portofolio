@@ -2,7 +2,12 @@ import { writable } from 'svelte/store';
 
 export type Theme = 'light' | 'dark';
 
-export const theme = writable<Theme>('light');
+function initialTheme(): Theme {
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+}
+
+export const theme = writable<Theme>(initialTheme());
 
 function applyTheme(next: Theme) {
   document.documentElement.dataset.theme = next;

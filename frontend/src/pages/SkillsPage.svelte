@@ -1,49 +1,35 @@
 <script lang="ts">
-  import { education, pageCopy, principles, skillGroups } from '../lib/structured-content';
-  import PageIntro from '../lib/ui/PageIntro.svelte';
-  import TechChips from '../lib/ui/TechChips.svelte';
+  import { pageCopy, principles, skillGroups } from '../lib/structured-content';
   import PageShell from '../lib/ui/PageShell.svelte';
 </script>
 
 <main>
-  <PageShell className="py-14 lg:py-16">
-    <section class="grid gap-12 border-b border-black/10 pb-12 lg:grid-cols-[.72fr_1.28fr]">
-      <PageIntro eyebrow={pageCopy.skills.eyebrow} title={pageCopy.skills.title} subtitle={pageCopy.skills.subtitle} description={pageCopy.skills.description} compact/>
-      <div>
-        {#each education as item, i}
-          <article class="grid gap-5 border-b border-black/10 py-8 md:grid-cols-[150px_1fr]">
-            <p class="text-[14px] text-black/45">{item.year}</p>
-            <div class="relative">
-              {#if i===0}<span class="absolute -left-8 top-2 h-2.5 w-2.5 rounded-full bg-[#38503a]"></span>{/if}
-              <h3 class="text-[22px] font-semibold">{item.institution}</h3>
-              <p class="mt-1 text-[16px] text-black/60">{item.program}</p>
-              <p class="mt-4 max-w-3xl text-[14px] leading-6 text-black/55">{item.description}</p>
-            </div>
+  <PageShell className="py-10 sm:py-12 lg:py-16">
+    <header class="border-b border-black/10 pb-8 sm:pb-9">
+      <h1 class="text-[36px] font-semibold tracking-[-0.03em] sm:text-[40px] md:text-[48px] 2xl:text-[52px]">{pageCopy.skills.title}</h1>
+      <p class="mt-4 max-w-none hyphens-auto text-justify text-[15px] leading-7 text-black/58 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8">{pageCopy.skills.subtitle}</p>
+    </header>
+
+    <section class="py-8 sm:py-10">
+      <h2 class="text-[24px] font-semibold tracking-[-0.025em] sm:text-[28px]">Technical focus</h2>
+      <div class="mt-5 grid gap-x-10 gap-y-7 sm:mt-6 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-12 xl:gap-y-8 2xl:grid-cols-4 2xl:gap-x-14">
+        {#each skillGroups as group}
+          <article class="border-t border-black/10 pt-4">
+            <h3 class="text-[16px] font-semibold sm:text-[17px]">{group.title}</h3>
+            <p class="mt-2 hyphens-auto text-justify text-[14px] leading-6 text-black/54">{group.description}</p>
+            <p class="mt-3 text-[13px] leading-6 text-black/65 sm:mt-4">{group.items.join(', ')}</p>
           </article>
         {/each}
       </div>
     </section>
 
-    <section class="py-12">
-      <PageIntro eyebrow={pageCopy["technical-skills"].eyebrow} title={pageCopy["technical-skills"].title} subtitle={pageCopy["technical-skills"].subtitle} description={pageCopy["technical-skills"].description} compact/>
-      <div class="mt-8 grid gap-x-12 md:grid-cols-2">
-        {#each skillGroups as group}
-          <div class="border-b border-black/10 py-7">
-            <h3 class="text-[13px] font-semibold uppercase tracking-[0.18em]">{group.title}</h3>
-            <p class="mt-2 text-[14px] text-black/50">{group.description}</p>
-            <div class="mt-5"><TechChips items={group.items}/></div>
-          </div>
-        {/each}
-      </div>
-    </section>
-
-    <section class="border-t border-black/10 py-12">
-      <PageIntro eyebrow={pageCopy.principles.eyebrow} title={pageCopy.principles.title} subtitle={pageCopy.principles.subtitle} description={pageCopy.principles.description} compact/>
-      <div class="mt-8 grid gap-x-12 md:grid-cols-2">
+    <section class="border-t border-black/10 py-8 sm:py-10">
+      <h2 class="text-[24px] font-semibold tracking-[-0.025em] sm:text-[28px]">Engineering principles</h2>
+      <div class="mt-5 grid gap-x-10 sm:mt-6 sm:grid-cols-2 xl:gap-x-12 2xl:grid-cols-3 2xl:gap-x-14">
         {#each principles as principle}
-          <article class="grid grid-cols-[48px_1fr] gap-5 border-b border-black/10 py-7">
-            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#eceee8] text-[12px] text-black/60">{principle.index}</span>
-            <div><h3 class="text-[17px] font-semibold">{principle.title}</h3><p class="mt-2 text-[14px] leading-6 text-black/55">{principle.description}</p></div>
+          <article class="border-t border-black/10 py-5">
+            <h3 class="text-[16px] font-semibold sm:text-[17px]">{principle.title}</h3>
+            <p class="mt-2 hyphens-auto text-justify text-[14px] leading-6 text-black/55">{principle.description}</p>
           </article>
         {/each}
       </div>

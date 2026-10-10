@@ -3,6 +3,11 @@ frontend/node_modules/
 frontend/dist/
 frontend/public/cv-corpus.json
 frontend/public/vendor/
+frontend/public/images/profile/*.webp
+frontend/public/images/blog/*.webp
+frontend/public/images/certifications/**/*.webp
+frontend/public/images/projects/**/*.webp
+frontend/public/project-source-images.txt
 release/amd64/
 target/
 server/target/
@@ -10,3 +15,5 @@ server/Cargo.lock
 .DS_Store
 .env
 *.pdf
+
+!frontend/public/downloads/*.pdf

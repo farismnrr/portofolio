@@ -153,6 +153,20 @@ jobs:
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
 
+          asset_headers="$(mktemp)"
+          trap 'rm -f "$asset_headers"' EXIT
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
+            -D "$asset_headers" \
+            -o /dev/null \
+            http://127.0.0.1:3001/images/profile/faris-munir.png
+          etag="$(awk 'BEGIN { IGNORECASE=1 } /^etag:/ { gsub(/\r/, "", $2); print $2; exit }' "$asset_headers")"
+          test -n "$etag"
+          asset_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            -H "If-None-Match: $etag" \
+            http://127.0.0.1:3001/images/profile/faris-munir.png)"
+          test "$asset_status" = "304"
+          printf 'asset_conditional_cache_status=%s\n' "$asset_status"
+
           retrieve="$(curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             -X POST http://127.0.0.1:3001/api/cv/retrieve \
             -H 'Content-Type: application/json' \

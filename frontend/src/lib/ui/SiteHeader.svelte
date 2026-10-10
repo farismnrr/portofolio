@@ -1,7 +1,7 @@
 <script lang="ts">
   import AppIcon from './AppIcon.svelte';
   import BrandLogo from './BrandLogo.svelte';
-  import { navigation, profile } from '../structured-content';
+  import { navigation, profile } from '../site-content';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';
   import { theme, toggleTheme } from '../theme';

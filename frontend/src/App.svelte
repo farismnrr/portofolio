@@ -3,7 +3,7 @@
   import { path, scrollToCurrentHash } from './lib/router';
   import { loadRoute } from './lib/routes';
   import { getSeo } from './lib/seo';
-  import { profile, resolveActiveNavigation } from './lib/structured-content';
+  import { profile, resolveActiveNavigation } from './lib/site-content';
   import SiteHeader from './lib/ui/SiteHeader.svelte';
   import SiteFooter from './lib/ui/SiteFooter.svelte';
   import RouteLoading from './lib/ui/RouteLoading.svelte';

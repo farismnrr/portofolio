@@ -1,7 +1,7 @@
 <script lang="ts">
   import AppIcon from './AppIcon.svelte';
   import BrandLogo from './BrandLogo.svelte';
-  import { profile } from '../structured-content';
+  import { profile } from '../site-content';
   import PageShell from './PageShell.svelte';
 
   const year = new Date().getFullYear();

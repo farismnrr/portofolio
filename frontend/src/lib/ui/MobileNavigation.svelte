@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { NavigationItem } from '../structured-content';
-  import { navigation } from '../structured-content';
+  import type { NavigationItem } from '../site-content';
+  import { navigation } from '../site-content';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';
   import AppIcon from './AppIcon.svelte';

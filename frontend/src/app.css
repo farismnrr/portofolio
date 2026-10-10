@@ -45,6 +45,11 @@ body {
 img { display: block; max-width: 100%; }
 a, button { -webkit-tap-highlight-color: transparent; }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 25%, transparent);
   color: var(--page-fg);
@@ -75,17 +80,17 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
   --tw-prose-lead: color-mix(in srgb, var(--page-fg) 60%, transparent);
   --tw-prose-links: var(--accent);
   --tw-prose-bold: var(--page-fg);
-  --tw-prose-counters: color-mix(in srgb, var(--page-fg) 50%, transparent);
-  --tw-prose-bullets: color-mix(in srgb, var(--page-fg) 40%, transparent);
-  --tw-prose-hr: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  --tw-prose-counters: color-mix(in srgb, var(--page-fg) 55%, transparent);
+  --tw-prose-bullets: color-mix(in srgb, var(--page-fg) 50%, transparent);
+  --tw-prose-hr: color-mix(in srgb, var(--page-fg) 16%, transparent);
   --tw-prose-quotes: var(--page-fg);
   --tw-prose-quote-borders: var(--accent);
-  --tw-prose-captions: color-mix(in srgb, var(--page-fg) 50%, transparent);
+  --tw-prose-captions: color-mix(in srgb, var(--page-fg) 58%, transparent);
   --tw-prose-code: var(--page-fg);
   --tw-prose-pre-code: var(--page-fg);
-  --tw-prose-pre-bg: color-mix(in srgb, var(--page-fg) 3.5%, transparent);
-  --tw-prose-th-borders: color-mix(in srgb, var(--page-fg) 20%, transparent);
-  --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 12%, transparent);
+  --tw-prose-pre-bg: color-mix(in srgb, var(--page-fg) 4.5%, transparent);
+  --tw-prose-th-borders: color-mix(in srgb, var(--page-fg) 24%, transparent);
+  --tw-prose-td-borders: color-mix(in srgb, var(--page-fg) 16%, transparent);
 }
 
 .project-markdown .prose p,
@@ -109,22 +114,22 @@ html[data-theme="dark"] .brand-logo__dark { display: block; }
 
 .mermaid-shell {
   max-width: 100%;
-  border-color: color-mix(in srgb, var(--page-fg) 12%, transparent);
-  background: color-mix(in srgb, var(--surface) 72%, var(--page-bg));
+  border-color: color-mix(in srgb, var(--page-fg) 16%, transparent);
+  background: color-mix(in srgb, var(--surface) 78%, var(--page-bg));
   transition: background-color 180ms ease, border-color 180ms ease;
 }
 
 .mermaid-skeleton-bar {
-  background: color-mix(in srgb, var(--page-fg) 10%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 13%, transparent);
 }
 
 .mermaid-skeleton-block {
-  background: color-mix(in srgb, var(--page-fg) 6%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 8%, transparent);
 }
 
 .cv-status {
-  border-color: color-mix(in srgb, var(--page-fg) 10%, transparent);
-  background: color-mix(in srgb, var(--page-fg) 2.5%, transparent);
+  border-color: color-mix(in srgb, var(--page-fg) 14%, transparent);
+  background: color-mix(in srgb, var(--page-fg) 3.5%, transparent);
 }
 
 .cv-error {

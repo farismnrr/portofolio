@@ -100,7 +100,7 @@ The difficult cases are not the clean request paths. They are the boundaries whe
 
 The system handles those cases by keeping durable media, upload progress, processing state, and generated output as separate concerns. Chunked and resume-friendly uploads reduce the amount of work a weak connection can invalidate. Asynchronous processing state lets the client reconnect to a meeting without pretending the work belongs to one long-lived HTTP request.
 
-When that flow misbehaves in production, I use OpenTelemetry and structured logs to follow work across the processing path rather than diagnosing each service in isolation. The important operational question is not only which component returned an error, but which stage of the meeting lifecycle stopped progressing and what durable state was already preserved.
+Within the product team, I investigate application-side failures with OpenTelemetry and structured logs so we can follow work across the processing path rather than diagnose each service in isolation. The operational question is not only which component returned an error, but which stage of the meeting lifecycle stopped progressing and what durable state was already preserved.
 
 ## Turning transcripts into meeting knowledge
 
@@ -120,19 +120,19 @@ Keeping those layers conceptually separate makes it easier for the product to ex
 
 ## Ownership inside a cross-functional team
 
-Sensio Notes is a team product, even where I have substantial ownership of the application flow.
+Sensio Notes is a team product, and my role carries substantial ownership of the application flow within that team.
 
-My responsibility is centered on the application backend, recording and upload lifecycle, asynchronous state, integration boundaries, and the web/mobile behavior that connects those pieces into one product. The ingestion pipeline and Graph/RAG capabilities are external service boundaries maintained by other team members, so my work is to integrate them reliably rather than present their internal implementation as my own.
+I own application-side work around the backend, recording and upload lifecycle, asynchronous state, integration boundaries, and the web/mobile behavior that connects those pieces into one product. The ingestion pipeline and Graph/RAG capabilities are separate service boundaries maintained by other team members, so my contribution is to integrate them reliably rather than present their internal implementation as my own.
 
-The same applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints. UI/UX designers define the product's visual and interaction direction; my responsibility is to translate that direction into production React and Capacitor behavior and connect it to the actual application state underneath.
+The same division applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints. UI/UX designers own the product's visual and interaction direction; within that collaboration, I translate those designs into production React and Capacitor behavior and connect them to the actual application state underneath.
 
-That translation includes states that a static design cannot solve by itself: recording and upload progress, asynchronous processing, loading and failure feedback, recovery after interrupted work, and differences between browser and native-mobile behavior. I do not present that as independent UI/UX ownership. It is engineering work done in close collaboration with the designers who own the product design.
+That engineering work includes states a static design cannot resolve by itself: recording and upload progress, asynchronous processing, loading and failure feedback, recovery after interrupted work, and differences between browser and native-mobile behavior. I do not present this as independent UI/UX ownership. It is implementation work done as part of a cross-functional product team.
 
-That division of responsibility is important to how I describe the project: substantial ownership does not mean pretending a production system is a one-person stack.
+That division of responsibility is important to how I describe the project: substantial ownership of an area does not mean presenting a production system as a one-person stack.
 
 ## What I worked on
 
-Most of my work sits at the points where a long-running meeting flow can fail.
+Within that team, most of my work sits at the points where a long-running meeting flow can fail.
 
 On the backend, I built and maintained the application-side meeting lifecycle in NestJS: data models, upload coordination, background processing state, callbacks, and the APIs used by the web and mobile clients.
 
@@ -144,7 +144,7 @@ On the client side, I connected the React and Capacitor recording paths to the s
 
 That meant dealing with wake locks, native recording behavior, upload progress, and the awkward cases where the app is backgrounded or the network disappears halfway through a meeting.
 
-The production work is part of the same job. I use Docker for packaging, OpenTelemetry and structured logs to trace failures across the processing path, and Jira to keep implementation work tied to the product issues we are actually trying to solve.
+Production work is shared across the team as well. My part includes Docker packaging, OpenTelemetry and structured-log based diagnosis across the processing path, and Jira-tracked implementation work tied to the product issues we are solving.
 
 ## The boundary that mattered most
 

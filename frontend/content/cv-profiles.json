@@ -2,7 +2,7 @@
   "general": {
     "id": "general",
     "label": "General",
-    "headline": "Software Engineer — Backend & Systems Architecture",
+    "headline": "Software Engineer | Backend & Systems",
     "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
     "retrievalQuery": "software engineer backend systems distributed architecture fullstack web NestJS Rust PostgreSQL Redis APIs system design concurrency WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability Jira production on-premise LangGraph RAG",
@@ -56,23 +56,23 @@
     "technicalScopes": [
       {
         "key": "backend-systems",
-        "label": "Backend Systems & Architecture",
-        "guidance": "High-performance backend services in Rust (Axum) and NestJS, REST and WebSocket APIs, concurrency, PostgreSQL schema design, TimescaleDB, and Redis caching."
+        "label": "Backend Systems",
+        "guidance": "Rust (Axum), NestJS, REST APIs, WebSockets, concurrency, PostgreSQL, TimescaleDB, Redis"
       },
       {
         "key": "fullstack-web",
-        "label": "Fullstack Web Development",
-        "guidance": "End-to-end web engineering in React and TypeScript, responsive PWAs, mobile Capacitor bridges, real-time client state synchronization, and seamless API integration."
+        "label": "Web Engineering",
+        "guidance": "React, TypeScript, responsive PWAs, Capacitor, real-time client state, API integration"
       },
       {
         "key": "cloud-devops",
-        "label": "Cloud, DevOps & Observability",
-        "guidance": "Linux system administration, Docker multi-arch containers (AMD64/ARM64), CI/CD automation, Jira agile project tracking, and OpenTelemetry/Prometheus observability."
+        "label": "Infrastructure & Observability",
+        "guidance": "Linux, Docker, AMD64/ARM64, CI/CD, Jira, OpenTelemetry, Prometheus, Grafana"
       },
       {
         "key": "applied-ai-rag",
-        "label": "Applied AI, RAG & Intelligent Systems",
-        "guidance": "Evidence-grounded RAG pipelines, LangGraph structured extraction, vector databases (pgvector), and contextual automation integrated into production software."
+        "label": "Applied AI",
+        "guidance": "RAG, LangGraph, pgvector, structured extraction, contextual automation"
       }
     ],
     "budgets": {
@@ -81,17 +81,18 @@
       "certifications": 3
     },
     "writingPolicy": {
-      "identity": "Present Faris clearly as a Software Engineer specialized in Backend Systems & Fullstack Web Development, with solid production engineering experience across robust backend architectures, distributed services, databases, and modern web applications. Machine learning is not his identity; applied AI/RAG is treated strictly as an integrated software capability.",
-      "focus": "Emphasize high-performance backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), production observability (OpenTelemetry, Prometheus, Grafana), agile delivery (Jira), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
-      "summaryRange": "70-88 words",
-      "projectRange": "55-75 words",
+      "identity": "Present Faris as a Software Engineer focused on backend systems, fullstack web development, production infrastructure, and applied AI as a supporting software capability.",
+      "focus": "Prioritize concrete engineering ownership, system behavior, architecture choices, production operations, and technologies supported by evidence. Prefer plain language over promotional adjectives.",
+      "summaryRange": "40-58 words",
+      "projectRange": "32-50 words",
       "avoid": [
         "Machine Learning Engineer or Data Scientist positioning",
         "selecting or including DBS Foundation or any Machine Learning Engineer roles in the CV; focus exclusively on backend, fullstack, and cloud software engineering roles",
-        "generic filler such as passionate, hardworking, cutting-edge, innovative",
-        "appearing only as a superficial or hobbyist developer without production ownership",
-        "AI-only identity that obscures strong core backend and software craft",
-        "keyword stuffing without architectural context"
+        "generic filler such as passionate, hardworking, cutting-edge, innovative, robust, scalable, seamless, high-performance, results-driven",
+        "claims about impact, scale, quality, or outcomes that are not directly supported by evidence",
+        "AI-only identity that obscures core backend and software engineering work",
+        "keyword stuffing or repeating the same technology across multiple sections without context",
+        "formulaic project prose that repeats the same sentence structure"
       ]
     },
     "layoutPolicy": {

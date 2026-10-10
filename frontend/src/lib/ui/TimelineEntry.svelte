@@ -51,9 +51,11 @@
         {#if linkedCertificationGroups.length}
           <span class="text-black/58">Related certifications</span>
           {#each linkedCertificationGroups as group}
+            {@const certificationPath = '/certifications#' + certificationGroupId(group.group)}
             <a
               class="inline-flex min-h-11 items-center font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 transition hover:text-black"
-              href={'/certifications#' + certificationGroupId(group.group)}
+              href={certificationPath}
+              on:click={(event)=>navigate(event, certificationPath)}
             >{group.group} ({group.items.length}) →</a>
           {/each}
         {/if}

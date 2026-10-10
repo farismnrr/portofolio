@@ -5,45 +5,44 @@
     "headline": "Software Engineer | Backend & Systems",
     "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
-    "retrievalQuery": "software engineer backend systems distributed architecture fullstack web NestJS Rust PostgreSQL Redis APIs system design concurrency WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability Jira production on-premise LangGraph RAG",
+    "retrievalQuery": "software engineer backend systems production services real-time systems NestJS Rust PostgreSQL Redis APIs WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability on-premise IoT LangGraph RAG Alibaba Cloud Certified Professional Architecting on AWS Google Cloud Engineer",
     "preferredSignals": [
-      "software engineering",
+      "production software engineering",
       "backend",
-      "fullstack",
-      "full-stack",
+      "real-time systems",
+      "system design",
+      "architecture",
       "postgresql",
       "rust",
       "nestjs",
       "api",
-      "system design",
-      "architecture",
       "redis",
       "websocket",
-      "react",
-      "typescript",
+      "mqtt",
       "docker",
       "observability",
       "opentelemetry",
-      "jira",
       "linux",
+      "on-premise",
       "production"
     ],
     "secondarySignals": [
+      "react",
+      "typescript",
       "ci/cd",
       "prometheus",
       "grafana",
       "timescaledb",
-      "mqtt",
       "rag",
       "langgraph"
     ],
     "sourceTypeWeights": {
       "project": 1.0,
-      "experience": 0.95,
+      "experience": 1.0,
       "skill": 0.8,
       "profile": 0.6,
-      "certification": 0.5,
-      "education": 0.45
+      "certification": 0.7,
+      "education": 0.4
     },
     "projectChunkCap": 2,
     "enrichmentCaps": {
@@ -51,56 +50,59 @@
       "experience": 4,
       "skill": 4,
       "education": 1,
-      "certification": 3
+      "certification": 4
     },
     "technicalScopes": [
       {
         "key": "backend-systems",
         "label": "Backend Systems",
-        "guidance": "Rust (Axum), NestJS, REST APIs, WebSockets, concurrency, PostgreSQL, TimescaleDB, Redis"
+        "guidance": "Rust (Axum), NestJS, REST APIs, WebSockets, PostgreSQL, TimescaleDB, Redis, MQTT"
       },
       {
-        "key": "fullstack-web",
+        "key": "web-engineering",
         "label": "Web Engineering",
-        "guidance": "React, TypeScript, responsive PWAs, Capacitor, real-time client state, API integration"
+        "guidance": "TypeScript, React, responsive PWAs, Capacitor, real-time client state, API integration"
       },
       {
-        "key": "cloud-devops",
+        "key": "infrastructure-observability",
         "label": "Infrastructure & Observability",
-        "guidance": "Linux, Docker, AMD64/ARM64, CI/CD, Jira, OpenTelemetry, Prometheus, Grafana"
+        "guidance": "Linux, Docker, CI/CD, OpenTelemetry, Prometheus, Grafana, on-premise deployment"
       },
       {
-        "key": "applied-ai-rag",
+        "key": "applied-ai",
         "label": "Applied AI",
-        "guidance": "RAG, LangGraph, pgvector, structured extraction, contextual automation"
+        "guidance": "LangGraph, RAG, pgvector, structured extraction, transcript processing"
       }
     ],
     "budgets": {
       "projects": 4,
-      "experiences": 3,
-      "certifications": 3
+      "experiences": 1,
+      "certifications": 2
     },
     "writingPolicy": {
-      "identity": "Present Faris as a Software Engineer focused on backend systems, fullstack web development, production infrastructure, and applied AI as a supporting software capability.",
-      "focus": "Prioritize concrete engineering ownership, system behavior, architecture choices, production operations, and technologies supported by evidence. Prefer plain language over promotional adjectives.",
-      "summaryRange": "40-58 words",
-      "projectRange": "32-50 words",
+      "identity": "Present Faris as a production Software Engineer whose strongest evidence is professional backend and systems work at PT Perkasa Pilar Utama. Academy, cohort, and course programs are supporting background, not employment.",
+      "focus": "Lead with production ownership, backend systems, real-time APIs, media-processing flows, IoT control services, observability, and deployment work. Use projects to add engineering depth instead of repeating employer descriptions.",
+      "summaryRange": "38-52 words",
+      "projectRange": "28-44 words",
       "avoid": [
         "Machine Learning Engineer or Data Scientist positioning",
-        "selecting or including DBS Foundation or any Machine Learning Engineer roles in the CV; focus exclusively on backend, fullstack, and cloud software engineering roles",
+        "selecting DBS Foundation for this software engineering CV",
+        "selecting Ruang Guru Academy, Bangkit Academy, or Codepolitan as Work Experience; these are learning or cohort programs, not employment",
+        "presenting academy coursework, self-paced learning, English practice, or soft-skill training as professional work experience",
         "generic filler such as passionate, hardworking, cutting-edge, innovative, robust, scalable, seamless, high-performance, results-driven",
-        "claims about impact, scale, quality, or outcomes that are not directly supported by evidence",
-        "AI-only identity that obscures core backend and software engineering work",
+        "claims about impact, scale, quality, ownership, or outcomes that are not directly supported by evidence",
+        "first-person CV prose such as I work, I build, I studied, or I completed",
+        "entry-level IT support certificates when stronger cloud architecture or cloud platform credentials are available",
         "keyword stuffing or repeating the same technology across multiple sections without context",
         "formulaic project prose that repeats the same sentence structure"
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.65,
+      "minSecondPageFill": 0.58,
       "minBodySizePt": 10,
       "minimumItems": {
-        "projects": 3,
-        "experiences": 2,
+        "projects": 4,
+        "experiences": 1,
         "certifications": 2
       }
     }

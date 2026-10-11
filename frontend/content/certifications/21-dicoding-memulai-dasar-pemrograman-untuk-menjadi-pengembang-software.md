@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Memulai Dasar Pemrograman untuk Menjadi Pengembang Software"
 year: "Aug 2023"
 credentialId: "07Z6V6NVYXQR"
-url: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software.pdf"
-image: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software.jpg"
+url: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software-1600.webp"
+image: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software-800.webp"
 ---

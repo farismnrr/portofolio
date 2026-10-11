@@ -94,7 +94,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
       if (!source) return null;
 
       return {
-        title: source.title,
+        title: source.group === 'BNSP' ? `BNSP: ${source.title}` : source.title,
         meta: [source.issuer, source.year].filter(Boolean).join(' | '),
         url: absolutePortfolioUrl(source.url)
       };

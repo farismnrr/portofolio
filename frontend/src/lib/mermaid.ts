@@ -1,5 +1,19 @@
 import type { Theme } from './theme';
 
+function sizeMermaidCanvas(svg: SVGSVGElement, width: number, height: number) {
+  if (width <= 0 || height <= 0) return;
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(height));
+  // Fit narrow screens without enlarging small diagrams to article width.
+  svg.style.width = `${width}px`;
+  svg.style.maxWidth = '100%';
+  svg.style.height = 'auto';
+  svg.style.minWidth = '0';
+  svg.style.display = 'block';
+  svg.style.marginInline = 'auto';
+  svg.parentElement?.style.removeProperty('aspect-ratio');
+}
+
 export function fitMermaidCanvas(root: HTMLElement) {
   for (const svg of root.querySelectorAll<SVGSVGElement>('.mermaid svg')) {
     // Mermaid's initial bounds can omit the final node on some browsers.
@@ -10,8 +24,7 @@ export function fitMermaidCanvas(root: HTMLElement) {
     const width = bounds.width + padding * 2;
     const height = bounds.height + padding * 2;
     svg.setAttribute('viewBox', `${bounds.x - padding} ${bounds.y - padding} ${width} ${height}`);
-    const node = svg.parentElement;
-    if (node) node.style.aspectRatio = `${width} / ${height}`;
+    sizeMermaidCanvas(svg, width, height);
   }
 }
 
@@ -56,8 +69,10 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
     // HTML foreignObject labels can mismeasure under display scaling.
     htmlLabels: false,
     theme: 'base',
+    look: 'classic',
+    fontSize: 16,
     fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
-    themeVariables: variables(theme)
+    themeVariables: { ...variables(theme), fontSize: '16px', dropShadow: 'none' }
   });
 
   await document.fonts.ready;
@@ -78,13 +93,6 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
     const svg = node.querySelector('svg');
     if (!svg) continue;
     const { width, height } = svg.viewBox.baseVal;
-    // Reserve the full diagram height in normal document flow, including
-    // when the layout changes from a horizontal row to a vertical flow.
-    if (width > 0 && height > 0) node.style.aspectRatio = `${width} / ${height}`;
-    svg.style.width = '100%';
-    svg.style.height = '100%';
-    svg.style.maxWidth = 'none';
-    svg.style.minWidth = '0';
-    svg.style.display = 'block';
+    sizeMermaidCanvas(svg, width, height);
   }
 }

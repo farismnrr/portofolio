@@ -1,7 +1,41 @@
 <script lang="ts">
-  import { certificationGroupId, certificationGroups, pageCopy } from '../lib/structured-content';
+  import { onMount } from 'svelte';
+  import { certificationId, certifications, certificationGroupId, certificationGroups, pageCopy, type Certification } from '../lib/structured-content';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
+  import CredentialViewer from '../lib/ui/CredentialViewer.svelte';
+
+  let viewer: CredentialViewer;
+
+  function syncCredentialHash() {
+    const selected = certifications.find((cert) => `#${certificationId(cert)}` === window.location.hash);
+    if (selected) viewer.open(selected);
+    else viewer.close();
+  }
+
+  function openCredential(event: MouseEvent, cert: Certification) {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const hash = `#${certificationId(cert)}`;
+    if (window.location.hash !== hash) history.pushState({}, '', hash);
+    syncCredentialHash();
+  }
+
+  function closeCredential() {
+    if (certifications.some((cert) => `#${certificationId(cert)}` === window.location.hash)) {
+      history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}`);
+    }
+  }
+
+  onMount(() => {
+    syncCredentialHash();
+    window.addEventListener('hashchange', syncCredentialHash);
+    window.addEventListener('popstate', syncCredentialHash);
+    return () => {
+      window.removeEventListener('hashchange', syncCredentialHash);
+      window.removeEventListener('popstate', syncCredentialHash);
+    };
+  });
 
   function responsiveCertificationSrcset(src: string) {
     const match = src.match(/^(.*)-800\.webp$/);
@@ -26,7 +60,7 @@
 
         <div class="mt-6 grid gap-x-6 gap-y-9 sm:mt-7 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-10 2xl:gap-y-12">
           {#each group.items as cert}
-            <article>
+            <article id={certificationId(cert)} class="scroll-mt-28">
               <div class="aspect-[1.78] overflow-hidden border border-black/16 bg-[var(--surface)]">
                 <MediaImage
                   className="h-full w-full"
@@ -44,7 +78,7 @@
                   {cert.year}{#if cert.year && cert.credentialId} · {/if}{#if cert.credentialId}Credential ID: {cert.credentialId}{/if}
                 </p>
               {/if}
-              {#if cert.url}<a class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3" href={cert.url}>View credential →</a>{/if}
+              {#if cert.image}<a href={`#${certificationId(cert)}`} on:click={(event) => openCredential(event, cert)} class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3">View credential →</a>{/if}
             </article>
           {/each}
         </div>
@@ -52,3 +86,5 @@
     {/each}
   </PageShell>
 </main>
+
+<CredentialViewer bind:this={viewer} on:close={closeCredential}/>

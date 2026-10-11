@@ -1,6 +1,9 @@
 <script lang="ts">
   import {
     IconArrowLeft,
+    IconChevronLeft,
+    IconChevronRight,
+    IconX,
     IconArticle,
     IconBrandGithub,
     IconBrandLinkedin,
@@ -27,6 +30,9 @@
     | 'globe'
     | 'file-text'
     | 'arrow-left'
+    | 'chevron-left'
+    | 'chevron-right'
+    | 'close'
     | 'home'
     | 'about'
     | 'projects'
@@ -39,7 +45,13 @@
   export let strokeWidth = 1.8;
 </script>
 
-{#if name === 'github'}
+{#if name === 'close'}
+  <IconX {size} stroke={strokeWidth} aria-hidden="true" />
+{:else if name === 'chevron-left'}
+  <IconChevronLeft {size} stroke={strokeWidth} aria-hidden="true" />
+{:else if name === 'chevron-right'}
+  <IconChevronRight {size} stroke={strokeWidth} aria-hidden="true" />
+{:else if name === 'github'}
   <IconBrandGithub {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'linkedin'}
   <IconBrandLinkedin {size} stroke={strokeWidth} aria-hidden="true" />

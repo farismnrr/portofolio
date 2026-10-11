@@ -134,6 +134,16 @@ impl RagState {
     async fn sync_index(&self) -> Result<(), sqlx::Error> {
         self.ensure_schema().await?;
 
+        let active_ids = self
+            .corpus
+            .iter()
+            .map(|chunk| chunk.id.clone())
+            .collect::<Vec<_>>();
+        sqlx::query("DELETE FROM cv_chunks WHERE NOT (id = ANY($1::text[]))")
+            .bind(&active_ids)
+            .execute(&self.pool)
+            .await?;
+
         let rows = sqlx::query("SELECT id, content_hash FROM cv_chunks")
             .fetch_all(&self.pool)
             .await?;

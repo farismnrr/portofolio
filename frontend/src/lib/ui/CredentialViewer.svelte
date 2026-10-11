@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Certification } from '../structured-content';
   import MediaImage from './MediaImage.svelte';
+  import AppIcon from './AppIcon.svelte';
 
   let dialog: HTMLDialogElement;
   let credential: Certification | null = null;
@@ -32,13 +33,13 @@
         <h2 id="credential-title" class="text-[16px] font-semibold leading-6">{credential.title}</h2>
         <p class="mt-1 text-[12px] text-black/58">{credential.issuer}</p>
       </div>
-      <button type="button" class="min-h-11 min-w-11 border border-black/20 text-[24px]" aria-label="Close credential viewer" on:click={() => dialog.close()}>×</button>
+      <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label="Close credential viewer" on:click={() => dialog.close()}><AppIcon name="close" size={20}/></button>
     </header>
     <div class="relative px-14 py-3 sm:px-16">
       <MediaImage src={pages[page]} alt={`${credential.title}, ${page === 0 ? 'front' : 'back'}`} fit="contain" eager className="h-[65dvh] w-full"/>
       {#if pages.length > 1}
-        <button type="button" class="absolute left-1 top-1/2 min-h-12 min-w-12 -translate-y-1/2 border border-black/20 text-[32px] disabled:opacity-25 sm:left-2" aria-label="Previous credential page" disabled={page === 0} on:click={() => navigate(-1)}>‹</button>
-        <button type="button" class="absolute right-1 top-1/2 min-h-12 min-w-12 -translate-y-1/2 border border-black/20 text-[32px] disabled:opacity-25 sm:right-2" aria-label="Next credential page" disabled={page === pages.length - 1} on:click={() => navigate(1)}>›</button>
+        <button type="button" class="btn btn-ghost btn-circle absolute left-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 sm:left-2" aria-label="Previous credential page" disabled={page === 0} on:click={() => navigate(-1)}><AppIcon name="chevron-left" size={24}/></button>
+        <button type="button" class="btn btn-ghost btn-circle absolute right-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 sm:right-2" aria-label="Next credential page" disabled={page === pages.length - 1} on:click={() => navigate(1)}><AppIcon name="chevron-right" size={24}/></button>
       {/if}
     </div>
     <footer class="border-t border-black/16 p-3 text-center text-[13px]" aria-live="polite">

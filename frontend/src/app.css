@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+  themes: false;
+  include: button;
+  logs: false;
+}
 
 @theme {
   --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -11,6 +16,17 @@
   --surface: #ffffff;
   --accent: #344534;
   --color-black: #000000;
+  --color-base-100: var(--surface);
+  --color-base-200: var(--page-bg);
+  --color-base-300: color-mix(in srgb, var(--page-fg) 16%, var(--surface));
+  --color-base-content: var(--page-fg);
+  --color-primary: var(--accent);
+  --color-primary-content: var(--surface);
+  --radius-field: 0.5rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
   color-scheme: light;
 }
 

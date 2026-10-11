@@ -55,7 +55,9 @@ That hierarchy matters more than any particular protocol. The same product-level
 
 Sensio IoT has gone through two main production architectures.
 
-The initial implementation used a fullstack React HMI with a NestJS backend. The UI was organized around physical rooms, while REST, WebSockets, and SSE kept device state synchronized.
+The initial implementation used a React HMI and a NestJS backend because the product was originally intended to run as a SaaS application. NestJS provided clear boundaries through modules, controllers, services, and dependency injection. That structure supported fast feature development and kept complex application logic organized and maintainable. The UI was organized around physical rooms, while REST, WebSockets, and SSE kept device state synchronized.
+
+The deployment direction later shifted toward client-owned, on-premises servers, including ARM64 single-board computers such as Orange Pi and Raspberry Pi. The application needed to preserve its room-based control model while fitting the memory limits of smaller Linux hosts.
 
 High-frequency telemetry lived in PostgreSQL and TimescaleDB. A room-scoped LangGraph assistant evaluated context and could dispatch device automation routines.
 
@@ -80,6 +82,10 @@ Both architectures are iterations of the same team product. The rewrite builds d
 ## Edge constraints shape the architecture
 
 The rewrite changes more than the programming language. The application runs beside the hardware it controls, on machines where runtime overhead, local service dependencies, broker connectivity, and deployment architecture are product constraints.
+
+In the deployments I observed, the earlier React and NestJS fullstack application used approximately **800 MB of RAM**. The Rust and Axum fullstack application used approximately **50 MB** while handling real-time communication with dozens of IoT devices. Both figures cover the application frontend and backend; they exclude the database, MQTT broker, and other supporting services. These are observed deployment measurements rather than a controlled benchmark.
+
+That smaller application footprint leaves more memory available for the operating system and other services sharing the edge host. The rewrite trades some of the development convenience of NestJS for tighter control over resource usage in the revised deployment environment.
 
 Moving more responsibility into the Rust service reduces the number of boundaries the edge runtime has to coordinate. Identity, room state, device integration, and local configuration stay in one operational unit.
 

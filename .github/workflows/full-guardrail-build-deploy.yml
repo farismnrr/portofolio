@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pull-requests: read
 
@@ -112,10 +113,9 @@ jobs:
           ref: dev
 
       - name: Download frontend dist
-        uses: actions/download-artifact@v7
-        with:
-          name: frontend-dist
-          path: frontend/dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name frontend-dist --dir frontend/dist
 
       - name: Install musl toolchain
         run: |
@@ -235,12 +235,11 @@ jobs:
           ref: dev
 
       - name: Download production binaries
-        uses: actions/download-artifact@v7
-        with:
-          name: production-runtime
-          path: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name production-runtime --dir release
 
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
 
       - uses: docker/setup-buildx-action@v4
 
@@ -310,6 +309,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: merge-release
     permissions:
+      actions: read
       contents: read
       packages: write
     steps:
@@ -318,12 +318,11 @@ jobs:
           ref: ${{ needs.merge-release.outputs.main_sha }}
 
       - name: Download production binaries
-        uses: actions/download-artifact@v7
-        with:
-          name: production-runtime
-          path: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name production-runtime --dir release
 
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
 
       - uses: docker/setup-buildx-action@v4
 

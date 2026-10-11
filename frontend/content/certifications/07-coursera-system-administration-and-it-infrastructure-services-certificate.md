@@ -5,6 +5,6 @@ issuer: Coursera
 title: "System Administration and IT Infrastructure Services Certificate"
 year: ""
 credentialId: ""
-url: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate.pdf"
-image: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate.jpg"
+url: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate-1600.webp"
+image: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate-800.webp"
 ---

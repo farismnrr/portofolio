@@ -45,6 +45,7 @@
                 </p>
               {/if}
               {#if cert.url}<a class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3" href={cert.url}>View credential →</a>{/if}
+              {#if cert.reverseImage}<a class="ml-4 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black" href={cert.reverseImage}>View reverse side →</a>{/if}
             </article>
           {/each}
         </div>

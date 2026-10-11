@@ -1,52 +1,39 @@
-import { mkdir, stat } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { mkdir, readdir } from 'node:fs/promises';
+import { extname, resolve } from 'node:path';
 import sharp from 'sharp';
 
-const images = [
-  'alibaba-cloud-certified-associate',
-  'alibaba-cloud-certified-professional'
-];
-const variants = [480, 800];
-const defaultVariantMaxBytes = 120_000;
-const totalVariantsMaxBytes = 320_000;
-const sourceDir = resolve(new URL('../assets-source/certifications/alibaba', import.meta.url).pathname);
-const outputDir = resolve(new URL('../public/images/certifications/alibaba', import.meta.url).pathname);
-
-await mkdir(outputDir, { recursive: true });
+const sourceDir = resolve(new URL('../assets-source/certifications', import.meta.url).pathname);
+const outputDir = resolve(new URL('../public/images/certifications', import.meta.url).pathname);
+const variants = [480, 800, 1600];
 let total = 0;
-const summaries = [];
+let count = 0;
 
-for (const name of images) {
-  const source = resolve(sourceDir, `${name}.jpg`);
-  const sourceInfo = await stat(source);
-  const results = [];
-
-  for (const width of variants) {
-    const output = resolve(outputDir, `${name}-${width}.webp`);
-    const info = await sharp(source)
-      .autoOrient()
-      .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 82, effort: 5 })
-      .toFile(output);
-    results.push({ width, size: info.size });
+async function prepare(directory, relative = '') {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const source = resolve(directory, entry.name);
+    const target = relative ? `${relative}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      await prepare(source, target);
+      continue;
+    }
+    if (!/\.(jpe?g|png)$/i.test(entry.name)) continue;
+    const stem = target.slice(0, -extname(target).length);
+    for (const width of variants) {
+      const output = resolve(outputDir, `${stem}-${width}.webp`);
+      await mkdir(resolve(output, '..'), { recursive: true });
+      const info = await sharp(source).autoOrient()
+        .resize({ width, withoutEnlargement: true })
+        .webp({ quality: width === 1600 ? 88 : 82, effort: 5 }).toFile(output);
+      const maxBytes = width === 1600 ? 800_000 : 160_000;
+      if (info.size > maxBytes) {
+        throw new Error(`${stem} ${width}w WebP exceeds ${maxBytes} byte budget: ${info.size}`);
+      }
+      total += info.size;
+      count++;
+    }
   }
-
-  const defaultVariant = results.find((item) => item.width === 800);
-  if (!defaultVariant || defaultVariant.size > defaultVariantMaxBytes) {
-    throw new Error(
-      `${basename(source)} 800w WebP exceeds ${defaultVariantMaxBytes}B budget: ${defaultVariant?.size ?? 'missing'}B`
-    );
-  }
-
-  const imageTotal = results.reduce((sum, item) => sum + item.size, 0);
-  total += imageTotal;
-  summaries.push(
-    `${name}: source=${sourceInfo.size}B, ${results.map((item) => `${item.width}w=${item.size}B`).join(', ')}`
-  );
 }
 
-if (total > totalVariantsMaxBytes) {
-  throw new Error(`Alibaba certification preview WebP set exceeds ${totalVariantsMaxBytes}B budget: ${total}B`);
-}
-
-process.stdout.write(`Prepared Alibaba certification WebP previews: ${summaries.join('; ')}, total=${total}B\n`);
+await prepare(sourceDir);
+if (total > 10_000_000) throw new Error(`Certification WebP set exceeds 10 MB budget: ${total}`);
+process.stdout.write(`Prepared ${count} certification WebP images (${total} bytes).\n`);

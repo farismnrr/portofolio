@@ -6,7 +6,7 @@ export interface ExperienceEntry {
 export interface EducationEntry { order: number; year: string; institution: string; program: string; description: string; }
 export interface SkillGroup { order: number; title: string; description: string; items: string[]; }
 export interface Principle { order: number; index: string; title: string; description: string; }
-export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; image: string; }
+export interface Certification { order: number; group: string; issuer: string; title: string; year: string; credentialId: string; url: string; image: string; reverseImage: string; }
 export interface Publication { order: number; type: 'journal'|'thesis'|'project-report'; title: string; year: string; venue: string; url: string; doi: string; summary: string; }
 export interface GalleryItem { order: number; image: string; caption: string; size: 'wide'|'tall'|'large'|'normal'; }
 export interface PageCopy {
@@ -57,7 +57,7 @@ export const principles: Principle[] = Object.entries(principleModules).map(([pa
 
 export const certifications: Certification[] = Object.entries(certModules).map(([path,src])=>{
   const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','group','issuer','title','year','credentialId','url','image']);
-  return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??''),image:unquote(values.get('image')??'')};
+  return {order:int(path,values.get('order')),group:unquote(values.get('group')??''),issuer:unquote(values.get('issuer')??''),title:unquote(values.get('title')??''),year:unquote(values.get('year')??''),credentialId:unquote(values.get('credentialId')??''),url:unquote(values.get('url')??''),image:unquote(values.get('image')??''),reverseImage:unquote(values.get('reverseImage')??'')};
 }).sort((a,b)=>a.order-b.order);
 
 export const publications: Publication[] = Object.entries(publicationModules).map(([path,src])=>{

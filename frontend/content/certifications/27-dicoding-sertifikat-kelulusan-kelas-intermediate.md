@@ -5,6 +5,6 @@ issuer: Dicoding
 title: "Sertifikat Kelulusan kelas intermediate"
 year: ""
 credentialId: ""
-url: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate.pdf"
-image: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate.jpg"
+url: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate-1600.webp"
+image: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate-800.webp"
 ---

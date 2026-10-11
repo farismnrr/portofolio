@@ -2,6 +2,9 @@
   import { certificationGroupId, certificationGroups, pageCopy } from '../lib/structured-content';
   import PageShell from '../lib/ui/PageShell.svelte';
   import MediaImage from '../lib/ui/MediaImage.svelte';
+  import CredentialViewer from '../lib/ui/CredentialViewer.svelte';
+
+  let viewer: CredentialViewer;
 
   function responsiveCertificationSrcset(src: string) {
     const match = src.match(/^(.*)-800\.webp$/);
@@ -44,8 +47,7 @@
                   {cert.year}{#if cert.year && cert.credentialId} · {/if}{#if cert.credentialId}Credential ID: {cert.credentialId}{/if}
                 </p>
               {/if}
-              {#if cert.url}<a class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3" href={cert.url}>View credential →</a>{/if}
-              {#if cert.reverseImage}<a class="ml-4 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black" href={cert.reverseImage}>View reverse side →</a>{/if}
+              {#if cert.image}<button type="button" on:click={() => viewer.open(cert)} class="mt-2 inline-flex min-h-10 items-center text-[12px] text-black/72 underline decoration-black/25 underline-offset-4 hover:text-black sm:mt-3">View credential →</button>{/if}
             </article>
           {/each}
         </div>
@@ -53,3 +55,5 @@
     {/each}
   </PageShell>
 </main>
+
+<CredentialViewer bind:this={viewer}/>

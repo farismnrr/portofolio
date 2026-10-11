@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pull-requests: read
 
@@ -308,6 +309,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: merge-release
     permissions:
+      actions: read
       contents: read
       packages: write
     steps:

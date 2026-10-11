@@ -6,14 +6,10 @@ company: PT Perkasa Pilar Utama
 role: Backend & Fullstack Developer
 location: "Jakarta, Indonesia"
 summary: Develops backend services, client integration, and production operations for meeting-processing and IoT products, with substantial application ownership inside a cross-functional product team spanning AI services, IoT hardware, infrastructure, security, and UI/UX.
-tech: [NestJS, Rust, TypeScript, React, PostgreSQL, Redis, MQTT, S3, Docker, Linux, OpenTelemetry, Jira, LangGraph]
+tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
 
-- Built the **[Sensio Notes](/projects/sensio-notes)** application backend flow for long meeting recordings with PostgreSQL data models, chunked S3 uploads, background processing state, callbacks, and WebSocket progress updates; integrated ingestion and Graph/RAG services maintained by other team members into one user-facing meeting lifecycle.
-- Owned substantial backend and integration work across **[Sensio Notes](/projects/sensio-notes)** while working with infrastructure and security engineers on server operations and deployment.
-- Worked from UI/UX design direction to implement production web and mobile interfaces. Adapted recording, upload, processing, loading, error, and recovery states to the backend and mobile constraints behind those designs.
-- Built and maintained substantial parts of the **[Sensio IoT](/projects/sensio-iot)** software platform in Rust and NestJS, enforcing site- and room-scoped access before device commands and connecting telemetry ingestion with MQTT and Zigbee2MQTT for authorized device interaction.
-- Worked with the IoT team at the physical-device boundary so installation, provisioning, and real hardware operation matched the software model.
-- Coordinated with infrastructure and security on the on-premises runtime, and with UI/UX designers so the control surface reflected real device and room state.
-- Integrated web and mobile clients with backend state, traced failures with OpenTelemetry and structured logs, and packaged services with Docker for production delivery. Sensio IoT deployments currently include client-owned residential and office environments rather than a single shared SaaS runtime.
+- Developed backend application behavior and web/mobile integration for **[Sensio Notes](/projects/sensio-notes)**, including recording and upload interactions, progress feedback, and interrupted-work recovery.
+- Contributed backend and systems engineering to **[Sensio IoT](/projects/sensio-iot)**, connecting control interactions with device-related feedback and improving application reliability.
+- Implemented interfaces from UI/UX designs and coordinated with AI, IoT, infrastructure, and security engineers on integration, troubleshooting, testing, and releases.

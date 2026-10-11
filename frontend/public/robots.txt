@@ -1,19 +1,14 @@
 User-agent: *
 Allow: /
 
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
+# Explicitly document AI/search discovery intent.
 User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: GPTBot
 Allow: /
 
-User-agent: Claude-User
+User-agent: ClaudeBot
 Allow: /
 
 User-agent: PerplexityBot

@@ -1,6 +1,6 @@
 {
   "profileSummary": {
-    "text": "Software Engineer focused on backend and systems engineering, with production experience in meeting-processing and client-delivered IoT applications. Builds Rust and TypeScript services, PostgreSQL data models, and real-time web and mobile integrations. Works across software, infrastructure, security, and UI/UX teams to deliver observable applications while keeping service ownership and authorization boundaries explicit."
+    "text": "Software Engineer focused on backend and systems engineering, with production experience in meeting and IoT applications. Builds reliable services and connects web and mobile interfaces to application behavior. Works across software, infrastructure, security, and UI/UX teams on integration, testing, troubleshooting, and delivery."
   },
   "projects": [
     {
@@ -32,9 +32,9 @@
     }
   ],
   "employmentBullets": [
-    "Built the Sensio Notes backend in NestJS with PostgreSQL models, chunked S3 uploads, processing callbacks, and WebSocket updates. Integrated team-owned ingestion and Graph/RAG services into the meeting lifecycle used by web and mobile clients.",
-    "Built major Sensio IoT components in NestJS and Rust/Axum for identity, room state, telemetry, and device integration. Enforced site- and room-scoped authorization before commands and connected MQTT and Zigbee2MQTT to application state.",
-    "Implemented React and Capacitor interfaces from UI/UX designs, handling recording, upload, processing, and recovery states. Collaborated with IoT engineers so software behavior matched device installation and provisioning.",
-    "Packaged services with Docker and diagnosed failures using OpenTelemetry and structured logs. Coordinated with infrastructure and security engineers on on-premises delivery into client-owned residential and office environments."
+    "Developed backend application behavior and web/mobile integration for Sensio Notes, including recording and upload interactions, processing feedback, and recovery after interruptions.",
+    "Contributed backend and systems engineering to Sensio IoT, connecting control interactions with device-related feedback and improving application reliability.",
+    "Implemented application interfaces from UI/UX designs and worked with AI and IoT engineers on integration and consistent user-facing behavior.",
+    "Investigated application failures, supported testing, and coordinated operational and release work with infrastructure and security engineers."
   ]
 }

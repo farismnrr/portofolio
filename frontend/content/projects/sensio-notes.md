@@ -6,169 +6,80 @@ year: "2026"
 title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
 subtitle: "From Long Recordings to Reusable Meeting Knowledge"
-role: "Backend & Fullstack Engineer · Architecture / Platform / AI Workflows"
+role: "Backend & Fullstack Engineer"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A production meeting intelligence platform that captures long audio sessions, processes them asynchronously, and converts transcripts into structured notes, action items, and searchable knowledge."
+description: "A team-built meeting product that helps people capture conversations, review summaries, and find decisions and follow-up work."
 image: "/images/projects/sensio-notes/showcase.png"
-tech: [NestJS, TypeScript, React, Capacitor, PostgreSQL, Redis, S3, WebSocket, LangGraph, OpenTelemetry, Docker, Jira]
-productUrl: "https://notes.sensio.id"
+tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 
-## Protect the recording before asking AI to interpret it
+## From a meeting to something people can use
 
-A meeting recording is useful evidence, but it is rarely useful by itself.
+A meeting can contain useful decisions and follow-up work, but finding them again takes time. People need a record they can review without replaying the entire conversation.
 
-The questions people come back with are usually smaller and more practical: *what was decided, who needs to follow up, what problem was raised, and where in the conversation did that come from?*
+**Sensio Notes** helps turn meeting content into summaries, action items, and searchable information. Our team works on the product across application engineering, AI, infrastructure, security, and UI/UX.
 
-**Sensio Notes** is built around that gap. It treats the recording and transcript as the source material, then turns them into meeting information that can be reviewed and reused without replaying the entire conversation.
+My contribution is the application experience that connects those capabilities: helping users capture a meeting, understand progress, and return to the results.
 
-There is another problem underneath that product idea: the recording has to survive long sessions, mobile operating-system constraints, and unreliable networks before any AI processing becomes useful.
+## The meeting experience
 
-That makes the product a combination of two different concerns:
-
-```text
-preserve the meeting reliably
-then
-interpret it carefully
-```
-
-## The meeting lifecycle
-
-From the user's point of view, the flow stays simple: record or upload a meeting, wait while it is processed, then review the transcript and the structures derived from it.
+The user starts with a recording or an uploaded file, follows its progress, and reviews the available results. Clear feedback matters throughout that journey, especially when processing takes longer than a normal interaction.
 
 ```mermaid
 flowchart LR
-    U[User] --> C[Web or mobile client]
-    C --> R[Recording / upload]
-    R --> S[Durable media storage]
-    S --> B[Meeting backend]
-    B --> T[Asynchronous transcription]
-    T --> A[Structured AI processing]
-    A --> M[Meeting knowledge]
-    M --> C
-    B -. progress updates .-> C
+    R[Record or upload a meeting] --> P[Follow progress]
+    P --> V[Review meeting results]
+    V --> F[Find decisions and follow-up work]
 ```
 
-The important boundary is that capture, transcription, and interpretation are separate stages. A summary should not be treated as the original evidence, and a failed processing step should not make the recording itself disappear.
+This diagram describes the user journey. It does not represent the internal service architecture.
 
 ## Capture before interpretation
 
-The client supports both browser/PWA and native-mobile recording because those environments fail in different ways.
+A useful summary begins with a usable recording. Long sessions, interrupted connections, and differences between web and mobile use make that a practical engineering concern.
 
-On the web, recording uses browser media APIs and a wake-lock strategy so long sessions are less likely to be interrupted by background throttling.
+I work on recording and upload interactions with attention to progress feedback, interruption handling, and recovery. The goal is to help users understand what has been preserved and what still needs their attention.
 
-On native mobile, Capacitor bridges to a native audio-recorder path. That lets recording continue under mobile constraints that a normal browser tab cannot handle as reliably.
+## Making progress understandable
 
-After recording, the client does not rely on one large request. Audio is divided into small chunks and queued through the upload flow so a long file can move into object storage more safely over an unstable connection.
+Processing should not leave users guessing. The interface needs to distinguish work that is continuing, work that needs attention, and results that are ready to review.
 
-That design keeps the first promise of the product deliberately boring: **do not lose the meeting**.
-
-## Processing after the media is durable
-
-Once media is durable, the backend becomes an orchestration layer for work that continues beyond one request.
-
-The NestJS backend owns the application-side meeting lifecycle and authentication, coordinates presigned S3 multipart uploads, and tracks asynchronous processing state. It receives callbacks from services maintained elsewhere in the product team, persists application state in PostgreSQL, and sends live progress updates through WebSocket channels.
-
-Within the NestJS areas I maintain, application behavior is organized through class-based modules, controllers, and services with dependency injection.
-
-That structure separates responsibilities and composes dependencies without turning one large handler or service into the whole application.
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant B as NestJS backend
-    participant S as S3
-    participant W as Ingestion / transcription service
-    participant A as Graph / RAG service
-
-    C->>B: Create meeting / request upload
-    B-->>C: Upload instructions
-    C->>S: Upload recording chunks
-    C->>B: Finish upload
-    B->>W: Start processing work
-    W-->>B: Processing status / transcript callback
-    B-->>C: Real-time progress
-    B->>A: Send completed transcript
-    A-->>B: Structured meeting output
-    B-->>C: Meeting becomes reviewable
-```
-
-PostgreSQL stores durable product data with relational schemas, indexed queries, and migration versioning. Redis handles background job queues and pub/sub events.
-
-The client and backend are kept as separate repositories so recording UX and client performance can change without coupling that work to persistence and service coordination.
+My backend and client work connects application state to those visible outcomes. That includes keeping feedback consistent and making errors understandable, while coordinating integration work with the engineers responsible for the other product capabilities.
 
 ## Failure handling is part of the product flow
 
-The difficult cases are the boundaries where the browser is backgrounded, a mobile recorder behaves differently from the web recorder, a network disappears during upload, or a background processing step finishes later than the request that started it.
+An interrupted connection can change what a user sees without explaining what happened. A mobile app can also behave differently from a browser during a long session.
 
-The system keeps durable media, upload progress, processing state, and generated output as separate concerns.
-
-Chunked and resume-friendly uploads reduce how much work a weak connection can invalidate. Asynchronous processing state lets the client reconnect to a meeting after the original request has ended.
-
-Within the product team, I investigate application-side failures with OpenTelemetry and structured logs so we can follow work across the processing path.
-
-The operational question is which stage of the meeting lifecycle stopped progressing and what durable state was already preserved. That view is more useful than diagnosing each service in isolation.
+I investigate those application behaviors and work with the team on recovery and feedback. The engineering question is how to help someone continue their task after an interruption without making them reconstruct the meeting workflow themselves.
 
 ## Turning transcripts into meeting knowledge
 
-Sensio Notes goes beyond producing raw text.
+The product helps people review summaries, decisions, and follow-up work alongside the meeting record. Search makes that information easier to revisit later.
 
-Completed transcripts are passed to structured Graph/RAG services maintained by other members of the product team.
-
-Those services produce summaries, action items, decisions, discussion structure, and PPP-style progress/issues/plans context. The application backend owns the integration state around those outputs and makes them reviewable in the product.
-
-The useful distinction is:
-
-```text
-recording = evidence
-transcript = searchable representation of that evidence
-AI output = interpretation built on top of it
-```
-
-Keeping those layers conceptually separate makes it easier for the product to expose useful automation without pretending generated text is more authoritative than the meeting itself. Extracted insights can be linked back to transcript timestamps so users can verify decisions against what was said.
+My responsibility is the application integration and presentation of those results. AI capabilities are developed collaboratively; their implementation remains attributed to the team members responsible for them.
 
 ## Ownership inside a cross-functional team
 
-Sensio Notes is a team product, and my role carries substantial ownership of the application flow within that team.
+I contribute backend and fullstack implementation within a team that also includes AI, infrastructure, security, and UI/UX specialists.
 
-I own application-side work around the backend, recording and upload lifecycle, asynchronous state, integration boundaries, and web/mobile behavior.
+Designers provide the visual and interaction direction. I connect that direction to application behavior, including progress, loading, errors, and recovery across web and mobile use.
 
-The ingestion pipeline and Graph/RAG capabilities are separate service boundaries maintained by other team members. My contribution is to integrate them reliably while keeping their internal implementation attributed to the people who own those services.
-
-The same division applies outside the backend. I work with infrastructure and security engineers on server operations, deployment, access, and production constraints.
-
-UI/UX designers own the product's visual and interaction direction. Within that collaboration, I translate those designs into production React and Capacitor behavior and connect them to the application state underneath.
-
-That engineering work covers recording and upload progress, asynchronous processing, loading and failure feedback, interrupted-work recovery, and differences between browser and native-mobile behavior.
-
-I do not present this as independent UI/UX ownership. It is implementation work done as part of a cross-functional product team.
-
-That division of responsibility is important to how I describe the project: substantial ownership of an area does not mean presenting a production system as a one-person stack.
+I coordinate with other engineers when a problem crosses the application boundary. Delivering the product depends on that shared work.
 
 ## What I worked on
 
-Within that team, most of my work sits at the points where a long-running meeting flow can fail.
+My work includes backend application behavior, web and mobile integration, recording and upload interactions, progress feedback, and interrupted-work recovery.
 
-On the backend, I built and maintained the application-side meeting lifecycle in NestJS: data models, upload coordination, background processing state, callbacks, and the APIs used by the web and mobile clients.
-
-For large recordings, I worked on chunked S3 uploads and resume-friendly flows so a weak connection would not force someone to start from zero.
-
-I integrated the ingestion and Graph/RAG service boundaries into that lifecycle, including the state transitions around when processing starts, when callbacks arrive, when structured outputs are ready, and how those results become available to users.
-
-On the client side, I connected the React and Capacitor recording paths to the same backend state machine.
-
-That meant dealing with wake locks, native recording behavior, upload progress, and the awkward cases where the app is backgrounded or the network disappears halfway through a meeting.
-
-Production work is shared across the team as well. My part includes Docker packaging, OpenTelemetry and structured-log based diagnosis across the processing path, and Jira-tracked implementation work tied to the product issues we are solving.
+I also contribute to testing, application diagnosis, and release coordination with the wider team. These responsibilities describe my contribution without exposing internal service arrangements or customer environments.
 
 ## The boundary that mattered most
 
-Sensio Notes made one design rule especially clear: **capture reliability and AI quality are different problems**.
+Capture reliability and the usefulness of generated results require separate attention. Users need confidence in the meeting record before they can rely on the information derived from it.
 
-A clever summary cannot recover a recording that was never preserved, and a perfectly stored recording is still inconvenient if useful decisions remain buried inside an hour of audio. The system has to protect the evidence first and add interpretation second.
+That principle guides how I approach the application: preserve a clear user journey, make progress visible, and help people review the result.
 
 ## Links
 
-- Sensio Notes: [notes.sensio.id](https://notes.sensio.id)
 - Sensio Platform: [sensio.id](https://sensio.id)

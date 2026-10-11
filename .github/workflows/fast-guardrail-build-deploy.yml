@@ -234,8 +234,8 @@ jobs:
           if not (500 < width < 3000 and 50 < height < 800):
               raise SystemExit(f'live Mermaid geometry abnormal: {width} x {height}')
           nodes = re.findall(r'<g\b[^>]*class="node\b', pre.group(1))
-          if len(nodes) != 8 or '<foreignObject' in pre.group(1):
-              raise SystemExit('live Mermaid lifecycle needs eight SVG-labelled nodes')
+          if len(nodes) != 4 or '<foreignObject' in pre.group(1):
+              raise SystemExit('live Mermaid user journey needs four SVG-labelled nodes')
           PY
           rm -f "$mermaid_dom"
 

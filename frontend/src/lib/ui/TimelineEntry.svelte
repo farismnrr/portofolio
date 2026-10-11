@@ -62,6 +62,17 @@
       </div>
     {/if}
 
+    {#if item.evidenceUrl}
+      <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] sm:mt-4 sm:gap-x-4 2xl:text-[14px]">
+        <span class="text-black/58">Experience evidence</span>
+        <a
+          class="inline-flex min-h-11 items-center font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 transition hover:text-black"
+          href={item.evidenceUrl}
+          download
+        >{item.evidenceTitle} (PDF) ↓</a>
+      </div>
+    {/if}
+
     {#if !compact}
       <ul class={wide ? "mt-3 list-disc space-y-2 pl-5 hyphens-auto text-left text-[14px] leading-6 text-black/60 sm:mt-4 sm:text-justify 2xl:text-[15px] 2xl:leading-7" : "mt-3 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/60 sm:mt-4 2xl:text-[15px] 2xl:leading-7"}>
         {#each item.bullets as bullet}

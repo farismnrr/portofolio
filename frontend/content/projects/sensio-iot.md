@@ -35,9 +35,9 @@ flowchart LR
     S --> R[Select room]
     R --> D[View device state]
     D --> A[Request action or automation]
-    A --> P[Device provider / protocol]
+    A --> P[Device integration]
     P --> H[Physical hardware]
-    H --> T[State and telemetry]
+    H --> T[Device state and readings]
     T --> D
 ```
 
@@ -49,7 +49,7 @@ The platform makes physical scope an integral part of authorization.
 
 Users do not receive one global role that automatically applies everywhere. Site membership is the role boundary, and room access is evaluated through that site relationship. Permission to operate one office never grants access to another site.
 
-Authentication is designed for an on-premises control surface: provisioned users sign in, short-lived access tokens pair with rotating refresh tokens, and browser sessions keep security credentials isolated from client-side scripts.
+An operator can work within the sites and rooms assigned to them. The application checks that scope before allowing an action to reach a device.
 
 The result is a strict conceptual chain:
 
@@ -64,34 +64,33 @@ identity
 
 The device communication layer is separated from the site and room domain model.
 
-The platform manages two primary hardware integration pipelines:
+The room interface brings together controls such as lights, relays, and smart plugs, alongside readings such as temperature, humidity, motion, and power usage.
 
-1. **Tasmota-flashed smart devices and power monitoring**: smart plugs, energy meters, relays, and power strips running Tasmota publish telemetry and state through MQTT. The ingestion path reads power metrics and relay state. Commands go back through provider-specific topics without depending on an external cloud service.
-2. **Zigbee2MQTT environmental and presence sensors**: Zigbee coordinators feed temperature, humidity, illuminance, motion, and door/window state into the same room-oriented model.
-
-In the Rust implementation, those integrations sit behind mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped state; outgoing actions are translated back into provider-specific payloads.
+A user can request an action and follow the reported device state in the same room view. Different device families fit that shared flow through their own integrations.
 
 ```mermaid
 sequenceDiagram
     participant U as User
     participant A as Sensio IoT
-    participant Z as Tasmota / Zigbee2MQTT
+    participant Z as Device integration
     participant D as Physical Hardware
 
     U->>A: Control device or set automation
-    A->>A: Verify site & room RBAC
-    A->>Z: Publish provider command (MQTT)
+    A->>A: Check site and room permissions
+    A->>Z: Send device command
     Z->>D: Dispatch hardware command
     D-->>Z: Acknowledge execution
-    Z-->>A: Telemetry & state update (MQTT)
+    Z-->>A: Report readings and device state
     A-->>U: Real-time UI synchronization
 ```
 
-That boundary is where broker reconnects, protocol quirks, and message retries belong. Keeping them there prevents the UI and room model from having to understand every hardware-specific detail.
+The application translates between the room view and the connected devices, so users can follow one control flow across different kinds of hardware.
 
 ## Rebuilding the runtime for on-premises ARM64 servers
 
-The earlier version paired a React HMI with a NestJS backend. For the original SaaS direction, NestJS was a practical choice: modules, controllers, services, and dependency injection gave complex application logic clear boundaries while keeping feature development fast.
+The product started with a SaaS direction, where a centrally managed application could run on a larger server. Delivery later shifted toward a local server installed in each client environment.
+
+The original React HMI and NestJS backend suited the SaaS direction. NestJS modules, controllers, services, and dependency injection gave complex application logic clear boundaries while keeping feature development fast.
 
 I worked on backend and fullstack features around room state, telemetry, real-time updates, and a room-scoped LangGraph assistant. REST, WebSockets, and SSE connected the interface to changing device state; PostgreSQL and TimescaleDB stored application data and telemetry.
 
@@ -155,6 +154,15 @@ The product team treats that client delivery model as part of the product itself
 For a smart-space system, deployment location affects both latency and reliability.
 
 Lighting, room controls, telemetry, and local automation should keep working without depending on a distant cloud round-trip. Sensio IoT therefore makes on-premises deployment part of the product.
+
+The platform manages two primary hardware integration pipelines:
+
+1. **Tasmota-flashed smart devices and power monitoring**: smart plugs, energy meters, relays, and power strips running Tasmota publish telemetry and state through MQTT. The ingestion path reads power metrics and relay state. Commands go back through provider-specific topics without depending on an external cloud service.
+2. **Zigbee2MQTT environmental and presence sensors**: Zigbee coordinators feed temperature, humidity, illuminance, motion, and door/window state into the same room-oriented model.
+
+In the Rust implementation, those integrations sit behind mapping, adapter, repository, listener, service, and HTTP boundaries. Incoming messages are normalized into room-scoped state; outgoing actions are translated back into provider-specific payloads.
+
+Authentication is designed for an on-premises control surface: provisioned users sign in, short-lived access tokens pair with rotating refresh tokens, and browser sessions keep security credentials isolated from client-side scripts.
 
 The Rust service is packaged as a multi-architecture Docker image for AMD64 and ARM64. It runs on Linux edge hardware, including NVIDIA Jetson devices and single-board computers.
 

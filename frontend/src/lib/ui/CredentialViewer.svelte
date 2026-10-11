@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import type { Certification } from '../structured-content';
   import MediaImage from './MediaImage.svelte';
   import AppIcon from './AppIcon.svelte';
 
+  const dispatch = createEventDispatcher<{ close: void }>();
   let dialog: HTMLDialogElement;
   let credential: Certification | null = null;
   let page = 0;
@@ -11,7 +13,11 @@
   export function open(selected: Certification) {
     credential = selected;
     page = 0;
-    dialog.showModal();
+    if (!dialog.open) dialog.showModal();
+  }
+
+  export function close() {
+    if (dialog.open) dialog.close();
   }
 
   function navigate(direction: number) {
@@ -26,7 +32,7 @@
   }
 </script>
 
-<dialog bind:this={dialog} on:keydown={handleKey} aria-labelledby="credential-title" class="m-auto max-h-[95dvh] w-[calc(100vw-1rem)] max-w-[1000px] border border-black/20 bg-[var(--surface)] p-0 text-black backdrop:bg-black/75">
+<dialog bind:this={dialog} on:keydown={handleKey} on:close={() => { if (!dialog.open) dispatch('close'); }} aria-labelledby="credential-title" class="m-auto max-h-[95dvh] w-[calc(100vw-1rem)] max-w-[1000px] border border-black/20 bg-[var(--surface)] p-0 text-black backdrop:bg-black/75">
   {#if credential}
     <header class="flex items-start justify-between gap-4 border-b border-black/16 p-4 sm:px-6">
       <div>

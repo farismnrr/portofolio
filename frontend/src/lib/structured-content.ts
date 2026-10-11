@@ -74,6 +74,10 @@ export function certificationGroupId(group:string){
   return group.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
 }
 
+export function certificationId(certification: Certification) {
+  return `credential-${certificationGroupId(certification.title)}`;
+}
+
 export const gallery: GalleryItem[] = Object.entries(galleryModules).map(([path,src])=>{
   const {values}=parseFrontmatter(path,src); requireKeys(path,values,['order','image','caption','size']);
   const size=unquote(values.get('size')??'normal') as GalleryItem['size'];

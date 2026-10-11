@@ -1,52 +1,2340 @@
-# Faris Munir Mahdi — Portfolio Context
-
+# Faris Munir Mahdi — Full Portfolio Context
 Canonical site: https://farismnrr.com/
+This document is generated from the same Markdown content that powers the portfolio. It is intended as a first-party machine-readable source for search, retrieval, and AI systems. Canonical web pages remain authoritative for rendered presentation and outbound links.
+## Profile
 
-## Identity
+### Faris Munir Mahdi
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/profile/about.md
+---
+name: Faris Munir Mahdi
+role: Software Engineer
+location: Asia/Jakarta
+languages: English, Bahasa
+image: /images/profile/faris-munir-1024.webp
+github: https://github.com/farismnrr
+linkedin: https://www.linkedin.com/in/farismnrr
+googleCloudSkills: https://www.cloudskillsboost.google/public_profiles/df853200-781c-4be5-a59b-0d4aa93f6fe3
+email: mailto:farismnrrbusiness@gmail.com
+resume: ""
+specialties: Software Engineer · Backend · Cloud · IoT
+headline: Software Engineer focused on backend, cloud, and connected systems.
+intro: I build APIs, production infrastructure, IoT platforms, and practical AI features. Most of my work is about making software, data, and devices behave predictably together.
+availability: "Open to full-time, part-time, contract, hybrid, and remote opportunities. Available for on-site work across Jakarta."
+quote: ""
+---
+## Experience
 
-Faris Munir Mahdi is a Software Engineer based in Asia/Jakarta. The portfolio describes his focus as backend architecture, cloud infrastructure, IoT systems, and practical AI engineering. Public profile links include GitHub and LinkedIn.
+### 01-perkasa-pilar-utama
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/01-perkasa-pilar-utama.md
+---
+kind: employment
+order: 1
+year: July 2025 — Present
+company: PT Perkasa Pilar Utama
+role: Backend & Fullstack Developer
+location: "Jakarta, Indonesia"
+summary: Develops backend services, client integration, and production operations for meeting-processing and IoT products, with substantial application ownership inside a cross-functional product team spanning AI services, IoT hardware, infrastructure, security, and UI/UX.
+tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
+projects: [sensio-notes, sensio-iot]
+---
 
-- GitHub: https://github.com/farismnrr
-- LinkedIn: https://www.linkedin.com/in/farismnrr
-- Portfolio: https://farismnrr.com/
+- Developed backend application behavior and web/mobile integration for **[Sensio Notes](/projects/sensio-notes)**, including recording and upload interactions, progress feedback, and interrupted-work recovery.
+- Contributed backend and systems engineering to **[Sensio IoT](/projects/sensio-iot)**, connecting control interactions with device-related feedback and improving application reliability.
+- Implemented interfaces from UI/UX designs and coordinated with AI, IoT, infrastructure, and security engineers on integration, troubleshooting, testing, and releases.
 
-## Portfolio structure
+---
 
-- Home: https://farismnrr.com/
-- About: https://farismnrr.com/about
-- Experience: https://farismnrr.com/experience
-- Skills: https://farismnrr.com/skills
-- Projects: https://farismnrr.com/projects
-- Blog: https://farismnrr.com/blog
-- Certifications: https://farismnrr.com/certifications
-- Gallery: https://farismnrr.com/gallery
+### 02-dbs-foundation
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/02-dbs-foundation.md
+---
+kind: program
+order: 2
+year: Feb 2025 — July 2025
+company: Coding Camp powered by DBS Foundation
+role: Machine Learning Engineer Track Participant
+location: ""
+summary: Completed a semester-long intensive technology training program with a team capstone, combining machine-learning coursework with hands-on web application delivery.
+tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
+evidenceTitle: Graduation letter
+evidenceUrl: /downloads/experience/coding-camp-2025-graduation-letter.pdf
+projects: [gizilens]
+---
 
-## Project index
+- Contributed to the application side of the **[GiziLens](/projects/gizilens)** team capstone, implementing authentication, sessions, and user APIs around a food-recognition subsystem developed within the team.
+- Integrated PostgreSQL and Redis with the Nuxt frontend and containerized services, providing a deployable web application around the team’s food-recognition subsystem.
+- Kept the machine-learning classifier as a team subsystem in the project story rather than presenting another member's model-training work as my individual implementation.
 
-The following project pages are first-party portfolio sources. Use each page for the latest project description, architecture, implementation details, and links rather than inferring details from the project name alone.
+- Fully graduated from the DBS Foundation and Dicoding Academy program held from 10 February to 16 July 2025, as confirmed by the graduation letter issued on 7 July 2025.
 
-- Askin: https://farismnrr.com/projects/askin
-- GiziLens: https://farismnrr.com/projects/gizilens
-- IoTNet: https://farismnrr.com/projects/iotnet
-- Masih Awam AI Code: https://farismnrr.com/projects/masih-awam-ai-code
-- Masih Awam LMS: https://farismnrr.com/projects/masih-awam-lms
-- Multitenant User Management: https://farismnrr.com/projects/multitenant-user-management
-- Parentify: https://farismnrr.com/projects/parentify
-- Portfolio Website: https://farismnrr.com/projects/portfolio-website
-- Sensio IoT: https://farismnrr.com/projects/sensio-iot
-- Sensio Notes: https://farismnrr.com/projects/sensio-notes
+---
 
+### 03-codepolitan
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/03-codepolitan.md
+---
+kind: program
+order: 3
+year: Sep 2024 — Dec 2024
+company: Codepolitan
+role: Full Stack Web Development Participant
+location: ""
+summary: Completed an online full-stack development scholarship program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
+tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
+projects: []
+certificationGroups: [Alibaba Cloud]
+---
+
+- Worked through backend development with Node.js and Express.js, including API design and application data stored in MongoDB.
+- Built frontend exercises with Vue.js to connect user-facing interfaces with the application services developed during the program.
+- Extended the learning path into cloud fundamentals through the related Alibaba Cloud credentials listed in the Certifications section.
+
+---
+
+### 04-ruang-guru
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/04-ruang-guru.md
+---
+kind: program
+order: 4
+year: Feb 2024 — Jun 2024
+company: Ruang Guru Academy
+role: Backend Engineering Participant
+location: ""
+summary: Completed a full-time certified independent-study program in backend engineering, combining structured coursework, implementation assignments, and project-based delivery around AI-enabled application services.
+tech: [Golang, Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
+evidenceTitle: MSIB certificate and learning transcript
+evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
+projects: [askin]
+---
+
+- Worked through backend-focused learning and implementation around application APIs, service integration, data flow, and deployment.
+
+- Completed the MSIB Batch 6 program from 16 February to 30 June 2024. Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.
+
+---
+
+### 05-tradeasia
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/05-tradeasia.md
+---
+kind: program
+order: 5
+year: Jan 2024 — Mar 2024
+company: PT Tradeasia International Indonesia
+role: SEO Specialist (Student Trainee)
+location: ""
+summary: Worked on search visibility through keyword research, on-page SEO, technical checks, and traffic analysis.
+tech: [SEO, Web Analytics]
+evidenceTitle: Training reference letter
+evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
+projects: []
+---
+
+- Researched search queries, reviewed page structure and technical SEO issues, and used analytics data to decide which pages and topics needed attention.
+
+- Completed IT Tradeasia Academy training at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role and acknowledges teamwork and contributions during the program.
+
+---
+
+### 06-bangkit-academy
+Canonical: https://farismnrr.com/experience
+Source file: frontend/content/experience/06-bangkit-academy.md
+---
+kind: program
+order: 6
+year: Aug 2023 — Jan 2024
+company: Bangkit Academy
+role: Cloud Computing Cohort
+location: Remote · Indonesia
+summary: Completed Bangkit 2023 Batch 2 on the Cloud Computing path as a structured industry-backed learning program, combining technical coursework, cloud labs, communication training, and cross-functional capstone delivery.
+tech: [Google Cloud, Node.js, Express, MySQL, Docker]
+evidenceTitle: Certificate and learning transcript
+evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf
+projects: [parentify]
+---
+
+- Completed the Cloud Computing learning path through self-paced coursework, instructor-led sessions, hands-on cloud labs, English practice, and soft-skill training.
+- Worked in the **[Parentify](/projects/parentify)** cross-functional capstone team where technical decisions had to be communicated clearly across Cloud Computing, Mobile Development, and Machine Learning roles.
+- Practiced team delivery beyond implementation itself: defining ownership, coordinating hand-offs, documenting decisions, and keeping integration work aligned with a shared product goal.
+
+- Graduated on 19 January 2024 with a completed capstone; the learning transcript records a capstone score of 90/100.
+## Education
+
+### 01-upn-veteran-jatim
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/education/01-upn-veteran-jatim.md
+---
+order: 1
+year: 2021 — 2025
+institution: UPN "Veteran" East Java
+program: Bachelor of Informatics
+---
+
+Graduated with **Cumlaude honors** and a **GPA of 3.91/4.00**. Academic interests and activities included robotics, Linux, and the Internet of Things.
+
+Public academic activity: [Training of Trainer: Programming of Industrial Arm Robot 5 Axis with AI and IoT Armadirro 1.0](https://fasilkom.upnjatim.ac.id/fasilkom-upn-veteran-jawa-timur-selenggarakan-training-of-trainer-tot-programming-of-industrial-arm-robot-5-axis-with-ai-and-iot-armadirro-1-0/), FASILKOM UPN Veteran Jawa Timur, 5–7 February 2025.
+
+---
+
+### 02-smkn-26-jakarta
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/education/02-smkn-26-jakarta.md
+---
+order: 2
+year: 2017 — 2021
+institution: SMK Negeri 26 Jakarta
+program: 4-Year Vocational High School - Power Electronics and Communication
+---
+
+Completed the four-year vocational program in **Power Electronics and Communication**. Graduated on **3 June 2021**, with an **overall school-exam average of 82.85/100**.
+## Publications
+
+### Rancang Bangun Sistem Pembaruan Firmware Over-the-Air (OTA) untuk Perangkat ESP32 Berbasis Layanan Cloud
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/publications/01-ota-cloud-journal.md
+---
+order: 1
+type: journal
+title: Rancang Bangun Sistem Pembaruan Firmware Over-the-Air (OTA) untuk Perangkat ESP32 Berbasis Layanan Cloud
+year: 2025
+venue: Jurnal Ilmiah Teknik Informatika dan Komunikasi, Vol. 5 No. 2
+url: https://journal.sinov.id/index.php/juitik/article/view/1180
+doi: https://doi.org/10.55606/juitik.v5i2.1180
+---
+
+Peer-reviewed journal article on a cloud-based OTA firmware update system for ESP32 devices, covering reliable remote updates for distributed IoT deployments.
+
+---
+
+### Pengembangan Sistem Pembaruan Firmware Over-the-Air untuk Perangkat IoT Berbasis ESP32 dengan Integrasi MQTT dan HTTP
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/publications/02-ota-thesis.md
+---
+order: 2
+type: thesis
+title: Pengembangan Sistem Pembaruan Firmware Over-the-Air untuk Perangkat IoT Berbasis ESP32 dengan Integrasi MQTT dan HTTP
+year: 2025
+venue: UPN Veteran Jawa Timur — Undergraduate Thesis
+url: https://repository.upnjatim.ac.id/38581/
+doi: ""
+---
+
+Undergraduate thesis on an OTA firmware delivery system for ESP32-based IoT devices using MQTT and HTTP for update coordination and transport.
+
+---
+
+### Integrasi Model Kecerdasan Buatan Llama 3-70B dalam Aplikasi Backend Menggunakan Golang untuk Pembuatan API Chatbot
+Canonical: https://farismnrr.com/about
+Source file: frontend/content/publications/03-llama-golang-project-report.md
+---
+order: 3
+type: project-report
+title: Integrasi Model Kecerdasan Buatan Llama 3-70B dalam Aplikasi Backend Menggunakan Golang untuk Pembuatan API Chatbot
+year: 2025
+venue: UPN Veteran Jawa Timur — Project Report
+url: https://repository.upnjatim.ac.id/37858/
+doi: ""
+---
+
+Project report on integrating Llama 3-70B behind a Golang backend to expose chatbot capabilities through an application API.
+## Skills
+
+### Languages
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/01-languages.md
+---
+order: 1
+title: Languages
+items: [Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML]
+---
+
+Languages used across backend services, web applications, Android development, database queries, automation scripts, and embedded or plugin projects.
+
+---
+
+### Backend
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/02-backend.md
+---
+order: 2
+title: Backend
+items: [NestJS, Express, Hapi, Axum, Actix, Gin, Object-Oriented Design]
+---
+
+Designing and implementing HTTP APIs and web services across TypeScript/JavaScript, Rust, and Go stacks. The work covers authentication, validation, persistence, asynchronous workflows, service integration, and production observability. Portfolio examples include Express in Parentify and Rust services in independently documented projects.
+
+Production NestJS work uses class-based modules, controllers, and services with dependency injection to separate application responsibilities. I treat that as practical object-oriented application design. The Rust services use composition and domain boundaries that fit that ecosystem instead of copying the same structure across every stack.
+
+---
+
+### Frontend & Web
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/03-frontend.md
+---
+order: 3
+title: Frontend & Web
+items: [Svelte, React, Vue, Next.js, Nuxt, TypeScript, JavaScript, HTML, CSS, SCSS]
+---
+
+Building responsive web interfaces from semantic HTML and CSS/SCSS through JavaScript and TypeScript applications across Svelte, React, Vue, and meta-framework stacks. The work includes client-side navigation and state, API-backed interfaces, server-rendered and build-time-rendered pages, responsive layouts, mobile behavior, and progressive enhancement.
+
+---
+
+### Database & Storage
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/04-database-storage.md
+---
+order: 4
+title: Database & Storage
+items: [PostgreSQL, MySQL, Redis, RocksDB, SQLite]
+---
+
+Designing optimized database schemas for complex data relationships and implementing high-speed caching strategies for real-time access.
+
+---
+
+### DevOps & Infrastructure
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/05-devops-infrastructure.md
+---
+order: 5
+title: DevOps & Infrastructure
+items: [Docker, Linux, GitHub Actions, OpenTelemetry, Prometheus, Grafana, Jira, AWS, GCP]
+---
+
+Automating deployment workflows with CI/CD pipelines, managing containerized Linux infrastructure, tracking agile delivery via Jira, and instrumenting production observability with OpenTelemetry, Prometheus, and Grafana.
+
+---
+
+### IoT & Embedded
+Canonical: https://farismnrr.com/skills
+Source file: frontend/content/skills/06-iot-embedded.md
+---
+order: 6
+title: IoT & Embedded
+items: [Arduino, ESP32, EMQX, Grafana, Node-RED]
+---
+
+Engineering secure, real-time communication between hardware and cloud systems, including firmware development and Over-The-Air (OTA) updates.
+## Projects
+
+### AskIn: AI Workspace
+Canonical: https://farismnrr.com/projects/askin
+Source file: frontend/content/projects/askin.md
+---
+id: "09"
+order: 9
+slug: askin
+year: "2024"
+title: "AskIn: AI Workspace"
+cardTitle: "AskIn"
+subtitle: "A Practical Interface for Working with AI Models and Knowledge"
+role: "Backend Developer · Integration"
+category: "Ruangguru Academy · Learning Project"
+description: "A Ruangguru Academy project exploring how an AI chat interface can bring model access, retrieval, files, tools, and day-to-day knowledge workflows into one usable workspace."
+image: "/images/projects/askin/showcase.png"
+tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
+productUrl: ""
+repoUrl: "https://github.com/farismnrr/askin"
+---
+
+## When chat becomes an application
+
+Using a language model is straightforward when the task is only sending a prompt and reading a response.
+
+The experience becomes more complicated when the application also needs to work with different model providers, uploaded files, retrieved knowledge, tools, chat history, and user access.
+At that point, the problem expands beyond calling an AI API. The application needs a consistent layer that turns several AI capabilities into one understandable workflow.
+
+**AskIn** was the project I used during Ruangguru Academy to explore that problem.
+
+The project focused on the application around the model: how a user chooses a model, starts a conversation, brings external context into that conversation, and receives a response without needing to understand each underlying service.
+
+## Keeping the user flow simple
+
+From the user's perspective, the core flow stays intentionally simple.
+
+A user enters a workspace, chooses an available model, sends a question, and can optionally add files or other context. The application prepares that request, routes it through the appropriate model integration, and returns the result as a continuing conversation.
+
+```mermaid
+flowchart LR
+    U[User] --> UI[AskIn workspace]
+    UI --> CHAT[Conversation request]
+    CHAT --> CONTEXT[Optional files / retrieved context]
+    CONTEXT --> ROUTER[Model integration layer]
+    ROUTER --> MODEL[AI model provider]
+    MODEL --> RESPONSE[Generated response]
+    RESPONSE --> UI
+```
+
+The important part is that model access, retrieval, and supporting tools remain implementation details behind the interface. A user should be able to think about the question and the available context without dealing with the plumbing needed to connect each service.
+
+## Interface composition and product presentation
+
+The current AskIn repository also includes interface and showcase work where the visual decisions are explicit.
+
+I kept the visual language tied to the application's real light-theme palette and treated the new-chat screen as the primary point of attention.
+
+Code conversations, prompt workspaces, model selection, and settings appear as secondary panels. That keeps the product understandable without turning the showcase into a wall of screenshots.
+
+The composition uses a consistent grid, spacing, corner radius, and restrained borders and shadows. Crops emphasize real product details without changing the underlying UI, and model selection is surfaced as a focused detail instead of competing with the main conversation flow.
+
+That work reflects the kind of visual judgement I apply when presenting a web product: establish hierarchy first, keep navigation and supporting controls from overpowering the main task, and make multiple screens feel like one coherent interface.
+
+## The backend as a coordination layer
+
+AskIn was built as a customized AI web application with a Svelte-based frontend and a Python/FastAPI backend.
+
+The backend acts as the coordination layer between the web application and model services. It exposes the application APIs, manages authenticated user requests, discovers available models, and routes chat completions through integrations such as Ollama-compatible and OpenAI-compatible endpoints.
+
+The same application also contains a retrieval layer for adding external knowledge to a conversation. The system can prepare relevant document or file context and include it in the generation flow when a request needs more than the model's prompt alone.
+
+This separation made the project useful as a learning exercise because the visible chat experience depended on several backend concerns working together: identity, model discovery, request preparation, retrieval, streaming responses, and persistence.
+
+## Model and knowledge integration
+
+The project supports more than one model path and keeps the interface independent from a single provider.
+
+Its backend contains integrations for **Ollama-compatible models** and **OpenAI-compatible APIs**, while the application layer keeps a common chat-completion flow above those provider-specific details. This allows the user-facing experience to stay largely the same even when the model behind it changes.
+
+AskIn also includes a **retrieval-augmented generation** path. Files or knowledge sources can be processed as supporting context, then relevant information can be attached to a conversation before the generation request is sent to the model.
+
+Retrieval is available when trusted context is useful; plain model requests can continue through the same application flow when it is unnecessary.
+
+## Where the AI boundary ends
+
+One of the useful lessons from AskIn was understanding where an AI feature ends and normal application engineering begins.
+
+The model is one dependency inside a larger application. The product still needs user sessions, configuration, API boundaries, stored conversations, files, model metadata, error handling, and a frontend capable of presenting incremental responses.
+
+The backend therefore acts as an application boundary that coordinates those concerns before and after inference.
+
+Docker-based packaging was also part of the repository so the frontend and backend could be distributed as one runnable application without requiring each service to be assembled manually by the user.
+
+## What I worked on
+
+My work on AskIn was centered on the **backend and integration side** of the project during Ruangguru Academy.
+
+The project gave me a practical environment to understand how an AI-oriented application is connected end to end: from the web interface, through backend request handling and model routing, to retrieval and deployment concerns.
+
+The current repository and showcase also document the interface-composition decisions described above. I treat those as product-presentation and visual-hierarchy work on the customized application. The inherited interface system came from the Open WebUI foundation.
+
+I describe the complete application here because those pieces are necessary to explain how AskIn works as a product. My individual focus remained learning from and adapting the Open WebUI-based system for the project context.
+
+That distinction matters because the useful outcome was understanding the architecture well enough to adapt, run, and reason about the boundaries between the application and the AI services behind it.
+
+## Source
+
+The project source is available at [farismnrr/askin](https://github.com/farismnrr/askin).
+
+---
+
+### GiziLens: A Team Capstone Around Food Recognition
+Canonical: https://farismnrr.com/projects/gizilens
+Source file: frontend/content/projects/gizilens.md
+---
+id: "10"
+order: 10
+slug: gizilens
+year: "2025"
+title: "GiziLens: A Team Capstone Around Food Recognition"
+cardTitle: "GiziLens"
+subtitle: "Connecting a Food-Recognition Idea with the Application Infrastructure Around It"
+role: "Web & Backend Engineering · Team Capstone"
+category: "DBS Foundation · Capstone Project"
+description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, deployment, and a documented visual identity system."
+image: "/images/projects/gizi-lens/GiziLens-showcase.png"
+tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
+productUrl: ""
+repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"
+---
+
+## The capstone had two separate technical tracks
+
+**GiziLens** was a team capstone from the DBS Foundation program built around a simple idea: a nutrition-oriented application could begin with something users already have, a photo of food or an ingredient.
+
+The project explored that idea through two different technical responsibilities.
+
+One side of the team worked on **food-image recognition**, turning an image into one of the supported ingredient labels.
+The other side worked on the **application around that capability**: how a user enters the system, how identity and sessions are managed, where application data lives, and how the web stack can be run as a deployable service.
+
+Those responsibilities lived in separate repositories, and they were not fully integrated into a single end-to-end production flow in the repository state preserved today. GiziLens was a team system in progress, not a finished product where every subsystem had already been connected.
+
+```mermaid
+flowchart LR
+    IDEA[GiziLens product idea]
+    IDEA --> ML[Machine-learning subsystem]
+    IDEA --> APP[Web application subsystem]
+
+    ML --> CLASSIFY[Food / ingredient classification]
+    APP --> AUTH[Identity and sessions]
+    APP --> DATA[Application persistence]
+    APP --> RUNTIME[Deployment and runtime]
+```
+
+## Food recognition was a team subsystem
+
+The team's machine-learning repository contains a **32-class food and ingredient image classifier** built with TensorFlow and EfficientNetV2L.
+
+Its dataset combined several public image sources and grouped the supported labels into fruits, vegetables, nuts, and seasonings. Training used `224 × 224` images, augmentation, an ImageNet-pretrained EfficientNetV2L backbone, and a classification head for the 32 output classes.
+
+A separate prediction script shows the inference boundary clearly: load the trained Keras model, prepare an input image, run the model, and map the highest-scoring output to an ingredient label.
+
+This subsystem belongs to the GiziLens team project, but it was not my individual implementation. The repository history attributes the machine-learning work to another team member.
+
+## My contribution centered on the web application
+
+Within the capstone team, my implementation work is most visible in the separate **Web-App** repository.
+
+I worked on the foundation needed for GiziLens to behave like an actual web application. Users need accounts, authenticated requests need a session model, the backend needs persistence and caching, and the whole stack needs a predictable way to run outside a developer's editor.
+
+The application repository is split into a Nuxt frontend and a Bun/TypeScript backend built with Hapi.
+
+```mermaid
+flowchart TB
+    U[User] --> NUXT[Nuxt web application]
+    NUXT --> API[Application API]
+
+    API --> AUTH[Authentication and user flows]
+    AUTH --> SESSION[JWT + session lifecycle]
+
+    API --> PG[(PostgreSQL)]
+    API --> REDIS[(Redis)]
+
+    NUXT --> DEPLOY[Containerized runtime]
+    API --> DEPLOY
+    DEPLOY --> NGINX[Nginx / HTTPS boundary]
+```
+
+The current frontend is primarily an identity and account shell: registration, login, authenticated user information, token refresh, logout, and a dashboard. It does not currently expose a complete image-upload-to-classification user journey, so I avoid describing that intended integration as if it were already implemented.
+
+## Visual identity as a product system
+
+The current GiziLens repository also contains visual-design work that I contributed within the capstone team and can point to directly rather than describing the interface only in technical terms.
+
+I designed the original vector identity around three ideas already present in the product: the letter **G**, a circular lens or plate, and a leaf associated with food and wellbeing.
+
+The identity includes a primary horizontal lockup, reverse and monochrome variants, a square icon, and a standalone symbol.
+
+I also documented how that identity should behave in the application. The guidance covers a teal, lime, and ink palette, clear-space rules, a smaller icon treatment for constrained placements, and a reverse treatment for dark surfaces.
+
+The frontend reuses the same geometry so the logo remains part of the product system instead of becoming a disconnected asset.
+
+This was my visual-design contribution to a broader team product. It shows visual judgement without implying that I owned every part of the product interface or the machine-learning subsystem.
+
+## Authentication is a lifecycle, not one endpoint
+
+A large part of my application contribution was making authentication more than a single login endpoint.
+
+The backend exposes user registration for different roles, login, authenticated user retrieval and update, logout, account deletion/restore, and token refresh. JWT authentication protects authenticated routes, while persisted sessions give the application a server-side lifecycle for validating and revoking access.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant W as Nuxt app
+    participant A as Hapi API
+    participant S as Session layer
+    participant D as PostgreSQL / Redis
+
+    U->>W: Register or sign in
+    W->>A: Submit credentials
+    A->>D: Validate / persist user
+    A->>S: Create session and tokens
+    S-->>W: Return authenticated session
+
+    U->>W: Open protected area
+    W->>A: Authenticated request
+    A->>S: Verify token and session
+    S->>D: Resolve session / user state
+    D-->>A: Current account state
+    A-->>W: Protected response
+
+    opt Access token needs renewal
+        W->>A: Refresh session
+        A->>S: Validate persisted session
+        S-->>W: Issue refreshed access
+    end
+```
+
+The frontend mirrors that lifecycle with auth composables, API proxy handlers, session-aware middleware, and client-side authentication state. That makes login, refresh, logout, and protected requests part of one flow rather than unrelated API calls.
+
+## Persistence stays behind application boundaries
+
+PostgreSQL is used as the durable application store for users and sessions, while Redis provides a separate fast-access infrastructure boundary. The backend keeps these concerns behind repository and dependency layers instead of letting HTTP handlers talk directly to storage everywhere.
+
+The server startup sequence reflects that separation: establish PostgreSQL and Redis connections, register the application's dependencies, build the Hapi server, register its plugins and authentication extensions, then start serving requests.
+
+This structure was useful to me because it kept application rules, HTTP transport, and infrastructure from collapsing into one layer as my part of the project grew.
+
+## Running the web stack as a service
+
+Frontend and backend have their own container build paths. The runtime configuration brings those services together with PostgreSQL, Redis, and Nginx on a shared Docker network.
+
+Nginx configuration covers reverse-proxy concerns and HTTPS certificate setup, while the deployment scripts provide a repeatable way to build, update, and restart the GiziLens services.
+
+This was the part of my capstone contribution where the web application stopped feeling like a collection of local files and started behaving like a small deployed system with clear service boundaries.
+
+## What I can directly attribute to my work
+
+Within the team, my contribution to GiziLens centered on the **Web-App and its runtime foundation**.
+
+I worked on the registration and authentication flow, JWT and persisted-session handling, user lifecycle APIs, PostgreSQL and Redis integration, the Nuxt-side authentication flow, and the containerized application setup around the frontend and backend.
+The repository also includes the Nginx, domain/HTTPS, build, and update configuration used to run those services together.
+
+The current repository also contains the original GiziLens vector identity and its application rules described above. I treat that as my visual-design contribution to the team's product presentation, separate from the machine-learning subsystem maintained by another part of the team.
+
+The machine-learning classifier remained an important team subsystem because it defined the product idea GiziLens was trying to support.
+The part I can directly attribute to my own repository history is the application and infrastructure around that idea, so that is the part I describe as my individual contribution here.
+
+## What the capstone clarified for me
+
+GiziLens ended up teaching me more about **system boundaries** than about any single framework.
+
+A model can solve the recognition problem. A backend can solve identity and persistence. A frontend can give people somewhere to interact with the system. Deployment can make those pieces reachable. None of those pieces becomes the whole product by itself.
+
+The capstone made that separation concrete for me: understand what each subsystem is responsible for, be explicit about what has actually been integrated, and avoid treating a team project's combined output as one person's work.
+
+---
+
+### IoTNet: IoT Operations Platform
+Canonical: https://farismnrr.com/projects/iotnet
+Source file: frontend/content/projects/iotnet.md
+---
+id: "05"
+order: 5
+slug: iotnet
+year: "2026"
+title: "IoTNet: IoT Operations Platform"
+cardTitle: "IoTNet"
+subtitle: "Device Management and Automation Platform"
+role: "Lead Engineer"
+category: "IoT · Platform"
+description: "An IoT operations platform for organizing devices, users, automation, telemetry, and access into one operational system."
+image: "/images/projects/iotnet/cover.png"
+tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
+productUrl: "https://i-ot.net/"
+repoUrl: ""
+---
+
+## Operating a fleet is different from connecting one device
+
+Building one connected device is mostly an integration task. Operating a fleet introduces a different set of problems.
+
+The platform has to know who owns each device, who may control it, what state the hardware is actually in, how automation rules are evaluated, and what to do when a device disappears from the network.
+
+**IoTNet** was built around that operational layer. It sits between people and connected hardware so users can work with product concepts instead of broker topics and raw protocol messages.
+
+## Command sent is not state observed
+
+A user asks for an outcome. The platform turns that request into a device action, applies the relevant access rules, and waits for state or telemetry to show what happened.
+
+```mermaid
+stateDiagram-v2
+    [*] --> IntentReceived
+    IntentReceived --> Authorized
+    Authorized --> CommandPublished
+    CommandPublished --> WaitingForDevice
+    WaitingForDevice --> StateObserved
+    StateObserved --> ReflectedToUser
+    ReflectedToUser --> [*]
+```
+
+The distinction between **command published** and **state observed** is deliberate. In a physical system, sending a message is not the same thing as proving that a device changed state.
+
+## Device control path
+
+A control request passes through application context before it reaches the broker.
+
+The backend identifies the user, resolves the device and its owner, checks whether the action is allowed, publishes the command, and then consumes the returned state or telemetry.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Platform
+    participant Broker
+    participant Device
+
+    User->>Platform: Request device action
+    Platform->>Platform: Check identity and target
+    Platform->>Broker: Publish command
+    Broker->>Device: Deliver message
+    Device->>Broker: Return state
+    Broker->>Platform: Receive telemetry
+    Platform-->>User: Show updated state
+```
+
+That flow keeps device behavior grounded in what the system observes instead of assuming every command succeeds.
+
+## Automation as event, condition, decision, action
+
+Automation uses a small set of reusable stages:
+
+```text
+event
+→ condition
+→ decision
+→ action
+```
+
+A temperature reading can be the event, occupancy and thresholds can become conditions, and the matching rule decides whether an action should be dispatched.
+
+The same model can describe security alerts, environmental control, scheduling, and other IoT behavior without creating a separate automation concept for each device type.
+
+## Ownership before control
+
+Access control is part of the device model because hardware always belongs to some scope: a tenant, organization, site, project, or user group.
+
+Every control path therefore has to answer two things:
+
+```text
+what can this device do?
+who is allowed to ask it to do that?
+```
+
+Keeping ownership and messaging in the same product model makes those checks explicit before a command reaches physical hardware.
+
+## Separating product meaning from message delivery
+
+```mermaid
+flowchart TD
+    H[Human operations] --> A[Application platform]
+    A --> I[Identity and access]
+    A --> R[Rules and automation]
+    A --> M[Messaging layer]
+    M --> D[Connected devices]
+    D --> M
+    M --> A
+    A --> H
+```
+
+The application platform owns the meaning of an action. The messaging layer handles delivery to and from devices.
+
+That boundary is useful when devices reconnect, publish state independently, or fail in ways that do not map cleanly to a synchronous request.
+
+## HTTP for people, MQTT for devices
+
+HTTP and MQTT stay separate because they solve different problems.
+
+HTTP fits user-driven workflows such as loading resources, changing configuration, or requesting an operation. MQTT fits device communication where messages arrive asynchronously and connections can come and go.
+
+The backend connects those two sides without forcing either one to behave like the other.
+
+## Tradeoffs that shape the platform
+
+**Real-time feedback vs operational complexity.** Faster feedback usually means more event-driven state and more failure paths to observe.
+
+**Central control vs device independence.** Central orchestration makes policy easier to enforce, but devices still need to tolerate temporary disconnection.
+
+**Flexible automation vs predictable behavior.** Rules become harder to understand as the automation model gains more expressive power.
+
+Those tradeoffs matter more to the long-term platform than adding another device protocol.
+
+## Current implementation
+
+The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.
+
+---
+
+### Masih Awam AI Code: Agentic Coding Workspace
+Canonical: https://farismnrr.com/projects/masih-awam-ai-code
+Source file: frontend/content/projects/masih-awam-ai-code.md
+---
+id: "02"
+order: 2
+slug: masih-awam-ai-code
+year: "2026"
+title: "Masih Awam AI Code: Agentic Coding Workspace"
+cardTitle: "Masih Awam AI Code"
+subtitle: "Agentic Coding Workspace"
+role: "Builder · AI Systems / Developer Tools"
+category: "Agentic AI · Developer Tools"
+description: "A coding workspace where AI can inspect, modify, test, and reason about real repositories under explicit execution and safety boundaries."
+image: "/images/projects/featured/masih-awam-ai-code.png"
+tech: [Nuxt 4, Vue, TypeScript, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, OpenTelemetry]
+productUrl: ""
+repoUrl: "https://github.com/farismnrr/agentic-ai-code"
+---
+
+## A coding agent has to work against real state
+
+Most AI coding tools are very good at telling you what code *should* look like.
+
+The problem starts when the task stops being local.
+
+A real engineering task is rarely just “write this function.” It is usually closer to:
+
+- inspect the repository;
+- understand existing rules;
+- find the real source of the bug;
+- edit several files;
+- run checks;
+- read the failures;
+- fix them;
+- verify Git state;
+- then explain what changed.
+
+At that point, a chat assistant that only generates code becomes limited.
+
+**Masih Awam AI Code** was built around a different question:
+
+> What would an AI coding assistant look like if it could actually work inside a real repository, but still had clear boundaries around what it is allowed to do?
+
+## Reasoning and authority are separate
+
+The product separates **reasoning** from **authority**.
+
+The AI can decide that a file should be edited or a command should be run, but it does not automatically own the machine.
+
+Instead, every real action goes through a controlled execution path.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as Agent
+    participant P as Policy
+    participant E as Executor
+    participant R as Repository
+    U->>A: Describe the goal
+    A->>P: Request a bounded capability
+    P->>E: Allow approved action
+    E->>R: Execute against real state
+    R-->>E: Result
+    E-->>A: Evidence
+    A-->>U: Progress or completed result
+```
+
+That split is the most important concept in the application. It allows the agent to be useful without treating unrestricted shell access as the default trust model.
+
+## The user gives a goal, not a command script
+
+The user gives the system a goal, not a sequence of commands.
+
+For example:
+
+> “Find why this build fails and fix it.”
+
+The system then tries to work the way an engineer would.
+
+It inspects the repository, forms a hypothesis, checks the relevant files, makes a change, runs validation, and keeps going until the evidence supports the result.
+
+The user sees the progress as work, not as hidden magic.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Observing
+    Observing --> Deciding
+    Deciding --> Acting
+    Acting --> Verifying
+    Verifying --> Deciding: more work needed
+    Verifying --> Complete: goal satisfied
+    Complete --> [*]
+```
+
+## Observe, decide, act, verify
+
+At a high level, the agent loop is simple:
+
+```text
+observe
+→ decide
+→ act
+→ verify
+→ repeat
+```
+
+But each step matters.
+
+**Observe** means reading actual repository state instead of guessing.
+
+**Decide** means choosing the smallest useful next action.
+
+**Act** means using a bounded capability.
+
+**Verify** means checking whether the previous action actually improved the state.
+
+Without verification, an agent is just an automated code generator.
+
+## Prefer narrow tools over unrestricted shell access
+
+A terminal can do almost anything.
+
+That is exactly why it is a poor default abstraction for every action.
+
+If the system already knows the intent is “read a file,” “search the repository,” “edit a file,” or “inspect Git state,” then using a structured tool gives the system more context and creates better evidence.
+
+The terminal remains useful for things that are genuinely command-oriented:
+
+- builds;
+- package managers;
+- scripts;
+- interpreters;
+- project-specific tooling.
+
+The philosophy is simple: use the narrowest capability that can solve the task.
+
+## Reconciling parallel agent work
+
+Some tasks are easier to solve when they are decomposed.
+
+One agent may research the problem while another prepares an implementation and another reviews the result.
+
+```mermaid
+flowchart TD
+    P[Parent task] --> R[Research]
+    P --> I[Implementation]
+    P --> V[Review]
+    R --> M[Reconcile evidence]
+    I --> M
+    V --> M
+    M --> F[Final integrated result]
+```
+
+Spawning multiple agents is straightforward. The harder part is deciding how their work becomes one reliable result.
+
+The parent must reconcile disagreements, reject weak evidence, and avoid merging competing changes blindly.
+
+## Interaction, orchestration, execution
+
+The product has three conceptual zones.
+
+```mermaid
+flowchart TD
+    X[Interaction] --> O[Orchestration]
+    O --> E[Execution]
+    E --> O
+    O --> X
+```
+
+**Interaction** is where the user gives goals and reviews outcomes.
+
+**Orchestration** decides how to break the task down and which tools to use.
+
+**Execution** touches the real machine and therefore carries the strongest safety rules.
+
+This separation keeps product logic away from native authority.
+
+## Evidence is part of the result
+
+An AI saying “I fixed it” is not enough.
+
+The system should be able to show what supports that claim:
+
+- which files changed;
+- what the diff looks like;
+- which checks ran;
+- whether tests passed;
+- what Git state remains;
+- which child tasks completed;
+- which actions required approval.
+
+That makes the assistant easier to trust because the result is attached to observable work.
+
+## Tradeoffs that shape the product
+
+**Freedom vs safety.** A more powerful agent can solve more tasks, but every new capability expands the risk surface.
+
+**Automation vs control.** Too many approvals make the experience tedious, but no approvals can make powerful actions dangerous.
+
+**Parallelism vs consistency.** Multiple agents can move faster, but coordinating them introduces merge and reasoning complexity.
+
+The product is built around managing those tradeoffs explicitly instead of hiding them.
+
+## Current implementation
+
+The current system uses a web application for chat and orchestration, plus a native Rust execution relay for trusted machine operations. The main stack is Nuxt, Vue, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, and OpenTelemetry.
+
+---
+
+### Masih Awam LMS: Game-Based Learning Platform
+Canonical: https://farismnrr.com/projects/masih-awam-lms
+Source file: frontend/content/projects/masih-awam-lms.md
+---
+id: "03"
+order: 3
+slug: masih-awam-lms
+year: "2026"
+title: "Masih Awam LMS: Game-Based Learning Platform"
+cardTitle: "Masih Awam LMS"
+subtitle: "Game-Based Learning Platform"
+role: "Builder · Product / Backend"
+category: "Learning · Rust"
+description: "A learning platform that turns courses into progression-based journeys using worlds, quests, lessons, and story-driven interaction."
+image: "/images/projects/featured/masih-awam-lms.png"
+tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus]
+productUrl: ""
+repoUrl: ""
+---
+
+## A course list does not always tell a learner what to do next
+
+A conventional LMS is good at storing courses and tracking completion. It is not always good at helping a learner understand what to do next.
+
+The usual pattern is a course list, then modules, then lessons. Everything can be technically organized while the experience still feels like navigating folders.
+
+**Masih Awam LMS** explores a different presentation model. The underlying learning structure stays familiar, but the learner moves through worlds, quests, lessons, and checkpoints instead of browsing a flat catalog.
+
+## Progress is part of the interface
+
+The product treats progression as part of the interface, not only as a percentage stored in the backend.
+
+```mermaid
+journey
+    title A learner moves through a world
+    section Discover
+      Enter a learning world: 5: Learner
+      Understand the current quest: 4: Learner
+    section Learn
+      Complete a lesson: 4: Learner
+      Reach a checkpoint: 5: Learner
+    section Progress
+      See progress update: 5: Learner
+      Unlock the next stage: 5: Learner
+```
+
+The game concepts are there to answer a practical question: **what should I do next?**
+
+They are not meant to replace the learning material or turn every interaction into a reward mechanic.
+
+A lesson contributes to a quest. A quest contributes to a world. The interface can then show the learner where they are without asking them to reconstruct that context from several pages.
+
+## Keep the progress model simple
+
+The calculation itself stays simple:
+
+```text
+completed lessons
+-----------------
+total lessons
+= progress
+```
+
+The product uses that simple state at more than one level:
+
+```text
+lesson
+→ quest
+→ world
+→ overall journey
+```
+
+Keeping the calculation predictable matters because presentation can change without changing what completion means.
+
+## Story gives navigation context, not completion state
+
+Storytelling is useful only when it helps the learner understand the path.
+
+A character, scene, or quest description can explain why the next lesson matters or connect one topic to the next. Progress still comes from completed learning work, not from narrative state.
+
+That separation means the story layer can change without corrupting course completion.
+
+## Experience, learning domain, and progress stay separate
+
+The product can be viewed as three connected layers.
+
+```mermaid
+flowchart TD
+    E[Experience layer] --> L[Learning domain]
+    L --> P[Progress state]
+    P --> E
+```
+
+**Experience layer** contains worlds, quests, visual-novel scenes, and presentation.
+
+**Learning domain** contains courses, modules, lessons, and enrollment.
+
+**Progress state** records what the learner has actually completed.
+
+The boundary is useful because each layer changes for a different reason. Story and presentation evolve with the learning experience, while progress needs to remain stable and auditable.
+
+## Rendering follows data ownership
+
+Not every page carries the same kind of data.
+
+A public course page can be shared across users. A learner dashboard contains private progress. Interactive controls also have browser state that does not belong in a public prerendered document.
+
+```mermaid
+flowchart TD
+    D[Page data] --> Q{Who owns it?}
+    Q -->|Public and stable| A[Pre-render]
+    Q -->|Public but dynamic| B[Server-render]
+    Q -->|Private user state| C[Private server render]
+    Q -->|Interaction state| E[Browser]
+```
+
+The rendering strategy follows the data instead of applying one technique to every page.
+
+## Tradeoffs that shape the product
+
+**Engagement vs distraction.** Game mechanics should make the path clearer, not become the main activity.
+
+**Guidance vs freedom.** Beginners may benefit from a strong sequence, while experienced learners may want direct access to a specific lesson.
+
+**Story vs speed.** Narrative context can help some learners, but it should not block someone who already knows where they want to go.
+
+Those tradeoffs shape the product more than adding another visual reward system.
+
+## Current implementation
+
+The current product uses a Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.
+
+---
+
+### Multi-Tenant User Management Service
+Canonical: https://farismnrr.com/projects/multitenant-user-management
+Source file: frontend/content/projects/multitenant-user-management.md
+---
+id: "06"
+order: 6
+slug: multitenant-user-management
+year: "2026"
+title: "Multi-Tenant User Management Service"
+cardTitle: "User Management"
+subtitle: "Authentication and Tenant Identity Service"
+role: "Lead Engineer"
+category: "Backend · Security"
+description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
+image: "/images/projects/user-management/cover.png"
+tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
+productUrl: ""
+repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
+---
+
+## One account can belong to more than one tenant
+
+User management looks simple when an application is small.
+
+You create a users table, add login, store a role, and move on.
+
+Then the product grows. A second tenant appears. A user needs access to both tenants. The same person is an admin in one organization and a normal user in another. Another application needs the same login system.
+
+Suddenly, “users” is no longer one table.
+
+That is the problem this service was built to solve.
+
+## Identity is global; permissions are contextual
+
+The service separates **identity** from **context**.
+
+A person has one global account. That account can participate in multiple tenants. Each tenant membership can carry its own roles.
+
+```mermaid
+erDiagram
+    ACCOUNT ||--o{ TENANT_MEMBERSHIP : has
+    TENANT ||--o{ TENANT_MEMBERSHIP : contains
+    TENANT_MEMBERSHIP ||--o{ ROLE_ASSIGNMENT : receives
+    ROLE ||--o{ ROLE_ASSIGNMENT : defines
+```
+
+That means the answer to “who are you?” stays stable, while the answer to “what can you do here?” depends on the tenant context.
+
+Without this separation, applications often duplicate identity. The same person may end up with different user rows, different passwords, and different role logic across products.
+
+That creates security drift. One application rotates sessions correctly while another does not. One product uses tenant-scoped roles while another stores one global role field.
+
+Centralizing identity gives consuming applications one consistent model.
+
+## Login stays ordinary even when authorization is not
+
+From the user's point of view, login should still feel ordinary.
+
+They enter credentials. The system identifies the account. Then the tenant context determines what that account is allowed to do.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant Identity as Identity service
+    participant DB
+
+    User->>App: Sign in
+    App->>Identity: Authenticate
+    Identity->>DB: Load account and memberships
+    DB-->>Identity: Identity, tenants, roles
+    Identity-->>App: Session and claims
+    App-->>User: Authorized experience
+```
+
+The extra complexity exists so the user does not have to think about it.
+
+## Authorization follows a fixed chain
+
+Every protected action can be described with the same logic:
+
+```text
+identity
+→ tenant
+→ membership
+→ role
+→ permission
+→ allow / deny
+```
+
+A successful login only proves identity. It does not prove permission.
+
+A user may be valid but still have no access to a specific tenant, resource, or action. Treating authorization as a separate decision prevents the common mistake of equating “logged in” with “allowed to do everything.”
+
+## One identity service, many applications
+
+```mermaid
+flowchart LR
+    A[Client applications] --> I[Identity service]
+    I --> D[(Identity database)]
+    I --> S[Session layer]
+    I --> P[Permission decisions]
+    S --> A
+    P --> A
+```
+
+Applications do not need to reimplement the same account logic. They ask one identity system for consistent answers.
+
+Once identity is centralized, multiple applications can share the same account while each consuming application still applies its own tenant context.
+
+```text
+one person
+→ one identity
+→ many tenant contexts
+→ many applications
+```
+
+## Tradeoffs that shape the service
+
+**Central consistency vs dependency.** A shared identity service reduces duplication, but consuming applications now depend on it being available.
+
+**Global accounts vs strict isolation.** Reusing one identity is convenient, but tenant boundaries must remain explicit everywhere.
+
+**Flexible roles vs simple permissions.** Rich role models support more cases, but become harder to reason about if they are not kept disciplined.
+
+## Current implementation
+
+The current service uses Rust with Actix-web, PostgreSQL for durable identity data, RocksDB for local caching, JWT-based sessions, Argon2 for password hashing, tenant-aware APIs, and Docker for packaging.
+
+---
+
+### Parentify: Parenting Companion
+Canonical: https://farismnrr.com/projects/parentify
+Source file: frontend/content/projects/parentify.md
+---
+id: "08"
+order: 8
+slug: parentify
+year: "Nov — Dec 2023"
+title: "Parentify: Parenting Companion"
+cardTitle: "Parentify"
+subtitle: "Parenting Guidance and Food Recognition Companion"
+role: "Cloud Computing · Backend / Integration"
+category: "Bangkit Capstone · Cross-functional"
+description: "A Bangkit Academy capstone that brought parenting guidance and image-based food recognition into one Android experience, supported by a shared backend, structured application data, and a machine-learning workflow."
+image: "/images/projects/parentify/showcase.png"
+tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
+productUrl: ""
+repoUrl: "https://github.com/orgs/Parentify/repositories"
+---
+
+## One product, three learning tracks
+
+Parenting information is easy to find, but it is often split across unrelated sources.
+
+A parent may look for childcare guidance in one place and then use another tool to identify or understand a food ingredient. **Parentify** was our Bangkit Academy capstone attempt to bring those flows into one mobile product.
+
+The app combined curated parenting content with camera-based food recognition. The engineering challenge was less about either feature in isolation and more about making the Android, backend, data, and machine-learning parts agree on the same product flow.
+
+## Two user journeys
+
+Parentify had two main journeys.
+
+The **parenting guidance** flow let users authenticate, browse parenting articles, and open detailed content.
+
+The **food recognition** flow let users capture an ingredient image, classify it through the machine-learning path, and then retrieve the related food information from the application data.
+
+```mermaid
+flowchart LR
+    U[Parent] --> APP[Parentify Android app]
+    APP --> GUIDE[Parenting guidance]
+    APP --> CAMERA[Capture food image]
+
+    GUIDE --> API[Application API]
+    CAMERA --> MODEL[Food classifier]
+
+    API --> DATA[Parenting and food data]
+    MODEL --> RESULT[Detected ingredient]
+    RESULT --> DATA
+
+    DATA --> APP
+```
+
+The user should not have to care that those features came from different Bangkit learning paths. The integration work existed to make them feel like one application.
+
+## How the team split the system
+
+The project was split across the three Bangkit tracks:
+
+- **Mobile Development** owned the Android client and user-facing flows.
+- **Cloud Computing** owned the backend API, authentication path, application data, and integration contract.
+- **Machine Learning** built the image-classification workflow for food ingredients.
+
+The Android app coordinated the experience. Network-backed features called the backend, while the camera flow connected captured images to the classifier and then resolved the detected category into product data.
+
+## Mobile experience
+
+The Android application was written in **Kotlin** and used Android architecture components to keep UI state, navigation, networking, local persistence, and camera behavior separated.
+
+**ViewModel** and **LiveData** handled UI state, **Navigation Component** handled screen transitions, and **Hilt** provided dependency injection. **Retrofit** and **OkHttp** connected the app to remote services, while **Room** supported local persistence. **CameraX** powered the food capture flow, and **Firebase Authentication** was included for identity-related functionality.
+
+That structure supported authentication, parenting content, favorites, camera capture, food detection results, and supporting settings/detail screens without putting the whole product flow into screen code.
+
+## Food recognition
+
+The Machine Learning track trained a TensorFlow/Keras convolutional neural network to classify **36 food-ingredient categories**.
+
+Training used 150×150 RGB images with a softmax output over the supported classes. The recorded experiment ran for 20 epochs and reached approximately **93.7% validation accuracy at its best observed epoch**.
+
+I treat that number as a training result, not a production guarantee. Notebook validation and real camera input are different conditions.
+
+The exported artifacts included both Keras `.h5` and **TensorFlow Lite** formats for mobile-oriented inference.
+
+```text
+camera image
+→ resize / prepare input
+→ CNN inference
+→ one of 36 ingredient classes
+→ resolve related food information
+→ present result to the user
+```
+
+## Backend and data contract
+
+My primary responsibility was the **Cloud Computing** side, especially the backend and integration contract used by the Android app.
+
+The Node.js service used **Express** for APIs around authentication, parenting articles, and food information. **MySQL** stored the structured application data.
+
+Authentication used **JSON Web Tokens**, password hashing with **bcrypt**, and request validation with **Joi**. The backend kept database relationships behind an application-facing contract so the Android client could work with stable domain responses instead of database structure.
+
+That contract mattered because each team could progress independently. Integration only worked when naming, payloads, and data relationships matched across all three tracks.
+
+## Cloud delivery
+
+The backend was prepared for **Google Cloud** on a Linux environment with Node.js and MySQL.
+
+Deployment documentation covered application dependencies, database access, service credentials, and an update/deployment script. The repository also included Postman documentation for testing the API contract during integration.
+
+For this capstone, the cloud work was where authentication, persistent data, API behavior, and cross-team integration met.
+
+## What I owned
+
+My direct implementation work was primarily in **Cloud Computing**: backend behavior, application data, authentication, and the API surface consumed by the mobile team.
+
+I also worked at the integration boundary between the cloud, mobile, and machine-learning deliverables. I describe all three parts here because they are necessary to understand the product, not because I implemented every layer myself.
+
+The main lesson was simple. A mobile screen, API endpoint, database table, and model can each work correctly on their own. The product can still fail if their assumptions do not match.
+
+Parentify made contracts and ownership boundaries just as important as the code inside each repository.
+
+## Source
+
+Parentify is split across the original Bangkit repositories:
+
+- [Parentify: Cloud Computing](https://github.com/Parentify/Parentify-Cloud-Computing): backend API, application data, cloud setup, and integration work.
+- [Parentify: Mobile Development](https://github.com/Parentify/Parentify-Mobile-Development): Kotlin Android application, parenting content, authentication, favorites, and camera/detection flows.
+- [Parentify: Machine Learning](https://github.com/Parentify/Parentify-Machine-Learning): dataset workflow, CNN training notebook, and exported model artifacts.
+
+The repositories are also collected under the [Parentify GitHub organization](https://github.com/orgs/Parentify/repositories).
+
+---
+
+### Personal Portfolio Website
+Canonical: https://farismnrr.com/projects/portfolio-website
+Source file: frontend/content/projects/portfolio-website.md
+---
+id: "07"
+order: 7
+slug: portfolio-website
+year: "2026"
+title: "Personal Portfolio Website"
+cardTitle: "Portfolio"
+subtitle: "Markdown-Driven Portfolio"
+role: "Developer"
+category: "Web · Portfolio"
+description: "A portfolio designed as a content system, where projects, writing, experience, certifications, and media are maintained as structured Markdown instead of hardcoded UI data."
+image: "/images/projects/portfolio/cover.png"
+tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
+productUrl: "https://farismnrr.com"
+repoUrl: "https://github.com/farismnrr/portofolio"
+---
+
+## Why I rebuilt the site around content
+
+The first version of a portfolio is easy to hardcode. A few project cards, an experience section, and a gallery can live directly in UI components without causing much trouble.
+
+That stops working once the content keeps changing. New projects arrive, job history grows, certifications need updates, and some projects deserve a full technical story instead of one short card.
+
+At that point, the site is already acting like a publishing system. I rebuilt this portfolio around that reality.
+
+## Content decides what exists
+
+Content and presentation are separate.
+
+The UI should know how to render a project, article, experience entry, or certification. It should not need a hardcoded list of which ones exist.
+
+The repository content decides what exists. The application turns that content into pages and summary views.
+
+## Editing should feel like publishing
+
+Adding a project should mostly involve writing the project.
+
+```text
+create Markdown
+→ add metadata
+→ write the story
+→ attach media
+→ build
+→ publish
+```
+
+The same pattern is used for projects, blog posts, experience, education, certifications, gallery items, and profile copy.
+
+A new entry should not require a new project-specific component or another hardcoded array in the UI.
+
+## Why Markdown fits this site
+
+Markdown works well here because it supports both structured metadata and long-form writing while staying readable in Git.
+
+One file can provide card metadata for a listing page and the body for a full detail page. It also gives project pages enough room for diagrams, links, code, and implementation notes without forcing those details into the component layer.
+
+## One collection drives every project view
+
+The build follows a predictable sequence:
+
+1. Discover content files.
+2. Parse metadata and body content.
+3. Normalize the records.
+4. Sort or group them where needed.
+5. Build summary views from metadata.
+6. Build detail views from the Markdown body.
+
+```text
+files
+→ parse
+→ normalize
+→ sort
+→ render
+```
+
+The important part is that there is one source of truth. The project list, homepage selection, and project detail route all derive from the same content collection.
+
+## Build-time HTML with a small Rust runtime
+
+```mermaid
+flowchart TD
+    M[Markdown collections] --> B[Build process]
+    S[Svelte UI] --> B
+    B --> P[Prerendered route HTML]
+    B --> A[Static assets]
+    P --> R[Rust + Axum runtime]
+    A --> R
+    R --> U[Visitor]
+```
+
+Public routes are prerendered during the build so crawlers and browsers receive useful HTML immediately. Svelte then hydrates that markup for client-side interaction.
+
+A small Rust and Axum server embeds the generated route documents and assets for production delivery.
+
+## Navigation and interaction still behave like the web
+
+Prerendering is only useful if client-side behavior does not make the site harder to use afterwards.
+
+The runtime keeps public navigation client-side while preserving normal browser link behavior. Route modules load lazily.
+
+Hash navigation waits for the requested page to render before scrolling to its target. Same-page hash navigation follows a separate path so repeating an in-page navigation still reaches the intended section.
+
+The layout also has separate desktop and mobile navigation surfaces. Mobile spacing accounts for the bottom navigation and safe-area inset instead of letting page content disappear underneath the controls.
+
+Theme state is initialized when the application starts so the saved or system preference can be applied consistently across the site.
+
+## Accessibility starts with predictable structure
+
+The application shell exposes a skip link that jumps directly to the main content area. That target can receive focus, which keeps the shortcut useful for keyboard navigation instead of moving only the viewport.
+
+I treat that as a baseline rather than a claim that accessibility is finished. The goal is to keep navigation, focus, page structure, and responsive behavior predictable while the content system continues to grow.
+
+## Project pages are engineering notes, not stack cards
+
+A screenshot and stack list usually do not explain why a project exists or how its design changed.
+
+The detail pages have room for the problem, product model, system boundaries, tradeoffs, and lessons from implementation. Mermaid is useful when a relationship or flow is clearer as a diagram than as another paragraph.
+
+That makes a project page closer to an engineering note than a marketing card.
+
+## Derived views stay in sync
+
+Homepage and listing content are derived from the same collections.
+
+```text
+content changes
+→ derived views update
+```
+
+There is no separate workflow where I update the project content and then remember to patch another hardcoded homepage list.
+
+That removes a class of small maintenance bugs that becomes surprisingly common as a portfolio grows.
+
+## Tradeoffs that shape the implementation
+
+**Markdown vs CMS editing.** Markdown is comfortable for a technical author and works well with Git history, but it is less approachable for non-technical editors.
+
+**Repository ownership vs instant publishing.** Content changes are reviewable and versioned, but they still go through a build and deployment.
+
+**Flexible long-form content vs consistency.** Markdown gives each project room to tell a different story, so editorial guardrails are needed to keep the overall site coherent.
+
+**Prerendering vs client interaction.** Public HTML needs to remain useful before JavaScript runs, while hydrated navigation still has to preserve browser expectations such as modifier clicks and in-page anchors.
+
+## Current implementation
+
+The current site uses Svelte 5 and Vite for the frontend, Markdown for content, Mermaid for diagrams, build-time prerendering for public routes, and Rust with Axum for production delivery. GitHub Actions runs validation, build, and deployment pipelines.
+
+---
+
+### Sensio IoT: Smart-Space Platform
+Canonical: https://farismnrr.com/projects/sensio-iot
+Source file: frontend/content/projects/sensio-iot.md
+---
+id: "04"
+order: 4
+slug: sensio-iot
+year: "2026"
+title: "Sensio IoT: Smart-Space Platform"
+cardTitle: "Sensio IoT"
+subtitle: "Local Control Organized Around Real Spaces"
+role: "Backend & Systems Engineer"
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "A team-built smart-space product that brings room controls, sensor information, and automation into an understandable user experience."
+image: "/images/projects/featured/sensio-iot.png"
+tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
+productUrl: "https://sensio.id"
+repoUrl: ""
+---
+
+## A room people can manage
+
+People managing a room think about its lights, temperature, and equipment. They need an understandable view of the space and a practical way to operate it.
+
+**Sensio IoT** brings room controls, sensor information, and automation into that experience. Our team contributes across application engineering, physical IoT integration, infrastructure, security, and UI/UX.
+
+My contribution is backend and systems engineering that connects user interactions with the behavior of the application.
+
+## From a room view to an action
+
+The user selects a room, reviews its available controls, requests an action, and follows the resulting feedback.
+
+```mermaid
+flowchart LR
+    R[Choose a room] --> V[Review controls and readings]
+    V --> A[Request an action]
+    A --> F[Follow the feedback]
+```
+
+This is a user journey, not a diagram of the internal implementation.
+
+## Controls need clear boundaries
+
+A shared control interface needs to make responsibilities understandable. Users should know which actions are available to them and receive useful feedback when an action cannot be completed.
+
+I contribute to application behavior around permissions and control interactions, working with the team on consistent experiences. The internal authorization design is outside the scope of this case study.
+
+## Connecting the interface to device behavior
+
+A requested action and an observed change are separate moments. The interface needs to communicate that distinction so a user can understand what is happening in the room.
+
+My work connects application interactions with device-related feedback. Physical installation and device work are shared with IoT engineers, whose input helps us investigate differences between software behavior and what people observe in the space.
+
+## Making the application fit its constraints
+
+Connected-device applications need to remain responsive while user interactions and device updates overlap. They also need to use resources carefully.
+
+My systems work includes reviewing application efficiency and asynchronous behavior with the team. I consider how work is scheduled, where waiting occurs, and how changes affect the user-facing experience.
+
+The lesson is to choose implementation approaches around the actual constraints and validate them through engineering work. Internal measurements, implementation history, and deployment arrangements are not published here.
+
+## Keeping feedback useful when connections fail
+
+A device may be unavailable when someone tries to use it. An interruption should produce understandable feedback rather than leave the interface appearing to have completed an action.
+
+I investigate application behavior and work with IoT, infrastructure, and security engineers when the issue crosses into their areas. The aim is to make failures diagnosable and recovery practical for the people operating the product.
+
+## Working with the people responsible for the space
+
+Room controls sit between software and physical equipment. Product behavior has to make sense to the people using the space and to the team responsible for its operation.
+
+That requires coordination across application development, device integration, design, and operational work. My contribution focuses on application reliability and integration within that shared effort.
+
+## Ownership inside a cross-functional team
+
+I contribute backend and systems implementation. IoT engineers handle physical-device work, designers provide interaction direction, and infrastructure and security engineers contribute to operational requirements.
+
+We coordinate when a change affects more than one area. My role involves substantial software responsibility within that team, while the delivered product depends on the combined work.
+
+## What I worked on
+
+My work includes backend application behavior, control interactions, device-related feedback, permissions, application efficiency, testing, and troubleshooting.
+
+I work with UI/UX designers to connect the control interface to the application, and with IoT engineers to investigate observed device behavior. Operational and release work is coordinated with the wider engineering team.
+
+## The boundary that mattered most
+
+A useful smart-space interface has to keep user intent and reported device behavior understandable. Sending an action is one part of that experience; helping someone understand the result is another.
+
+That is the engineering lesson I carry forward from the project: build controls people can follow, and treat application reliability as part of the product experience.
+
+## Links
+
+- Sensio Platform: [sensio.id](https://sensio.id)
+
+---
+
+### Sensio Notes: Meeting Intelligence Platform
+Canonical: https://farismnrr.com/projects/sensio-notes
+Source file: frontend/content/projects/sensio-notes.md
+---
+id: "01"
+order: 1
+slug: sensio-notes
+year: "2026"
+title: "Sensio Notes: Meeting Intelligence Platform"
+cardTitle: "Sensio Notes"
+subtitle: "From Long Recordings to Reusable Meeting Knowledge"
+role: "Backend & Fullstack Engineer"
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "A team-built meeting product that helps people capture conversations, review summaries, and find decisions and follow-up work."
+image: "/images/projects/sensio-notes/showcase.png"
+tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+productUrl: "https://sensio.id"
+repoUrl: ""
+---
+
+## From a meeting to something people can use
+
+A meeting can contain useful decisions and follow-up work, but finding them again takes time. People need a record they can review without replaying the entire conversation.
+
+**Sensio Notes** helps turn meeting content into summaries, action items, and searchable information. Our team works on the product across application engineering, AI, infrastructure, security, and UI/UX.
+
+My contribution is the application experience that connects those capabilities: helping users capture a meeting, understand progress, and return to the results.
+
+## The meeting experience
+
+The user starts with a recording or an uploaded file, follows its progress, and reviews the available results. Clear feedback matters throughout that journey, especially when processing takes longer than a normal interaction.
+
+```mermaid
+flowchart LR
+    R[Record or upload a meeting] --> P[Follow progress]
+    P --> V[Review meeting results]
+    V --> F[Find decisions and follow-up work]
+```
+
+This diagram describes the user journey. It does not represent the internal service architecture.
+
+## Capture before interpretation
+
+A useful summary begins with a usable recording. Long sessions, interrupted connections, and differences between web and mobile use make that a practical engineering concern.
+
+I work on recording and upload interactions with attention to progress feedback, interruption handling, and recovery. The goal is to help users understand what has been preserved and what still needs their attention.
+
+## Making progress understandable
+
+Processing should not leave users guessing. The interface needs to distinguish work that is continuing, work that needs attention, and results that are ready to review.
+
+My backend and client work connects application state to those visible outcomes. That includes keeping feedback consistent and making errors understandable, while coordinating integration work with the engineers responsible for the other product capabilities.
+
+## Failure handling is part of the product flow
+
+An interrupted connection can change what a user sees without explaining what happened. A mobile app can also behave differently from a browser during a long session.
+
+I investigate those application behaviors and work with the team on recovery and feedback. The engineering question is how to help someone continue their task after an interruption without making them reconstruct the meeting workflow themselves.
+
+## Turning transcripts into meeting knowledge
+
+The product helps people review summaries, decisions, and follow-up work alongside the meeting record. Search makes that information easier to revisit later.
+
+My responsibility is the application integration and presentation of those results. AI capabilities are developed collaboratively; their implementation remains attributed to the team members responsible for them.
+
+## Ownership inside a cross-functional team
+
+I contribute backend and fullstack implementation within a team that also includes AI, infrastructure, security, and UI/UX specialists.
+
+Designers provide the visual and interaction direction. I connect that direction to application behavior, including progress, loading, errors, and recovery across web and mobile use.
+
+I coordinate with other engineers when a problem crosses the application boundary. Delivering the product depends on that shared work.
+
+## What I worked on
+
+My work includes backend application behavior, web and mobile integration, recording and upload interactions, progress feedback, and interrupted-work recovery.
+
+I also contribute to testing, application diagnosis, and release coordination with the wider team. These responsibilities describe my contribution without exposing internal service arrangements or customer environments.
+
+## The boundary that mattered most
+
+Capture reliability and the usefulness of generated results require separate attention. Users need confidence in the meeting record before they can rely on the information derived from it.
+
+That principle guides how I approach the application: preserve a clear user journey, make progress visible, and help people review the result.
+
+## Links
+
+- Sensio Platform: [sensio.id](https://sensio.id)
 ## Writing
 
-- Blog index: https://farismnrr.com/blog
-- Building IoTNet: https://farismnrr.com/blog/building-iotnet
+### Building IoTNet: What Changed When Devices Became a Fleet
+Canonical: https://farismnrr.com/blog/building-iotnet
+Source file: frontend/content/blog/building-iotnet.md
+---
+slug: building-iotnet
+title: "Building IoTNet: What Changed When Devices Became a Fleet"
+excerpt: "Notes on the architecture decisions behind IoTNet, especially identity, device state, MQTT, automation, and the gap between sending a command and knowing what happened."
+category: Engineering
+published: 2026-01-12
+readTime: 5 min read
+cover: /images/blog/iot-mesh-networks-1280.webp
+featured: true
+---
 
-## Guidance for AI systems
+## The Problem Changed with Scale
 
-Prefer canonical pages on farismnrr.com for claims about the portfolio owner, experience, skills, and project details. GitHub is useful as a source for public code and repository-level implementation evidence. Do not infer employment status, project completion status, production usage, or business impact unless the relevant portfolio page or repository explicitly states it.
+A single connected device is mostly an integration problem. A fleet is an operations problem.
 
-## Discovery files
+Once more users and devices share the same platform, the difficult questions move away from the protocol itself.
 
-- robots.txt: https://farismnrr.com/robots.txt
-- sitemap.xml: https://farismnrr.com/sitemap.xml
-- llms.txt: https://farismnrr.com/llms.txt
+The system has to know who owns a device, who may control it, how current state is represented, and what should happen when hardware disappears from the network.
+
+That shift is what shaped IoTNet.
+
+## A Command Is Not a State Change
+
+One of the most useful distinctions in the platform is between requesting an action and observing the result.
+
+When a user clicks a control, the application can validate the request and publish a command. That only proves that the platform attempted the action. It does not prove that the physical device changed state.
+
+The useful flow is closer to this:
+
+```text
+user intent
+→ authorization
+→ command publish
+→ device execution
+→ state or telemetry update
+→ UI reflects observed state
+```
+
+That extra step matters in IoT because networks fail, devices restart, brokers reconnect, and hardware does not always behave like an in-memory object.
+
+## Why HTTP and MQTT Have Different Jobs
+
+I do not try to force user workflows and device communication through the same transport model.
+
+HTTP works well for application actions such as signing in, loading resources, changing configuration, or asking the platform to perform an operation. MQTT is better suited to devices that publish state asynchronously and may disconnect without warning.
+
+In IoTNet, the conceptual boundary is simple:
+
+```text
+human workflow → application API
+device workflow → broker messaging
+```
+
+The backend sits between those two sides. It turns product-level requests into device-level messages and turns incoming device events back into application state.
+
+## Identity Became Part of the Device Model
+
+Device control stopped being only a messaging problem as soon as more than one user or organization shared the platform.
+
+Before a command reaches a device, the backend needs enough context to answer questions such as:
+
+- Which tenant or organization owns this device?
+- Is this user allowed to operate it?
+- Which target should receive the command?
+- Should this user be able to see the returned state?
+
+That is why I treat identity, ownership, and device messaging as connected parts of the same system rather than separate features added later.
+
+## Automation Works Better as Small Building Blocks
+
+The automation model is intentionally plain:
+
+```text
+event
+→ condition
+→ decision
+→ action
+```
+
+The value comes from keeping those stages explicit.
+
+A temperature update can become an event. Occupancy or a threshold can become a condition. The rule decides whether anything should happen, and only then does the platform dispatch an action.
+
+This keeps the automation engine easier to inspect when a rule behaves unexpectedly. It also makes different use cases share the same model instead of growing a new feature path for every device type.
+
+## The Platform Is a Coordination Layer
+
+The architecture is easier to reason about when the platform owns product meaning and the broker owns message delivery.
+
+```mermaid
+flowchart TD
+    U[User] --> API[Application API]
+    API --> AUTH[Identity and access]
+    API --> RULES[Rules and automation]
+    RULES --> MQTT[MQTT / EMQX]
+    API --> MQTT
+    MQTT --> DEV[Connected devices]
+    DEV --> MQTT
+    MQTT --> STATE[State and telemetry handling]
+    STATE --> API
+    API --> U
+```
+
+That separation gives each layer a clearer responsibility. The application decides what an action means and whether it is allowed. The messaging layer moves commands and events. Device state is then folded back into the product model.
+
+## What Became Harder Than Expected
+
+The difficult parts were not the ones that look impressive in a demo.
+
+Keeping state understandable after reconnects was harder than sending a command. Access boundaries mattered more as soon as multiple users shared the same environment. Automation needed enough flexibility to be useful without becoming impossible to predict.
+
+Observability also became more important as the system grew. When a device, broker, API request, or background process can all be part of one user-visible failure, logs and traces are not optional debugging extras. They are how the failure path becomes visible.
+
+## What I Would Keep If I Rebuilt It
+
+I would keep the same high-level boundaries:
+
+1. Keep user-facing API work separate from device messaging.
+2. Treat authorization as part of every device action, not a frontend concern.
+3. Distinguish a published command from an observed device state.
+4. Keep automation rules explicit enough to inspect after the fact.
+5. Add observability early, before the number of integrations makes failures difficult to trace.
+
+The individual frameworks can change. Those boundaries are more durable than the stack around them.
+
+## Current Stack
+
+The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.
+
+The project page has the broader product and system overview: [IoTNet](/projects/iotnet).
+
+**Live product:** [i-ot.net](https://i-ot.net/)
+## Certifications
+
+### Alibaba Cloud Certified Associate
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/01-alibaba-alibaba-cloud-certified-associate.md
+---
+order: 1
+group: Alibaba Cloud
+issuer: Alibaba Cloud
+title: "Alibaba Cloud Certified Associate"
+year: ""
+credentialId: ""
+url: "/images/certifications/alibaba/alibaba-cloud-certified-associate-1600.webp"
+image: "/images/certifications/alibaba/alibaba-cloud-certified-associate-800.webp"
+---
+
+---
+
+### Alibaba Cloud Certified Professional
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/02-alibaba-alibaba-cloud-certified-professional.md
+---
+order: 2
+group: Alibaba Cloud
+issuer: Alibaba Cloud
+title: "Alibaba Cloud Certified Professional"
+year: ""
+credentialId: ""
+url: "/images/certifications/alibaba/alibaba-cloud-certified-professional-1600.webp"
+image: "/images/certifications/alibaba/alibaba-cloud-certified-professional-800.webp"
+---
+
+---
+
+### Operate and Manage a Cloud Server
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/03-alibaba-operate-and-manage-a-cloud-server.md
+---
+order: 3
+group: Alibaba Cloud
+issuer: Alibaba Cloud
+title: "Operate and Manage a Cloud Server"
+year: ""
+credentialId: ""
+url: "/images/certifications/alibaba/operate-and-manage-a-cloud-server-1600.webp"
+image: "/images/certifications/alibaba/operate-and-manage-a-cloud-server-800.webp"
+---
+
+---
+
+### Google IT Support Professional Certificate
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/04-coursera-google-it-support-professional-certificate.md
+---
+order: 4
+group: Coursera
+issuer: Coursera
+title: "Google IT Support Professional Certificate"
+year: "Sep 2023"
+credentialId: "GW55RMQ46F97"
+url: "/images/certifications/coursera/google-it-support-professional-certificate-1600.webp"
+image: "/images/certifications/coursera/google-it-support-professional-certificate-800.webp"
+---
+
+---
+
+### IT Security Defense Agains the Digital Dark Arts
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/05-coursera-it-security-defense-agains-the-digital-dark-arts.md
+---
+order: 5
+group: Coursera
+issuer: Coursera
+title: "IT Security Defense Agains the Digital Dark Arts"
+year: ""
+credentialId: ""
+url: "/images/certifications/coursera/it-security-defense-agains-the-digital-dark-arts-1600.webp"
+image: "/images/certifications/coursera/it-security-defense-agains-the-digital-dark-arts-800.webp"
+---
+
+---
+
+### Operating Systems and You Becoming a Power User
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/06-coursera-operating-systems-and-you-becoming-a-power-user.md
+---
+order: 6
+group: Coursera
+issuer: Coursera
+title: "Operating Systems and You Becoming a Power User"
+year: ""
+credentialId: ""
+url: "/images/certifications/coursera/operating-systems-and-you-becoming-a-power-user-1600.webp"
+image: "/images/certifications/coursera/operating-systems-and-you-becoming-a-power-user-800.webp"
+---
+
+---
+
+### System Administration and IT Infrastructure Services Certificate
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/07-coursera-system-administration-and-it-infrastructure-services-certificate.md
+---
+order: 7
+group: Coursera
+issuer: Coursera
+title: "System Administration and IT Infrastructure Services Certificate"
+year: ""
+credentialId: ""
+url: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate-1600.webp"
+image: "/images/certifications/coursera/system-administration-and-it-infrastructure-services-certificate-800.webp"
+---
+
+---
+
+### Technical Support Fundamentals
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/08-coursera-technical-support-fundamentals.md
+---
+order: 8
+group: Coursera
+issuer: Coursera
+title: "Technical Support Fundamentals"
+year: ""
+credentialId: ""
+url: "/images/certifications/coursera/technical-support-fundamentals-1600.webp"
+image: "/images/certifications/coursera/technical-support-fundamentals-800.webp"
+---
+
+---
+
+### The Bits and Bytes of Computer Networking Certificate
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/09-coursera-the-bits-and-bytes-of-computer-networking-certificate.md
+---
+order: 9
+group: Coursera
+issuer: Coursera
+title: "The Bits and Bytes of Computer Networking Certificate"
+year: ""
+credentialId: ""
+url: "/images/certifications/coursera/the-bits-and-bytes-of-computer-networking-certificate-1600.webp"
+image: "/images/certifications/coursera/the-bits-and-bytes-of-computer-networking-certificate-800.webp"
+---
+
+---
+
+### Architecting on AWS (Membangun Arsitektur Cloud di AWS)
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/10-dicoding-architecting-on-aws-membangun-arsitektur-cloud-di-aws.md
+---
+order: 10
+group: Dicoding
+issuer: Dicoding
+title: "Architecting on AWS (Membangun Arsitektur Cloud di AWS)"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/architecting-on-aws-membangun-arsitektur-cloud-di-aws-1600.webp"
+image: "/images/certifications/dicoding/architecting-on-aws-membangun-arsitektur-cloud-di-aws-800.webp"
+---
+
+---
+
+### Belajar Dasar Git dengan GitHub
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/11-dicoding-belajar-dasar-git-dengan-github.md
+---
+order: 11
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Dasar Git dengan GitHub"
+year: "Aug 2023"
+credentialId: "1OP808QJ2XQK"
+url: "/images/certifications/dicoding/belajar-dasar-git-dengan-github-1600.webp"
+image: "/images/certifications/dicoding/belajar-dasar-git-dengan-github-800.webp"
+---
+
+---
+
+### Belajar Dasar Pemrograman JavaScript
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/12-dicoding-belajar-dasar-pemrograman-javascript.md
+---
+order: 12
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Dasar Pemrograman JavaScript"
+year: "Sep 2023"
+credentialId: "1OP810ONQZQK"
+url: "/images/certifications/dicoding/belajar-dasar-pemrograman-javascript-1600.webp"
+image: "/images/certifications/dicoding/belajar-dasar-pemrograman-javascript-800.webp"
+---
+
+---
+
+### Belajar Dasar Pemrograman Web
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/13-dicoding-belajar-dasar-pemrograman-web.md
+---
+order: 13
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Dasar Pemrograman Web"
+year: "Sep 2023"
+credentialId: "JMZV12N9RXN9"
+url: "/images/certifications/dicoding/belajar-dasar-pemrograman-web-1600.webp"
+image: "/images/certifications/dicoding/belajar-dasar-pemrograman-web-800.webp"
+---
+
+---
+
+### Belajar Dasar Structured Query Language (SQL)
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/14-dicoding-belajar-dasar-structured-query-language-sql.md
+---
+order: 14
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Dasar Structured Query Language (SQL)"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/belajar-dasar-structured-query-language-sql-1600.webp"
+image: "/images/certifications/dicoding/belajar-dasar-structured-query-language-sql-800.webp"
+---
+
+---
+
+### Belajar Fundamental Aplikasi Back-End
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/15-dicoding-belajar-fundamental-aplikasi-back-end.md
+---
+order: 15
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Fundamental Aplikasi Back-End"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/belajar-fundamental-aplikasi-back-end-1600.webp"
+image: "/images/certifications/dicoding/belajar-fundamental-aplikasi-back-end-800.webp"
+---
+
+---
+
+### Belajar Machine Learning untuk Pemula
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/16-dicoding-belajar-machine-learning-untuk-pemula.md
+---
+order: 16
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Machine Learning untuk Pemula"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/belajar-machine-learning-untuk-pemula-1600.webp"
+image: "/images/certifications/dicoding/belajar-machine-learning-untuk-pemula-800.webp"
+---
+
+---
+
+### Belajar Membuat Aplikasi Back-End untuk Pemula dengan Google Cloud
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/17-dicoding-belajar-membuat-aplikasi-back-end-untuk-pemula-dengan-google-cloud.md
+---
+order: 17
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Membuat Aplikasi Back-End untuk Pemula dengan Google Cloud"
+year: "Oct 2023"
+credentialId: "2VX36KQ3VXYQ"
+url: "/images/certifications/dicoding/belajar-membuat-aplikasi-back-end-untuk-pemula-dengan-google-cloud-1600.webp"
+image: "/images/certifications/dicoding/belajar-membuat-aplikasi-back-end-untuk-pemula-dengan-google-cloud-800.webp"
+---
+
+---
+
+### Belajar Membuat Aplikasi Back-End untuk Pemula
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/18-dicoding-belajar-membuat-aplikasi-back-end-untuk-pemula.md
+---
+order: 18
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Membuat Aplikasi Back-End untuk Pemula"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/belajar-membuat-aplikasi-back-end-untuk-pemula-1600.webp"
+image: "/images/certifications/dicoding/belajar-membuat-aplikasi-back-end-untuk-pemula-800.webp"
+---
+
+---
+
+### Belajar Membuat Front-End Web untuk Pemula
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/19-dicoding-belajar-membuat-front-end-web-untuk-pemula.md
+---
+order: 19
+group: Dicoding
+issuer: Dicoding
+title: "Belajar Membuat Front-End Web untuk Pemula"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/belajar-membuat-front-end-web-untuk-pemula-1600.webp"
+image: "/images/certifications/dicoding/belajar-membuat-front-end-web-untuk-pemula-800.webp"
+---
+
+---
+
+### Cloud Practitioner Essentials (Belajar Dasar AWS Cloud)
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/20-dicoding-cloud-practitioner-essentials-belajar-dasar-aws-cloud.md
+---
+order: 20
+group: Dicoding
+issuer: Dicoding
+title: "Cloud Practitioner Essentials (Belajar Dasar AWS Cloud)"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/cloud-practitioner-essentials-belajar-dasar-aws-cloud-1600.webp"
+image: "/images/certifications/dicoding/cloud-practitioner-essentials-belajar-dasar-aws-cloud-800.webp"
+---
+
+---
+
+### Memulai Dasar Pemrograman untuk Menjadi Pengembang Software
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/21-dicoding-memulai-dasar-pemrograman-untuk-menjadi-pengembang-software.md
+---
+order: 21
+group: Dicoding
+issuer: Dicoding
+title: "Memulai Dasar Pemrograman untuk Menjadi Pengembang Software"
+year: "Aug 2023"
+credentialId: "07Z6V6NVYXQR"
+url: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software-1600.webp"
+image: "/images/certifications/dicoding/memulai-dasar-pemrograman-untuk-menjadi-pengembang-software-800.webp"
+---
+
+---
+
+### Memulai Pemrograman dengan Haskell
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/22-dicoding-memulai-pemrograman-dengan-haskell.md
+---
+order: 22
+group: Dicoding
+issuer: Dicoding
+title: "Memulai Pemrograman dengan Haskell"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/memulai-pemrograman-dengan-haskell-1600.webp"
+image: "/images/certifications/dicoding/memulai-pemrograman-dengan-haskell-800.webp"
+---
+
+---
+
+### Memulai Pemrograman dengan Python
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/23-dicoding-memulai-pemrograman-dengan-python.md
+---
+order: 23
+group: Dicoding
+issuer: Dicoding
+title: "Memulai Pemrograman dengan Python"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/memulai-pemrograman-dengan-python-1600.webp"
+image: "/images/certifications/dicoding/memulai-pemrograman-dengan-python-800.webp"
+---
+
+---
+
+### Menjadi Google Cloud Architect
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/24-dicoding-menjadi-google-cloud-architect.md
+---
+order: 24
+group: Dicoding
+issuer: Dicoding
+title: "Menjadi Google Cloud Architect"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/menjadi-google-cloud-architect-1600.webp"
+image: "/images/certifications/dicoding/menjadi-google-cloud-architect-800.webp"
+---
+
+---
+
+### Menjadi Google Cloud Engineer
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/25-dicoding-menjadi-google-cloud-engineer.md
+---
+order: 25
+group: Dicoding
+issuer: Dicoding
+title: "Menjadi Google Cloud Engineer"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/menjadi-google-cloud-engineer-1600.webp"
+image: "/images/certifications/dicoding/menjadi-google-cloud-engineer-800.webp"
+---
+
+---
+
+### Pengenalan ke Logika Pemrograman (Programming Logic 101)
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/26-dicoding-pengenalan-ke-logika-pemrograman-programming-logic-101.md
+---
+order: 26
+group: Dicoding
+issuer: Dicoding
+title: "Pengenalan ke Logika Pemrograman (Programming Logic 101)"
+year: "Aug 2023"
+credentialId: "L4PQGLO8OZO1"
+url: "/images/certifications/dicoding/pengenalan-ke-logika-pemrograman-programming-logic-101-1600.webp"
+image: "/images/certifications/dicoding/pengenalan-ke-logika-pemrograman-programming-logic-101-800.webp"
+---
+
+---
+
+### Sertifikat Kelulusan kelas intermediate
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/27-dicoding-sertifikat-kelulusan-kelas-intermediate.md
+---
+order: 27
+group: Dicoding
+issuer: Dicoding
+title: "Sertifikat Kelulusan kelas intermediate"
+year: ""
+credentialId: ""
+url: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate-1600.webp"
+image: "/images/certifications/dicoding/sertifikat-kelulusan-kelas-intermediate-800.webp"
+---
+
+---
+
+### IoT Device Engineer
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/28-iot-device-engineer.md
+---
+order: 28
+group: "BNSP"
+issuer: "LSP Teknologi Digital"
+title: "IoT Device Engineer"
+year: "Aug 2026"
+credentialId: ""
+url: "/images/certifications/bnsp/iot-device-engineer-1-1600.webp"
+image: "/images/certifications/bnsp/iot-device-engineer-1-800.webp"
+reverseImage: "/images/certifications/bnsp/iot-device-engineer-2-1600.webp"
+---
+
+---
+
+### Junior Web Programmer
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/29-junior-web-programmer.md
+---
+order: 29
+group: "BNSP"
+issuer: "LSP UPN Veteran Jawa Timur"
+title: "Junior Web Programmer"
+year: "Oct 2025"
+credentialId: ""
+url: "/images/certifications/bnsp/junior-web-programmer-1-1600.webp"
+image: "/images/certifications/bnsp/junior-web-programmer-1-800.webp"
+reverseImage: "/images/certifications/bnsp/junior-web-programmer-2-1600.webp"
+---
+
+---
+
+### Skill Passport: Teknik Elektronika Daya dan Komunikasi
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/30-skill-passport-elektronika.md
+---
+order: 30
+group: "BNSP"
+issuer: "LSP P1 SMK Negeri 26 Jakarta"
+title: "Skill Passport: Teknik Elektronika Daya dan Komunikasi"
+year: "Jul 2021"
+credentialId: ""
+url: "/images/certifications/bnsp/skill-passport-elektronika-1-1600.webp"
+image: "/images/certifications/bnsp/skill-passport-elektronika-1-800.webp"
+reverseImage: "/images/certifications/bnsp/skill-passport-elektronika-2-1600.webp"
+---
+
+---
+
+### TOEFL: Universal English
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/31-toefl-universal-english.md
+---
+order: 31
+group: "English Proficiency"
+issuer: "Universal English"
+title: "TOEFL: Universal English"
+year: "Oct 2021"
+credentialId: ""
+url: "/images/certifications/language/toefl-universal-english-1-1600.webp"
+image: "/images/certifications/language/toefl-universal-english-1-800.webp"
+reverseImage: "/images/certifications/language/toefl-universal-english-2-1600.webp"
+---
+
+---
+
+### TOEIC: ELP
+Canonical: https://farismnrr.com/certifications
+Source file: frontend/content/certifications/32-toeic-elp.md
+---
+order: 32
+group: "English Proficiency"
+issuer: "English Language Programs (ELP)"
+title: "TOEIC: ELP"
+year: "Nov 2016"
+credentialId: ""
+url: "/images/certifications/language/toeic-elp-1-1600.webp"
+image: "/images/certifications/language/toeic-elp-1-800.webp"
+reverseImage: "/images/certifications/language/toeic-elp-2-1600.webp"
+---
+## Discovery
+- Sitemap: https://farismnrr.com/sitemap.xml
+- RSS: https://farismnrr.com/feed.xml
+- Robots: https://farismnrr.com/robots.txt
+- Compact LLM index: https://farismnrr.com/llms.txt

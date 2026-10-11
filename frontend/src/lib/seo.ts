@@ -195,9 +195,7 @@ export function getSeo(currentPath: string) {
       if (project.repoUrl) projectNode.codeRepository = project.repoUrl;
       if (project.productUrl) projectNode.workExample = project.productUrl;
 
-      const metaDescription = project.slug === 'sensio-iot'
-        ? 'An on-premises smart-space platform organizing users, rooms, device state, telemetry, and hardware control around the physical spaces people manage.'
-        : project.description;
+      const metaDescription = project.description;
 
       return {
         ...base,

@@ -21,7 +21,7 @@ People managing a room do not think in broker topics, hardware addresses, or dat
 
 They think in physical language: *the lights in this meeting room, the sensor in that office, the devices this operator is allowed to control.*
 
-**Sensio IoT** is built around translating those real-world boundaries into software boundaries.
+Our team builds **Sensio IoT** around translating those real-world boundaries into software boundaries. Software engineering, physical IoT integration, infrastructure, security, and UI/UX each contribute to the delivered product.
 
 The product has evolved through more than one implementation, but the underlying idea has stayed consistent: organize control around **sites and rooms**, keep device protocols behind an integration layer, and make local hardware state understandable from a human-facing interface.
 
@@ -92,15 +92,15 @@ The product started with a SaaS direction, where a centrally managed application
 
 The original React HMI and NestJS backend suited the SaaS direction. NestJS modules, controllers, services, and dependency injection gave complex application logic clear boundaries while keeping feature development fast.
 
-I worked on backend and fullstack features around room state, telemetry, real-time updates, and a room-scoped LangGraph assistant. REST, WebSockets, and SSE connected the interface to changing device state; PostgreSQL and TimescaleDB stored application data and telemetry.
+The team developed room state, telemetry, real-time updates, and a room-scoped LangGraph assistant. My contribution covered backend and fullstack implementation within that product flow. REST, WebSockets, and SSE connected the interface to changing device state; PostgreSQL and TimescaleDB stored application data and telemetry.
 
 Those product ideas survived the rewrite. What changed was the machine expected to run them.
 
 Each client installation became its own operating environment, with local networking, hardware integrations, configuration, and upgrades. The target included ARM64 single-board computers such as Orange Pi and Raspberry Pi, alongside other Linux edge hosts.
 
-An application footprint that was manageable on a larger SaaS server became a meaningful cost on these machines. In the deployments I observed, the React and NestJS frontend and backend used approximately **800 MB of RAM**.
+An application footprint that was manageable on a larger SaaS server became a meaningful cost on these machines. In our observed deployments, the React and NestJS frontend and backend used approximately **800 MB of RAM**.
 
-I needed to keep the fullstack control surface and real-time device communication while leaving more room for the operating system and supporting services. That became the reason to rebuild the runtime in Rust.
+We needed to keep the fullstack control surface and real-time device communication while leaving more room for the operating system and supporting services. That became the reason to rebuild the runtime in Rust.
 
 The current service uses **Axum for HTTP APIs, Askama for rendered pages, SQLx for PostgreSQL access, and Tokio for asynchronous execution**. The frontend is delivered by the same Rust application, so the rewrite covers the fullstack application rather than only replacing its API server.
 
@@ -108,7 +108,7 @@ Memory was one part of the decision. The other was the shape of IoT traffic: dev
 
 Tokio lets asynchronous tasks yield while waiting for I/O, allowing other ready tasks to continue. Its multithreaded scheduler can also execute tasks across runtime workers. That concurrency model fits a service handling dozens of connected devices while keeping the control interface responsive.
 
-Rust also gives me control over allocation and resource lifetimes without a garbage-collected application runtime. Together with Tokio, that makes it a better fit for this deployment target: a small local server doing many overlapping I/O operations.
+Rust also gives the application control over allocation and resource lifetimes without a garbage-collected application runtime. Together with Tokio, that makes it a better fit for this deployment target: a small local server doing many overlapping I/O operations.
 
 The benefit depends on implementation. Blocking work still needs to stay off asynchronous workers, and broker, network, and device delays still contribute to command latency. Keeping those tasks non-blocking helps limit application-side waiting when device traffic and user requests overlap.
 
@@ -118,7 +118,7 @@ Both measurements cover the application frontend and backend. They exclude the d
 
 The trade-off is more deliberate systems work in exchange for a smaller runtime and tighter control over concurrent execution.
 
-NestJS had helped me organize and implement the original product quickly. Rust now lets me carry those application boundaries into a runtime suited to the hardware clients actually use.
+NestJS supported the team’s initial development pace and application structure. The Rust rewrite carries those boundaries into a runtime suited to the hardware clients use. I contribute the backend and systems implementation within that shared product effort.
 
 ```mermaid
 flowchart TD
@@ -141,7 +141,7 @@ Within the software side of the product team, I use OpenTelemetry, Prometheus, s
 
 Broker reconnects and message retries stay inside the integration boundary. Room-scoped application state remains separate from provider-specific transport behavior.
 
-Observability supports this production diagnosis, while dedicated network tooling remains a separate capability. I first identify whether the failure is application state, authorization, broker connectivity, protocol translation, or hardware state, then follow the evidence at that boundary.
+We investigate failures across application state, authorization, broker connectivity, protocol translation, and hardware state. I trace the software path with application logs and telemetry, working with IoT, infrastructure, and security engineers when the evidence points into their areas.
 
 ## Operating inside client environments
 
@@ -174,13 +174,13 @@ Sensio IoT is a cross-functional product. My role has substantial ownership of t
 
 Within that team, I own major backend and systems work around identity, room state, authorization, device integration, telemetry, protocol adapters, edge runtime behavior, and the Rust rewrite.
 
-The IoT team handles physical installation and device provisioning collaboratively with the software side. I keep that hardware work separate from my own software ownership.
+The IoT team handles physical installation and device provisioning, coordinating with software engineers on integration and reported device state.
 
 I also work with infrastructure and security engineers around the on-premises runtime, server access, deployment, and operational constraints.
 
 UI/UX designers provide the visual and interaction direction for the human-facing control surface. My engineering responsibility is to connect that design to live room and device state within the constraints of the actual platform.
 
-The production deployments span client-owned residential and office environments. That is evidence of client delivery in different operating environments, but I do not present it as proof of delivery across multiple commercial industries.
+Together, the team delivers the product into client-owned residential and office environments.
 
 ## What I worked on
 
@@ -188,7 +188,7 @@ Within that team, my work has covered both generations of the product.
 
 In the earlier React + NestJS version, I worked on backend and fullstack pieces around room state, telemetry, real-time updates, and the LangGraph control flow.
 
-In the Rust rewrite, I moved more of that software responsibility into a smaller edge-oriented service built with Axum and SQLx.
+For the team’s Rust rewrite, my work covers backend and systems responsibilities in the Axum and SQLx service.
 
 A large part of my backend work is authorization. Site membership and room scope have to be checked before a command reaches a physical device, so I built the access-control path around those boundaries instead of treating permissions as a UI concern.
 
@@ -196,7 +196,7 @@ I also work on the software side of the hardware integration boundary: MQTT cons
 
 Those integrations are translated into one room/device model that the rest of the product can use without knowing the underlying protocol details.
 
-My deployment contribution includes packaging the service for AMD64 and ARM64, running it on local edge hardware, and using OpenTelemetry, Prometheus, and logs to investigate issues that only show up when software is sitting next to real devices and imperfect networks.
+Deployment is shared with infrastructure and security engineers. My contribution includes application packaging for AMD64 and ARM64, supporting the software runtime on edge hardware, and diagnosing application behavior with OpenTelemetry, Prometheus, and logs alongside the IoT team.
 
 ## The boundary that mattered most
 

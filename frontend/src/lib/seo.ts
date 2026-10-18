@@ -6,7 +6,7 @@ import { profile } from './site-content';
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
-  'Portfolio of Faris Munir Mahdi, a Software Engineer focused on backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.';
+  'Portfolio of Faris Munir Mahdi, a fullstack engineer in Jakarta building backend services and web and mobile apps.';
 const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
@@ -94,7 +94,7 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
     const aboutDescription =
-      'Software Engineer Faris Munir Mahdi builds backend, cloud, IoT, and practical AI systems, with public projects, research, and professional experience.';
+      'Fullstack engineer Faris Munir Mahdi builds backend services and web and mobile apps, with public projects and professional experience.';
     return {
       ...base,
       title: `About — ${profile.name}`,
@@ -121,7 +121,7 @@ export function getSeo(currentPath: string) {
     return {
       ...base,
       title: `Experience — ${profile.name}`,
-      description: `Professional software engineering experience of ${profile.name}, covering backend systems, cloud infrastructure, IoT, and applied AI.`,
+      description: `Work experience of ${profile.name}: fullstack work on a meeting assistant and an IoT platform, plus earlier training programs.`,
       structuredData: graph({
         '@type': 'WebPage',
         '@id': `${canonical}#webpage`,
@@ -138,7 +138,7 @@ export function getSeo(currentPath: string) {
     return {
       ...base,
       title: `Skills — ${profile.name}`,
-      description: 'Engineering skills across backend architecture, cloud infrastructure, IoT, software delivery, and practical AI systems.',
+      description: 'Skills in backend services, web and mobile apps, databases, and deployment.',
       structuredData: graph({
         '@type': 'WebPage',
         '@id': `${canonical}#webpage`,
@@ -153,14 +153,14 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/projects') {
     return {
       ...base,
-      title: `Software Engineering Projects — ${profile.name}`,
-      description: `Selected software engineering case studies by ${profile.name}, spanning backend systems, cloud infrastructure, IoT platforms, and AI engineering.`,
+      title: `Projects — ${profile.name}`,
+      description: `Selected projects by ${profile.name}: backend, fullstack, and IoT.`,
       structuredData: graph({
         '@type': 'CollectionPage',
         '@id': `${canonical}#collection`,
         url: canonical,
-        name: `Software Engineering Projects — ${profile.name}`,
-        description: `Selected software engineering case studies by ${profile.name}.`,
+        name: `Projects — ${profile.name}`,
+        description: `Selected projects by ${profile.name}.`,
         mainEntity: {
           '@type': 'ItemList',
           itemListElement: projects.map((project, index) => ({
@@ -216,7 +216,7 @@ export function getSeo(currentPath: string) {
     return {
       ...base,
       title: `Engineering Blog — ${profile.name}`,
-      description: `Technical writing by ${profile.name} about software engineering, backend systems, cloud infrastructure, IoT, and applied AI.`,
+      description: `Notes by ${profile.name} on projects he has built.`,
       structuredData: graph({
         '@type': 'CollectionPage',
         '@id': `${canonical}#collection`,

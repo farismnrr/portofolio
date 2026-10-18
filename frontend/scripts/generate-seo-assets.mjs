@@ -146,8 +146,8 @@ const robots = `User-agent: *\nAllow: /\n\n# Explicitly document AI/search disco
 await writeFile(join(publicRoot, 'robots.txt'), robots, 'utf8');
 
 const profileName = profile?.values.get('name') ?? 'Faris Munir Mahdi';
-const profileRole = profile?.values.get('role') ?? 'Software Engineer';
-const profileIntro = profile?.values.get('intro') ?? 'Software Engineer focused on backend architecture, cloud infrastructure, IoT systems, and practical AI engineering.';
+const profileRole = profile?.values.get('role') ?? 'Fullstack Engineer';
+const profileIntro = profile?.values.get('intro') ?? 'Fullstack engineer in Jakarta building backend services and web and mobile apps.';
 const github = profile?.values.get('github') ?? 'https://github.com/farismnrr';
 const linkedin = profile?.values.get('linkedin') ?? 'https://www.linkedin.com/in/farismnrr';
 

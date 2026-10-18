@@ -9,7 +9,7 @@
     },
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Built a coding agent workspace in Nuxt and Rust where AI-proposed edits and commands run in a Bubblewrap sandbox under explicit permission rules and return diffs and test output as evidence."
+      "narrative": "Built an AI workspace for non-developers as one Go (Fiber) binary with an embedded Svelte app and SQLite. AI-proposed edits and commands run in throwaway Docker sandboxes after approval, and results show proof only from checks the app ran itself."
     }
   ],
   "certifications": [

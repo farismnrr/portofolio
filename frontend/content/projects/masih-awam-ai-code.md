@@ -6,199 +6,72 @@ year: "2026"
 title: "Masih Awam AI Code: Agentic Coding Workspace"
 cardTitle: "Masih Awam AI Code"
 subtitle: "Agentic Coding Workspace"
-role: "Builder · AI Systems / Developer Tools"
+role: "Solo Developer"
 category: "Agentic AI · Developer Tools"
-description: "A coding workspace where AI can inspect, modify, test, and reason about real repositories under explicit execution and safety boundaries."
+description: "An AI workspace for people who are not developers: describe what you need, watch every step, and accept only work that a check has proven."
 image: "/images/projects/featured/masih-awam-ai-code.png"
-tech: [Nuxt 4, Vue, TypeScript, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, OpenTelemetry]
+tech: [Go, Fiber, Svelte, TypeScript, SQLite, Docker, MCP, OAuth 2.1]
 productUrl: ""
-repoUrl: "https://github.com/farismnrr/agentic-ai-code"
+repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
 
-## A coding agent has to work against real state
+## The problem
 
-Most AI coding tools are very good at telling you what code *should* look like.
+An AI can build an app for someone who cannot read code, but that person has no way to tell whether the result works.
+The workspace is built around that gap.
+You describe what you need, watch each step, and accept only work that a check has proven.
 
-The problem starts when the task stops being local.
+## One binary, one port
 
-A real engineering task is rarely just “write this function.” It is usually closer to:
+The backend is a single Go binary using Fiber v3.
+The Svelte 5 web app is compiled once and embedded in it, so there is one process to deploy and one port to configure.
+Data lives in SQLite through a pure-Go driver, which keeps the binary static, and schema changes only go through numbered, checksummed migration files.
 
-- inspect the repository;
-- understand existing rules;
-- find the real source of the bug;
-- edit several files;
-- run checks;
-- read the failures;
-- fix them;
-- verify Git state;
-- then explain what changed.
+Each feature is a module with `domain`, `application`, and `adapter` layers, and dependencies point inward. A domain rule never knows which HTTP framework or database sits underneath. Source files stay under 200 lines, enforced by the build.
 
-At that point, a chat assistant that only generates code becomes limited.
+## Every run gets a throwaway container
 
-**Masih Awam AI Code** was built around a different question:
+Tasks, commands, and the web apps the AI starts run in one short-lived Docker container per run, started through the Docker socket.
 
-> What would an AI coding assistant look like if it could actually work inside a real repository, but still had clear boundaries around what it is allowed to do?
-
-## Reasoning and authority are separate
-
-The product separates **reasoning** from **authority**.
-
-The AI can decide that a file should be edited or a command should be run, but it does not automatically own the machine.
-
-Instead, every real action goes through a controlled execution path.
+| Limit | How |
+| --- | --- |
+| Files | Only that person's project folder is visible |
+| Network | None, except package registries through a proxy |
+| System | Read-only root, no extra privileges, memory, CPU, and process limits |
+| Capacity | `MAX_SANDBOXES` runs at once; a run stops if its folder passes 2 GiB |
 
 ```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as Agent
-    participant P as Policy
-    participant E as Executor
-    participant R as Repository
-    U->>A: Describe the goal
-    A->>P: Request a bounded capability
-    P->>E: Allow approved action
-    E->>R: Execute against real state
-    R-->>E: Result
-    E-->>A: Evidence
-    A-->>U: Progress or completed result
+flowchart LR
+    P[Person] --> G[Go binary]
+    G --> A[Agent loop]
+    A -->|approved action| S[Docker sandbox]
+    S --> C[Checks]
+    C --> R[Proof]
+    R --> P
 ```
 
-That split is the most important concept in the application. It allows the agent to be useful without treating unrestricted shell access as the default trust model.
+## Proof instead of claims
 
-## The user gives a goal, not a command script
+Reading is automatic.
+Changing files or running commands waits for the person's approval, unless they turned on Skip approvals.
+The Proof tab is built only from checks the app ran itself after the last change.
+Anything the AI asserts on its own is marked "claimed".
 
-The user gives the system a goal, not a sequence of commands.
+A project's checks live in `.workspace/tasks.json`, and the AI's tools can never read or write that file. Edits save the old content first, so Undo restores it. Runs are capped at 40 model turns and 15 minutes.
 
-For example:
+## Connecting other AI apps
 
-> “Find why this build fails and fix it.”
+The binary hosts its own sign-in and an OAuth 2.1 server, so ChatGPT and other MCP clients can connect to the `coding` endpoint without an extra service.
+Each connected app gets its own project, and every call resolves to one person's files.
+Tokens are stored hashed and tied to one space, and a replayed code or refresh token revokes the whole connection.
+Each tool has a switch the person controls, and every call is logged.
 
-The system then tries to work the way an engineer would.
+## Known limits
 
-It inspects the repository, forms a hypothesis, checks the relevant files, makes a change, runs validation, and keeps going until the evidence supports the result.
+The Docker socket gives whoever controls it control of the host, so the docs recommend rootless Docker.
+Hard disk quotas and the shared host kernel are not covered by the sandbox.
+If Docker is down, checks fail with a plain reason and nothing else breaks.
 
-The user sees the progress as work, not as hidden magic.
+## Links
 
-```mermaid
-stateDiagram-v2
-    [*] --> Observing
-    Observing --> Deciding
-    Deciding --> Acting
-    Acting --> Verifying
-    Verifying --> Deciding: more work needed
-    Verifying --> Complete: goal satisfied
-    Complete --> [*]
-```
-
-## Observe, decide, act, verify
-
-At a high level, the agent loop is simple:
-
-```text
-observe
-→ decide
-→ act
-→ verify
-→ repeat
-```
-
-But each step matters.
-
-**Observe** means reading actual repository state instead of guessing.
-
-**Decide** means choosing the smallest useful next action.
-
-**Act** means using a bounded capability.
-
-**Verify** means checking whether the previous action actually improved the state.
-
-Without verification, an agent is just an automated code generator.
-
-## Prefer narrow tools over unrestricted shell access
-
-A terminal can do almost anything.
-
-That is exactly why it is a poor default abstraction for every action.
-
-If the system already knows the intent is “read a file,” “search the repository,” “edit a file,” or “inspect Git state,” then using a structured tool gives the system more context and creates better evidence.
-
-The terminal remains useful for things that are genuinely command-oriented:
-
-- builds;
-- package managers;
-- scripts;
-- interpreters;
-- project-specific tooling.
-
-The philosophy is simple: use the narrowest capability that can solve the task.
-
-## Reconciling parallel agent work
-
-Some tasks are easier to solve when they are decomposed.
-
-One agent may research the problem while another prepares an implementation and another reviews the result.
-
-```mermaid
-flowchart TD
-    P[Parent task] --> R[Research]
-    P --> I[Implementation]
-    P --> V[Review]
-    R --> M[Reconcile evidence]
-    I --> M
-    V --> M
-    M --> F[Final integrated result]
-```
-
-Spawning multiple agents is straightforward. The harder part is deciding how their work becomes one reliable result.
-
-The parent must reconcile disagreements, reject weak evidence, and avoid merging competing changes blindly.
-
-## Interaction, orchestration, execution
-
-The product has three conceptual zones.
-
-```mermaid
-flowchart TD
-    X[Interaction] --> O[Orchestration]
-    O --> E[Execution]
-    E --> O
-    O --> X
-```
-
-**Interaction** is where the user gives goals and reviews outcomes.
-
-**Orchestration** decides how to break the task down and which tools to use.
-
-**Execution** touches the real machine and therefore carries the strongest safety rules.
-
-This separation keeps product logic away from native authority.
-
-## Evidence is part of the result
-
-An AI saying “I fixed it” is not enough.
-
-The system should be able to show what supports that claim:
-
-- which files changed;
-- what the diff looks like;
-- which checks ran;
-- whether tests passed;
-- what Git state remains;
-- which child tasks completed;
-- which actions required approval.
-
-That makes the assistant easier to trust because the result is attached to observable work.
-
-## Tradeoffs that shape the product
-
-**Freedom vs safety.** A more powerful agent can solve more tasks, but every new capability expands the risk surface.
-
-**Automation vs control.** Too many approvals make the experience tedious, but no approvals can make powerful actions dangerous.
-
-**Parallelism vs consistency.** Multiple agents can move faster, but coordinating them introduces merge and reasoning complexity.
-
-The product is built around managing those tradeoffs explicitly instead of hiding them.
-
-## Current implementation
-
-The current system uses a web application for chat and orchestration, plus a native Rust execution relay for trusted machine operations. The main stack is Nuxt, Vue, Rust, MCP, PostgreSQL, Bubblewrap, OAuth/OIDC, and OpenTelemetry.
+- Source: [github.com/farismnrr/agentic-ai-workspace](https://github.com/farismnrr/agentic-ai-workspace)

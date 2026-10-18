@@ -21,7 +21,7 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 - AskIn: AI Workspace: https://farismnrr.com/projects/askin | Source: https://github.com/farismnrr/askin
 - GiziLens: A Team Capstone Around Food Recognition: https://farismnrr.com/projects/gizilens | Source: https://github.com/orgs/Group-CC25-CF047/repositories
 - IoTNet: IoT Operations Platform: https://farismnrr.com/projects/iotnet
-- Masih Awam AI Code: Agentic Coding Workspace: https://farismnrr.com/projects/masih-awam-ai-code | Source: https://github.com/farismnrr/agentic-ai-code
+- Masih Awam AI Code: Agentic Coding Workspace: https://farismnrr.com/projects/masih-awam-ai-code | Source: https://github.com/farismnrr/agentic-ai-workspace
 - Masih Awam LMS: Game-Based Learning Platform: https://farismnrr.com/projects/masih-awam-lms
 - Multi-Tenant User Management Service: https://farismnrr.com/projects/multitenant-user-management | Source: https://github.com/farismnrr/Multitenant-User-Management-Service
 - Parentify: Parenting Companion: https://farismnrr.com/projects/parentify | Source: https://github.com/orgs/Parentify/repositories

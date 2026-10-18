@@ -17,11 +17,10 @@ repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 
 ## The problem
 
-AI can now build and fix software for someone who cannot read code.
-The trouble is trust.
-That person cannot tell whether "it works" is true, so they either believe the AI blindly or they do not use it.
+AI can now build and fix software for someone who cannot read code. What that person cannot do is check the result.
+When the AI says "it works", they either believe it or skip the tool.
 
-I built AI Workspace around that gap. The goal is simple: the person should never have to take the AI's word for it.
+I built AI Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
 
 ## How a request flows
 
@@ -39,9 +38,9 @@ flowchart LR
     F --> A[Accept or ask for changes]
 ```
 
-## The AI orchestration
+## The team
 
-One AI does not do the whole job. An orchestrator leads a team of specialist roles, and each role has its own instructions, its own access, and optionally its own model.
+Work is split across ten roles. An orchestrator leads, and each specialist has its own instructions, its own access, and optionally its own model.
 
 | Role | What it does |
 | --- | --- |
@@ -56,18 +55,16 @@ One AI does not do the whole job. An orchestrator leads a team of specialist rol
 | QA Tester | Runs the checks and tries to break the work |
 | Reviewer | Looks at the running screens as someone who did not build them |
 
-### The lead looks and delegates, it does not build
+## Why the lead cannot edit files
 
-The orchestrator can read files, plan, ask you questions, and delegate.
-It is never even offered a tool that changes files or runs commands.
-If it tries one anyway, the server refuses.
-A one-line fix still goes to the Developer.
+The orchestrator reads files, plans, asks you questions, and delegates. It is never offered a tool that edits files or runs commands, and the server rejects the call if it tries one.
+Even a one-line fix goes to the Developer, so the role that decides is never the role that does the work.
 
-So the lead cannot quietly take over a job it was meant to hand off.
+## How a job is handed over
 
-### Delegation is a brief and a report
-
-The lead hands a job to a teammate with a role and a written brief. The teammate sees only that brief, not the whole conversation. It works in its own loop, and it ends with a report.
+The lead gives a teammate a role and a written brief. The teammate sees only that brief, works in its own loop, and ends with a report.
+Each handoff appears as a card in your thread, so you can see who was asked and what came back.
+Teammates cannot hand work on to anyone else, and only the lead can finish the task.
 
 ```mermaid
 sequenceDiagram
@@ -82,23 +79,15 @@ sequenceDiagram
     S->>L: Report plus what the server recorded
 ```
 
-Each handoff shows up as a card in your thread, so you can see who was asked and what came back. Teammates cannot delegate further, and only the lead can finish the task.
+## Checks the server runs itself
 
-Every role can use a different model. A role uses its own model when you set one, and your default otherwise.
+A teammate's report is only what it says it did. So the server adds what it recorded on its own: which files that role changed and which checks it ran. The lead weighs the claim against those facts.
 
-### The server checks the report against what happened
+The proof screen works the same way. It counts only checks the server ran after the last change. Anything the AI says it checked on its own is shown as claimed and never counts.
 
-A teammate's report is only what it says it did. So the server appends what it recorded itself: which files that role changed and which checks it ran. The lead weighs the claim against the facts.
+## Gates the server enforces
 
-### Size first, because teams are expensive
-
-Every handoff costs time and tokens. The lead sizes the request before it hires anyone. A question gets an answer. A small change goes straight to the Developer.
-
-Anything new, or anything risky, runs in order. Research comes first, then requirements, then the PRD. After that comes design, building in slices, a styling pass, and finally checks by Security, QA, the Architect, and the Reviewer.
-
-### The server enforces the rules, not the prompt
-
-Rules written in a prompt can be skipped. On a real run, the research step was skipped exactly that way. So the rules that matter live in code.
+A rule that lives only in a prompt can be skipped. On a real run, the research step was skipped exactly that way, so the rules that matter are enforced in code.
 
 | Gate | What the server enforces |
 | --- | --- |
@@ -109,38 +98,35 @@ Rules written in a prompt can be skipped. On a real run, the research step was s
 | Reviewer | When screens changed, the task cannot finish until someone else has looked at them running |
 | Running app | A built page with no running app holds the finish |
 
-Each gate has a limit of a few rounds. A reviewer that keeps finding things, or a check that cannot be satisfied, can never stop a task from ending.
+Each gate allows only a few rounds. A reviewer that keeps finding things cannot stop a task from ending.
 
-### Keeping a long run alive
+## Sizing a job
 
-- **Shared budget.** The lead and every teammate draw from one budget of model turns and time. Each delegation also has its own smaller cap. Running out is a pause, and Continue picks up where the work stopped.
-- **Stuck detection.** If several jobs in a row change nothing, run no check, and write no document, the lead is told it is stuck instead of looping.
-- **Long conversations.** When the context window fills, the model writes its own summary. It keeps the request, the decisions, the files touched, the open problems, and the next step. A summary that fails is not retried forever.
-- **One task per project.** Two agents never edit the same folder at the same time.
+Every handoff costs time and tokens, so the lead sizes a request before it brings in the team. A question gets an answer. A small change goes straight to the Developer.
+Anything new or risky runs in order: research, requirements, the PRD, design, building in slices, a styling pass, and then checks by Security, QA, the Architect, and the Reviewer.
 
-## Proof is computed, not claimed
+## Long runs
 
-The proof only counts checks the server ran itself after the last change. Anything the AI says it checked on its own is listed as claimed and never counts.
+The lead and its teammates draw from one budget of model turns and time, and each handoff has a smaller cap of its own. Running out pauses the task, and Continue picks up where it stopped.
+If several jobs in a row change nothing and run no check, the lead is told it is stuck instead of looping.
+When the context window fills, the model writes its own summary of the request, the decisions, the files touched, the open problems, and the next step.
+A project also runs one task at a time, so two agents never edit the same folder.
 
-## Safety by access
+## Safety
 
-A role that reads text from the web cannot write files or run commands, because that text comes from strangers. This limits what a hostile page can make the AI do.
-
-Work runs in a throwaway container with no network except a controlled proxy. Every edit keeps what was there before, so Undo restores it.
+A role that reads text from the web cannot write files or run commands, because that text comes from strangers.
+Work runs in a throwaway container with no network except a controlled proxy, and every edit keeps what was there before, so Undo restores it.
 
 ## Connecting other AI apps
 
-Other AI apps, such as ChatGPT, can connect and work in their own project. The workspace signs them in with its own OAuth server. The person switches individual abilities on or off, and every call is logged.
+Other AI apps, such as ChatGPT, can connect and work in their own project. The workspace signs them in with its own OAuth server.
+You switch individual abilities on or off, and every call is logged.
 
 ## Known limits
 
 Whoever controls the Docker socket controls the host, so the docs recommend rootless Docker.
 The sandbox does not cover disk quotas or the kernel that every container shares.
 A team costs more time and tokens than a single agent, which is why the lead sizes a job first.
-
-## What I took from it
-
-A large part of the work was deciding what each role may touch, what counts as proof, and what the person always controls.
 
 ## Links
 

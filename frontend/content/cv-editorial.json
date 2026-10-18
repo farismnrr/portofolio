@@ -5,11 +5,11 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting product that turns recordings into summaries, action items, and searchable decisions. Built the recording upload, progress feedback, and interrupted-upload recovery across web and mobile, inside a cross-functional team."
+      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads across web and mobile."
     },
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Built an open-source AI workspace for non-developers in Go and Svelte. Users describe what they need and watch each step. AI changes run in isolated sandboxes after approval, and results show proof only from checks the app ran itself."
+      "narrative": "Open-source AI workspace for non-developers: describe what you need, watch each step, and accept only work proven by checks. Built with Go and Svelte."
     }
   ],
   "certifications": [

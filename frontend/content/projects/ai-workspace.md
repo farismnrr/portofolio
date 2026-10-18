@@ -81,7 +81,9 @@ sequenceDiagram
 
 ## Checks the server runs itself
 
-A teammate's report is only what it says it did. So the server adds what it recorded on its own: which files that role changed and which checks it ran. The lead weighs the claim against those facts.
+A teammate's report is only what it says it did.
+So the server adds what it recorded on its own: which files that role changed and which checks it ran.
+The lead weighs the claim against those facts.
 
 The proof screen works the same way. It counts only checks the server ran after the last change. Anything the AI says it checked on its own is shown as claimed and never counts.
 

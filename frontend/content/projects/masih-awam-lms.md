@@ -14,18 +14,11 @@ tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus
 productUrl: ""
 repoUrl: ""
 ---
+## What it is
 
-## A course list does not always tell a learner what to do next
+A learning platform where courses become worlds, quests, and lessons. A normal course list tells you what exists. This one tries to tell the learner what to do next.
 
-A conventional LMS is good at storing courses and tracking completion. It is not always good at helping a learner understand what to do next.
-
-The usual pattern is a course list, then modules, then lessons. Everything can be technically organized while the experience still feels like navigating folders.
-
-**Masih Awam LMS** explores a different presentation model. The underlying learning structure stays familiar, but the learner moves through worlds, quests, lessons, and checkpoints instead of browsing a flat catalog.
-
-## Progress is part of the interface
-
-The product treats progression as part of the interface, not only as a percentage stored in the backend.
+The learning structure stays familiar: courses, modules, lessons. The learner moves through worlds, quests, and checkpoints instead of a flat catalog.
 
 ```mermaid
 journey
@@ -41,88 +34,19 @@ journey
       Unlock the next stage: 5: Learner
 ```
 
-The game concepts are there to answer a practical question: **what should I do next?**
+## How it is built
 
-They are not meant to replace the learning material or turn every interaction into a reward mechanic.
+Progress is simple on purpose: completed lessons divided by total lessons, at the lesson, quest, world, and overall level.
+The story gives context for why the next lesson matters, but it never decides what counts as complete.
 
-A lesson contributes to a quest. A quest contributes to a world. The interface can then show the learner where they are without asking them to reconstruct that context from several pages.
+The product keeps three layers apart.
+The experience layer holds worlds, quests, and scenes.
+The learning domain holds courses, modules, lessons, and enrollment.
+The progress state records what the learner actually finished.
+Story and presentation can change without touching completion.
 
-## Keep the progress model simple
+Pages are rendered according to who owns their data. Public course pages are prerendered, a learner's dashboard is rendered privately on the server, and interactive state stays in the browser.
 
-The calculation itself stays simple:
+## Stack
 
-```text
-completed lessons
------------------
-total lessons
-= progress
-```
-
-The product uses that simple state at more than one level:
-
-```text
-lesson
-→ quest
-→ world
-→ overall journey
-```
-
-Keeping the calculation predictable matters because presentation can change without changing what completion means.
-
-## Story gives navigation context, not completion state
-
-Storytelling is useful only when it helps the learner understand the path.
-
-A character, scene, or quest description can explain why the next lesson matters or connect one topic to the next. Progress still comes from completed learning work, not from narrative state.
-
-That separation means the story layer can change without corrupting course completion.
-
-## Experience, learning domain, and progress stay separate
-
-The product can be viewed as three connected layers.
-
-```mermaid
-flowchart TD
-    E[Experience layer] --> L[Learning domain]
-    L --> P[Progress state]
-    P --> E
-```
-
-**Experience layer** contains worlds, quests, visual-novel scenes, and presentation.
-
-**Learning domain** contains courses, modules, lessons, and enrollment.
-
-**Progress state** records what the learner has actually completed.
-
-The boundary is useful because each layer changes for a different reason. Story and presentation evolve with the learning experience, while progress needs to remain stable and auditable.
-
-## Rendering follows data ownership
-
-Not every page carries the same kind of data.
-
-A public course page can be shared across users. A learner dashboard contains private progress. Interactive controls also have browser state that does not belong in a public prerendered document.
-
-```mermaid
-flowchart TD
-    D[Page data] --> Q{Who owns it?}
-    Q -->|Public and stable| A[Pre-render]
-    Q -->|Public but dynamic| B[Server-render]
-    Q -->|Private user state| C[Private server render]
-    Q -->|Interaction state| E[Browser]
-```
-
-The rendering strategy follows the data instead of applying one technique to every page.
-
-## Tradeoffs that shape the product
-
-**Engagement vs distraction.** Game mechanics should make the path clearer, not become the main activity.
-
-**Guidance vs freedom.** Beginners may benefit from a strong sequence, while experienced learners may want direct access to a specific lesson.
-
-**Story vs speed.** Narrative context can help some learners, but it should not block someone who already knows where they want to go.
-
-Those tradeoffs shape the product more than adding another visual reward system.
-
-## Current implementation
-
-The current product uses a Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.
+A Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.

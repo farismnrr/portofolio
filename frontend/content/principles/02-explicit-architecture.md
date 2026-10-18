@@ -1,7 +1,7 @@
 ---
 order: 2
 index: "02"
-title: Prefer explicit architecture over accidental complexity.
+title: Put important rules in code, not in a prompt.
 ---
 
-Intentional design leads to more reliable, scalable, and collaborative systems.
+In AI Workspace, the server blocks a build until you approve the plan and holds an app until Security has reported. A prompt alone can be skipped.

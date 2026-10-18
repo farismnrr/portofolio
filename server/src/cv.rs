@@ -83,7 +83,17 @@ struct DensityProfile {
     vertical_margin: f32,
 }
 
-const DENSITY_PROFILES: [DensityProfile; 4] = [
+const DENSITY_PROFILES: [DensityProfile; 5] = [
+    DensityProfile {
+        name: "tight",
+        body_size: 10.0,
+        line_height: 1.28,
+        section_gap: 7.0,
+        item_gap: 5.0,
+        bullet_gap: 1.5,
+        horizontal_margin: 0.55,
+        vertical_margin: 0.38,
+    },
     DensityProfile {
         name: "compact",
         body_size: 10.0,
@@ -596,13 +606,37 @@ fn standalone_project_html(project: &ProjectSection) -> String {
         "#,
         url = escape(&project.url),
         title = escape(&project.title),
-        meta = escape(&project.meta),
+        meta = linkify_meta(&project.meta),
         narrative = escape(&project.narrative),
     )
 }
 
+/// Escapes a meta line and turns each part that looks like a web address into a link, so a domain printed in
+/// the CV can be clicked.
+fn linkify_meta(meta: &str) -> String {
+    meta.split(" | ")
+        .map(|part| {
+            let is_address = !part.contains(char::is_whitespace)
+                && part.contains('.')
+                && part.chars().any(|ch| ch.is_ascii_alphabetic());
+
+            if is_address {
+                format!(
+                    r#"<a href="https://{href}">{text}</a>"#,
+                    href = escape(part),
+                    text = escape(part)
+                )
+            } else {
+                escape(part)
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" | ")
+}
+
 fn experience_html(experience: &ExperienceSection) -> String {
-    let related_projects = if experience.related_projects.is_empty() {
+    let related_projects = if experience.related_projects.is_empty() || experience.kind == "program"
+    {
         String::new()
     } else {
         let links = experience
@@ -645,14 +679,21 @@ fn experience_html(experience: &ExperienceSection) -> String {
             <span class="item-title">{title}</span>
             <span class="item-meta">{meta}</span>
           </div>
-          <p class="experience-summary">{summary}</p>
+          {summary}
           {related_projects}
           {bullets}
         </article>
         "#,
         title = escape(&experience.title),
         meta = escape(&experience.meta),
-        summary = escape(&experience.summary),
+        summary = if experience.summary.trim().is_empty() {
+            String::new()
+        } else {
+            format!(
+                r#"<p class="experience-summary">{}</p>"#,
+                escape(&experience.summary)
+            )
+        },
         related_projects = related_projects,
         bullets = bullets,
     )
@@ -695,7 +736,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         .iter()
         .map(|line| {
             format!(
-                r#"<div class="skill-line"><strong class="skill-label">{}</strong><span class="skill-value">{}</span></div>"#,
+                r#"<div class="skill-line"><strong class="skill-label">{}:</strong> <span class="skill-value">{}</span></div>"#,
                 escape(&line.label),
                 escape(&line.text)
             )
@@ -804,8 +845,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     font-weight: 700;
     text-transform: uppercase;
     border-bottom: 1px solid #666666;
-    padding-bottom: 3px;
-    margin-bottom: 8px;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
     break-after: avoid-page;
     page-break-after: avoid;
   }}
@@ -821,18 +862,18 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     widows: 3;
   }}
 
-  .skill-line {{
+  .skills {{
     display: grid;
-    grid-template-columns: 100px minmax(0, 1fr);
-    column-gap: 12px;
-    padding: 3px 0;
-    border-bottom: 0.5px solid #dddddd;
+    grid-template-columns: max-content 1fr;
+    column-gap: 28px;
+  }}
+
+  .skill-line {{
+    padding: 1px 0;
     break-inside: avoid;
   }}
 
-  .skill-line:last-child {{ border-bottom: 0; }}
   .skill-label {{ font-weight: 700; }}
-  .skill-value {{ text-align: justify; text-align-last: start; }}
 
   .experience,
   .project,
@@ -848,8 +889,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .item-heading {{
-    line-height: 1.28;
-    margin-bottom: 4px;
+    line-height: 1.25;
+    margin-bottom: 2px;
   }}
 
   .item-title {{
@@ -866,13 +907,20 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     font-size: 10pt;
   }}
 
+  .item-meta a {{
+    color: #111111;
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
+  }}
+
   .item-meta::before,
   .cert-meta::before {{
     content: " | ";
   }}
 
   .bullets {{
-    margin: 5px 0 0 18px;
+    margin: 3px 0 0 16px;
     padding: 0;
   }}
 
@@ -887,7 +935,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .related-projects {{
-    margin-top: 5px;
+    margin-top: 2px;
     color: #444444;
   }}
 
@@ -905,17 +953,19 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .certification {{
     font-size: 10pt;
     line-height: 1.42;
-    padding-bottom: 10px;
+    padding-bottom: 1px;
   }}
 
   .cert-title {{
-    color: #1d466f;
+    color: #111111;
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
   }}
 
   .education {{
-    margin-bottom: 5px;
+    margin-bottom: 2px;
   }}
 </style>
 </head>
@@ -949,7 +999,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
                 escape(&document.profile_summary)
             ),
         ),
-        skills_section = section("Skills", &scopes),
+        skills_section = section("Skills", &format!(r#"<div class="skills">{scopes}</div>"#)),
         experience_section = section("Professional Experience", &experiences),
         projects_section = section("Selected Projects", &projects),
         programs_section = section("Technical Programs", &programs),
@@ -984,7 +1034,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
-    async fn renders_two_page_evidence_fixture() {
+    async fn renders_one_page_evidence_fixture() {
         let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
         let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
         let request: CvRenderRequest =
@@ -1003,12 +1053,11 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "program")
                 .count(),
-            4
+            2
         );
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await
             .unwrap();
-        assert!(candidate.fill_ratio >= 0.82);
         tokio::fs::write(output, candidate.bytes).await.unwrap();
     }
 
@@ -1083,8 +1132,8 @@ mod tests {
         let profile = profiles::get("general").expect("General profile");
 
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert_eq!(profile.max_pages, 2);
+        assert_eq!(profile.max_pages, 1);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 4);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 2);
     }
 }

@@ -5,100 +5,48 @@ slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
-subtitle: "A Practical Interface for Working with AI Models and Knowledge"
-role: "Backend Developer · Integration"
+subtitle: "AI chat workspace"
+role: "Backend · Integration"
 category: "Ruangguru Academy · Learning Project"
-description: "A Ruangguru Academy project exploring how an AI chat interface can bring model access, retrieval, files, tools, and day-to-day knowledge workflows into one usable workspace."
+description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/askin"
 ---
+## What it is
 
-## When chat becomes an application
-
-Using a language model is straightforward when the task is only sending a prompt and reading a response.
-
-The experience becomes more complicated when the application also needs to work with different model providers, uploaded files, retrieved knowledge, tools, chat history, and user access.
-At that point, the problem expands beyond calling an AI API. The application needs a consistent layer that turns several AI capabilities into one understandable workflow.
-
-**AskIn** was the project I used during Ruangguru Academy to explore that problem.
-
-The project focused on the application around the model: how a user chooses a model, starts a conversation, brings external context into that conversation, and receives a response without needing to understand each underlying service.
-
-## Keeping the user flow simple
-
-From the user's perspective, the core flow stays intentionally simple.
-
-A user enters a workspace, chooses an available model, sends a question, and can optionally add files or other context. The application prepares that request, routes it through the appropriate model integration, and returns the result as a continuing conversation.
+AskIn is an AI chat app I worked on during Ruangguru Academy.
+It lets a user pick a model, start a conversation, add files or other context, and get an answer, without knowing which service is behind it.
 
 ```mermaid
 flowchart LR
     U[User] --> UI[AskIn workspace]
     UI --> CHAT[Conversation request]
-    CHAT --> CONTEXT[Optional files / retrieved context]
+    CHAT --> CONTEXT[Optional files and retrieved context]
     CONTEXT --> ROUTER[Model integration layer]
     ROUTER --> MODEL[AI model provider]
     MODEL --> RESPONSE[Generated response]
     RESPONSE --> UI
 ```
 
-The important part is that model access, retrieval, and supporting tools remain implementation details behind the interface. A user should be able to think about the question and the available context without dealing with the plumbing needed to connect each service.
+## How it works
 
-## Interface composition and product presentation
+The app is a customized version of an open-source chat interface (Open WebUI), with a Svelte frontend and a Python backend on FastAPI. I did not write the interface from scratch.
 
-The current AskIn repository also includes interface and showcase work where the visual decisions are explicit.
+The backend sits between the web app and the models.
+It exposes the APIs, handles authenticated requests, discovers the available models, and routes chat requests to Ollama-compatible or OpenAI-compatible endpoints, so the experience stays the same when the model changes.
 
-I kept the visual language tied to the application's real light-theme palette and treated the new-chat screen as the primary point of attention.
-
-Code conversations, prompt workspaces, model selection, and settings appear as secondary panels. That keeps the product understandable without turning the showcase into a wall of screenshots.
-
-The composition uses a consistent grid, spacing, corner radius, and restrained borders and shadows. Crops emphasize real product details without changing the underlying UI, and model selection is surfaced as a focused detail instead of competing with the main conversation flow.
-
-That work reflects the kind of visual judgement I apply when presenting a web product: establish hierarchy first, keep navigation and supporting controls from overpowering the main task, and make multiple screens feel like one coherent interface.
-
-## The backend as a coordination layer
-
-AskIn was built as a customized AI web application with a Svelte-based frontend and a Python/FastAPI backend.
-
-The backend acts as the coordination layer between the web application and model services. It exposes the application APIs, manages authenticated user requests, discovers available models, and routes chat completions through integrations such as Ollama-compatible and OpenAI-compatible endpoints.
-
-The same application also contains a retrieval layer for adding external knowledge to a conversation. The system can prepare relevant document or file context and include it in the generation flow when a request needs more than the model's prompt alone.
-
-This separation made the project useful as a learning exercise because the visible chat experience depended on several backend concerns working together: identity, model discovery, request preparation, retrieval, streaming responses, and persistence.
-
-## Model and knowledge integration
-
-The project supports more than one model path and keeps the interface independent from a single provider.
-
-Its backend contains integrations for **Ollama-compatible models** and **OpenAI-compatible APIs**, while the application layer keeps a common chat-completion flow above those provider-specific details. This allows the user-facing experience to stay largely the same even when the model behind it changes.
-
-AskIn also includes a **retrieval-augmented generation** path. Files or knowledge sources can be processed as supporting context, then relevant information can be attached to a conversation before the generation request is sent to the model.
-
-Retrieval is available when trusted context is useful; plain model requests can continue through the same application flow when it is unnecessary.
-
-## Where the AI boundary ends
-
-One of the useful lessons from AskIn was understanding where an AI feature ends and normal application engineering begins.
-
-The model is one dependency inside a larger application. The product still needs user sessions, configuration, API boundaries, stored conversations, files, model metadata, error handling, and a frontend capable of presenting incremental responses.
-
-The backend therefore acts as an application boundary that coordinates those concerns before and after inference.
-
-Docker-based packaging was also part of the repository so the frontend and backend could be distributed as one runnable application without requiring each service to be assembled manually by the user.
+It also has a retrieval step.
+Files and knowledge sources can be processed into context, and relevant parts are attached to a conversation before the request reaches the model.
+Requests that do not need context go through the same flow without it.
 
 ## What I worked on
 
-My work on AskIn was centered on the **backend and integration side** of the project during Ruangguru Academy.
+My focus was the backend and the integration: understanding the architecture well enough to adapt it, run it, and reason about where the app ends and the AI services begin.
+I also worked on how the app is presented, such as the new-chat screen and model selection.
+Docker packaging lets the frontend and backend run as one application.
 
-The project gave me a practical environment to understand how an AI-oriented application is connected end to end: from the web interface, through backend request handling and model routing, to retrieval and deployment concerns.
+## Links
 
-The current repository and showcase also document the interface-composition decisions described above. I treat those as product-presentation and visual-hierarchy work on the customized application. The inherited interface system came from the Open WebUI foundation.
-
-I describe the complete application here because those pieces are necessary to explain how AskIn works as a product. My individual focus remained learning from and adapting the Open WebUI-based system for the project context.
-
-That distinction matters because the useful outcome was understanding the architecture well enough to adapt, run, and reason about the boundaries between the application and the AI services behind it.
-
-## Source
-
-The project source is available at [farismnrr/askin](https://github.com/farismnrr/askin).
+- Source: [github.com/farismnrr/askin](https://github.com/farismnrr/askin)

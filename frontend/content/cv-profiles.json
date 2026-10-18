@@ -2,10 +2,10 @@
   "general": {
     "id": "general",
     "label": "General",
-    "headline": "Software Engineer | Backend & Systems Architecture",
-    "maxPages": 2,
+    "headline": "Fullstack Engineer",
+    "maxPages": 1,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
-    "retrievalQuery": "software engineer backend systems distributed architecture fullstack web NestJS Rust PostgreSQL Redis APIs system design concurrency WebSockets React TypeScript Docker Linux CI/CD OpenTelemetry observability Jira production on-premise LangGraph RAG",
+    "retrievalQuery": "fullstack engineer backend frontend Node.js Go Python NestJS Hapi FastAPI Nuxt Vue Svelte PostgreSQL Redis REST MQTT Docker Linux CI/CD OpenTelemetry production",
     "preferredSignals": [
       "software engineering",
       "backend",
@@ -56,33 +56,23 @@
     "technicalScopes": [
       {
         "key": "languages",
-        "label": "Programming",
-        "guidance": "Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML"
-      },
-      {
-        "key": "web-mobile",
-        "label": "Web & Mobile",
-        "guidance": "Svelte, Vue, Nuxt, React, HTML, CSS, Android"
+        "label": "Languages",
+        "guidance": "Node.js, Go, Python"
       },
       {
         "key": "backend-systems",
         "label": "Backend",
-        "guidance": "Axum, Actix-web, NestJS, Express, FastAPI, Hapi, REST, WebSockets, MQTT, Object-Oriented Design"
+        "guidance": "NestJS, Fiber, FastAPI"
       },
       {
-        "key": "data-storage",
-        "label": "Data & Storage",
-        "guidance": "PostgreSQL, MySQL, Redis, TimescaleDB, pgvector"
+        "key": "web-mobile",
+        "label": "Frontend & Mobile",
+        "guidance": "React, Vue, Svelte, Capacitor"
       },
       {
         "key": "cloud-devops",
-        "label": "Infrastructure",
-        "guidance": "Docker, Linux, GitHub Actions, OpenTelemetry, Prometheus, Grafana"
-      },
-      {
-        "key": "applied-ai-rag",
-        "label": "AI Systems",
-        "guidance": "LangGraph, RAG, MCP, Ollama"
+        "label": "Data & Infra",
+        "guidance": "PostgreSQL, Redis, Docker, Linux, GitHub Actions"
       }
     ],
     "budgets": {
@@ -91,25 +81,26 @@
       "certifications": 3
     },
     "writingPolicy": {
-      "identity": "Present Faris clearly as a Software Engineer specialized in Backend Systems & Fullstack Web Development, with production engineering experience across backend architectures, distributed services, databases, and modern web applications. Machine learning is not his identity; applied AI/RAG is treated strictly as an integrated software capability.",
-      "focus": "Emphasize backend systems (Rust, NestJS), database design and query optimization (PostgreSQL, Redis), real-time protocols (WebSockets, MQTT), production observability (OpenTelemetry, Prometheus, Grafana), agile delivery (Jira), and end-to-end fullstack web engineering (React, TypeScript), backed by containerized production deployments and applied AI/RAG workflows.",
+      "identity": "Present Faris as a Fullstack Engineer with about one year of production experience in meeting-processing and IoT products, working across backend services and web/mobile interfaces. Machine learning is not his identity.",
+      "focus": "Emphasize fullstack delivery: backend services (Node.js, Go, Python), PostgreSQL and Redis, MQTT and IoT device flows, Nuxt/Vue/Svelte interfaces, and containerized deployments. State what was built and its result in plain words; use numbers only when they are real.",
       "summaryRange": "40-60 words",
       "projectRange": "45-50 words in two substantive sentences: contribution, design decision, and supported outcome",
       "avoid": [
+        "Systems Architecture or architect positioning",
         "Machine Learning Engineer or Data Scientist positioning",
         "generic filler such as passionate, hardworking, cutting-edge, innovative",
-        "appearing only as a superficial or hobbyist developer without production ownership",
-        "AI-only identity that obscures strong core backend and software craft",
+        "unsupported metrics or invented outcomes",
+        "repeated 'Separated X from Y' sentence patterns",
         "keyword stuffing without architectural context"
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.82,
+      "minSecondPageFill": 0.4,
       "minBodySizePt": 10,
       "minimumItems": {
-        "projects": 4,
-        "experiences": 6,
-        "certifications": 2
+        "projects": 2,
+        "experiences": 2,
+        "certifications": 3
       }
     }
   }

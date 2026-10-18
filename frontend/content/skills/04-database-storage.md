@@ -4,4 +4,4 @@ title: Database & Storage
 items: [PostgreSQL, MySQL, Redis, RocksDB, SQLite]
 ---
 
-Designing optimized database schemas for complex data relationships and implementing high-speed caching strategies for real-time access.
+PostgreSQL and MySQL for application data, Redis and RocksDB for caching, and SQLite for small embedded storage.

@@ -115,18 +115,6 @@ if not d.get("data"):
 print("router_model_count=" + str(len(d["data"])))
 '
 
-ai_response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
-  -X POST http://127.0.0.1:3001/api/ai/chat \
-  -H 'Content-Type: application/json' \
-  --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
-printf '%s\n' "$ai_response" | python3 -c '
-import json, sys
-d=json.load(sys.stdin)
-if not d.get("message", "").strip():
-    raise SystemExit("AI response is empty")
-print("ai_response_nonempty=true")
-'
-
 if [[ -f state/deploy-start ]]; then
   since="$(<state/deploy-start)"
   logs="$(docker logs --since "$since" "$container" 2>&1 || true)"

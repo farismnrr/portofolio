@@ -6,32 +6,20 @@ year: "2026"
 title: "Multi-Tenant User Management Service"
 cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
-role: "Lead Engineer"
+role: "Solo Developer"
 category: "Backend · Security"
-description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
+description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"
 tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
+## What it is
 
-## One account can belong to more than one tenant
+A login and identity service that several applications can share. I built it alone.
 
-User management looks simple when an application is small.
-
-You create a users table, add login, store a role, and move on.
-
-Then the product grows. A second tenant appears. A user needs access to both tenants. The same person is an admin in one organization and a normal user in another. Another application needs the same login system.
-
-Suddenly, “users” is no longer one table.
-
-That is the problem this service was built to solve.
-
-## Identity is global; permissions are contextual
-
-The service separates **identity** from **context**.
-
-A person has one global account. That account can participate in multiple tenants. Each tenant membership can carry its own roles.
+One person has one account, and that account can belong to several tenants with a different role in each.
+Someone can be an admin in one organization and a normal user in another, with the same password and the same session logic everywhere.
 
 ```mermaid
 erDiagram
@@ -41,19 +29,14 @@ erDiagram
     ROLE ||--o{ ROLE_ASSIGNMENT : defines
 ```
 
-That means the answer to “who are you?” stays stable, while the answer to “what can you do here?” depends on the tenant context.
+## Why it is separate
 
-Without this separation, applications often duplicate identity. The same person may end up with different user rows, different passwords, and different role logic across products.
+When every application keeps its own users table, the same person ends up with several accounts and several role schemes, and each application handles sessions a little differently.
+One service gives all of them the same answers.
 
-That creates security drift. One application rotates sessions correctly while another does not. One product uses tenant-scoped roles while another stores one global role field.
+## How sign-in and permissions work
 
-Centralizing identity gives consuming applications one consistent model.
-
-## Login stays ordinary even when authorization is not
-
-From the user's point of view, login should still feel ordinary.
-
-They enter credentials. The system identifies the account. Then the tenant context determines what that account is allowed to do.
+Signing in proves who you are and loads your memberships. What you may do depends on the tenant you act in.
 
 ```mermaid
 sequenceDiagram
@@ -70,56 +53,16 @@ sequenceDiagram
     App-->>User: Authorized experience
 ```
 
-The extra complexity exists so the user does not have to think about it.
+Every protected action follows the same chain: identity, tenant, membership, role, permission, then allow or deny. A valid login alone never grants access.
 
-## Authorization follows a fixed chain
+## Tradeoffs
 
-Every protected action can be described with the same logic:
+Applications now depend on the identity service being available. Tenant boundaries have to stay explicit everywhere, because accounts are shared. A rich role model covers more cases, but it needs discipline to stay readable.
 
-```text
-identity
-→ tenant
-→ membership
-→ role
-→ permission
-→ allow / deny
-```
+## Stack
 
-A successful login only proves identity. It does not prove permission.
+Rust with Actix-web, PostgreSQL for identity data, RocksDB for local caching, JWT sessions, Argon2 for password hashing, and Docker for packaging.
 
-A user may be valid but still have no access to a specific tenant, resource, or action. Treating authorization as a separate decision prevents the common mistake of equating “logged in” with “allowed to do everything.”
+## Links
 
-## One identity service, many applications
-
-```mermaid
-flowchart LR
-    A[Client applications] --> I[Identity service]
-    I --> D[(Identity database)]
-    I --> S[Session layer]
-    I --> P[Permission decisions]
-    S --> A
-    P --> A
-```
-
-Applications do not need to reimplement the same account logic. They ask one identity system for consistent answers.
-
-Once identity is centralized, multiple applications can share the same account while each consuming application still applies its own tenant context.
-
-```text
-one person
-→ one identity
-→ many tenant contexts
-→ many applications
-```
-
-## Tradeoffs that shape the service
-
-**Central consistency vs dependency.** A shared identity service reduces duplication, but consuming applications now depend on it being available.
-
-**Global accounts vs strict isolation.** Reusing one identity is convenient, but tenant boundaries must remain explicit everywhere.
-
-**Flexible roles vs simple permissions.** Rich role models support more cases, but become harder to reason about if they are not kept disciplined.
-
-## Current implementation
-
-The current service uses Rust with Actix-web, PostgreSQL for durable identity data, RocksDB for local caching, JWT-based sessions, Argon2 for password hashing, tenant-aware APIs, and Docker for packaging.
+- Source: [github.com/farismnrr/Multitenant-User-Management-Service](https://github.com/farismnrr/Multitenant-User-Management-Service)

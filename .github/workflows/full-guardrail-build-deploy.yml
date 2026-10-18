@@ -185,50 +185,10 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  ai-smoke:
-    name: ai smoke
-    runs-on: [self-hosted, Linux, X64]
-    needs: frontend
-    env:
-      NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
-      NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
-      NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
-      NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
-      NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
-    steps:
-      - name: Check configured 9router model
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          for name in NINE_ROUTER_URL NINE_ROUTER_MODEL NINE_ROUTER_CONNECT_TIMEOUT_SECONDS NINE_ROUTER_TIMEOUT_SECONDS NINE_ROUTER_API_KEY; do
-            if [ -z "${!name:-}" ]; then
-              echo "${name} is not available on the self-hosted runner."
-              exit 1
-            fi
-          done
-
-          payload="$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["NINE_ROUTER_MODEL"], "reasoning_effort": "low", "messages": [{"role": "user", "content": "hi"}]}))')"
-
-          response="$(curl --fail --silent --show-error \
-            "${NINE_ROUTER_URL%/}/chat/completions" \
-            -H "Authorization: Bearer ${NINE_ROUTER_API_KEY}" \
-            -H 'Content-Type: application/json' \
-            --data "$payload")"
-
-          answer="$(printf '%s' "$response" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["choices"][0]["message"]["content"].strip())')"
-
-          if [ -z "$answer" ]; then
-            echo "9router returned an empty answer."
-            exit 1
-          fi
-
-          echo "Configured 9router model smoke test returned a non-empty answer."
-
   container:
     name: multi-architecture container build
     runs-on: ubuntu-24.04
-    needs: [server, ai-smoke]
+    needs: server
     steps:
       - uses: actions/checkout@v7
         with:

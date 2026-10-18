@@ -1,7 +1,7 @@
 ---
 order: 1
 title: Languages
-items: [Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML]
+items: [JavaScript, TypeScript, Go, Python, SQL, Bash, Rust, Kotlin, C++, PHP, QML]
 ---
 
-Languages used across backend services, web applications, Android development, database queries, automation scripts, and embedded or plugin projects.
+Day to day I write JavaScript, TypeScript, Go, Python, and SQL. The rest I have used in specific projects, such as Rust for services, Kotlin for Android, and C++ and QML for desktop plugins.

@@ -5,12 +5,12 @@ year: Sep 2024 — Dec 2024
 company: Codepolitan
 role: Full Stack Web Development Participant
 location: ""
-summary: Completed an online full-stack development scholarship program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
+summary: An online full-stack development scholarship program.
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
 certificationGroups: [Alibaba Cloud]
 ---
 
-- Worked through backend development with Node.js and Express.js, including API design and application data stored in MongoDB.
-- Built frontend exercises with Vue.js to connect user-facing interfaces with the application services developed during the program.
-- Extended the learning path into cloud fundamentals through the related Alibaba Cloud credentials listed in the Certifications section.
+- Built backend APIs with Node.js and Express.js, storing data in MongoDB.
+- Built frontend exercises with Vue.js against those APIs.
+- Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications.

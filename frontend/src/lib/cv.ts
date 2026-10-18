@@ -8,6 +8,11 @@ interface CvDraft {
   projects: { sourceId: string; narrative: string }[];
   certifications: { sourceId: string }[];
   employmentBullets?: string[];
+  excludeExperienceOrders?: number[];
+  employmentSummary?: string;
+  professionalExperienceOrders?: number[];
+  experienceBullets?: Record<string, string[]>;
+  educationNote?: string;
 }
 
 function contactLine() {
@@ -36,7 +41,9 @@ function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
   const company = experiences.find((item) => item.projects.includes(slug))?.company;
-  return [company, project.year].filter(Boolean).join(' | ');
+  const link = (project.productUrl || project.repoUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const personal = /^personal/i.test(project.category) ? 'Personal' : '';
+  return [company || personal, link, project.year].filter(Boolean).join(' | ');
 }
 
 function cvPlainText(value: string) {
@@ -47,6 +54,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
   const cvProfile = getCvProfile(target);
 
   const selectedExperiences = experiences
+    .filter((source) => !draft.excludeExperienceOrders?.includes(source.order))
     .map((source) => {
 
       const relatedProjects = source.projects
@@ -61,13 +69,15 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
         })
         .filter((project): project is NonNullable<typeof project> => Boolean(project));
 
+      const professional = source.kind === 'employment' || Boolean(draft.professionalExperienceOrders?.includes(source.order));
+
       return {
-        kind: source.kind,
+        kind: professional ? 'employment' : source.kind,
         title: `${source.role} | ${source.company}`,
-        meta: [source.year, source.location].filter(Boolean).join(' | '),
-        summary: source.kind === 'program' ? '' : cvPlainText(source.summary),
-        relatedProjects,
-        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : source.bullets.slice(0, source.kind === 'employment' ? 4 : source.order === 2 || source.order === 6 ? 2 : 1).map(cvPlainText)
+        meta: [source.year, source.kind === 'program' ? '' : source.location].filter(Boolean).join(' | '),
+        summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary !== undefined ? draft.employmentSummary : cvPlainText(source.summary),
+        relatedProjects: [] as typeof relatedProjects,
+        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -101,8 +111,9 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
+  const degreeNote = draft.educationNote ? ` | ${draft.educationNote}` : '';
   const educationLines = education.filter((item) => !education.some((entry) => /bachelor|master|doctor/i.test(entry.program)) || /bachelor|master|doctor/i.test(item.program)).map((item) =>
-    [item.institution, item.program, item.year].filter(Boolean).join(' | ')
+    [item.institution, item.program, item.year].filter(Boolean).join(' | ') + (/bachelor|master|doctor/i.test(item.program) ? degreeNote : '')
   );
 
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { ProjectDocument } from '../project-content';
-  import { projectImageSrcset } from '../project-content';
+  import { isUncroppedCover, projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
 
   export let project: ProjectDocument;
-  $: preserveShowcase = project.slug === 'parentify';
+  $: preserveShowcase = isUncroppedCover(project.slug);
 </script>
 
 <section class="border-b border-black/14 pb-10 sm:pb-12 2xl:pb-14">

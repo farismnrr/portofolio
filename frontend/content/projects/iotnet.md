@@ -5,27 +5,22 @@ slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
-subtitle: "Device Management and Automation Platform"
-role: "Lead Engineer"
+subtitle: "IoT management platform"
+role: "Solo Developer"
 category: "IoT · Platform"
-description: "An IoT operations platform for organizing devices, users, automation, telemetry, and access into one operational system."
+description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
 productUrl: "https://i-ot.net/"
 repoUrl: ""
 ---
+## What it is
 
-## Operating a fleet is different from connecting one device
+IoTNet manages devices, users, automations, and telemetry in one place. I built it alone. It sits between people and connected hardware, so users work with devices and rules instead of broker topics and raw messages.
 
-Building one connected device is mostly an integration task. Operating a fleet introduces a different set of problems.
+## A command is not a result
 
-The platform has to know who owns each device, who may control it, what state the hardware is actually in, how automation rules are evaluated, and what to do when a device disappears from the network.
-
-**IoTNet** was built around that operational layer. It sits between people and connected hardware so users can work with product concepts instead of broker topics and raw protocol messages.
-
-## Command sent is not state observed
-
-A user asks for an outcome. The platform turns that request into a device action, applies the relevant access rules, and waits for state or telemetry to show what happened.
+A user asks for an outcome. The platform checks who is asking and which device it targets, publishes the command, and then waits for the device to report its state before it shows the change.
 
 ```mermaid
 stateDiagram-v2
@@ -38,96 +33,20 @@ stateDiagram-v2
     ReflectedToUser --> [*]
 ```
 
-The distinction between **command published** and **state observed** is deliberate. In a physical system, sending a message is not the same thing as proving that a device changed state.
+HTTP serves the people using the app. MQTT carries the device traffic, because messages arrive asynchronously and connections come and go. The backend sits between the two.
 
-## Device control path
+## Ownership and automation
 
-A control request passes through application context before it reaches the broker.
+Every device belongs to a scope such as a tenant, an organization, or a site. Before a command goes out, the platform checks what the device can do and whether the user may ask for it.
 
-The backend identifies the user, resolves the device and its owner, checks whether the action is allowed, publishes the command, and then consumes the returned state or telemetry.
+Automations use one small model: an event, a condition, a decision, and an action.
+A temperature reading can be the event, occupancy and thresholds the conditions, and the matching rule decides whether to act.
+The same model covers alerts, schedules, and environment control.
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Platform
-    participant Broker
-    participant Device
+## Stack
 
-    User->>Platform: Request device action
-    Platform->>Platform: Check identity and target
-    Platform->>Broker: Publish command
-    Broker->>Device: Deliver message
-    Device->>Broker: Return state
-    Broker->>Platform: Receive telemetry
-    Platform-->>User: Show updated state
-```
+Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT through EMQX for devices, and OpenTelemetry for tracing.
 
-That flow keeps device behavior grounded in what the system observes instead of assuming every command succeeds.
+## Links
 
-## Automation as event, condition, decision, action
-
-Automation uses a small set of reusable stages:
-
-```text
-event
-→ condition
-→ decision
-→ action
-```
-
-A temperature reading can be the event, occupancy and thresholds can become conditions, and the matching rule decides whether an action should be dispatched.
-
-The same model can describe security alerts, environmental control, scheduling, and other IoT behavior without creating a separate automation concept for each device type.
-
-## Ownership before control
-
-Access control is part of the device model because hardware always belongs to some scope: a tenant, organization, site, project, or user group.
-
-Every control path therefore has to answer two things:
-
-```text
-what can this device do?
-who is allowed to ask it to do that?
-```
-
-Keeping ownership and messaging in the same product model makes those checks explicit before a command reaches physical hardware.
-
-## Separating product meaning from message delivery
-
-```mermaid
-flowchart TD
-    H[Human operations] --> A[Application platform]
-    A --> I[Identity and access]
-    A --> R[Rules and automation]
-    A --> M[Messaging layer]
-    M --> D[Connected devices]
-    D --> M
-    M --> A
-    A --> H
-```
-
-The application platform owns the meaning of an action. The messaging layer handles delivery to and from devices.
-
-That boundary is useful when devices reconnect, publish state independently, or fail in ways that do not map cleanly to a synchronous request.
-
-## HTTP for people, MQTT for devices
-
-HTTP and MQTT stay separate because they solve different problems.
-
-HTTP fits user-driven workflows such as loading resources, changing configuration, or requesting an operation. MQTT fits device communication where messages arrive asynchronously and connections can come and go.
-
-The backend connects those two sides without forcing either one to behave like the other.
-
-## Tradeoffs that shape the platform
-
-**Real-time feedback vs operational complexity.** Faster feedback usually means more event-driven state and more failure paths to observe.
-
-**Central control vs device independence.** Central orchestration makes policy easier to enforce, but devices still need to tolerate temporary disconnection.
-
-**Flexible automation vs predictable behavior.** Rules become harder to understand as the automation model gains more expressive power.
-
-Those tradeoffs matter more to the long-term platform than adding another device protocol.
-
-## Current implementation
-
-The current platform uses Nuxt and Vue on the frontend, a TypeScript backend with Hapi and Bun, PostgreSQL for application data, MQTT with EMQX for device messaging, and OpenTelemetry for operational visibility.
+- Product: [i-ot.net](https://i-ot.net/)

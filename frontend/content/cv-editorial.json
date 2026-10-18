@@ -24,10 +24,10 @@
     }
   ],
   "employmentBullets": [
-    "Built the recording and upload flow in Sensio Notes for web and mobile, so users can see what has been saved and pick up after a dropped connection.",
-    "Built the backend for Sensio IoT room controls: a command goes out, the device's real state comes back, and users see what actually happened, even when a device is offline.",
-    "Turned design mockups into working web and mobile screens and connected them to the AI and IoT teams' services.",
-    "Tracked down production issues and helped test and ship releases with the infrastructure and security engineers."
+    "Built resumable multipart uploads for recordings over 100 MB: after a dropped connection the upload continues from the last finished part, with retries that respect the server's backoff.",
+    "Added local backup of in-progress recordings on web and mobile, so a crash or closed tab no longer loses a meeting.",
+    "Built backend support for Sensio IoT room controls: commands, device-state feedback, and permissions, keeping the requested action separate from the device's reported state.",
+    "Turned design mockups into web and mobile screens, and handled production issues and releases with the infrastructure and security engineers."
   ],
   "excludeExperienceOrders": [
     2,

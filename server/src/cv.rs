@@ -907,6 +907,13 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     font-size: 10pt;
   }}
 
+  .item-meta a {{
+    color: #111111;
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
+  }}
+
   .item-meta::before,
   .cert-meta::before {{
     content: " | ";

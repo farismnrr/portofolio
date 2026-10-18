@@ -62,17 +62,17 @@
       {
         "key": "backend-systems",
         "label": "Backend",
-        "guidance": "NestJS, Hapi, FastAPI, Gin, Fiber"
+        "guidance": "NestJS, Fiber, FastAPI"
       },
       {
         "key": "web-mobile",
-        "label": "Frontend",
-        "guidance": "React, Nuxt, Vue, Svelte"
+        "label": "Frontend & Mobile",
+        "guidance": "React, Vue, Svelte, Capacitor"
       },
       {
         "key": "cloud-devops",
         "label": "Data & Infra",
-        "guidance": "PostgreSQL, Redis, Docker, Linux, GitHub Actions, OpenTelemetry"
+        "guidance": "PostgreSQL, Redis, Docker, Linux, GitHub Actions"
       }
     ],
     "budgets": {

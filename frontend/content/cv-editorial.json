@@ -5,7 +5,7 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads."
+      "narrative": "A meeting assistant that turns long recordings into summaries, decisions, and action items you can search later. Worked on the capture side, from upload to a finished summary."
     },
     {
       "sourceId": "ai-workspace",
@@ -24,16 +24,16 @@
     }
   ],
   "employmentBullets": [
-    "Built the recording upload and progress-feedback flows for Sensio Notes across web and mobile, including recovery after interrupted uploads.",
-    "Built the backend for Sensio IoT, connecting user commands to device state and showing clear feedback when a device is unavailable.",
-    "Implemented UI/UX designs as web and mobile features and integrated with the services of the AI and IoT engineers.",
-    "Debugged production issues and supported testing and releases with the infrastructure and security engineers."
+    "Built the recording and upload flow in Sensio Notes for web and mobile, so users can see what has been saved and pick up after a dropped connection.",
+    "Built the backend for Sensio IoT room controls: a command goes out, the device's real state comes back, and users see what actually happened, even when a device is offline.",
+    "Turned design mockups into working web and mobile screens and connected them to the AI and IoT teams' services.",
+    "Tracked down production issues and helped test and ship releases with the infrastructure and security engineers."
   ],
   "excludeExperienceOrders": [
     2,
     3
   ],
-  "employmentSummary": "Backend and fullstack developer on two products: a meeting-processing app (Sensio Notes) and an IoT platform (Sensio IoT).",
+  "employmentSummary": "Backend and fullstack developer on Sensio Notes, a meeting assistant, and Sensio IoT, smart-room controls.",
   "professionalExperienceOrders": [
     5
   ],

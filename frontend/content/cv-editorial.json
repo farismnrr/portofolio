@@ -9,7 +9,7 @@
     },
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Open-source AI workspace for non-developers: describe what you need, watch each step, and accept only work proven by checks. Built with Go and Svelte."
+      "narrative": "Open-source AI workspace for non-developers: an orchestrator delegates to specialist AI roles, and work is accepted only when checks prove it. Built with Go and Svelte."
     }
   ],
   "certifications": [

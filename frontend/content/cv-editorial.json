@@ -9,7 +9,7 @@
     },
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Built an AI workspace for non-developers as one Go (Fiber) binary with an embedded Svelte app and SQLite. AI-proposed edits and commands run in throwaway Docker sandboxes after approval, and results show proof only from checks the app ran itself."
+      "narrative": "Built an open-source AI workspace for non-developers in Go and Svelte. Users describe what they need and watch each step. AI changes run in isolated sandboxes after approval, and results show proof only from checks the app ran itself."
     }
   ],
   "certifications": [

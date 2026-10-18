@@ -737,7 +737,7 @@ The current platform uses Nuxt and Vue on the frontend, a TypeScript backend wit
 
 ---
 
-### Masih Awam AI Code: Agentic Coding Workspace
+### Masih Awam AI Code: AI Workspace for Non-Developers
 Canonical: https://farismnrr.com/projects/masih-awam-ai-code
 Source file: frontend/content/projects/masih-awam-ai-code.md
 ---
@@ -745,74 +745,52 @@ id: "02"
 order: 2
 slug: masih-awam-ai-code
 year: "2026"
-title: "Masih Awam AI Code: Agentic Coding Workspace"
+title: "Masih Awam AI Code: AI Workspace for Non-Developers"
 cardTitle: "Masih Awam AI Code"
-subtitle: "Agentic Coding Workspace"
+subtitle: "AI Workspace for Non-Developers"
 role: "Solo Developer"
-category: "Agentic AI · Developer Tools"
-description: "An AI workspace for people who are not developers: describe what you need, watch every step, and accept only work that a check has proven."
+category: "AI · Open Source"
+description: "An open-source AI workspace for people who are not developers. You describe what you need, watch each step, and accept only work that a check has proven."
 image: "/images/projects/featured/masih-awam-ai-code.png"
-tech: [Go, Fiber, Svelte, TypeScript, SQLite, Docker, MCP, OAuth 2.1]
+tech: [Go, Svelte, Docker, MCP]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
 
-## The problem
+## Why I built it
 
-An AI can build an app for someone who cannot read code, but that person has no way to tell whether the result works.
-The workspace is built around that gap.
-You describe what you need, watch each step, and accept only work that a check has proven.
+AI can now build and fix software for someone who cannot read code. The problem is trust. That person cannot tell whether "it works" is true, so they either believe the AI blindly or they do not use it.
 
-## One binary, one port
+Masih Awam AI Code is my answer to that gap. The point is not a smarter AI. The point is that the person never has to take the AI's word for it.
 
-The backend is a single Go binary using Fiber v3.
-The Svelte 5 web app is compiled once and embedded in it, so there is one process to deploy and one port to configure.
-Data lives in SQLite through a pure-Go driver, which keeps the binary static, and schema changes only go through numbered, checksummed migration files.
-
-Each feature is a module with `domain`, `application`, and `adapter` layers, and dependencies point inward. A domain rule never knows which HTTP framework or database sits underneath. Source files stay under 200 lines, enforced by the build.
-
-## Every run gets a throwaway container
-
-Tasks, commands, and the web apps the AI starts run in one short-lived Docker container per run, started through the Docker socket.
-
-| Limit | How |
-| --- | --- |
-| Files | Only that person's project folder is visible |
-| Network | None, except package registries through a proxy |
-| System | Read-only root, no extra privileges, memory, CPU, and process limits |
-| Capacity | `MAX_SANDBOXES` runs at once; a run stops if its folder passes 2 GiB |
+## How it works
 
 ```mermaid
 flowchart LR
-    P[Person] --> G[Go binary]
-    G --> A[Agent loop]
-    A -->|approved action| S[Docker sandbox]
-    S --> C[Checks]
-    C --> R[Proof]
-    R --> P
+    D[Describe what you need] --> W[Watch each step]
+    W --> P[See the proof]
+    P --> A[Accept or ask for changes]
 ```
 
-## Proof instead of claims
+You write what you need in plain language, for example "my sign-in page doesn't work anymore." The AI plans the work and shows every step as it goes. Nothing is final until you accept it.
 
-Reading is automatic.
-Changing files or running commands waits for the person's approval, unless they turned on Skip approvals.
-The Proof tab is built only from checks the app ran itself after the last change.
-Anything the AI asserts on its own is marked "claimed".
+## Trust is the product
 
-A project's checks live in `.workspace/tasks.json`, and the AI's tools can never read or write that file. Edits save the old content first, so Undo restores it. Runs are capped at 40 model turns and 15 minutes.
+Three rules shape everything else.
 
-## Connecting other AI apps
+- **Ask before changing.** Reading is automatic. Changing files or running commands waits for a yes.
+- **Proof comes from checks, not claims.** The proof is built only from checks the app ran itself after the last change. Anything the AI says on its own is marked as claimed.
+- **Everything can be undone.** Each change keeps what was there before.
 
-The binary hosts its own sign-in and an OAuth 2.1 server, so ChatGPT and other MCP clients can connect to the `coding` endpoint without an extra service.
-Each connected app gets its own project, and every call resolves to one person's files.
-Tokens are stored hashed and tied to one space, and a replayed code or refresh token revokes the whole connection.
-Each tool has a switch the person controls, and every call is logged.
+AI work runs in an isolated environment, so a mistake stays inside the person's own project and cannot touch anything else.
 
-## Known limits
+## Open to other AI apps
 
-The Docker socket gives whoever controls it control of the host, so the docs recommend rootless Docker.
-Hard disk quotas and the shared host kernel are not covered by the sandbox.
-If Docker is down, checks fail with a plain reason and nothing else breaks.
+Other AI apps, such as ChatGPT, can connect and work in their own project inside the same workspace. The person decides which abilities each connected app gets, and every call is logged.
+
+## What I took from it
+
+Most of the engineering effort went into boundaries, not into the AI. Deciding what the AI may touch, what counts as proof, and what the person always controls mattered more than any single feature.
 
 ## Links
 

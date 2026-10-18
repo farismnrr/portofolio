@@ -606,9 +606,32 @@ fn standalone_project_html(project: &ProjectSection) -> String {
         "#,
         url = escape(&project.url),
         title = escape(&project.title),
-        meta = escape(&project.meta),
+        meta = linkify_meta(&project.meta),
         narrative = escape(&project.narrative),
     )
+}
+
+/// Escapes a meta line and turns each part that looks like a web address into a link, so a domain printed in
+/// the CV can be clicked.
+fn linkify_meta(meta: &str) -> String {
+    meta.split(" | ")
+        .map(|part| {
+            let is_address = !part.contains(char::is_whitespace)
+                && part.contains('.')
+                && part.chars().any(|ch| ch.is_ascii_alphabetic());
+
+            if is_address {
+                format!(
+                    r#"<a href="https://{href}">{text}</a>"#,
+                    href = escape(part),
+                    text = escape(part)
+                )
+            } else {
+                escape(part)
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" | ")
 }
 
 fn experience_html(experience: &ExperienceSection) -> String {

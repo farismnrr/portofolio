@@ -40,9 +40,8 @@ function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
   const company = experiences.find((item) => item.projects.includes(slug))?.company;
-  const solo = /^solo/i.test(project.role) ? 'Solo' : '';
-  const link = (project.repoUrl || project.productUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
-  return [company, solo, link, project.year].filter(Boolean).join(' | ');
+  const link = (project.productUrl || project.repoUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
+  return [company, link, project.year].filter(Boolean).join(' | ');
 }
 
 function cvPlainText(value: string) {

@@ -11,7 +11,7 @@ category: "AI · Open Source"
 description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
 image: "/images/projects/featured/masih-awam-ai-code.png"
 tech: [Go, Svelte, Docker, MCP]
-productUrl: ""
+productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
 
@@ -144,4 +144,5 @@ A large part of the work was deciding what each role may touch, what counts as p
 
 ## Links
 
+- Product: [workspace.masihawam.com](https://workspace.masihawam.com)
 - Source: [github.com/farismnrr/agentic-ai-workspace](https://github.com/farismnrr/agentic-ai-workspace)

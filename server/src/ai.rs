@@ -69,6 +69,7 @@ impl AiState {
                     },
                 ],
                 reasoning_effort: "medium",
+                stream: false,
             };
             let result = self
                 .auth(
@@ -212,6 +213,7 @@ struct NineRouterRequest<'a> {
     model: &'a str,
     messages: Vec<NineRouterMessage<'a>>,
     reasoning_effort: &'a str,
+    stream: bool,
 }
 
 #[derive(Serialize)]
@@ -367,6 +369,7 @@ pub async fn chat(State(state): State<AiState>, Json(payload): Json<ChatRequest>
                 content: message,
             }],
             reasoning_effort,
+            stream: false,
         };
 
         tracing::info!(

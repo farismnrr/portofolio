@@ -208,7 +208,7 @@ jobs:
             fi
           done
 
-          payload="$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["NINE_ROUTER_MODEL"], "reasoning_effort": "low", "messages": [{"role": "user", "content": "hi"}]}))')"
+          payload="$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["NINE_ROUTER_MODEL"], "stream": False, "reasoning_effort": "low", "messages": [{"role": "user", "content": "hi"}]}))')"
 
           response="$(curl --fail --silent --show-error \
             "${NINE_ROUTER_URL%/}/chat/completions" \

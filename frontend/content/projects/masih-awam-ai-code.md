@@ -142,12 +142,6 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 
 A large part of the work was deciding what each role may touch, what counts as proof, and what the person always controls.
 
-## In the code
-
-- 12 feature modules, each split into domain, application, and adapter layers.
-- About 28,000 lines of Go, plus about 14,000 lines of tests.
-- 286 commits, built solo.
-
 ## Links
 
 - Source: [github.com/farismnrr/agentic-ai-workspace](https://github.com/farismnrr/agentic-ai-workspace)

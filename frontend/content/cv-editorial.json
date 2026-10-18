@@ -5,7 +5,7 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads (Node.js, React)."
+      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads."
     },
     {
       "sourceId": "masih-awam-ai-code",
@@ -24,8 +24,8 @@
     }
   ],
   "employmentBullets": [
-    "Built the recording upload and progress-feedback flows for Sensio Notes (Node.js, React) across web and mobile, including recovery after interrupted uploads.",
-    "Built the backend for Sensio IoT in Rust (Axum), connecting user commands to device state and showing clear feedback when a device is unavailable.",
+    "Built the recording upload and progress-feedback flows for Sensio Notes across web and mobile, including recovery after interrupted uploads.",
+    "Built the backend for Sensio IoT, connecting user commands to device state and showing clear feedback when a device is unavailable.",
     "Implemented UI/UX designs as web and mobile features and integrated with the services of the AI and IoT engineers.",
     "Debugged production issues and supported testing and releases with the infrastructure and security engineers."
   ],

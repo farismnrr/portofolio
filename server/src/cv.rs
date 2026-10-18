@@ -957,9 +957,11 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .cert-title {{
-    color: #1d466f;
+    color: #111111;
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 0.5px;
+    text-underline-offset: 1px;
   }}
 
   .education {{

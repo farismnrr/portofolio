@@ -1,6 +1,6 @@
 # Faris Munir Mahdi
 
-> Software Engineer. I build APIs, production infrastructure, IoT platforms, and practical AI features. Most of my work is about making software, data, and devices behave predictably together.
+> Fullstack Engineer. I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, an open-source AI workspace.
 
 Canonical website: https://farismnrr.com/
 GitHub: https://github.com/farismnrr

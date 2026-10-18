@@ -5,10 +5,10 @@ slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
-subtitle: "Device Management and Automation Platform"
+subtitle: "IoT management platform"
 role: "Solo Developer"
 category: "IoT · Platform"
-description: "An IoT operations platform for organizing devices, users, automation, telemetry, and access into one operational system."
+description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
 productUrl: "https://i-ot.net/"

@@ -5,10 +5,10 @@ slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
 cardTitle: "Portfolio"
-subtitle: "Markdown-Driven Portfolio"
-role: "Developer"
+subtitle: "Markdown-driven portfolio"
+role: "Solo Developer"
 category: "Web · Portfolio"
-description: "A portfolio designed as a content system, where projects, writing, experience, certifications, and media are maintained as structured Markdown instead of hardcoded UI data."
+description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
 image: "/images/projects/portfolio/cover.png"
 tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
 productUrl: "https://farismnrr.com"

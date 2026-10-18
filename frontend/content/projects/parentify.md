@@ -5,10 +5,10 @@ slug: parentify
 year: "Nov — Dec 2023"
 title: "Parentify: Parenting Companion"
 cardTitle: "Parentify"
-subtitle: "Parenting Guidance and Food Recognition Companion"
-role: "Cloud Computing · Backend / Integration"
+subtitle: "Parenting guidance and food recognition"
+role: "Cloud · Backend"
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit Academy capstone that brought parenting guidance and image-based food recognition into one Android experience, supported by a shared backend, structured application data, and a machine-learning workflow."
+description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
 image: "/images/projects/parentify/showcase.png"
 tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
 productUrl: ""

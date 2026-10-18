@@ -8,7 +8,7 @@ Canonical: https://farismnrr.com/about
 Source file: frontend/content/profile/about.md
 ---
 name: Faris Munir Mahdi
-role: Software Engineer
+role: "Fullstack Engineer"
 location: Asia/Jakarta
 languages: English, Bahasa
 image: /images/profile/faris-munir-1024.webp
@@ -17,10 +17,10 @@ linkedin: https://www.linkedin.com/in/farismnrr
 googleCloudSkills: https://www.cloudskillsboost.google/public_profiles/df853200-781c-4be5-a59b-0d4aa93f6fe3
 email: mailto:farismnrrbusiness@gmail.com
 resume: ""
-specialties: Software Engineer · Backend · Cloud · IoT
-headline: Software Engineer focused on backend, cloud, and connected systems.
-intro: I build APIs, production infrastructure, IoT platforms, and practical AI features. Most of my work is about making software, data, and devices behave predictably together.
-availability: "Open to full-time, part-time, contract, hybrid, and remote opportunities. Available for on-site work across Jakarta."
+specialties: "Fullstack · Backend · Mobile · IoT"
+headline: "Fullstack engineer in Jakarta."
+intro: "I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, an open-source AI workspace."
+availability: "Open to full-time, part-time, and contract work, remote or on-site in Jakarta."
 quote: ""
 ---
 ## Experience
@@ -471,10 +471,10 @@ slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
-subtitle: "A Practical Interface for Working with AI Models and Knowledge"
-role: "Backend Developer · Integration"
+subtitle: "AI chat workspace"
+role: "Backend · Integration"
 category: "Ruangguru Academy · Learning Project"
-description: "A Ruangguru Academy project exploring how an AI chat interface can bring model access, retrieval, files, tools, and day-to-day knowledge workflows into one usable workspace."
+description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""
@@ -581,10 +581,10 @@ slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"
 cardTitle: "GiziLens"
-subtitle: "Connecting a Food-Recognition Idea with the Application Infrastructure Around It"
+subtitle: "Team capstone: food recognition"
 role: "Web & Backend Engineering · Team Capstone"
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone that paired a food-image classification subsystem with a web application foundation for identity, sessions, persistence, deployment, and a documented visual identity system."
+description: "A DBS Foundation team capstone. One side of the team built a food-image classifier. I built the web app around it: accounts, sessions, database, and deployment."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
@@ -748,10 +748,10 @@ slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
-subtitle: "Device Management and Automation Platform"
+subtitle: "IoT management platform"
 role: "Solo Developer"
 category: "IoT · Platform"
-description: "An IoT operations platform for organizing devices, users, automation, telemetry, and access into one operational system."
+description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
 productUrl: "https://i-ot.net/"
@@ -888,9 +888,9 @@ year: "2026"
 title: "Masih Awam LMS: Game-Based Learning Platform"
 cardTitle: "Masih Awam LMS"
 subtitle: "Game-Based Learning Platform"
-role: "Builder · Product / Backend"
+role: "Backend"
 category: "Learning · Rust"
-description: "A learning platform that turns courses into progression-based journeys using worlds, quests, lessons, and story-driven interaction."
+description: "A learning platform where courses become worlds, quests, and lessons."
 image: "/images/projects/featured/masih-awam-lms.png"
 tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus]
 productUrl: ""
@@ -1024,7 +1024,7 @@ cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
 role: "Solo Developer"
 category: "Backend · Security"
-description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
+description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"
 tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
@@ -1152,10 +1152,10 @@ slug: parentify
 year: "Nov — Dec 2023"
 title: "Parentify: Parenting Companion"
 cardTitle: "Parentify"
-subtitle: "Parenting Guidance and Food Recognition Companion"
-role: "Cloud Computing · Backend / Integration"
+subtitle: "Parenting guidance and food recognition"
+role: "Cloud · Backend"
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit Academy capstone that brought parenting guidance and image-based food recognition into one Android experience, supported by a shared backend, structured application data, and a machine-learning workflow."
+description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
 image: "/images/projects/parentify/showcase.png"
 tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
 productUrl: ""
@@ -1283,10 +1283,10 @@ slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
 cardTitle: "Portfolio"
-subtitle: "Markdown-Driven Portfolio"
-role: "Developer"
+subtitle: "Markdown-driven portfolio"
+role: "Solo Developer"
 category: "Web · Portfolio"
-description: "A portfolio designed as a content system, where projects, writing, experience, certifications, and media are maintained as structured Markdown instead of hardcoded UI data."
+description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
 image: "/images/projects/portfolio/cover.png"
 tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
 productUrl: "https://farismnrr.com"
@@ -1435,10 +1435,10 @@ slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
-subtitle: "Local Control Organized Around Real Spaces"
-role: "Backend & Systems Engineer"
+subtitle: "Smart-room controls"
+role: "Backend"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A team-built smart-space product that brings room controls, sensor information, and automation into an understandable user experience."
+description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
 tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
 productUrl: "https://sensio.id"
@@ -1532,10 +1532,10 @@ slug: sensio-notes
 year: "2026"
 title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
-subtitle: "From Long Recordings to Reusable Meeting Knowledge"
-role: "Backend & Fullstack Engineer"
+subtitle: "Meeting assistant"
+role: "Fullstack"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A team-built meeting product that helps people capture conversations, review summaries, and find decisions and follow-up work."
+description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
 tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
 productUrl: "https://sensio.id"

@@ -5,10 +5,10 @@ slug: sensio-notes
 year: "2026"
 title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
-subtitle: "From Long Recordings to Reusable Meeting Knowledge"
-role: "Backend & Fullstack Engineer"
+subtitle: "Meeting assistant"
+role: "Fullstack"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A team-built meeting product that helps people capture conversations, review summaries, and find decisions and follow-up work."
+description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
 tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
 productUrl: "https://sensio.id"

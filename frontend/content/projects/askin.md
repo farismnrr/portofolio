@@ -5,10 +5,10 @@ slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
-subtitle: "A Practical Interface for Working with AI Models and Knowledge"
-role: "Backend Developer · Integration"
+subtitle: "AI chat workspace"
+role: "Backend · Integration"
 category: "Ruangguru Academy · Learning Project"
-description: "A Ruangguru Academy project exploring how an AI chat interface can bring model access, retrieval, files, tools, and day-to-day knowledge workflows into one usable workspace."
+description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""

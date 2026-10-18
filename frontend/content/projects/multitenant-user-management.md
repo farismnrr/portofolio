@@ -8,7 +8,7 @@ cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
 role: "Solo Developer"
 category: "Backend · Security"
-description: "A reusable identity service that centralizes authentication, tenant membership, roles, and session logic across multiple applications."
+description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"
 tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""

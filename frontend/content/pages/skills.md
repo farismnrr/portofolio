@@ -2,8 +2,8 @@
 slug: skills
 eyebrow: Technical foundation
 title: Skills & foundations
-subtitle: The tools I use, the subjects I studied, and the habits I rely on when a system gets complicated.
+subtitle: "Tools I use, what I studied, and the principles I work by."
 description: Technical skills, education, and engineering principles behind the work in this portfolio.
 ---
 
-I do not treat this as a keyword inventory. The sections below group the technologies I use with the education and engineering principles that help me decide when to use them and when not to.
+Technologies grouped by area, with my education and the principles I follow.

@@ -5,10 +5,10 @@ slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
-subtitle: "Local Control Organized Around Real Spaces"
-role: "Backend & Systems Engineer"
+subtitle: "Smart-room controls"
+role: "Backend"
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A team-built smart-space product that brings room controls, sensor information, and automation into an understandable user experience."
+description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
 tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
 productUrl: "https://sensio.id"

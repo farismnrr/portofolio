@@ -1,11 +1,11 @@
 {
   "profileSummary": {
-    "text": "Fullstack engineer with 1+ year of production experience on meeting-processing and IoT products. Works across backend services in Node.js, Go, and Python with PostgreSQL and the web and mobile interfaces on top of them, including integration and production troubleshooting inside a cross-functional team."
+    "text": "Fullstack developer with 1+ year building meeting-processing and IoT products. Builds APIs and web and mobile interfaces, and fixes production issues."
   },
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads across web and mobile."
+      "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads (Node.js, React)."
     },
     {
       "sourceId": "masih-awam-ai-code",
@@ -24,15 +24,25 @@
     }
   ],
   "employmentBullets": [
-    "Built recording upload and progress-feedback flows for Sensio Notes across web and mobile, including recovery after interrupted uploads.",
-    "Built backend and control-feedback flows for Sensio IoT, connecting user commands to device state, and worked on application reliability.",
-    "Implemented UI/UX designs as working web and mobile features and worked with AI and IoT engineers on integration.",
-    "Diagnosed application failures and supported testing and releases with infrastructure and security engineers."
+    "Built the recording upload and progress-feedback flows for Sensio Notes (Node.js, React) across web and mobile, including recovery after interrupted uploads.",
+    "Built the backend for Sensio IoT in Rust (Axum), connecting user commands to device state and showing clear feedback when a device is unavailable.",
+    "Implemented UI/UX designs as web and mobile features and integrated with the services of the AI and IoT engineers.",
+    "Debugged production issues and supported testing and releases with the infrastructure and security engineers."
   ],
   "excludeExperienceOrders": [
-    3,
-    5,
-    6
+    2,
+    3
   ],
-  "employmentSummary": "Backend and fullstack development for meeting-processing and IoT products, in a cross-functional team of AI, IoT hardware, infrastructure, security, and UI/UX engineers."
+  "employmentSummary": "Backend and fullstack developer on two products: a meeting-processing app (Sensio Notes) and an IoT platform (Sensio IoT).",
+  "professionalExperienceOrders": [
+    5
+  ],
+  "experienceBullets": {
+    "4": [
+      "Studied Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration in the MSIB Batch 6 program."
+    ],
+    "6": [
+      "Built the cloud side of the Parentify capstone with Mobile Development and Machine Learning teammates; graded 90/100."
+    ]
+  }
 }

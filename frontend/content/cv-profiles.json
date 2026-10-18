@@ -67,7 +67,7 @@
       {
         "key": "web-mobile",
         "label": "Frontend",
-        "guidance": "Nuxt, Vue, Svelte"
+        "guidance": "React, Nuxt, Vue, Svelte"
       },
       {
         "key": "cloud-devops",

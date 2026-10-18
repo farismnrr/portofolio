@@ -10,6 +10,8 @@ interface CvDraft {
   employmentBullets?: string[];
   excludeExperienceOrders?: number[];
   employmentSummary?: string;
+  professionalExperienceOrders?: number[];
+  experienceBullets?: Record<string, string[]>;
 }
 
 function contactLine() {
@@ -66,13 +68,15 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
         })
         .filter((project): project is NonNullable<typeof project> => Boolean(project));
 
+      const professional = source.kind === 'employment' || Boolean(draft.professionalExperienceOrders?.includes(source.order));
+
       return {
-        kind: source.kind,
+        kind: professional ? 'employment' : source.kind,
         title: `${source.role} | ${source.company}`,
         meta: [source.year, source.location].filter(Boolean).join(' | '),
         summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary ? draft.employmentSummary : cvPlainText(source.summary),
-        relatedProjects,
-        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
+        relatedProjects: [] as typeof relatedProjects,
+        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

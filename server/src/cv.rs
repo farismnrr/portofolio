@@ -832,9 +832,17 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .experience-summary,
   .project-narrative {{
     margin: 0;
+    text-align: justify;
+    text-align-last: start;
     hyphens: none;
     orphans: 3;
     widows: 3;
+  }}
+
+  .skills {{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 28px;
   }}
 
   .skill-line {{
@@ -889,6 +897,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .bullets li {{
     margin: 0 0 {bullet_gap}px;
     padding-left: 2px;
+    text-align: justify;
+    text-align-last: start;
     hyphens: none;
     orphans: 3;
     widows: 3;
@@ -957,7 +967,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
                 escape(&document.profile_summary)
             ),
         ),
-        skills_section = section("Skills", &scopes),
+        skills_section = section("Skills", &format!(r#"<div class="skills">{scopes}</div>"#)),
         experience_section = section("Professional Experience", &experiences),
         projects_section = section("Selected Projects", &projects),
         programs_section = section("Technical Programs", &programs),
@@ -1003,7 +1013,7 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "employment")
                 .count(),
-            1
+            2
         );
         assert_eq!(
             request

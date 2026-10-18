@@ -763,7 +763,7 @@ AI can now build and fix software for someone who cannot read code.
 The trouble is trust.
 That person cannot tell whether "it works" is true, so they either believe the AI blindly or they do not use it.
 
-I built Masih Awam AI Code around that gap. The goal is not a smarter AI. The goal is that the person never has to take the AI's word for it.
+I built Masih Awam AI Code around that gap. The goal is simple: the person should never have to take the AI's word for it.
 
 ## How a request flows
 
@@ -805,7 +805,7 @@ It is never even offered a tool that changes files or runs commands.
 If it tries one anyway, the server refuses.
 A one-line fix still goes to the Developer.
 
-This keeps deciding and doing apart. It also stops the lead from quietly taking over a job it was meant to hand off.
+So the lead cannot quietly take over a job it was meant to hand off.
 
 ### Delegation is a brief and a report
 
@@ -882,7 +882,13 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 
 ## What I took from it
 
-Most of the effort went into boundaries, not into the AI. Deciding what each role may touch, what counts as proof, and what the person always controls mattered more than any single feature.
+A large part of the work was deciding what each role may touch, what counts as proof, and what the person always controls.
+
+## In the code
+
+- 12 feature modules, each split into domain, application, and adapter layers.
+- About 28,000 lines of Go, plus about 14,000 lines of tests.
+- 286 commits, built solo.
 
 ## Links
 

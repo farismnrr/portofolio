@@ -12,6 +12,7 @@ interface CvDraft {
   employmentSummary?: string;
   professionalExperienceOrders?: number[];
   experienceBullets?: Record<string, string[]>;
+  educationNote?: string;
 }
 
 function contactLine() {
@@ -110,8 +111,9 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
+  const degreeNote = draft.educationNote ? ` | ${draft.educationNote}` : '';
   const educationLines = education.filter((item) => !education.some((entry) => /bachelor|master|doctor/i.test(entry.program)) || /bachelor|master|doctor/i.test(item.program)).map((item) =>
-    [item.institution, item.program, item.year].filter(Boolean).join(' | ')
+    [item.institution, item.program, item.year].filter(Boolean).join(' | ') + (/bachelor|master|doctor/i.test(item.program) ? degreeNote : '')
   );
 
 

@@ -9,7 +9,7 @@
     },
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Open-source AI workspace for non-developers: an orchestrator delegates to specialist AI roles, and work is accepted only when checks prove it. Built with Go and Svelte."
+      "narrative": "Open-source AI workspace for non-developers: an orchestrator delegates work to specialist AI roles, and results are accepted only when checks prove them."
     }
   ],
   "certifications": [
@@ -39,7 +39,7 @@
   ],
   "experienceBullets": {
     "4": [
-      "Studied Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration in the MSIB Batch 6 program."
+      "Completed a backend engineering program covering API design, authentication, databases, testing, and AI integration."
     ],
     "6": [
       "Built the cloud side of the Parentify capstone with Mobile Development and Machine Learning teammates; graded 90/100."

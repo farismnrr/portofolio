@@ -8,7 +8,7 @@
       "narrative": "Meeting product that turns recordings into summaries and action items. Built upload, progress feedback, and recovery after interrupted uploads."
     },
     {
-      "sourceId": "masih-awam-ai-code",
+      "sourceId": "ai-workspace",
       "narrative": "Open-source AI workspace for non-developers: an orchestrator delegates work to specialist AI roles, and results are accepted only when checks prove them."
     }
   ],

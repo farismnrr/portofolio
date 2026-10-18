@@ -1,15 +1,15 @@
 ---
 id: "02"
 order: 2
-slug: masih-awam-ai-code
+slug: ai-workspace
 year: "2026"
-title: "Masih Awam AI Code: AI Workspace for Non-Developers"
-cardTitle: "Masih Awam AI Code"
-subtitle: "AI Workspace for Non-Developers"
+title: "AI Workspace for Non-Developers"
+cardTitle: "AI Workspace"
+subtitle: "For Non-Developers"
 role: "Solo Developer"
 category: "AI · Open Source"
 description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
-image: "/images/projects/featured/masih-awam-ai-code.png"
+image: "/images/projects/featured/ai-workspace.png"
 tech: [Go, Svelte, Docker, MCP]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
@@ -21,7 +21,7 @@ AI can now build and fix software for someone who cannot read code.
 The trouble is trust.
 That person cannot tell whether "it works" is true, so they either believe the AI blindly or they do not use it.
 
-I built Masih Awam AI Code around that gap. The goal is simple: the person should never have to take the AI's word for it.
+I built AI Workspace around that gap. The goal is simple: the person should never have to take the AI's word for it.
 
 ## How a request flows
 

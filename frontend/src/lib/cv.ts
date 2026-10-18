@@ -41,7 +41,8 @@ function projectMeta(slug: string) {
   if (!project) return '';
   const company = experiences.find((item) => item.projects.includes(slug))?.company;
   const link = (project.productUrl || project.repoUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
-  return [company, link, project.year].filter(Boolean).join(' | ');
+  const personal = /^personal/i.test(project.category) ? 'Personal' : '';
+  return [company || personal, link, project.year].filter(Boolean).join(' | ');
 }
 
 function cvPlainText(value: string) {

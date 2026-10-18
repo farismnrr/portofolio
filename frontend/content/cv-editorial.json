@@ -1,23 +1,23 @@
 {
   "profileSummary": {
-    "text": "Software Engineer focused on backend and systems engineering, with production experience in meeting and IoT applications. Builds reliable services and connects web and mobile interfaces to application behavior. Works across software, infrastructure, security, and UI/UX teams on integration, testing, troubleshooting, and delivery."
+    "text": "Fullstack engineer with 1+ year of production experience on meeting-processing and IoT products. Works across backend services in Node.js, Go, and Python with PostgreSQL and the web and mobile interfaces on top of them, including integration and production troubleshooting inside a cross-functional team."
   },
   "projects": [
     {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Built a coding workspace that connects repository inspection, file changes, command execution, and verification through bounded capabilities. Separated agent reasoning from execution authority with Rust, MCP, and Bubblewrap so repository operations pass through explicit policy boundaries, while the workspace exposes progress and evidence from the actual development environment."
+      "narrative": "Built a coding agent workspace in Nuxt and Rust where the AI proposes file edits and shell commands, and a native Rust relay runs them inside a Bubblewrap sandbox under explicit permission rules. Each action returns its diff, test output, and Git state, so a claimed fix can be checked."
     },
     {
       "sourceId": "masih-awam-lms",
-      "narrative": "Built Rust and Axum services backed by PostgreSQL for courses, enrollment, and lesson completion. Separated auditable progress state from worlds, quests, and story presentation, allowing learner dashboards to show the next step while public course pages and private progress views follow different data ownership and rendering boundaries."
+      "narrative": "Built Rust and Axum services on PostgreSQL for courses, enrollment, and lesson completion, instrumented with OpenTelemetry and Prometheus. Learner progress is stored apart from the game and story layer, so dashboards can show the next lesson while public course pages stay separate from private progress."
     },
     {
       "sourceId": "iotnet",
-      "narrative": "Built an IoT management platform using TypeScript, Hapi, PostgreSQL, MQTT, and EMQX to connect user workflows with asynchronous device communication. Separated requested commands from observed device state and checked ownership before control, giving the application a clear model for device operations, automation decisions, and operational visibility through OpenTelemetry."
+      "narrative": "Built an IoT management platform in Node.js with Hapi, PostgreSQL, MQTT, and EMQX. It records requested commands apart from reported device state so the UI shows what was asked versus what the device did, checks device ownership before any control, and traces the command flow with OpenTelemetry."
     },
     {
       "sourceId": "multitenant-user-management",
-      "narrative": "Built a reusable identity service in Rust and Actix-web with PostgreSQL, JWT sessions, and Argon2 password hashing. Separated global accounts from tenant membership and role assignments so applications can share authentication while evaluating permissions within each tenant, with RocksDB caching and Docker packaging supporting the service runtime."
+      "narrative": "Built a reusable authentication service in Rust and Actix-web with PostgreSQL, JWT sessions, and Argon2 password hashing. One account can belong to several tenants with a different role in each; RocksDB caching and Docker packaging support the runtime."
     }
   ],
   "certifications": [
@@ -32,9 +32,14 @@
     }
   ],
   "employmentBullets": [
-    "Developed backend application behavior and web/mobile integration for Sensio Notes, including recording and upload interactions, processing feedback, and recovery after interruptions.",
-    "Contributed backend and systems engineering to Sensio IoT, connecting control interactions with device-related feedback and improving application reliability.",
-    "Implemented application interfaces from UI/UX designs and worked with AI and IoT engineers on integration and consistent user-facing behavior.",
-    "Investigated application failures, supported testing, and coordinated operational and release work with infrastructure and security engineers."
+    "Built recording upload and progress-feedback flows for Sensio Notes across web and mobile, including recovery after interrupted uploads.",
+    "Built backend and control-feedback flows for Sensio IoT, connecting user commands to device state, and worked on application reliability.",
+    "Implemented UI/UX designs as working web and mobile features and worked with AI and IoT engineers on integration.",
+    "Diagnosed application failures and supported testing and releases with infrastructure and security engineers."
+  ],
+  "excludeExperienceOrders": [
+    3,
+    5,
+    6
   ]
 }

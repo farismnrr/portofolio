@@ -8,6 +8,7 @@ interface CvDraft {
   projects: { sourceId: string; narrative: string }[];
   certifications: { sourceId: string }[];
   employmentBullets?: string[];
+  excludeExperienceOrders?: number[];
 }
 
 function contactLine() {
@@ -36,7 +37,9 @@ function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
   const company = experiences.find((item) => item.projects.includes(slug))?.company;
-  return [company, project.year].filter(Boolean).join(' | ');
+  const solo = /^solo/i.test(project.role) ? 'Solo' : '';
+  const link = (project.repoUrl || project.productUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
+  return [company, solo, link, project.year].filter(Boolean).join(' | ');
 }
 
 function cvPlainText(value: string) {
@@ -47,6 +50,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
   const cvProfile = getCvProfile(target);
 
   const selectedExperiences = experiences
+    .filter((source) => !draft.excludeExperienceOrders?.includes(source.order))
     .map((source) => {
 
       const relatedProjects = source.projects

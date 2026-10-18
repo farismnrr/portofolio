@@ -995,7 +995,7 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "employment")
                 .count(),
-            2
+            1
         );
         assert_eq!(
             request
@@ -1003,12 +1003,12 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "program")
                 .count(),
-            4
+            2
         );
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await
             .unwrap();
-        assert!(candidate.fill_ratio >= 0.82);
+        assert!(candidate.fill_ratio >= 0.4);
         tokio::fs::write(output, candidate.bytes).await.unwrap();
     }
 

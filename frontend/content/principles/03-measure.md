@@ -1,7 +1,7 @@
 ---
 order: 3
 index: "03"
-title: Measure before optimizing.
+title: Trust checks, not claims.
 ---
 
-I rely on data and real-world usage to identify what actually matters before investing in optimization.
+In AI Workspace, proof counts only the checks the server ran itself. What the AI says it checked is shown as claimed.

@@ -1,7 +1,7 @@
 ---
 order: 4
 index: "04"
-title: Reliability is part of the product.
+title: Plan for the dropped connection.
 ---
 
-Systems should be resilient, observable, and fail gracefully because real users depend on them.
+In Sensio Notes, large recordings upload in parts and resume after a drop, and an in-progress recording is backed up locally.

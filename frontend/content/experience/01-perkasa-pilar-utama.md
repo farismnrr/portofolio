@@ -5,11 +5,12 @@ year: July 2025 — Present
 company: PT Perkasa Pilar Utama
 role: Backend & Fullstack Developer
 location: "Jakarta, Indonesia"
-summary: Develops backend services, client integration, and production operations for meeting-processing and IoT products, with substantial application ownership inside a cross-functional product team spanning AI services, IoT hardware, infrastructure, security, and UI/UX.
+summary: Backend and fullstack developer on Sensio Notes, a meeting assistant, and Sensio IoT, smart-room controls.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
 
-- Developed backend application behavior and web/mobile integration for **[Sensio Notes](/projects/sensio-notes)**, including recording and upload interactions, progress feedback, and interrupted-work recovery.
-- Contributed backend and systems engineering to **[Sensio IoT](/projects/sensio-iot)**, connecting control interactions with device-related feedback and improving application reliability.
-- Implemented interfaces from UI/UX designs and coordinated with AI, IoT, infrastructure, and security engineers on integration, troubleshooting, testing, and releases.
+- Built resumable uploads and local recording backup for **[Sensio Notes](/projects/sensio-notes)**, on web and mobile.
+- Built the backend for room controls in **[Sensio IoT](/projects/sensio-iot)**: commands, device-state feedback, and permissions.
+- Turned design mockups into working web and mobile screens.
+- Fixed production issues and shipped releases alongside the infrastructure and security engineers.

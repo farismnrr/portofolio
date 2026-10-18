@@ -35,14 +35,15 @@ year: July 2025 — Present
 company: PT Perkasa Pilar Utama
 role: Backend & Fullstack Developer
 location: "Jakarta, Indonesia"
-summary: Develops backend services, client integration, and production operations for meeting-processing and IoT products, with substantial application ownership inside a cross-functional product team spanning AI services, IoT hardware, infrastructure, security, and UI/UX.
+summary: Backend and fullstack developer on Sensio Notes, a meeting assistant, and Sensio IoT, smart-room controls.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
 
-- Developed backend application behavior and web/mobile integration for **[Sensio Notes](/projects/sensio-notes)**, including recording and upload interactions, progress feedback, and interrupted-work recovery.
-- Contributed backend and systems engineering to **[Sensio IoT](/projects/sensio-iot)**, connecting control interactions with device-related feedback and improving application reliability.
-- Implemented interfaces from UI/UX designs and coordinated with AI, IoT, infrastructure, and security engineers on integration, troubleshooting, testing, and releases.
+- Built resumable uploads and local recording backup for **[Sensio Notes](/projects/sensio-notes)**, on web and mobile.
+- Built the backend for room controls in **[Sensio IoT](/projects/sensio-iot)**: commands, device-state feedback, and permissions.
+- Turned design mockups into working web and mobile screens.
+- Fixed production issues and shipped releases alongside the infrastructure and security engineers.
 
 ---
 
@@ -56,18 +57,17 @@ year: Feb 2025 — July 2025
 company: Coding Camp powered by DBS Foundation
 role: Machine Learning Engineer Track Participant
 location: ""
-summary: Completed a semester-long intensive technology training program with a team capstone, combining machine-learning coursework with hands-on web application delivery.
+summary: A semester-long training program with a team capstone, mixing machine-learning coursework with web application delivery.
 tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
 evidenceTitle: Graduation letter
 evidenceUrl: /downloads/experience/coding-camp-2025-graduation-letter.pdf
 projects: [gizilens]
 ---
 
-- Contributed to the application side of the **[GiziLens](/projects/gizilens)** team capstone, implementing authentication, sessions, and user APIs around a food-recognition subsystem developed within the team.
-- Integrated PostgreSQL and Redis with the Nuxt frontend and containerized services, providing a deployable web application around the team’s food-recognition subsystem.
-- Kept the machine-learning classifier as a team subsystem in the project story rather than presenting another member's model-training work as my individual implementation.
+- Built the web application side of the **[GiziLens](/projects/gizilens)** capstone: authentication, sessions, and user APIs.
+- Connected PostgreSQL and Redis to the Nuxt frontend and containerized the services.
 
-- Fully graduated from the DBS Foundation and Dicoding Academy program held from 10 February to 16 July 2025, as confirmed by the graduation letter issued on 7 July 2025.
+- Graduated from the DBS Foundation and Dicoding Academy program (10 February to 16 July 2025). The graduation letter is dated 7 July 2025.
 
 ---
 
@@ -81,15 +81,15 @@ year: Sep 2024 — Dec 2024
 company: Codepolitan
 role: Full Stack Web Development Participant
 location: ""
-summary: Completed an online full-stack development scholarship program covering backend APIs, data persistence, frontend application development, and cloud fundamentals.
+summary: An online full-stack development scholarship program.
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
 certificationGroups: [Alibaba Cloud]
 ---
 
-- Worked through backend development with Node.js and Express.js, including API design and application data stored in MongoDB.
-- Built frontend exercises with Vue.js to connect user-facing interfaces with the application services developed during the program.
-- Extended the learning path into cloud fundamentals through the related Alibaba Cloud credentials listed in the Certifications section.
+- Built backend APIs with Node.js and Express.js, storing data in MongoDB.
+- Built frontend exercises with Vue.js against those APIs.
+- Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications.
 
 ---
 
@@ -103,16 +103,16 @@ year: Feb 2024 — Jun 2024
 company: Ruang Guru Academy
 role: Backend Engineering Participant
 location: ""
-summary: Completed a full-time certified independent-study program in backend engineering, combining structured coursework, implementation assignments, and project-based delivery around AI-enabled application services.
+summary: A full-time MSIB Batch 6 backend engineering program (16 February to 30 June 2024).
 tech: [Golang, Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 evidenceTitle: MSIB certificate and learning transcript
 evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
 projects: [askin]
 ---
 
-- Worked through backend-focused learning and implementation around application APIs, service integration, data flow, and deployment.
+- Adapted an open-source AI chat app (**[AskIn](/projects/askin)**): authenticated APIs, model discovery and routing, and deployment.
 
-- Completed the MSIB Batch 6 program from 16 February to 30 June 2024. Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.
+- Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.
 
 ---
 
@@ -126,7 +126,7 @@ year: Jan 2024 — Mar 2024
 company: PT Tradeasia International Indonesia
 role: SEO Specialist (Student Trainee)
 location: ""
-summary: Worked on search visibility through keyword research, on-page SEO, technical checks, and traffic analysis.
+summary: A student traineeship in search engine optimization.
 tech: [SEO, Web Analytics]
 evidenceTitle: Training reference letter
 evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
@@ -135,7 +135,7 @@ projects: []
 
 - Researched search queries, reviewed page structure and technical SEO issues, and used analytics data to decide which pages and topics needed attention.
 
-- Completed IT Tradeasia Academy training at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role and acknowledges teamwork and contributions during the program.
+- Trained at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role.
 
 ---
 
@@ -149,18 +149,17 @@ year: Aug 2023 — Jan 2024
 company: Bangkit Academy
 role: Cloud Computing Cohort
 location: Remote · Indonesia
-summary: Completed Bangkit 2023 Batch 2 on the Cloud Computing path as a structured industry-backed learning program, combining technical coursework, cloud labs, communication training, and cross-functional capstone delivery.
+summary: The Cloud Computing path of Bangkit 2023 Batch 2.
 tech: [Google Cloud, Node.js, Express, MySQL, Docker]
 evidenceTitle: Certificate and learning transcript
 evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf
 projects: [parentify]
 ---
 
-- Completed the Cloud Computing learning path through self-paced coursework, instructor-led sessions, hands-on cloud labs, English practice, and soft-skill training.
-- Worked in the **[Parentify](/projects/parentify)** cross-functional capstone team where technical decisions had to be communicated clearly across Cloud Computing, Mobile Development, and Machine Learning roles.
-- Practiced team delivery beyond implementation itself: defining ownership, coordinating hand-offs, documenting decisions, and keeping integration work aligned with a shared product goal.
+- Built the cloud side of the **[Parentify](/projects/parentify)** capstone with Mobile Development and Machine Learning teammates.
+- Agreed ownership and API contracts with the other two tracks and documented the decisions.
 
-- Graduated on 19 January 2024 with a completed capstone; the learning transcript records a capstone score of 90/100.
+- Graduated on 19 January 2024 with a completed capstone.
 ## Education
 
 ### 01-upn-veteran-jatim
@@ -248,10 +247,10 @@ Source file: frontend/content/skills/01-languages.md
 ---
 order: 1
 title: Languages
-items: [Rust, Go, TypeScript, JavaScript, Python, C++, PHP, Kotlin, SQL, Bash, QML]
+items: [JavaScript, TypeScript, Go, Python, SQL, Bash, Rust, Kotlin, C++, PHP, QML]
 ---
 
-Languages used across backend services, web applications, Android development, database queries, automation scripts, and embedded or plugin projects.
+Day to day I write JavaScript, TypeScript, Go, Python, and SQL. The rest I have used in specific projects, such as Rust for services, Kotlin for Android, and C++ and QML for desktop plugins.
 
 ---
 
@@ -261,12 +260,10 @@ Source file: frontend/content/skills/02-backend.md
 ---
 order: 2
 title: Backend
-items: [NestJS, Express, Hapi, Axum, Actix, Gin, Object-Oriented Design]
+items: [NestJS, Fiber, FastAPI, Express, Hapi, Axum, Actix, Gin]
 ---
 
-Designing and implementing HTTP APIs and web services across TypeScript/JavaScript, Rust, and Go stacks. The work covers authentication, validation, persistence, asynchronous workflows, service integration, and production observability. Portfolio examples include Express in Parentify and Rust services in independently documented projects.
-
-Production NestJS work uses class-based modules, controllers, and services with dependency injection to separate application responsibilities. I treat that as practical object-oriented application design. The Rust services use composition and domain boundaries that fit that ecosystem instead of copying the same structure across every stack.
+REST APIs and services in TypeScript, Go, Python, and Rust: authentication, validation, storage, background work, and integration with other services.
 
 ---
 
@@ -276,10 +273,10 @@ Source file: frontend/content/skills/03-frontend.md
 ---
 order: 3
 title: Frontend & Web
-items: [Svelte, React, Vue, Next.js, Nuxt, TypeScript, JavaScript, HTML, CSS, SCSS]
+items: [React, Vue, Svelte, Capacitor, Nuxt, Next.js, TypeScript, JavaScript, HTML, CSS, SCSS]
 ---
 
-Building responsive web interfaces from semantic HTML and CSS/SCSS through JavaScript and TypeScript applications across Svelte, React, Vue, and meta-framework stacks. The work includes client-side navigation and state, API-backed interfaces, server-rendered and build-time-rendered pages, responsive layouts, mobile behavior, and progressive enhancement.
+Web interfaces in React, Vue, and Svelte, and mobile apps wrapped with Capacitor. This includes client-side navigation and state, API-backed screens, and responsive layouts.
 
 ---
 
@@ -292,7 +289,7 @@ title: Database & Storage
 items: [PostgreSQL, MySQL, Redis, RocksDB, SQLite]
 ---
 
-Designing optimized database schemas for complex data relationships and implementing high-speed caching strategies for real-time access.
+PostgreSQL and MySQL for application data, Redis and RocksDB for caching, and SQLite for small embedded storage.
 
 ---
 
@@ -305,7 +302,7 @@ title: DevOps & Infrastructure
 items: [Docker, Linux, GitHub Actions, OpenTelemetry, Prometheus, Grafana, Jira, AWS, GCP]
 ---
 
-Automating deployment workflows with CI/CD pipelines, managing containerized Linux infrastructure, tracking agile delivery via Jira, and instrumenting production observability with OpenTelemetry, Prometheus, and Grafana.
+Docker on Linux, CI/CD with GitHub Actions, and tracing and metrics with OpenTelemetry, Prometheus, and Grafana. Cloud work has been on AWS and Google Cloud.
 
 ---
 
@@ -318,7 +315,7 @@ title: IoT & Embedded
 items: [Arduino, ESP32, EMQX, Grafana, Node-RED]
 ---
 
-Engineering secure, real-time communication between hardware and cloud systems, including firmware development and Over-The-Air (OTA) updates.
+Devices on Arduino and ESP32, messaging through MQTT with EMQX, and flows built in Node-RED. Includes firmware updates over the air (OTA).
 ## Projects
 
 ### AI Workspace for Non-Developers

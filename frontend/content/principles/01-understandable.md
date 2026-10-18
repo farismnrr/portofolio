@@ -1,7 +1,7 @@
 ---
 order: 1
 index: "01"
-title: Build systems that remain understandable.
+title: Keep what was asked apart from what happened.
 ---
 
-Clarity compounds. I favor simple, well-structured systems that are easy to reason about, maintain, and evolve.
+In IoTNet and Sensio IoT, a command and the state the device reports are separate. The interface shows the result, not the intention.

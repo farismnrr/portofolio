@@ -1,7 +1,7 @@
 ---
 order: 5
 index: "05"
-title: AI outputs should remain grounded in evidence.
+title: Keep identity global and permissions local.
 ---
 
-I value factual, traceable, and transparent AI systems that augment human judgment.
+In the multi-tenant user service, one account can belong to several tenants, and the role applies only inside the tenant you act in.

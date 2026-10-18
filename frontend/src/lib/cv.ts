@@ -72,7 +72,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
       return {
         kind: professional ? 'employment' : source.kind,
         title: `${source.role} | ${source.company}`,
-        meta: [source.year, source.location].filter(Boolean).join(' | '),
+        meta: [source.year, source.kind === 'program' ? '' : source.location].filter(Boolean).join(' | '),
         summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary ? draft.employmentSummary : cvPlainText(source.summary),
         relatedProjects: [] as typeof relatedProjects,
         bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)

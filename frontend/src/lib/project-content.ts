@@ -28,6 +28,13 @@ function optimizedProjectImage(value: string) {
   return value.replace(/\.(?:png|jpe?g)$/i, '-1280.webp');
 }
 
+/** Covers that are screenshots of a whole screen and must be shown without cropping. */
+const uncroppedCovers = ['parentify', 'ai-workspace'];
+
+export function isUncroppedCover(slug: string) {
+  return uncroppedCovers.includes(slug);
+}
+
 export function projectImageSrcset(value: string) {
   const match = value.match(/^(.*)-1280\.webp$/);
   if (!match) return '';

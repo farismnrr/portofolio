@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProjectDocument } from '../project-content';
-  import { projectImageSrcset } from '../project-content';
+  import { isUncroppedCover, projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
   import { navigate } from '../router';
   import { prefetchRoute } from '../routes';
@@ -8,7 +8,7 @@
   export let project: ProjectDocument;
 
   $: detailPath = '/projects/' + project.slug;
-  $: preserveShowcase = project.slug === 'parentify';
+  $: preserveShowcase = isUncroppedCover(project.slug);
 </script>
 
 <article class="border-b border-black/14 pb-8 sm:pb-9">

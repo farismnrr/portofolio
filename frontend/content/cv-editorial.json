@@ -4,20 +4,12 @@
   },
   "projects": [
     {
+      "sourceId": "sensio-notes",
+      "narrative": "Meeting product that turns recordings into summaries, action items, and searchable decisions. Built the recording upload, progress feedback, and interrupted-upload recovery across web and mobile, inside a cross-functional team."
+    },
+    {
       "sourceId": "masih-awam-ai-code",
-      "narrative": "Built a coding agent workspace in Nuxt and Rust where the AI proposes file edits and shell commands, and a native Rust relay runs them inside a Bubblewrap sandbox under explicit permission rules. Each action returns its diff, test output, and Git state, so a claimed fix can be checked."
-    },
-    {
-      "sourceId": "masih-awam-lms",
-      "narrative": "Built Rust and Axum services on PostgreSQL for courses, enrollment, and lesson completion, instrumented with OpenTelemetry and Prometheus. Learner progress is stored apart from the game and story layer, so dashboards can show the next lesson while public course pages stay separate from private progress."
-    },
-    {
-      "sourceId": "iotnet",
-      "narrative": "Built an IoT management platform in Node.js with Hapi, PostgreSQL, MQTT, and EMQX. It records requested commands apart from reported device state so the UI shows what was asked versus what the device did, checks device ownership before any control, and traces the command flow with OpenTelemetry."
-    },
-    {
-      "sourceId": "multitenant-user-management",
-      "narrative": "Built a reusable authentication service in Rust and Actix-web with PostgreSQL, JWT sessions, and Argon2 password hashing. One account can belong to several tenants with a different role in each; RocksDB caching and Docker packaging support the runtime."
+      "narrative": "Built a coding agent workspace in Nuxt and Rust where AI-proposed edits and commands run in a Bubblewrap sandbox under explicit permission rules and return diffs and test output as evidence."
     }
   ],
   "certifications": [
@@ -41,5 +33,6 @@
     3,
     5,
     6
-  ]
+  ],
+  "employmentSummary": "Backend and fullstack development for meeting-processing and IoT products, in a cross-functional team of AI, IoT hardware, infrastructure, security, and UI/UX engineers."
 }

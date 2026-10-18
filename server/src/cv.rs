@@ -83,7 +83,17 @@ struct DensityProfile {
     vertical_margin: f32,
 }
 
-const DENSITY_PROFILES: [DensityProfile; 4] = [
+const DENSITY_PROFILES: [DensityProfile; 5] = [
+    DensityProfile {
+        name: "tight",
+        body_size: 10.0,
+        line_height: 1.28,
+        section_gap: 7.0,
+        item_gap: 5.0,
+        bullet_gap: 1.5,
+        horizontal_margin: 0.55,
+        vertical_margin: 0.38,
+    },
     DensityProfile {
         name: "compact",
         body_size: 10.0,
@@ -602,7 +612,8 @@ fn standalone_project_html(project: &ProjectSection) -> String {
 }
 
 fn experience_html(experience: &ExperienceSection) -> String {
-    let related_projects = if experience.related_projects.is_empty() {
+    let related_projects = if experience.related_projects.is_empty() || experience.kind == "program"
+    {
         String::new()
     } else {
         let links = experience
@@ -645,14 +656,21 @@ fn experience_html(experience: &ExperienceSection) -> String {
             <span class="item-title">{title}</span>
             <span class="item-meta">{meta}</span>
           </div>
-          <p class="experience-summary">{summary}</p>
+          {summary}
           {related_projects}
           {bullets}
         </article>
         "#,
         title = escape(&experience.title),
         meta = escape(&experience.meta),
-        summary = escape(&experience.summary),
+        summary = if experience.summary.trim().is_empty() {
+            String::new()
+        } else {
+            format!(
+                r#"<p class="experience-summary">{}</p>"#,
+                escape(&experience.summary)
+            )
+        },
         related_projects = related_projects,
         bullets = bullets,
     )
@@ -695,7 +713,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         .iter()
         .map(|line| {
             format!(
-                r#"<div class="skill-line"><strong class="skill-label">{}</strong><span class="skill-value">{}</span></div>"#,
+                r#"<div class="skill-line"><strong class="skill-label">{}:</strong> <span class="skill-value">{}</span></div>"#,
                 escape(&line.label),
                 escape(&line.text)
             )
@@ -804,8 +822,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     font-weight: 700;
     text-transform: uppercase;
     border-bottom: 1px solid #666666;
-    padding-bottom: 3px;
-    margin-bottom: 8px;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
     break-after: avoid-page;
     page-break-after: avoid;
   }}
@@ -814,25 +832,17 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .experience-summary,
   .project-narrative {{
     margin: 0;
-    text-align: justify;
-    text-align-last: start;
     hyphens: none;
     orphans: 3;
     widows: 3;
   }}
 
   .skill-line {{
-    display: grid;
-    grid-template-columns: 100px minmax(0, 1fr);
-    column-gap: 12px;
-    padding: 3px 0;
-    border-bottom: 0.5px solid #dddddd;
+    padding: 1px 0;
     break-inside: avoid;
   }}
 
-  .skill-line:last-child {{ border-bottom: 0; }}
   .skill-label {{ font-weight: 700; }}
-  .skill-value {{ text-align: justify; text-align-last: start; }}
 
   .experience,
   .project,
@@ -848,8 +858,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .item-heading {{
-    line-height: 1.28;
-    margin-bottom: 4px;
+    line-height: 1.25;
+    margin-bottom: 2px;
   }}
 
   .item-title {{
@@ -872,22 +882,20 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .bullets {{
-    margin: 5px 0 0 18px;
+    margin: 3px 0 0 16px;
     padding: 0;
   }}
 
   .bullets li {{
     margin: 0 0 {bullet_gap}px;
     padding-left: 2px;
-    text-align: justify;
-    text-align-last: start;
     hyphens: none;
     orphans: 3;
     widows: 3;
   }}
 
   .related-projects {{
-    margin-top: 5px;
+    margin-top: 2px;
     color: #444444;
   }}
 
@@ -905,7 +913,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .certification {{
     font-size: 10pt;
     line-height: 1.42;
-    padding-bottom: 10px;
+    padding-bottom: 1px;
   }}
 
   .cert-title {{
@@ -915,7 +923,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .education {{
-    margin-bottom: 5px;
+    margin-bottom: 2px;
   }}
 </style>
 </head>
@@ -984,7 +992,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
-    async fn renders_two_page_evidence_fixture() {
+    async fn renders_one_page_evidence_fixture() {
         let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
         let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
         let request: CvRenderRequest =
@@ -1008,7 +1016,6 @@ mod tests {
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await
             .unwrap();
-        assert!(candidate.fill_ratio >= 0.4);
         tokio::fs::write(output, candidate.bytes).await.unwrap();
     }
 
@@ -1083,8 +1090,8 @@ mod tests {
         let profile = profiles::get("general").expect("General profile");
 
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert_eq!(profile.max_pages, 2);
+        assert_eq!(profile.max_pages, 1);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 4);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 2);
     }
 }

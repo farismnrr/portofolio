@@ -2,6 +2,8 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 frontend/public/cv-corpus.json
+frontend/public/feed.xml
+frontend/public/routes.txt
 frontend/public/vendor/
 frontend/public/images/profile/*.webp
 frontend/public/images/blog/*.webp

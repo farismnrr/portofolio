@@ -19,6 +19,7 @@ function contactLine() {
   const email = profile.email.replace(/^mailto:/, '');
   return [
     email,
+    '+62 852-1565-2903',
     'Portfolio: https://farismnrr.com',
     profile.github.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     profile.linkedin.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')

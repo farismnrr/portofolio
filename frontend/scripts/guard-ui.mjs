@@ -102,7 +102,7 @@ const requiredShared = [
   'lib/ui/MobileNavigation.svelte',
   'lib/ui/PageIntro.svelte',
   'lib/ui/SectionHeader.svelte',
-  'lib/ui/TechChips.svelte',
+  'lib/ui/TechList.svelte',
   'lib/ui/TimelineEntry.svelte',
   'lib/ui/ProjectCard.svelte',
   'lib/ui/ProjectModal.svelte',

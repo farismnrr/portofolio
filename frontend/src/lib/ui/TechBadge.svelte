@@ -4,16 +4,14 @@
 
   export let name: string;
 
-  $: icon = name === '-' ? undefined : getTechIcon(name);
+  $: icon = getTechIcon(name);
 </script>
 
 {#if name === '-'}
-  <span class="text-[11px] leading-4 text-[color-mix(in_srgb,var(--page-fg)_58%,transparent)]">-</span>
+  <span class="text-sm text-base-content/70">-</span>
 {:else}
-<span class="inline-flex min-h-6 max-w-full items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--page-fg)_16%,transparent)] bg-[color-mix(in_srgb,var(--page-fg)_3%,var(--surface))] px-2 py-0.5 text-[11px] leading-4 text-[color-mix(in_srgb,var(--page-fg)_78%,transparent)]">
-  {#if icon}
-    <AppIcon brandPath={icon.path} size={14}/>
-  {/if}
-  <span class="truncate">{name}</span>
-</span>
+  <span class="badge badge-outline min-h-7 max-w-full gap-1.5 px-2.5 text-xs text-base-content/80">
+    <AppIcon brandPath={icon.path} brandStroke={icon.custom} size={14}/>
+    <span class="truncate">{name}</span>
+  </span>
 {/if}

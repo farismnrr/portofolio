@@ -3,7 +3,7 @@
   import { getProjectBySlug } from '../project-content';
   import { renderInlineMarkdown } from '../markdown';
   import { navigate } from '../router';
-  import TechChips from './TechChips.svelte';
+  import TechList from './TechList.svelte';
 
   export let item:any;
   export let compact=false;
@@ -81,7 +81,7 @@
           </li>
         {/each}
       </ul>
-      {#if !wide}<div class="mt-5"><TechChips items={item.tech} pills/></div>{/if}
+      {#if !wide}<div class="mt-5"><TechList items={item.tech}/></div>{/if}
     {/if}
   </div>
 </article>

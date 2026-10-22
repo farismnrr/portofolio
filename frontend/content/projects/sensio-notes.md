@@ -10,9 +10,9 @@ role: "Fullstack"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
-image: "/images/projects/sensio-notes/meetings.png"
-images: ["/images/projects/sensio-notes/meetings.png", "/images/projects/sensio-notes/meeting-overview.png", "/images/projects/sensio-notes/processing-pipeline.png", "/images/projects/sensio-notes/knowledge-graph.png"]
-imageAlts: ["Sensio Notes meetings list with status filters and search.", "Sensio Notes meeting overview with recording playback and action items.", "Sensio Notes processing stages from queueing through mind mapping.", "Knowledge graph with 48 entities, 68 relations and 8 communities."]
+image: "/images/projects/sensio-notes/cover.png"
+images: ["/images/projects/sensio-notes/cover.png", "/images/projects/sensio-notes/meetings.png", "/images/projects/sensio-notes/meeting-overview.png", "/images/projects/sensio-notes/processing-pipeline.png", "/images/projects/sensio-notes/knowledge-graph.png"]
+imageAlts: ["Sensio Notes cover with the meetings list and the AI processing stages.", "Sensio Notes meetings list with status filters and search.", "Sensio Notes meeting overview with recording playback and action items.", "Sensio Notes processing stages from queueing through mind mapping.", "Knowledge graph with 48 entities, 68 relations and 8 communities."]
 techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""

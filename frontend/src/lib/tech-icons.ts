@@ -85,7 +85,21 @@ const customIcons: Array<[string, string]> = [
   ['emqx', 'M4 9a12 12 0 0 1 16 0M7 12a7.5 7.5 0 0 1 10 0m-7 3a3 3 0 0 1 4 0m-2 3h.01'],
   ['seaorm', 'M4 8c2-3 5-3 8 0s6 3 8 0M4 13c2-3 5-3 8 0s6 3 8 0M4 18c2-3 5-3 8 0s6 3 8 0'],
   ['argon2', 'M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6zm-3 9 2 2 4-5'],
-  ['openai api', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8z']
+  ['openai api', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8z'],
+  ['sql', 'M4 6c0-2 16-2 16 0v12c0 2-16 2-16 0zm0 0c0 2 16 2 16 0M4 12c0 2 16 2 16 0'],
+  ['tokio', 'M4 5h16v14H4zm4 4h8m-8 4h5m-5 3h8'],
+  ['sqlx', 'M4 6c0-2 16-2 16 0v12c0 2-16 2-16 0zm0 0c0 2 16 2 16 0M8 10h8m-8 4h5'],
+  ['askama', 'M12 3 21 8v8l-9 5-9-5V8zm-4 9 3 3 6-7'],
+  ['speech-to-text', 'M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm-7 8a7 7 0 0 0 14 0m-7 7v4m-4 0h8'],
+  ['text-to-speech', 'M4 10v4h4l5 4V6l-5 4zm12-1a5 5 0 0 1 0 6m2-9a9 9 0 0 1 0 12'],
+  ['mosquitto', 'M4 7h16v10H4zm3 3h3v4H7zm7 0h3m-3 3h3'],
+  ['zigbee2mqtt', 'M12 3v18m-7-14 14 10M5 17 19 7M9 7l3-4 3 4m-6 10-2 4h10l-2-4'],
+  ['tuya cloud api', 'M3 9a9 9 0 0 1 18 0c0 6-9 12-9 12S3 15 3 9zm6 0a3 3 0 1 0 6 0 3 3 0 0 0-6 0'],
+  ['websocket', 'M4 7h12l-3-3m3 3-3 3m7 7H8l3 3m-3-3 3-3'],
+  ['http', 'M4 6h16v12H4zm3 4h3m-3 4h6m3-4h2m-2 4h2'],
+  ['tauri 2', 'M12 3 20 7v10l-8 4-8-4V7zm-3 5h6v8H9zm-2 0h2m6 0h2'],
+  ['docker compose', 'M4 7h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM7 11v5h10v-5m-5 5v4'],
+  ['ghcr', 'M4 5h16v14H4zm4 4h8v6H8zm2 2h4v2h-4']
 ];
 
 const icons = new Map(iconEntries.map(([name, icon]) => [normalize(name), icon]));
@@ -99,7 +113,9 @@ const aliases: Record<string, string> = {
   'githubactions': 'github actions',
   'google cloud platform': 'google cloud',
   'openai': 'openai api',
-  'graph rag': 'rag'
+  'graph rag': 'rag',
+  'vanilla javascript': 'javascript',
+  'llm tool calling': 'tool calling'
 };
 
 const fallbackIcon: TechIcon = {

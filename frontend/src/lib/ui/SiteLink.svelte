@@ -3,7 +3,7 @@
 
   export let site: string;
 
-  $: available = Boolean(site && site !== '-');
+  $: available = Boolean(site && site !== '-' && site !== 'NDA');
   $: label = available ? site.replace(/^https?:\/\//, '').replace(/\/$/, '') : '-';
 </script>
 
@@ -18,6 +18,8 @@
     <span class="min-w-0 truncate">{label}</span>
     <AppIcon name="globe" size={15}/>
   </a>
+{:else if site === 'NDA'}
+  <span class="text-sm text-base-content/70">NDA</span>
 {:else}
   <span class="text-sm text-base-content/70">-</span>
 {/if}

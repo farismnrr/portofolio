@@ -7,17 +7,27 @@ title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
 subtitle: "IoT management platform"
 role: "Solo Developer"
-kind: Personal
+kind: Professional
 category: "IoT · Platform"
 description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
-productUrl: "https://i-ot.net/"
+productUrl: "NDA"
 repoUrl: ""
 ---
 ## What it is
 
 IoTNet manages devices, users, automations, and telemetry in one place. I built it alone. It sits between people and connected hardware, so users work with devices and rules instead of broker topics and raw messages.
+
+## What I Did
+
+- Designed and developed IoTNet end-to-end, covering frontend, backend, device communication, and infrastructure.
+- Built device provisioning and management features with secure MQTT authentication through EMQX.
+- Developed customizable real-time dashboards with charts, gauges, switches, sliders, and drag-and-drop widgets.
+- Implemented MQTT-based telemetry and device control, connecting ESP32 hardware with web applications.
+- Built an Over-the-Air (OTA) firmware update system with firmware version management and device update tracking.
+- Developed user authentication, device ownership controls, and subscription billing.
+- Implemented monitoring, structured logging, and automated CI/CD pipelines for application deployment.
 
 ## A command is not a result
 
@@ -50,4 +60,4 @@ Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL 
 
 ## Links
 
-- Product: [i-ot.net](https://i-ot.net/)
+- Product: NDA

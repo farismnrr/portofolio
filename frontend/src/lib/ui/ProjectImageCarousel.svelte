@@ -4,6 +4,7 @@
   import MediaImage from './MediaImage.svelte';
 
   export let images: string[];
+  export let imageAlts: string[];
   export let title: string;
   let currentSlide = 0;
   let previousImages = images;
@@ -33,7 +34,7 @@
         src={images[currentSlide]}
         srcset={projectImageSrcset(images[currentSlide])}
         sizes="(min-width: 1024px) 640px, calc(100vw - 2rem)"
-        alt={`${title}, image ${currentSlide + 1}`}
+        alt={imageAlts[currentSlide] ?? `${title}, image ${currentSlide + 1}`}
         fit="contain"
         eager
         className="aspect-video w-full"

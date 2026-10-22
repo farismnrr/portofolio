@@ -20,32 +20,43 @@ function unquote(value) {
   return trimmed;
 }
 
-function coverPath(source, file) {
+function projectImages(source, file) {
   const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const imageLine = frontmatter?.[1].match(/^image:\s*(.+)$/m);
   if (!imageLine) throw new Error(`${file}: missing project image frontmatter`);
-  const image = unquote(imageLine[1]);
-  if (!/^\/images\/projects\/.+\.(?:png|jpe?g)$/i.test(image)) {
-    throw new Error(`${file}: unsupported project cover source ${image}`);
+  const cover = unquote(imageLine[1]);
+  const imagesLine = frontmatter?.[1].match(/^images:\s*(.+)$/m);
+  const images = imagesLine
+    ? imagesLine[1].trim().slice(1, -1).split(',').map(unquote).filter(Boolean)
+    : [cover];
+  if (!images.includes(cover)) images.unshift(cover);
+  const body = source.slice(frontmatter?.[0].length ?? 0);
+
+  for (const image of images) {
+    if (!/^\/images\/projects\/.+\.(?:png|jpe?g)$/i.test(image)) {
+      throw new Error(`${file}: unsupported project image source ${image}`);
+    }
+    if (body.includes(image)) {
+      throw new Error(`${file}: project image ${image} is also referenced in the Markdown body`);
+    }
   }
-  if (source.split(image).length - 1 !== 1) {
-    throw new Error(`${file}: project cover ${image} is also referenced in the Markdown body`);
-  }
-  return image;
+  return images;
 }
 
 const files = (await readdir(projectDir)).filter((file) => file.endsWith('.md')).sort();
 const covers = [];
 for (const file of files) {
   const source = await readFile(resolve(projectDir, file), 'utf8');
-  covers.push({ file, image: coverPath(source, file) });
+  covers.push({ file, images: projectImages(source, file) });
 }
 
-const uniqueCovers = [...new Map(covers.map((item) => [item.image, item])).values()];
+const uniqueImages = [...new Map(
+  covers.flatMap(({ file, images }) => images.map((image) => [image, { file, image }]))
+).values()];
 let total = 0;
 const summaries = [];
 
-for (const { file, image } of uniqueCovers) {
+for (const { file, image } of uniqueImages) {
   const source = resolve(publicDir, image.replace(/^\//, ''));
   const sourceInfo = await stat(source);
   const extension = extname(source);
@@ -83,7 +94,7 @@ if (total > totalVariantsMaxBytes) {
 
 await writeFile(
   sourceManifest,
-  `${uniqueCovers.map(({ image }) => image.replace(/^\//, '')).join('\n')}\n`,
+  `${uniqueImages.map(({ image }) => image.replace(/^\//, '')).join('\n')}\n`,
   'utf8'
 );
 

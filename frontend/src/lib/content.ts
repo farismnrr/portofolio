@@ -17,7 +17,24 @@ export function unquote(value: string) {
 export function parseInlineList(value: string) {
   const trimmed = value.trim();
   if (!trimmed.startsWith('[') || !trimmed.endsWith(']')) return [];
-  return trimmed.slice(1, -1).split(',').map((item) => unquote(item)).filter(Boolean);
+
+  const entries: string[] = [];
+  let entry = '';
+  let quote = '';
+  for (const character of trimmed.slice(1, -1)) {
+    if ((character === '"' || character === "'") && (!quote || quote === character)) {
+      quote = quote ? '' : character;
+    }
+    if (character === ',' && !quote) {
+      entries.push(entry);
+      entry = '';
+      continue;
+    }
+    entry += character;
+  }
+  entries.push(entry);
+
+  return entries.map((item) => unquote(item)).filter(Boolean);
 }
 
 export function parseBoolean(value: string) {

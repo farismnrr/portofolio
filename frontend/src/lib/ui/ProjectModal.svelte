@@ -14,6 +14,9 @@
   let returnFocus: HTMLElement | null = null;
 
   $: images = selected?.images.length ? selected.images : selected ? [selected.image] : [];
+  $: imageAlts = selected?.imageAlts.length === images.length
+    ? selected.imageAlts
+    : images.map((_, index) => `${selected?.title ?? 'Project'}, image ${index + 1}`);
   $: contributions = selected ? getProjectContributionsBySlug(selected.slug) : [];
 
   export async function open(project: ProjectDocument, trigger: HTMLElement) {
@@ -37,7 +40,7 @@
 <dialog bind:this={dialog} class="modal" on:close={handleClose} aria-labelledby="project-modal-title">
   {#if selected}
     <div class="modal-box grid h-[min(92dvh,680px)] w-[calc(100vw-1rem)] max-w-[1120px] grid-cols-1 gap-0 overflow-y-auto rounded-xl p-0 lg:grid-cols-[1.16fr_0.84fr] lg:overflow-hidden">
-      <ProjectImageCarousel images={images} title={selected.title}/>
+      <ProjectImageCarousel images={images} imageAlts={imageAlts} title={selected.title}/>
 
       <div class="flex min-h-0 flex-col bg-base-100 p-5 sm:p-7 lg:overflow-y-auto">
         <header class="flex items-start justify-between gap-4">

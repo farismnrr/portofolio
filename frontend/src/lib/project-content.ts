@@ -14,6 +14,7 @@ export interface ProjectDocument {
   description: string;
   image: string;
   images: string[];
+  imageAlts: string[];
   tech: string[];
   techGroups?: ProjectTechGroup[];
   productUrl: string;
@@ -83,8 +84,13 @@ function parseProject(path: string, source: string): ProjectDocument {
 
   const image = optimizedProjectImage(unquote(values.get('image') ?? ''));
   const declaredImages = parseInlineList(values.get('images') ?? '');
-  const images = (declaredImages.length ? declaredImages : [unquote(values.get('image') ?? '')])
+  const sourceImages = declaredImages.length ? declaredImages : [unquote(values.get('image') ?? '')];
+  const images = sourceImages
     .map(optimizedProjectImage);
+  const imageAlts = parseInlineList(values.get('imageAlts') ?? '');
+  if (imageAlts.length && imageAlts.length !== images.length) {
+    throw new Error(`${path}: imageAlts must have one entry for each image`);
+  }
   const productUrl = unquote(values.get('productUrl') ?? '');
   const repoUrl = unquote(values.get('repoUrl') ?? '');
 
@@ -102,6 +108,7 @@ function parseProject(path: string, source: string): ProjectDocument {
     description: unquote(values.get('description') ?? ''),
     image,
     images,
+    imageAlts,
     tech,
     ...(techGroups.length ? { techGroups } : {}),
     productUrl,

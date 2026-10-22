@@ -841,7 +841,7 @@ kind: Personal
 category: "Web · Portfolio"
 description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
 image: "/images/projects/portfolio/cover.png"
-tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
+techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM APIs|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid|Static Prerendering|JSON-LD, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---

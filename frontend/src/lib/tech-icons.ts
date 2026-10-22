@@ -46,6 +46,7 @@ import {
   siDrizzle,
   siTimescale,
   siTauri,
+  siDaisyui,
   siEclipsemosquitto,
   siZigbee2mqtt,
   type SimpleIcon
@@ -63,6 +64,7 @@ const iconEntries: Array<[string, TechIcon]> = [
   ['opentelemetry', siOpentelemetry], ['prometheus', siPrometheus], ['kotlin', siKotlin],
   ['react', siReact], ['tailwind css', siTailwindcss], ['nestjs', siNestjs],
   ['drizzle orm', siDrizzle], ['timescaledb', siTimescale],
+  ['daisyui', siDaisyui],
   ['android', siAndroid], ['tensorflow', siTensorflow], ['keras', siKeras],
   ['firebase', siFirebase], ['capacitor', siCapacitor], ['ollama', siOllama],
   ['langgraph', siLanggraph], ['tauri 2', siTauri], ['zigbee2mqtt', siZigbee2mqtt],

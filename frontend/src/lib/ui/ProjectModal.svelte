@@ -36,7 +36,7 @@
 
 <dialog bind:this={dialog} class="modal" on:close={handleClose} aria-labelledby="project-modal-title">
   {#if selected}
-    <div class="modal-box grid h-[min(92dvh,680px)] w-[calc(100vw-1rem)] max-w-[1120px] grid-cols-1 gap-0 overflow-y-auto p-0 lg:grid-cols-[1.16fr_0.84fr] lg:overflow-hidden">
+    <div class="modal-box grid h-[min(92dvh,680px)] w-[calc(100vw-1rem)] max-w-[1120px] grid-cols-1 gap-0 overflow-y-auto rounded-xl p-0 lg:grid-cols-[1.16fr_0.84fr] lg:overflow-hidden">
       <ProjectImageCarousel images={images} title={selected.title}/>
 
       <div class="flex min-h-0 flex-col bg-base-100 p-5 sm:p-7 lg:overflow-y-auto">
@@ -45,7 +45,7 @@
           <p class="text-xs font-medium uppercase tracking-[0.14em] text-base-content/70">Project details</p>
             <h2 id="project-modal-title" class="mt-2 text-2xl font-semibold leading-tight tracking-tight text-base-content">{selected.title}</h2>
           </div>
-          <button bind:this={closeButton} type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11 shrink-0" aria-label="Close project details" on:click={close}>
+          <button bind:this={closeButton} type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11 shrink-0 rounded-md" aria-label="Close project details" on:click={close}>
             <AppIcon name="close" size={20}/>
           </button>
         </header>

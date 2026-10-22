@@ -9,14 +9,14 @@
   export let onSelect: (project: ProjectDocument, trigger: HTMLButtonElement) => void;
 </script>
 
-<article class="card group relative isolate overflow-hidden border border-base-300 bg-base-100 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg active:translate-y-0 active:shadow-sm motion-reduce:transform-none motion-reduce:transition-none">
+<article class="card group relative isolate overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg active:translate-y-0 active:shadow-sm motion-reduce:transform-none motion-reduce:transition-none">
   <button
     type="button"
-    class="absolute inset-0 z-0 h-full w-full cursor-pointer appearance-none rounded-box border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    class="absolute inset-0 z-0 h-full w-full cursor-pointer appearance-none rounded-xl border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     aria-label={`View ${project.cardTitle} details`}
     on:click={(event) => onSelect(project, event.currentTarget)}
   ></button>
-  <figure class="aspect-video w-full border-b border-base-300 bg-base-200">
+  <figure class="aspect-video w-full overflow-hidden rounded-md border-b border-base-300 bg-base-200">
     <MediaImage
       className="aspect-video w-full"
       src={project.image}

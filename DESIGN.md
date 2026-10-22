@@ -15,7 +15,7 @@ The current palette and typography in `frontend/src/app.css` are the source of t
 - Interactive accent and focus: `primary`, mapped to the existing forest green accent.
 - Accent foreground: `primary-content`.
 - Typography: existing Inter system stack from `--font-sans`.
-- Shape: DaisyUI `card`, `badge`, `btn`, and `modal` radii, with the existing compact, low-noise treatment.
+- Shape: Projects-only radius scale. Cards and modal box use `rounded-xl` (0.75rem); image frames and buttons, site link, and close button use `rounded-md` (0.375rem); tech and kind badges use `rounded-md` (0.375rem). Carousel dots remain circular. Global DaisyUI radius tokens are not changed, so other pages keep their current shape.
 
 ## Layout
 

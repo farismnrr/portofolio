@@ -50,6 +50,15 @@ Every project can tell a different story, so a writing check in the build keeps 
 
 Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build time, Rust with Axum in production, and GitHub Actions for validation, build, and deployment.
 
+## What I Did
+
+- Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
+- Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
+- Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
+- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
+- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
+- Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
+
 ## Links
 
 - Site: [farismnrr.com](https://farismnrr.com)

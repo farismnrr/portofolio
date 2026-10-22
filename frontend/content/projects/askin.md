@@ -1,6 +1,6 @@
 ---
-id: "09"
-order: 9
+id: "07"
+order: 7
 slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"

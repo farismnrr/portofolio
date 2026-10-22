@@ -1,6 +1,6 @@
 ---
-id: "10"
-order: 10
+id: "06"
+order: 6
 slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"

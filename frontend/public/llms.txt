@@ -22,8 +22,6 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 - AskIn: AI Workspace | Source: https://github.com/farismnrr/askin
 - GiziLens: A Team Capstone Around Food Recognition | Source: https://github.com/orgs/Group-CC25-CF047/repositories
 - IoTNet: IoT Operations Platform
-- Masih Awam LMS: Game-Based Learning Platform
-- Multi-Tenant User Management Service | Source: https://github.com/farismnrr/Multitenant-User-Management-Service
 - Parentify: Parenting Companion | Source: https://github.com/orgs/Parentify/repositories
 - Personal Portfolio Website | Source: https://github.com/farismnrr/portofolio
 - Sensio IoT: Smart-Space Platform

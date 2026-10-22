@@ -1,6 +1,6 @@
 ---
-id: "02"
-order: 2
+id: "04"
+order: 4
 slug: ai-workspace
 year: "2026"
 title: "AI Workspace for Non-Developers"

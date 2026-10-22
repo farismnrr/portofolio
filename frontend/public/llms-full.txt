@@ -321,8 +321,8 @@ Devices on Arduino and ESP32, messaging through MQTT with EMQX, and flows built 
 ### AI Workspace for Non-Developers
 Source file: frontend/content/projects/ai-workspace.md
 ---
-id: "02"
-order: 2
+id: "04"
+order: 4
 slug: ai-workspace
 year: "2026"
 title: "AI Workspace for Non-Developers"
@@ -474,8 +474,8 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 ### AskIn: AI Workspace
 Source file: frontend/content/projects/askin.md
 ---
-id: "09"
-order: 9
+id: "07"
+order: 7
 slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
@@ -532,8 +532,8 @@ Docker packaging lets the frontend and backend run as one application.
 ### GiziLens: A Team Capstone Around Food Recognition
 Source file: frontend/content/projects/gizilens.md
 ---
-id: "10"
-order: 10
+id: "06"
+order: 6
 slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"
@@ -646,138 +646,6 @@ Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL 
 
 ---
 
-### Masih Awam LMS: Game-Based Learning Platform
-Source file: frontend/content/projects/masih-awam-lms.md
----
-id: "03"
-order: 3
-slug: masih-awam-lms
-year: "2026"
-title: "Masih Awam LMS: Game-Based Learning Platform"
-cardTitle: "Masih Awam LMS"
-subtitle: "Game-Based Learning Platform"
-role: "Backend"
-kind: Personal
-category: "Learning · Rust"
-description: "A learning platform where courses become worlds, quests, and lessons."
-image: "/images/projects/featured/masih-awam-lms.png"
-tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus]
-productUrl: ""
-repoUrl: ""
----
-## What it is
-
-A learning platform where courses become worlds, quests, and lessons. A normal course list tells you what exists. This one tries to tell the learner what to do next.
-
-The learning structure stays familiar: courses, modules, lessons. The learner moves through worlds, quests, and checkpoints instead of a flat catalog.
-
-```mermaid
-journey
-    title A learner moves through a world
-    section Discover
-      Enter a learning world: 5: Learner
-      Understand the current quest: 4: Learner
-    section Learn
-      Complete a lesson: 4: Learner
-      Reach a checkpoint: 5: Learner
-    section Progress
-      See progress update: 5: Learner
-      Unlock the next stage: 5: Learner
-```
-
-## How it is built
-
-Progress is simple on purpose: completed lessons divided by total lessons, at the lesson, quest, world, and overall level.
-The story gives context for why the next lesson matters, but it never decides what counts as complete.
-
-The product keeps three layers apart.
-The experience layer holds worlds, quests, and scenes.
-The learning domain holds courses, modules, lessons, and enrollment.
-The progress state records what the learner actually finished.
-Story and presentation can change without touching completion.
-
-Pages are rendered according to who owns their data. Public course pages are prerendered, a learner's dashboard is rendered privately on the server, and interactive state stays in the browser.
-
-## Stack
-
-A Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.
-
----
-
-### Multi-Tenant User Management Service
-Source file: frontend/content/projects/multitenant-user-management.md
----
-id: "06"
-order: 6
-slug: multitenant-user-management
-year: "2026"
-title: "Multi-Tenant User Management Service"
-cardTitle: "User Management"
-subtitle: "Authentication and Tenant Identity Service"
-role: "Solo Developer"
-kind: Personal
-category: "Backend · Security"
-description: "A reusable login service: one account can belong to several tenants, with a different role in each."
-image: "/images/projects/user-management/cover.png"
-tech: [Rust, Actix Web, SeaORM, PostgreSQL, RocksDB, JWT, Argon2, Docker]
-productUrl: ""
-repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
----
-## What it is
-
-A login and identity service that several applications can share. I built it alone.
-
-One person has one account, and that account can belong to several tenants with a different role in each.
-Someone can be an admin in one organization and a normal user in another, with the same password and the same session logic everywhere.
-
-```mermaid
-erDiagram
-    ACCOUNT ||--o{ TENANT_MEMBERSHIP : has
-    TENANT ||--o{ TENANT_MEMBERSHIP : contains
-    TENANT_MEMBERSHIP ||--o{ ROLE_ASSIGNMENT : receives
-    ROLE ||--o{ ROLE_ASSIGNMENT : defines
-```
-
-## Why it is separate
-
-When every application keeps its own users table, the same person ends up with several accounts and several role schemes, and each application handles sessions a little differently.
-One service gives all of them the same answers.
-
-## How sign-in and permissions work
-
-Signing in proves who you are and loads your memberships. What you may do depends on the tenant you act in.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant App
-    participant Identity as Identity service
-    participant DB
-
-    User->>App: Sign in
-    App->>Identity: Authenticate
-    Identity->>DB: Load account and memberships
-    DB-->>Identity: Identity, tenants, roles
-    Identity-->>App: Session and claims
-    App-->>User: Authorized experience
-```
-
-Every protected action follows the same chain: identity, tenant, membership, role, permission, then allow or deny. A valid login alone never grants access.
-
-## Tradeoffs
-
-Applications now depend on the identity service being available. Tenant boundaries have to stay explicit everywhere, because accounts are shared. A rich role model covers more cases, but it needs discipline to stay readable.
-
-## Stack
-
-Rust with Actix-web, PostgreSQL for identity data, RocksDB for local caching, JWT sessions, Argon2 for password hashing, and Docker for packaging.
-
-## Links
-
-- Source: [github.com/farismnrr/Multitenant-User-Management-Service](https://github.com/farismnrr/Multitenant-User-Management-Service)
-
----
-
 ### Parentify: Parenting Companion
 Source file: frontend/content/projects/parentify.md
 ---
@@ -840,8 +708,8 @@ That contract mattered most: each team could work on its own only because names,
 ### Personal Portfolio Website
 Source file: frontend/content/projects/portfolio-website.md
 ---
-id: "07"
-order: 7
+id: "03"
+order: 3
 slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
@@ -901,8 +769,8 @@ Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build tim
 ### Sensio IoT: Smart-Space Platform
 Source file: frontend/content/projects/sensio-iot.md
 ---
-id: "04"
-order: 4
+id: "02"
+order: 2
 slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"

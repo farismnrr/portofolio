@@ -8,6 +8,7 @@ import {
   siFastapi,
   siFirebase,
   siGin,
+  siGithub,
   siGithubactions,
   siGo,
   siGooglecloud,
@@ -94,7 +95,7 @@ const iconEntries: Array<[string, TechIcon]> = [
   ['langgraph', siLanggraph], ['tauri 2', siTauri], ['zigbee2mqtt', siZigbee2mqtt],
   ['fastapi', siFastapi], ['python', siPython], ['vite', siVite], ['markdown', siMarkdown],
   ['mosquitto', { ...siEclipsemosquitto, assetSrc: new URL('./mosquitto-logo-only.svg', import.meta.url).href }],
-  ['mermaid', siMermaid], ['github actions', siGithubactions], ['jwt', siJsonwebtokens],
+  ['mermaid', siMermaid], ['github', siGithub], ['github actions', siGithubactions], ['jwt', siJsonwebtokens],
   ['html', siHtml5], ['scss', siSass], ['mcp', siModelcontextprotocol],
   ['google cloud', siGooglecloud], ['gin', siGin]
 ];

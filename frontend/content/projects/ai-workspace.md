@@ -3,14 +3,15 @@ id: "04"
 order: 4
 slug: ai-workspace
 year: "2026"
-title: "AI Workspace for Non-Developers"
-cardTitle: "AI Workspace"
+title: "Masih Awam Workspace"
+cardTitle: "Masih Awam Workspace"
 subtitle: "Build software with an AI team."
 role: "Solo Developer"
 kind: Personal
 category: "Personal · AI · Open Source"
 description: "An open-source agentic workspace that helps non-developers build applications with AI specialists, track their work, and verify results before accepting them."
-image: "/images/projects/featured/ai-workspace.png"
+image: "/images/projects/masih-awam-workspace/cover.png"
+imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
 techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
@@ -21,7 +22,7 @@ repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 AI can now build and fix software for someone who cannot read code. What that person cannot do is check the result.
 When the AI says "it works", they either believe it or skip the tool.
 
-I built AI Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
+I built Masih Awam Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
 
 ## How a request flows
 

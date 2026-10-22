@@ -1,6 +1,6 @@
 # Faris Munir Mahdi
 
-> Fullstack Engineer. I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, an open-source AI workspace.
+> Fullstack Engineer. I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, Masih Awam Workspace, an open-source AI workspace.
 
 Canonical website: https://farismnrr.com/
 GitHub: https://github.com/farismnrr
@@ -18,7 +18,7 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 
 ## Projects
 
-- AI Workspace for Non-Developers | Source: https://github.com/farismnrr/agentic-ai-workspace
+- Masih Awam Workspace | Source: https://github.com/farismnrr/agentic-ai-workspace
 - AskIn: AI Workspace | Source: https://github.com/farismnrr/askin
 - GiziLens: A Team Capstone Around Food Recognition | Source: https://github.com/orgs/Group-CC25-CF047/repositories
 - IoTNet: IoT Operations Platform

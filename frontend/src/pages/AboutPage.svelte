@@ -24,17 +24,17 @@
           <p class="mt-1 text-[14px] text-black/62 sm:text-[15px]">{profile.role}</p>
 
           <div class="mt-4 space-y-2.5 text-[12px] text-black/62 sm:mt-5 sm:text-[13px]">
-            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
-            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={16}/>{profile.location}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={16}/>{profile.languages}</p>
           </div>
         </div>
 
         <div class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-3 lg:mt-5 lg:block lg:space-y-1 lg:border-t lg:pt-4">
-          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
-          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
-          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
         </div>
         {#if roleMatchEnabled}
           <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">

@@ -15,9 +15,15 @@ export interface ProjectDocument {
   image: string;
   images: string[];
   tech: string[];
+  techGroups?: ProjectTechGroup[];
   productUrl: string;
   repoUrl: string;
   site: string;
+}
+
+export interface ProjectTechGroup {
+  label: string;
+  items: string[];
 }
 
 const modules = import.meta.glob('../../content/projects/*.md', {
@@ -29,6 +35,18 @@ const modules = import.meta.glob('../../content/projects/*.md', {
 function optimizedProjectImage(value: string) {
   if (!value.startsWith('/images/projects/')) return value;
   return value.replace(/\.(?:png|jpe?g)$/i, '-1280.webp');
+}
+
+function parseTechGroups(path: string, value: string): ProjectTechGroup[] {
+  return parseInlineList(value).map((entry) => {
+    const separator = entry.indexOf('::');
+    if (separator < 1) throw new Error(`${path}: techGroups entries must have a label and technologies`);
+
+    const label = entry.slice(0, separator).trim();
+    const items = entry.slice(separator + 2).split('|').map((item) => item.trim()).filter(Boolean);
+    if (!label || !items.length) throw new Error(`${path}: techGroups entries must have a label and technologies`);
+    return { label, items };
+  });
 }
 
 /** Covers that are screenshots of a whole screen and must be shown without cropping. */
@@ -46,13 +64,16 @@ export function projectImageSrcset(value: string) {
 
 function parseProject(path: string, source: string): ProjectDocument {
   const { values } = parseFrontmatter(path, source);
-  const required = ['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','tech','productUrl','repoUrl'];
+  const required = ['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','productUrl','repoUrl'];
   requireKeys(path, values, required);
 
   const order = Number(values.get('order'));
   if (!Number.isInteger(order)) throw new Error(`${path}: order must be an integer`);
 
-  const tech = parseInlineList(values.get('tech') ?? '');
+  const techGroups = parseTechGroups(path, values.get('techGroups') ?? '');
+  const tech = techGroups.length
+    ? techGroups.flatMap((group) => group.items)
+    : parseInlineList(values.get('tech') ?? '');
   if (!tech.length) throw new Error(`${path}: tech must contain at least one item`);
 
   const kind = unquote(values.get('kind') ?? '');
@@ -82,6 +103,7 @@ function parseProject(path: string, source: string): ProjectDocument {
     image,
     images,
     tech,
+    ...(techGroups.length ? { techGroups } : {}),
     productUrl,
     repoUrl,
     site: productUrl || repoUrl || '-'

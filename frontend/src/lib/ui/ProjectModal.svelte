@@ -66,7 +66,7 @@
 
           <section>
             <h3 class="mb-2 font-semibold text-base-content">Tech stack</h3>
-            <TechList items={selected.tech}/>
+            <TechList items={selected.tech} groups={selected.techGroups}/>
           </section>
 
           <section class="space-y-3 border-t border-base-300 pt-4">

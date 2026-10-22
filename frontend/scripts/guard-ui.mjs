@@ -139,7 +139,7 @@ for (const pageName of ['HomePage.svelte','AboutPage.svelte','ExperiencePage.sve
 
 const contentFiles = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
 if (!contentFiles.length) failures.push('content/projects must contain at least one project.');
-const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','images','tech','productUrl','repoUrl']);
+const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','images','tech','techGroups','productUrl','repoUrl']);
 const slugs = new Set();
 for (const file of contentFiles) {
   const source = await readFile(join(contentRoot, file), 'utf8');
@@ -154,7 +154,9 @@ for (const file of contentFiles) {
   }
   for (const key of values.keys()) if (!allowedKeys.has(key)) failures.push(`${file}: unknown frontmatter key "${key}".`);
   for (const key of allowedKeys) {
-    if (key !== 'images' && !values.has(key)) failures.push(`${file}: missing required frontmatter key "${key}".`);
+    if (!['images', 'tech', 'techGroups'].includes(key) && !values.has(key)) {
+      failures.push(`${file}: missing required frontmatter key "${key}".`);
+    }
   }
   const kind = (values.get('kind') ?? '').replace(/^['"]|['"]$/g, '');
   if (!['Personal', 'Professional'].includes(kind)) failures.push(`${file}: kind must be Personal or Professional.`);
@@ -165,7 +167,10 @@ for (const file of contentFiles) {
   if (slugs.has(slug)) failures.push(`${file}: duplicate slug "${slug}".`);
   slugs.add(slug);
   const tech = values.get('tech') ?? '';
-  if (!/^\[.+\]$/.test(tech.trim())) failures.push(`${file}: tech must be a non-empty inline list.`);
+  const techGroups = values.get('techGroups') ?? '';
+  if (!/^\[.+\]$/.test(tech.trim()) && !/^\[.+\]$/.test(techGroups.trim())) {
+    failures.push(`${file}: tech or techGroups must be a non-empty inline list.`);
+  }
   if (values.has('images') && !/^\[.+\]$/.test((values.get('images') ?? '').trim())) {
     failures.push(`${file}: images must be a non-empty inline list when provided.`);
   }

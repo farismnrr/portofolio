@@ -101,7 +101,7 @@
                 <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
                   <div>
                     <p class="text-[13px] text-black/58">{item.year}</p>
-                    <p class="mt-1 text-[11px] uppercase tracking-[0.12em] text-black/58">{item.type.replace('-', ' ')}</p>
+                    <p class="mt-2 inline-flex rounded-md bg-black/[0.045] px-2 py-1 text-[12px] text-black/62">{item.type === 'project-report' ? 'Project report' : item.type === 'journal' ? 'Journal' : 'Thesis'}</p>
                   </div>
                   <div class="min-w-0">
                     <h3 class="text-[17px] font-semibold leading-7 tracking-[-0.012em] text-black/86 sm:text-[18px]">

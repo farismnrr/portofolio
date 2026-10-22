@@ -100,8 +100,6 @@ const requiredShared = [
   'lib/ui/SiteHeader.svelte',
   'lib/ui/SiteFooter.svelte',
   'lib/ui/MobileNavigation.svelte',
-  'lib/ui/PageIntro.svelte',
-  'lib/ui/SectionHeader.svelte',
   'lib/ui/TechList.svelte',
   'lib/ui/TimelineEntry.svelte',
   'lib/ui/ProjectCard.svelte',

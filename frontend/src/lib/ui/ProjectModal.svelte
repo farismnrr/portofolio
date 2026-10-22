@@ -42,8 +42,7 @@
       <div class="flex min-h-0 flex-col bg-base-100 p-5 sm:p-7 lg:overflow-y-auto">
         <header class="flex items-start justify-between gap-4">
           <div>
-          <p class="text-xs font-medium uppercase tracking-[0.14em] text-base-content/70">Project details</p>
-            <h2 id="project-modal-title" class="mt-2 text-2xl font-semibold leading-tight tracking-tight text-base-content">{selected.title}</h2>
+            <h2 id="project-modal-title" class="text-2xl font-semibold leading-tight tracking-tight text-base-content">{selected.title}</h2>
           </div>
           <button bind:this={closeButton} type="button" class="btn btn-ghost min-h-11 min-w-11 shrink-0 rounded-lg" aria-label="Close project details" on:click={close}>
             <AppIcon name="close" size={20}/>

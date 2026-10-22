@@ -17,8 +17,7 @@
   <PageShell className="py-12 sm:py-14 lg:py-16">
     <div class="mx-auto w-full max-w-[1280px]">
       <header class="max-w-3xl">
-        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Selected work</p>
-        <h1 class="mt-3 text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-base-content sm:text-5xl">{pageCopy.projects.title}</h1>
+        <h1 class="text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-base-content sm:text-5xl">{pageCopy.projects.title}</h1>
         <p class="mt-4 max-w-[68ch] text-base leading-7 text-base-content/70">{pageCopy.projects.description}</p>
       </header>
       <div class="divider my-8 sm:my-10"></div>

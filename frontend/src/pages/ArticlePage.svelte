@@ -53,8 +53,7 @@
       </section>
     {:else}
       <section class="py-20 sm:py-24">
-        <p class="text-[11px] uppercase tracking-[.2em] text-black/58">Article not found</p>
-        <h1 class="mt-4 text-[36px] font-semibold tracking-[-0.04em] sm:text-[44px]">This article does not exist.</h1>
+        <h1 class="text-[36px] font-semibold tracking-[-0.04em] sm:text-[44px]">Article not found</h1>
         <a
           class="mt-6 inline-flex min-h-11 items-center text-[13px] text-[var(--accent)] underline underline-offset-4"
           href="/blog"

@@ -31,6 +31,8 @@ The existing project grid and `PageShell` established the page's responsive beha
 
 ## Components and states
 
+Editorial labels use sentence case and modest spacing. Do not add decorative eyebrow labels or all-caps text with wide tracking; keep useful metadata in plain, quiet styles.
+
 - `ProjectCard`: DaisyUI `card`, `card-body`, and `figure`. A full-card button is the stretched click target; the site link sits above it as its own link.
 - `ProjectModal`: native dialog using DaisyUI `modal`, `modal-box`, and `modal-backdrop` conventions. It closes with Escape, the close button, or the backdrop and restores focus to the card button.
 - `ProjectImageCarousel`: a labeled DaisyUI carousel region with 16:9, uncropped slides. Navigation and slide selectors appear only when more than one image exists.

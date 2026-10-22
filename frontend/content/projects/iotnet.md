@@ -22,11 +22,11 @@ IoTNet manages devices, users, automations, and telemetry in one place. I built 
 ## What I Did
 
 - Designed and developed IoTNet end-to-end, covering frontend, backend, device communication, and infrastructure.
-- Built device provisioning and management features with secure MQTT authentication through EMQX.
+- Built device provisioning and management features with secure MQTT-based authentication.
 - Developed customizable real-time dashboards with charts, gauges, switches, sliders, and drag-and-drop widgets.
 - Implemented MQTT-based telemetry and device control, connecting ESP32 hardware with web applications.
 - Built an Over-the-Air (OTA) firmware update system with firmware version management and device update tracking.
-- Developed user authentication, device ownership controls, and subscription billing.
+- Developed user authentication, device ownership controls, and account management features.
 - Implemented monitoring, structured logging, and automated CI/CD pipelines for application deployment.
 
 ## A command is not a result

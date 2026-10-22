@@ -6,14 +6,19 @@ const modules = import.meta.glob('../../content/projects/*.md', {
   import: 'default'
 }) as Record<string, string>;
 
-const markdownBySlug = new Map(
+const projectContentBySlug = new Map(
   Object.entries(modules).map(([path, source]) => {
     const { values, body } = parseFrontmatter(path, source);
     return [unquote(values.get('slug') ?? ''), body] as const;
   })
 );
 
-export function getProjectMarkdownByPath(path: string) {
-  const slug = path.split('/').filter(Boolean).at(-1) ?? '';
-  return markdownBySlug.get(slug) ?? '';
+export function getProjectContributionsBySlug(slug: string) {
+  const markdown = projectContentBySlug.get(slug) ?? '';
+  const contributionSections = markdown.split(/^##\s+Links\s*$/im, 1)[0];
+
+  return contributionSections
+    .split(/\r?\n/)
+    .filter((line) => /^\s*[-*]\s+/.test(line))
+    .map((line) => line.replace(/^\s*[-*]\s+/, '').replace(/\*\*/g, '').trim());
 }

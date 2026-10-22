@@ -7,6 +7,7 @@ title: "AI Workspace for Non-Developers"
 cardTitle: "AI Workspace"
 subtitle: "For Non-Developers"
 role: "Solo Developer"
+kind: Personal
 category: "Personal · AI · Open Source"
 description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
 image: "/images/projects/featured/ai-workspace.png"

@@ -35,7 +35,7 @@ function absolutePortfolioUrl(value: string) {
 function projectWebUrl(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  return `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`;
+  return 'https://farismnrr.com/projects';
 }
 
 function projectMeta(slug: string) {

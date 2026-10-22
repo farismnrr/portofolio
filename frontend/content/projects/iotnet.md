@@ -7,6 +7,7 @@ title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
 subtitle: "IoT management platform"
 role: "Solo Developer"
+kind: Personal
 category: "IoT · Platform"
 description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"

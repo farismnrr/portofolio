@@ -7,6 +7,7 @@ title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
 subtitle: "AI chat workspace"
 role: "Backend · Integration"
+kind: Personal
 category: "Ruangguru Academy · Learning Project"
 description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
 image: "/images/projects/askin/showcase.png"

@@ -2,58 +2,39 @@
   import type { ProjectDocument } from '../project-content';
   import { isUncroppedCover, projectImageSrcset } from '../project-content';
   import MediaImage from './MediaImage.svelte';
-  import { navigate } from '../router';
-  import { prefetchRoute } from '../routes';
 
   export let project: ProjectDocument;
+  export let onSelect: (project: ProjectDocument, trigger: HTMLButtonElement) => void;
 
-  $: detailPath = '/projects/' + project.slug;
   $: preserveShowcase = isUncroppedCover(project.slug);
 </script>
 
 <article class="border-b border-black/14 pb-8 sm:pb-9">
-  <a
-    href={detailPath}
-    on:pointerdown={()=>prefetchRoute(detailPath)}
-    on:mouseenter={()=>prefetchRoute(detailPath)}
-    on:focus={()=>prefetchRoute(detailPath)}
-    on:click={(e)=>navigate(e,detailPath)}
-    class="block"
+  <button
+    type="button"
+    class="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+    aria-label={`View ${project.cardTitle} details`}
+    on:click={(event) => onSelect(project, event.currentTarget)}
   >
     <MediaImage
-      className={preserveShowcase ? "aspect-video w-full" : "aspect-[1.78] w-full"}
+      className={preserveShowcase ? 'aspect-[4/3] w-full' : 'aspect-[4/3] w-full'}
       src={project.image}
       srcset={projectImageSrcset(project.image)}
       sizes="(min-width: 1536px) 420px, (min-width: 1024px) 31vw, (min-width: 640px) 45vw, calc(100vw - 3rem)"
       alt={project.cardTitle}
       fit={preserveShowcase ? 'contain' : 'cover'}
     />
-  </a>
+    <span class="mt-4 block text-[14px] leading-6 text-black/60">{project.description}</span>
+    <span class="mt-3 block text-[12px] font-medium text-black/75">{project.kind}</span>
+  </button>
 
-  <div class="pt-4">
-    <div class="flex items-start justify-between gap-4 sm:items-baseline">
-      <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[24px]">
-        <a
-          class="hover:opacity-70"
-          href={detailPath}
-          on:pointerdown={()=>prefetchRoute(detailPath)}
-          on:mouseenter={()=>prefetchRoute(detailPath)}
-          on:focus={()=>prefetchRoute(detailPath)}
-          on:click={(e)=>navigate(e,detailPath)}
-        >{project.cardTitle}</a>
-      </h2>
-      <p class="shrink-0 pt-1 text-[12px] text-black/58 sm:pt-0">{project.year}</p>
-    </div>
-
-    <p class="mt-3 line-clamp-3 text-[14px] leading-6 text-black/60 sm:line-clamp-2">{project.description}</p>
-
-    <a
-      class="mt-3 inline-flex min-h-10 items-center text-[12px] font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black sm:mt-4"
-      href={detailPath}
-      on:pointerdown={()=>prefetchRoute(detailPath)}
-      on:mouseenter={()=>prefetchRoute(detailPath)}
-      on:focus={()=>prefetchRoute(detailPath)}
-      on:click={(e)=>navigate(e,detailPath)}
-    >View project →</a>
+  <div class="mt-2 text-[12px] leading-5">
+    {#if project.site !== '-'}
+      <a class="break-all text-[var(--accent)] underline decoration-current/35 underline-offset-4 hover:text-black" href={project.site} target="_blank" rel="noopener noreferrer" on:click|stopPropagation>
+        {project.site}
+      </a>
+    {:else}
+      <span class="text-black/58">-</span>
+    {/if}
   </div>
 </article>

@@ -7,6 +7,7 @@ title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
 subtitle: "Meeting assistant"
 role: "Fullstack"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"

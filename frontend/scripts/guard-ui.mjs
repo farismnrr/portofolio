@@ -105,7 +105,7 @@ const requiredShared = [
   'lib/ui/TechChips.svelte',
   'lib/ui/TimelineEntry.svelte',
   'lib/ui/ProjectCard.svelte',
-  'lib/ui/ProjectHero.svelte',
+  'lib/ui/ProjectModal.svelte',
   'lib/ui/ContentToc.svelte',
   'lib/ui/MarkdownArticle.svelte',
   'lib/ui/MediaImage.svelte',
@@ -134,22 +134,14 @@ const routes = await readFile(join(srcRoot, 'lib/routes.ts'), 'utf8');
 const dynamicImports = [...routes.matchAll(/=>\s*import\(/g)].length;
 if (dynamicImports < 6) failures.push('lib/routes.ts must keep page-level dynamic imports; route lazy loading appears to be disabled.');
 
-const projectDetail = await readFile(join(srcRoot, 'pages', 'ProjectDetailPage.svelte'), 'utf8');
-for (const forbidden of ['Sensio Notes', 'ArchitectureDiagram', 'ProcessFlow', 'const architecture', 'const flow']) {
-  if (projectDetail.includes(forbidden)) failures.push(`ProjectDetailPage.svelte: project-specific hardcode "${forbidden}" is forbidden; content belongs in Markdown.`);
-}
-for (const required of ['getProjectByPath', 'ProjectHero', 'ContentToc', 'MarkdownArticle']) {
-  if (!projectDetail.includes(required)) failures.push(`ProjectDetailPage.svelte: missing generic case-study primitive "${required}".`);
-}
-
 for (const pageName of ['HomePage.svelte','AboutPage.svelte','ExperiencePage.svelte','SkillsPage.svelte','CertificationsPage.svelte','GalleryPage.svelte','ProjectsPage.svelte','BlogPage.svelte']) {
   const source = await readFile(join(srcRoot, 'pages', pageName), 'utf8');
   if (source.includes("../lib/data")) failures.push(`${pageName}: pages must not depend on hardcoded lib/data.ts content.`);
 }
 
 const contentFiles = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
-if (!contentFiles.length) failures.push('content/projects must contain at least one Markdown case study.');
-const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','category','description','image','tech','productUrl','repoUrl']);
+if (!contentFiles.length) failures.push('content/projects must contain at least one project.');
+const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','images','tech','productUrl','repoUrl']);
 const slugs = new Set();
 for (const file of contentFiles) {
   const source = await readFile(join(contentRoot, file), 'utf8');
@@ -163,7 +155,11 @@ for (const file of contentFiles) {
     values.set(line.slice(0, separator).trim(), line.slice(separator + 1).trim());
   }
   for (const key of values.keys()) if (!allowedKeys.has(key)) failures.push(`${file}: unknown frontmatter key "${key}".`);
-  for (const key of allowedKeys) if (!values.has(key)) failures.push(`${file}: missing required frontmatter key "${key}".`);
+  for (const key of allowedKeys) {
+    if (key !== 'images' && !values.has(key)) failures.push(`${file}: missing required frontmatter key "${key}".`);
+  }
+  const kind = (values.get('kind') ?? '').replace(/^['"]|['"]$/g, '');
+  if (!['Personal', 'Professional'].includes(kind)) failures.push(`${file}: kind must be Personal or Professional.`);
   const rawSlug = (values.get('slug') ?? '').trim();
   const slug = ((rawSlug.startsWith('"') && rawSlug.endsWith('"')) || (rawSlug.startsWith("'") && rawSlug.endsWith("'"))) ? rawSlug.slice(1, -1) : rawSlug;
   const expectedSlug = file.replace(/\.md$/, '');
@@ -172,6 +168,9 @@ for (const file of contentFiles) {
   slugs.add(slug);
   const tech = values.get('tech') ?? '';
   if (!/^\[.+\]$/.test(tech.trim())) failures.push(`${file}: tech must be a non-empty inline list.`);
+  if (values.has('images') && !/^\[.+\]$/.test((values.get('images') ?? '').trim())) {
+    failures.push(`${file}: images must be a non-empty inline list when provided.`);
+  }
   const rawImage = (values.get('image') ?? '').trim();
   const image = ((rawImage.startsWith('"') && rawImage.endsWith('"')) || (rawImage.startsWith("'") && rawImage.endsWith("'"))) ? rawImage.slice(1, -1) : rawImage;
   if (image.startsWith('/')) {
@@ -179,15 +178,6 @@ for (const file of contentFiles) {
     catch { failures.push(`${file}: referenced local image "${image}" does not exist under public/.`); }
   }
   const body = match[2];
-  if (/^#\s+/m.test(body)) failures.push(`${file}: Markdown body must start at ## because ProjectHero owns the H1.`);
-  const headings = [...body.matchAll(/^(#{2,6})\s+(.+)$/gm)];
-  if (headings.filter((heading) => heading[1].length === 2).length < 3) failures.push(`${file}: case study needs at least three ## sections.`);
-  let previousLevel = 1;
-  for (const heading of headings) {
-    const level = heading[1].length;
-    if (level > previousLevel + 1) failures.push(`${file}: heading hierarchy jumps from H${previousLevel} to H${level}.`);
-    previousLevel = level;
-  }
   if (/<[A-Za-z][^>]*>/.test(body)) failures.push(`${file}: raw HTML is forbidden in Markdown content.`);
   const mermaidStarts = [...body.matchAll(/```mermaid\s*$/gm)].length;
   const mermaidBlocks = [...body.matchAll(/```mermaid\s*\r?\n([\s\S]*?)```/g)];
@@ -261,4 +251,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Architecture/content guard passed: structure, dependency direction, SRP/DRY heuristics, Markdown schema, lazy media/routes, and diagram boundaries are clean.');
+console.log('Architecture/content guard passed: structure, dependency direction, SRP/DRY heuristics, project schema, lazy media/routes, and diagram boundaries are clean.');

@@ -10,4 +10,4 @@ I am Faris, a fullstack engineer based in Jakarta.
 
 Since July 2025 I have worked at PT Perkasa Pilar Utama on a meeting assistant and an IoT platform. I studied Informatics at UPN Veteran East Java and graduated with cum laude honors.
 
-Outside work I build my own projects, including an open-source [AI workspace](/projects/ai-workspace) and an IoT management platform. The rest are on the [projects](/projects) page.
+Outside work I build my own projects, including an open-source AI workspace and an IoT management platform. The rest are on the [projects](/projects) page.

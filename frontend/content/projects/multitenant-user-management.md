@@ -7,6 +7,7 @@ title: "Multi-Tenant User Management Service"
 cardTitle: "User Management"
 subtitle: "Authentication and Tenant Identity Service"
 role: "Solo Developer"
+kind: Personal
 category: "Backend · Security"
 description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"

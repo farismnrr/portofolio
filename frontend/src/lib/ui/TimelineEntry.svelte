@@ -42,8 +42,8 @@
           {#each linkedProjects as project}
             <a
               class="inline-flex min-h-11 items-center font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 transition hover:text-black"
-              href={'/projects/' + project.slug}
-              on:click={(event)=>navigate(event, '/projects/' + project.slug)}
+              href="/projects"
+              on:click={(event)=>navigate(event, '/projects')}
             >{project.cardTitle} →</a>
           {/each}
         {/if}

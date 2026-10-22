@@ -1,5 +1,4 @@
 import { articles, getArticleByPath } from './blog-content';
-import { getProjectByPath, projects } from './project-content';
 import { certifications, publications } from './seo-content';
 import { profile } from './site-content';
 
@@ -161,55 +160,9 @@ export function getSeo(currentPath: string) {
         url: canonical,
         name: `Projects — ${profile.name}`,
         description: `Selected projects by ${profile.name}.`,
-        mainEntity: {
-          '@type': 'ItemList',
-          itemListElement: projects.map((project, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: project.title,
-            url: `${siteUrl}/projects/${project.slug}`
-          }))
-        },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Projects', path: '/projects' }]))
     };
-  }
-
-  if (cleanPath.startsWith('/projects/')) {
-    const project = getProjectByPath(cleanPath);
-    if (project) {
-      const projectNode: Record<string, unknown> = {
-        '@type': project.repoUrl ? 'SoftwareSourceCode' : 'CreativeWork',
-        '@id': `${canonical}#project`,
-        url: canonical,
-        mainEntityOfPage: canonical,
-        name: project.title,
-        headline: project.subtitle,
-        description: project.description,
-        image: absoluteUrl(project.image),
-        author: { '@id': personId },
-        keywords: project.tech.join(', '),
-        about: project.category,
-        inLanguage: 'en'
-      };
-      if (project.repoUrl) projectNode.codeRepository = project.repoUrl;
-      if (project.productUrl) projectNode.workExample = project.productUrl;
-
-      const metaDescription = project.description;
-
-      return {
-        ...base,
-        title: `${project.title} — ${profile.name}`,
-        description: metaDescription,
-        image: absoluteUrl(project.image),
-        imageAlt: `${project.title} project by ${profile.name}`,
-        structuredData: graph(projectNode, breadcrumb([
-          { name: 'Home', path: '/' },
-          { name: 'Projects', path: '/projects' },
-          { name: project.title, path: cleanPath }
-        ]))
-      };
-    }
   }
 
   if (cleanPath === '/blog') {

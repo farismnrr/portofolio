@@ -1,5 +1,6 @@
 <script lang="ts">
   import { afterUpdate } from 'svelte';
+  import { siteAssetUrl } from '../router';
 
   export let src = '';
   export let srcset = '';
@@ -12,6 +13,14 @@
   let image: HTMLImageElement;
   let loaded = false;
   let currentSrc = src;
+
+  $: resolvedSrc = siteAssetUrl(src);
+  $: resolvedSrcset = srcset
+    ? srcset.split(',').map((candidate) => {
+        const [url, ...descriptor] = candidate.trim().split(/\s+/);
+        return [siteAssetUrl(url), ...descriptor].join(' ');
+      }).join(', ')
+    : undefined;
 
   $: if (src !== currentSrc) {
     currentSrc = src;
@@ -35,8 +44,8 @@
   <img
     bind:this={image}
     class={"h-full w-full " + (fit === 'contain' ? 'object-contain' : 'object-cover') + " transition-[opacity,transform] duration-500 ease-out " + (loaded ? "scale-100 opacity-100" : "scale-[1.015] opacity-0")}
-    {src}
-    srcset={srcset || undefined}
+    src={resolvedSrc}
+    srcset={resolvedSrcset}
     sizes={sizes || undefined}
     {alt}
     loading={eager ? 'eager' : 'lazy'}

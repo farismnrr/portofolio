@@ -7,6 +7,7 @@ title: "Masih Awam LMS: Game-Based Learning Platform"
 cardTitle: "Masih Awam LMS"
 subtitle: "Game-Based Learning Platform"
 role: "Backend"
+kind: Personal
 category: "Learning · Rust"
 description: "A learning platform where courses become worlds, quests, and lessons."
 image: "/images/projects/featured/masih-awam-lms.png"

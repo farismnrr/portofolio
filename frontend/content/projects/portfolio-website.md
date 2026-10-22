@@ -7,6 +7,7 @@ title: "Personal Portfolio Website"
 cardTitle: "Portfolio"
 subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
+kind: Personal
 category: "Web · Portfolio"
 description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
 image: "/images/projects/portfolio/cover.png"
@@ -17,7 +18,7 @@ repoUrl: "https://github.com/farismnrr/portofolio"
 ## What it is
 
 This site.
-Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives every view: the project list, the home page, and each detail page.
+Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives the project cards, project modal, and homepage selections.
 Adding a project means writing a file, not editing a component.
 
 ## How it is built

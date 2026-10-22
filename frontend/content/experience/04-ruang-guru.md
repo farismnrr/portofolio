@@ -12,6 +12,6 @@ evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
 projects: [askin]
 ---
 
-- Adapted an open-source AI chat app (**[AskIn](/projects/askin)**): authenticated APIs, model discovery and routing, and deployment.
+- Adapted an open-source AI chat app (AskIn): authenticated APIs, model discovery and routing, and deployment.
 
 - Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.

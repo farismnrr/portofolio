@@ -20,3 +20,15 @@ server/Cargo.lock
 *.pdf
 
 !frontend/public/downloads/*.pdf
+.env.*
+*.pem
+*.key
+id_rsa*
+node_modules
+.next
+.nuxt
+.output
+dist
+target
+__pycache__
+.venv

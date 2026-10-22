@@ -1078,7 +1078,7 @@ mod tests {
                     "title": "Sensio Notes",
                     "meta": "PT Perkasa Pilar Utama | 2026",
                     "narrative": "Grounded project narrative.",
-                    "url": "https://farismnrr.com/projects/sensio-notes"
+                    "url": "https://farismnrr.com/projects"
                 }
             ],
             "experiences": [
@@ -1089,7 +1089,7 @@ mod tests {
                     "relatedProjects": [
                         {
                             "title": "Sensio Notes",
-                            "url": "https://farismnrr.com/projects/sensio-notes"
+                            "url": "https://farismnrr.com/projects"
                         }
                     ],
                     "bullets": []

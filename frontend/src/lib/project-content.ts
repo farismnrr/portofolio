@@ -9,12 +9,15 @@ export interface ProjectDocument {
   cardTitle: string;
   subtitle: string;
   role: string;
+  kind: 'Personal' | 'Professional';
   category: string;
   description: string;
   image: string;
+  images: string[];
   tech: string[];
   productUrl: string;
   repoUrl: string;
+  site: string;
 }
 
 const modules = import.meta.glob('../../content/projects/*.md', {
@@ -43,7 +46,7 @@ export function projectImageSrcset(value: string) {
 
 function parseProject(path: string, source: string): ProjectDocument {
   const { values } = parseFrontmatter(path, source);
-  const required = ['id','order','slug','year','title','cardTitle','subtitle','role','category','description','image','tech','productUrl','repoUrl'];
+  const required = ['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','tech','productUrl','repoUrl'];
   requireKeys(path, values, required);
 
   const order = Number(values.get('order'));
@@ -51,6 +54,18 @@ function parseProject(path: string, source: string): ProjectDocument {
 
   const tech = parseInlineList(values.get('tech') ?? '');
   if (!tech.length) throw new Error(`${path}: tech must contain at least one item`);
+
+  const kind = unquote(values.get('kind') ?? '');
+  if (kind !== 'Personal' && kind !== 'Professional') {
+    throw new Error(`${path}: kind must be Personal or Professional`);
+  }
+
+  const image = optimizedProjectImage(unquote(values.get('image') ?? ''));
+  const declaredImages = parseInlineList(values.get('images') ?? '');
+  const images = (declaredImages.length ? declaredImages : [unquote(values.get('image') ?? '')])
+    .map(optimizedProjectImage);
+  const productUrl = unquote(values.get('productUrl') ?? '');
+  const repoUrl = unquote(values.get('repoUrl') ?? '');
 
   return {
     id: unquote(values.get('id') ?? ''),
@@ -61,12 +76,15 @@ function parseProject(path: string, source: string): ProjectDocument {
     cardTitle: unquote(values.get('cardTitle') ?? ''),
     subtitle: unquote(values.get('subtitle') ?? ''),
     role: unquote(values.get('role') ?? ''),
+    kind,
     category: unquote(values.get('category') ?? ''),
     description: unquote(values.get('description') ?? ''),
-    image: optimizedProjectImage(unquote(values.get('image') ?? '')),
+    image,
+    images,
     tech,
-    productUrl: unquote(values.get('productUrl') ?? ''),
-    repoUrl: unquote(values.get('repoUrl') ?? '')
+    productUrl,
+    repoUrl,
+    site: productUrl || repoUrl || '-'
   };
 }
 
@@ -82,9 +100,4 @@ export function getLatestProjects(limit: number) {
 
 export function getProjectBySlug(slug: string) {
   return projects.find((project) => project.slug === slug);
-}
-
-export function getProjectByPath(path: string) {
-  const slug = path.split('/').filter(Boolean).at(-1) ?? '';
-  return getProjectBySlug(slug);
 }

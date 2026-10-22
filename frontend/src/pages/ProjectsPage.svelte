@@ -1,8 +1,16 @@
 <script lang="ts">
   import { projects } from '../lib/project-content';
+  import type { ProjectDocument } from '../lib/project-content';
   import { pageCopy } from '../lib/structured-content';
   import ProjectCard from '../lib/ui/ProjectCard.svelte';
+  import ProjectModal from '../lib/ui/ProjectModal.svelte';
   import PageShell from '../lib/ui/PageShell.svelte';
+
+  let modal: ProjectModal;
+
+  function selectProject(project: ProjectDocument, trigger: HTMLButtonElement) {
+    modal.open(project, trigger);
+  }
 </script>
 
 <main>
@@ -13,7 +21,8 @@
     </header>
 
     <section class="mt-8 grid gap-x-8 gap-y-10 sm:mt-9 sm:gap-x-10 sm:gap-y-12 md:grid-cols-2 2xl:grid-cols-3 2xl:gap-x-12 2xl:gap-y-14">
-      {#each projects as project}<ProjectCard {project}/>{/each}
+      {#each projects as project}<ProjectCard {project} onSelect={selectProject}/>{/each}
     </section>
   </PageShell>
 </main>
+<ProjectModal bind:this={modal}/>

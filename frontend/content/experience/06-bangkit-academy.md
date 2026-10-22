@@ -12,7 +12,7 @@ evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf
 projects: [parentify]
 ---
 
-- Built the cloud side of the **[Parentify](/projects/parentify)** capstone with Mobile Development and Machine Learning teammates.
+- Built the cloud side of the Parentify capstone with Mobile Development and Machine Learning teammates.
 - Agreed ownership and API contracts with the other two tracks and documented the decisions.
 
 - Graduated on 19 January 2024 with a completed capstone.

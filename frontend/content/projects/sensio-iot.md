@@ -7,6 +7,7 @@ title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
 subtitle: "Smart-room controls"
 role: "Backend"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"

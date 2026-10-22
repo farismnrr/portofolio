@@ -51,4 +51,4 @@ HTTP serves the people using the app, and MQTT carries the device traffic. The b
 
 The frameworks can change. These boundaries are the part I would carry to the next project.
 
-The full project page is here: [IoTNet](/projects/iotnet). The live product is [i-ot.net](https://i-ot.net/).
+The project is listed on the [projects page](/projects). The live product is [i-ot.net](https://i-ot.net/).

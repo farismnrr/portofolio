@@ -105,11 +105,33 @@ fn redirect_response(location: &str) -> Response {
         .expect("valid redirect response")
 }
 
+fn project_redirect_location(uri: &Uri) -> Option<String> {
+    let path = uri.path();
+    let old_project_path = path.strip_prefix("/projects/")?;
+    if old_project_path.is_empty() {
+        return None;
+    }
+
+    Some(match uri.query() {
+        Some(query) => format!("/projects?{query}"),
+        None => "/projects".to_owned(),
+    })
+}
+
 async fn embedded_asset(uri: Uri, headers: HeaderMap) -> Response {
     let uri_path = uri.path();
     let if_none_match = headers
         .get(header::IF_NONE_MATCH)
         .and_then(|value| value.to_str().ok());
+
+    if let Some(location) = project_redirect_location(&uri) {
+        return Response::builder()
+            .status(StatusCode::MOVED_PERMANENTLY)
+            .header(header::LOCATION, location)
+            .header(header::CACHE_CONTROL, "public, max-age=3600")
+            .body(Body::empty())
+            .expect("valid project redirect response");
+    }
 
     if uri_path == "/index.html" {
         return redirect_response("/");
@@ -228,7 +250,22 @@ async fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::{cache_control_for, etag_matches};
+    use super::{cache_control_for, etag_matches, project_redirect_location};
+
+    #[test]
+    fn old_project_urls_redirect_to_the_projects_page() {
+        assert_eq!(
+            project_redirect_location(&"/projects/askin".parse().unwrap()),
+            Some("/projects".to_owned())
+        );
+        assert_eq!(
+            project_redirect_location(&"/projects/askin/details?source=old-link".parse().unwrap()),
+            Some("/projects?source=old-link".to_owned())
+        );
+        assert_eq!(project_redirect_location(&"/projects".parse().unwrap()), None);
+        assert_eq!(project_redirect_location(&"/projects/".parse().unwrap()), None);
+        assert_eq!(project_redirect_location(&"/projects-other/askin".parse().unwrap()), None);
+    }
 
     #[test]
     fn latest_cv_revalidates_while_fingerprinted_assets_are_immutable() {

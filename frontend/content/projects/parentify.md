@@ -7,6 +7,7 @@ title: "Parentify: Parenting Companion"
 cardTitle: "Parentify"
 subtitle: "Parenting guidance and food recognition"
 role: "Cloud · Backend"
+kind: Personal
 category: "Bangkit Capstone · Cross-functional"
 description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
 image: "/images/projects/parentify/showcase.png"

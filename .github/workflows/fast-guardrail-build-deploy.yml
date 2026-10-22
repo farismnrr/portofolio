@@ -239,6 +239,11 @@ jobs:
           PY
           rm -f "$mermaid_dom"
 
+          project_redirect="$(curl --silent --show-error --output /dev/null --write-out '%{http_code} %{redirect_url}' \
+            --max-redirs 0 http://127.0.0.1:3001/projects/sensio-notes)"
+          test "$project_redirect" = '301 http://127.0.0.1:3001/projects'
+          printf 'old_project_redirect=%s\n' "$project_redirect"
+
           asset_url="http://127.0.0.1:3001/images/profile/faris-munir-1024.webp"
           asset_headers="$(mktemp)"
           trap 'rm -f "$asset_headers"' EXIT

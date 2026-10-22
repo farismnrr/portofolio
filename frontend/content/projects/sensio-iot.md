@@ -11,7 +11,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
-tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
+tech: [-]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

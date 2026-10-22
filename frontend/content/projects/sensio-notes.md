@@ -11,7 +11,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
-tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+tech: [-]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

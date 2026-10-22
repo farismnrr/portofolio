@@ -11,7 +11,7 @@ kind: Personal
 category: "Backend · Security"
 description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"
-tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
+tech: [Rust, Actix Web, SeaORM, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---

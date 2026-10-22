@@ -11,7 +11,7 @@ kind: Personal
 category: "Bangkit Capstone · Cross-functional"
 description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
 image: "/images/projects/parentify/showcase.png"
-tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
+tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---

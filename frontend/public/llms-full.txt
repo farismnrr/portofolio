@@ -333,7 +333,7 @@ kind: Personal
 category: "Personal · AI · Open Source"
 description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
 image: "/images/projects/featured/ai-workspace.png"
-tech: [Go, Svelte, Docker, MCP]
+tech: [Go, Fiber, Svelte 5, TypeScript, SQLite, MCP]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
@@ -708,7 +708,7 @@ kind: Personal
 category: "Backend · Security"
 description: "A reusable login service: one account can belong to several tenants, with a different role in each."
 image: "/images/projects/user-management/cover.png"
-tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
+tech: [Rust, Actix Web, SeaORM, PostgreSQL, RocksDB, JWT, Argon2, Docker]
 productUrl: ""
 repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
 ---
@@ -782,7 +782,7 @@ kind: Personal
 category: "Bangkit Capstone · Cross-functional"
 description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
 image: "/images/projects/parentify/showcase.png"
-tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
+tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---
@@ -902,7 +902,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
-tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
+tech: [-]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
@@ -948,7 +948,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
-tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+tech: [-]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

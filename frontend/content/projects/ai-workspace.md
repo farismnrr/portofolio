@@ -11,7 +11,7 @@ kind: Personal
 category: "Personal · AI · Open Source"
 description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
 image: "/images/projects/featured/ai-workspace.png"
-tech: [Go, Svelte, Docker, MCP]
+tech: [Go, Fiber, Svelte 5, TypeScript, SQLite, MCP]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---

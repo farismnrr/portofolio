@@ -11,7 +11,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
-techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|BullMQ|S3-compatible Object Storage|Docker|OpenTelemetry]
+techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

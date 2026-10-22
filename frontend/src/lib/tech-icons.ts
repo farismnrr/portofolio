@@ -46,11 +46,12 @@ import {
   siDrizzle,
   siTimescale,
   siTauri,
+  siEclipsemosquitto,
   siZigbee2mqtt,
   type SimpleIcon
 } from 'simple-icons';
 
-type TechIcon = Pick<SimpleIcon, 'path'> & { custom?: boolean };
+type TechIcon = Pick<SimpleIcon, 'path'> & { custom?: boolean; assetSrc?: string };
 
 const iconEntries: Array<[string, TechIcon]> = [
   ['rust', siRust], ['actix web', siActix], ['postgresql', siPostgresql],
@@ -66,6 +67,7 @@ const iconEntries: Array<[string, TechIcon]> = [
   ['firebase', siFirebase], ['capacitor', siCapacitor], ['ollama', siOllama],
   ['langgraph', siLanggraph], ['tauri 2', siTauri], ['zigbee2mqtt', siZigbee2mqtt],
   ['fastapi', siFastapi], ['python', siPython], ['vite', siVite], ['markdown', siMarkdown],
+  ['mosquitto', { ...siEclipsemosquitto, assetSrc: new URL('./mosquitto-logo-only.svg', import.meta.url).href }],
   ['mermaid', siMermaid], ['github actions', siGithubactions], ['jwt', siJsonwebtokens],
   ['html', siHtml5], ['scss', siSass], ['mcp', siModelcontextprotocol],
   ['google cloud', siGooglecloud], ['gin', siGin]

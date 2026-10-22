@@ -902,7 +902,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
-techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS|Askama, Backend::Rust|Axum|Tokio|SQLx, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|Docker Compose|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|Tuya Cloud API|WebSocket|HTTP]
+techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS|Askama, Backend::Rust|Axum|SQLx, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|Tuya|WebSocket|HTTP]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
@@ -948,7 +948,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
 image: "/images/projects/sensio-notes/showcase.png"
-techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|BullMQ|S3-compatible Object Storage|Docker|OpenTelemetry]
+techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

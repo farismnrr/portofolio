@@ -40,12 +40,17 @@
     | 'certifications'
     | 'gallery';
 
-  export let name: IconName;
+  export let name: IconName | undefined = undefined;
   export let size = 18;
   export let strokeWidth = 1.8;
+  export let brandPath: string | undefined = undefined;
 </script>
 
-{#if name === 'close'}
+{#if brandPath}
+  <svg aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} class="shrink-0 fill-current">
+    <path d={brandPath}/>
+  </svg>
+{:else if name === 'close'}
   <IconX {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'chevron-left'}
   <IconChevronLeft {size} stroke={strokeWidth} aria-hidden="true" />

@@ -4,6 +4,7 @@
   import { getProjectContributionsBySlug } from '../project-markdown';
   import MediaImage from './MediaImage.svelte';
   import AppIcon from './AppIcon.svelte';
+  import TechBadge from './TechBadge.svelte';
 
   let dialog: HTMLDialogElement;
   let selected: ProjectDocument | null = null;
@@ -12,7 +13,7 @@
 
   $: images = selected?.images.length ? selected.images : selected ? [selected.image] : [];
   $: contributions = selected ? getProjectContributionsBySlug(selected.slug) : [];
-  $: tech = selected?.tech.filter((item) => item !== '-').join(', ') || '-';
+  $: tech = selected?.tech ?? ['-'];
 
   export function open(project: ProjectDocument, trigger: HTMLElement) {
     selected = project;
@@ -82,7 +83,7 @@
       {/if}
     </section>
 
-    <div class="flex min-h-0 flex-col p-4 sm:p-5">
+    <div class="flex min-h-0 flex-col overflow-y-auto p-4 sm:p-5">
       <header class="mb-3 flex items-start justify-between gap-3 border-b border-[color-mix(in_srgb,var(--page-fg)_16%,transparent)] pb-3">
         <h2 id="project-modal-title" class="text-[20px] font-semibold leading-tight tracking-[-0.02em] sm:text-[23px]">{selected.title}</h2>
         <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11 shrink-0" aria-label="Close project details" on:click={close}>
@@ -103,7 +104,9 @@
       </section>
       <section>
         <h3 class="text-[14px] font-semibold">Tech stack</h3>
-        <p class="mt-1 text-[13px] leading-[1.35] text-[color-mix(in_srgb,var(--page-fg)_72%,transparent)]">{tech}</p>
+        <div class="mt-1.5 flex flex-wrap gap-1.5">
+          {#each tech as item}<TechBadge name={item}/>{/each}
+        </div>
       </section>
       <div class="grid grid-cols-2 gap-3">
       <section>

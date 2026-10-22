@@ -38,7 +38,7 @@ for (const entry of requiredTopLevel) {
 
 const packageJson = JSON.parse(await readFile(join(frontendRoot, 'package.json'), 'utf8'));
 const deps = { ...(packageJson.dependencies ?? {}), ...(packageJson.devDependencies ?? {}) };
-if (deps['lucide-svelte'] || deps['@lucide/svelte'] || deps['@icons-pack/svelte-simple-icons']) failures.push('Multiple/legacy icon stacks are forbidden; use the single Tabler Svelte 5 icon library.');
+if (deps['lucide-svelte'] || deps['@lucide/svelte'] || deps['@icons-pack/svelte-simple-icons']) failures.push('Multiple/legacy icon stacks are forbidden. Use Tabler for interface icons; brand logo paths come from simple-icons through AppIcon.');
 if (!deps['@tabler/icons-svelte-runes']) failures.push('Missing @tabler/icons-svelte-runes icon dependency.');
 if (!deps.marked || !deps.mermaid) failures.push('Markdown case studies require marked and mermaid.');
 if (!deps['@tailwindcss/typography']) failures.push('Markdown prose requires @tailwindcss/typography.');
@@ -54,7 +54,7 @@ for (const absolute of files) {
 
   if (source.includes('<style')) failures.push(`${rel}: local <style> blocks are forbidden; use DaisyUI/Tailwind utilities and shared primitives.`);
   if (/\sstyle\s*=/.test(source)) failures.push(`${rel}: inline style= is forbidden; keep presentation in reusable utilities/components.`);
-  if (/<svg(?:\s|>)/i.test(source)) failures.push(`${rel}: raw SVG is forbidden; icons must come through AppIcon.svelte.`);
+  if (/<svg(?:\s|>)/i.test(source) && rel !== 'lib/ui/AppIcon.svelte') failures.push(`${rel}: raw SVG is forbidden; icons must come through AppIcon.svelte.`);
   if (/\b(?:TODO|FIXME|HACK)\b/.test(source)) failures.push(`${rel}: unresolved TODO/FIXME/HACK marker is forbidden in committed product code.`);
   if (/\bconsole\.(?:log|warn|error)\s*\(/.test(source)) failures.push(`${rel}: console logging is forbidden in production UI code.`);
 

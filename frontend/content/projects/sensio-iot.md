@@ -11,7 +11,7 @@ kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
 description: "Smart-room controls and automation, built by a team. I built the backend."
 image: "/images/projects/featured/sensio-iot.png"
-techGroups: [Languages::Rust|JavaScript|SQL, Frontend::Vanilla JavaScript|HTML|SCSS|Askama, Backend::Rust|Axum|Tokio|SQLx, AI & Automation::Node.js|LangGraph|LLM Tool Calling|Speech-to-Text|Text-to-Speech, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|Tuya Cloud API|WebSocket|HTTP, Database::PostgreSQL|TimescaleDB, Mobile::Tauri 2|Android, Infrastructure::Docker|Docker Compose|GitHub Actions|GHCR|OpenTelemetry]
+techGroups: [Languages & Runtime::Rust|JavaScript|SQL|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS|Askama, Backend::Rust|Axum|Tokio|SQLx, AI & RAG::LangGraph|LLM Tool Calling|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|Docker Compose|GitHub Actions|GHCR|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|Tuya Cloud API|WebSocket|HTTP]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---

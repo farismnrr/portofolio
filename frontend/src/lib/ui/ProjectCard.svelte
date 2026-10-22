@@ -22,7 +22,7 @@
       src={project.image}
       srcset={projectImageSrcset(project.image)}
       sizes="(min-width: 1280px) 380px, (min-width: 768px) 46vw, calc(100vw - 2.5rem)"
-      alt={project.cardTitle}
+      alt={project.imageAlt}
       fit="contain"
     />
   </figure>

@@ -139,7 +139,7 @@ for (const pageName of ['HomePage.svelte','AboutPage.svelte','ExperiencePage.sve
 
 const contentFiles = (await readdir(contentRoot)).filter((file) => file.endsWith('.md')).sort();
 if (!contentFiles.length) failures.push('content/projects must contain at least one project.');
-const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','images','imageAlts','tech','techGroups','productUrl','repoUrl']);
+const allowedKeys = new Set(['id','order','slug','year','title','cardTitle','subtitle','role','kind','category','description','image','imageAlt','images','imageAlts','tech','techGroups','productUrl','repoUrl']);
 const slugs = new Set();
 for (const file of contentFiles) {
   const source = await readFile(join(contentRoot, file), 'utf8');
@@ -154,7 +154,7 @@ for (const file of contentFiles) {
   }
   for (const key of values.keys()) if (!allowedKeys.has(key)) failures.push(`${file}: unknown frontmatter key "${key}".`);
   for (const key of allowedKeys) {
-    if (!['images', 'imageAlts', 'tech', 'techGroups'].includes(key) && !values.has(key)) {
+    if (!['imageAlt', 'images', 'imageAlts', 'tech', 'techGroups'].includes(key) && !values.has(key)) {
       failures.push(`${file}: missing required frontmatter key "${key}".`);
     }
   }

@@ -26,7 +26,7 @@
   }
 </script>
 
-<section class="carousel relative flex min-h-0 items-center overflow-hidden rounded-lg bg-base-200 p-3 pb-16 sm:p-5 sm:pb-16" aria-roledescription="carousel" aria-label={`${title} images`}>
+<section class={`carousel relative flex min-h-0 items-center overflow-hidden rounded-lg bg-base-200 p-3 ${images.length > 1 ? 'pb-16 sm:p-5 sm:pb-16' : 'sm:p-5'}`} aria-roledescription="carousel" aria-label={`${title} images`}>
   {#if images.length > 1}<span class="sr-only" aria-live="polite">Slide {currentSlide + 1} of {images.length}</span>{/if}
   {#if images.length}
     <div class="carousel-item w-full" role="group" aria-roledescription="slide" aria-label={`${currentSlide + 1} of ${images.length}`}>

@@ -13,6 +13,7 @@ export interface ProjectDocument {
   category: string;
   description: string;
   image: string;
+  imageAlt: string;
   images: string[];
   imageAlts: string[];
   tech: string[];
@@ -107,6 +108,7 @@ function parseProject(path: string, source: string): ProjectDocument {
     category: unquote(values.get('category') ?? ''),
     description: unquote(values.get('description') ?? ''),
     image,
+    imageAlt: unquote(values.get('imageAlt') ?? `${unquote(values.get('cardTitle') ?? '')} project cover`),
     images,
     imageAlts,
     tech,

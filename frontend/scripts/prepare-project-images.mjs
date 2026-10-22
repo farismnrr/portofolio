@@ -8,6 +8,7 @@ const variants = [640, 1280];
 const defaultVariantMaxBytes = 300_000;
 const totalVariantsMaxBytes = 2_000_000;
 const sourceManifest = resolve(publicDir, 'project-source-images.txt');
+const projectImagesDir = resolve(publicDir, 'images/projects');
 
 function unquote(value) {
   const trimmed = value.trim();
@@ -53,6 +54,27 @@ for (const file of files) {
 const uniqueImages = [...new Map(
   covers.flatMap(({ file, images }) => images.map((image) => [image, { file, image }]))
 ).values()];
+const referencedVariants = new Set(
+  uniqueImages.flatMap(({ image }) =>
+    variants.map((width) => image.replace(/\.(?:png|jpe?g)$/i, `-${width}.webp`).replace(/^\//, ''))
+  )
+);
+const unusedVariants = [];
+const referencedSources = new Set(uniqueImages.map(({ image }) => image.replace(/^\//, '')));
+const unusedSources = [];
+for (const directory of await readdir(projectImagesDir, { withFileTypes: true })) {
+  if (!directory.isDirectory()) continue;
+  const absoluteDirectory = resolve(projectImagesDir, directory.name);
+  for (const file of await readdir(absoluteDirectory)) {
+    if (/\.(?:png|jpe?g)$/i.test(file)) {
+      const relativePath = `images/projects/${directory.name}/${file}`;
+      if (!referencedSources.has(relativePath)) unusedSources.push(relativePath);
+    }
+    if (!/-\d+\.webp$/i.test(file)) continue;
+    const relativePath = `images/projects/${directory.name}/${file}`;
+    if (!referencedVariants.has(relativePath)) unusedVariants.push(relativePath);
+  }
+}
 let total = 0;
 const summaries = [];
 
@@ -94,7 +116,11 @@ if (total > totalVariantsMaxBytes) {
 
 await writeFile(
   sourceManifest,
-  `${uniqueImages.map(({ image }) => image.replace(/^\//, '')).join('\n')}\n`,
+  `${[
+    ...uniqueImages.map(({ image }) => image.replace(/^\//, '')),
+    ...unusedSources,
+    ...unusedVariants
+  ].join('\n')}\n`,
   'utf8'
 );
 

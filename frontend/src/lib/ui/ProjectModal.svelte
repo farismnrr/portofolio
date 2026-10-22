@@ -16,7 +16,9 @@
   $: images = selected?.images.length ? selected.images : selected ? [selected.image] : [];
   $: imageAlts = selected?.imageAlts.length === images.length
     ? selected.imageAlts
-    : images.map((_, index) => `${selected?.title ?? 'Project'}, image ${index + 1}`);
+    : images.map((_, index) => index === 0
+      ? selected?.imageAlt ?? `${selected?.title ?? 'Project'} project cover`
+      : `${selected?.title ?? 'Project'}, image ${index + 1}`);
   $: contributions = selected ? getProjectContributionsBySlug(selected.slug) : [];
 
   export async function open(project: ProjectDocument, trigger: HTMLElement) {

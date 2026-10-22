@@ -30,6 +30,7 @@ import {
   siPrometheus,
   siPython,
   siRedis,
+  siReact,
   siRocksdb,
   siRust,
   siSass,
@@ -38,7 +39,11 @@ import {
   siTensorflow,
   siTypescript,
   siVite,
+  siTailwindcss,
   siVuedotjs,
+  siNestjs,
+  siDrizzle,
+  siTimescale,
   type SimpleIcon
 } from 'simple-icons';
 
@@ -52,6 +57,8 @@ const iconEntries: Array<[string, TechIcon]> = [
   ['node.js', siNodedotjs], ['nodejs', siNodedotjs], ['express', siExpress],
   ['docker', siDocker], ['nginx', siNginx], ['redis', siRedis], ['mqtt', siMqtt],
   ['opentelemetry', siOpentelemetry], ['prometheus', siPrometheus], ['kotlin', siKotlin],
+  ['react', siReact], ['tailwind css', siTailwindcss], ['nestjs', siNestjs],
+  ['drizzle orm', siDrizzle], ['timescaledb', siTimescale],
   ['android', siAndroid], ['tensorflow', siTensorflow], ['keras', siKeras],
   ['firebase', siFirebase], ['capacitor', siCapacitor], ['ollama', siOllama],
   ['fastapi', siFastapi], ['python', siPython], ['vite', siVite], ['markdown', siMarkdown],
@@ -63,6 +70,15 @@ const iconEntries: Array<[string, TechIcon]> = [
 // Original monochrome glyphs for technologies without a Simple Icons mark.
 const customIcons: Array<[string, string]> = [
   ['rag', 'M5 5h4v4H5z M15 5h4v4h-4z M10 15h4v4h-4z M7 9v3h5m5-3v3h-5m-2 0v3'],
+  ['voyage ai embeddings', 'M4 7h5v5H4z M15 4h5v5h-5z M10 15h5v5h-5z M9 9l6-3m-6 5 3 4'],
+  ['hybrid search', 'M4 5h10M4 10h6m-6 5h10M17 12v8m-3-3 3 3 3-3'],
+  ['tool calling', 'M5 5h5v5H5z M14 14h5v5h-5z M10 7h4v4m0-4-4 4m0 1v2'],
+  ['pgvector', 'M12 3 20 7v10l-8 4-8-4V7zm-4 6 8 6m0-6-8 6'],
+  ['bullmq', 'M4 6h4v4H4z M10 6h4v4h-4z M16 6h4v4h-4z M7 10v5h10v-5m-5 5v4'],
+  ['s3-compatible object storage', 'M4 7h16v13H4z M3 4h18v3H3zm5 7h8m-8 3h6'],
+  ['zustand', 'M12 3v4m-5 1v11m10-11v11m-9-9h8m-8 4h8M9 19h6'],
+  ['rest api', 'M5 5h14v5H5zm0 9h14v5H5zm3-6v6m8-6v6'],
+  ['langgraph', 'M5 5h4v4H5z M15 15h4v4h-4z M15 5h4v4h-4z M9 7h6m2 2v6m-2 2h-6m0 0v-2m0 2 2-2m-2 2-2-2'],
   ['axum', 'M12 3v6m0 0L6 15m6-6 6 6M6 15v5m12-5v5M4 20h4m8 0h4'],
   ['fiber', 'M6 4l5 5-4 5 6 6M18 4l-5 5 4 5-6 6'],
   ['hapi', 'M4 7h4v4H4z M16 7h4v4h-4z M10 15h4v4h-4z M8 9h8m-6 2 1 4m2-4-1 4'],
@@ -82,7 +98,8 @@ const aliases: Record<string, string> = {
   'node js': 'node.js',
   'githubactions': 'github actions',
   'google cloud platform': 'google cloud',
-  'openai': 'openai api'
+  'openai': 'openai api',
+  'graph rag': 'rag'
 };
 
 const fallbackIcon: TechIcon = {

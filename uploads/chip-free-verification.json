@@ -1,0 +1,11 @@
+{
+  "about_status": 200,
+  "plain_types": [
+    "Journal",
+    "Thesis",
+    "Project report"
+  ],
+  "served_assets": {
+    "AboutPage-obs_eDZf.js": "87345cbc7d4c2cb9fa00861133ad91774f7cc04cfe86e926ef6403903a96e6bf"
+  }
+}

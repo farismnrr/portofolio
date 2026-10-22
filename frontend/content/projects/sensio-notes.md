@@ -30,9 +30,9 @@ flowchart LR
 ## What I Did
 
 - Developed Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
-- Built cross-platform meeting recording for web and mobile, including a Chrome extension for Google Meet.
+- Built cross-platform meeting recording capabilities and browser-based meeting integrations.
 - Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
-- Developed agentic AI chat using LangGraph, tool calling, and Graph RAG with hybrid search across meeting data.
+- Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.
 - Built meeting intelligence features including interactive knowledge graphs, mind maps, searchable transcripts, and AI chat with source references.
 - Implemented background processing, reliable audio uploads, real-time status updates, and containerized deployment.
 

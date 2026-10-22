@@ -11,7 +11,7 @@ kind: Professional
 category: "IoT · Platform"
 description: "Manage devices, users, automations, and telemetry in one place."
 image: "/images/projects/iotnet/cover.png"
-tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
+tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
 productUrl: "NDA"
 repoUrl: ""
 ---
@@ -56,7 +56,7 @@ The same model covers alerts, schedules, and environment control.
 
 ## Stack
 
-Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT through EMQX for devices, and OpenTelemetry for tracing.
+Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT for device communication, and OpenTelemetry for tracing.
 
 ## Links
 

@@ -25,7 +25,7 @@
 
         <div class="mt-7 flex flex-wrap items-center gap-4 sm:mt-8 sm:gap-5">
           <a
-            class="inline-flex min-h-12 items-center bg-[#344534] px-6 text-[14px] font-medium text-white transition hover:bg-[#263526] sm:px-7"
+            class="inline-flex min-h-12 items-center rounded-lg bg-[#344534] px-6 text-[14px] font-medium text-white transition hover:bg-[#263526] sm:px-7"
             href="/about"
             on:mouseenter={() => prefetchRoute('/about')}
             on:focus={() => prefetchRoute('/about')}
@@ -36,14 +36,16 @@
         </div>
       </div>
 
+      <div class="aspect-[1.36] w-full max-w-[620px] justify-self-center overflow-hidden rounded-xl lg:justify-self-end 2xl:max-w-[760px]">
       <MediaImage
-        className="aspect-[1.36] w-full max-w-[620px] justify-self-center lg:justify-self-end 2xl:max-w-[760px]"
+        className="h-full w-full"
         src={profile.image}
         srcset={profileSrcset}
         sizes="(min-width: 1536px) 760px, (min-width: 1024px) 44vw, calc(100vw - 3rem)"
         alt={profile.name}
         eager
       />
+      </div>
     </section>
   </PageShell>
 </main>

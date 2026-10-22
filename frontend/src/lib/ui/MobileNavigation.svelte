@@ -36,7 +36,7 @@
         on:click={(event) => navigate(event, item.href)}
         aria-label={item.label}
         aria-current={currentPath === item.href ? 'page' : undefined}
-        class="relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-1.5 text-[9px] font-medium leading-none text-black/62 transition hover:text-black min-[390px]:text-[10px]"
+        class="relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-0.5 py-1.5 text-[9px] font-medium leading-none text-black/62 transition hover:bg-black/[0.035] hover:text-black min-[390px]:text-[10px]"
         class:text-black={currentPath === item.href}
       >
         <span class="flex h-7 w-7 items-center justify-center">

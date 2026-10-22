@@ -45,7 +45,7 @@
           <p class="text-xs font-medium uppercase tracking-[0.14em] text-base-content/70">Project details</p>
             <h2 id="project-modal-title" class="mt-2 text-2xl font-semibold leading-tight tracking-tight text-base-content">{selected.title}</h2>
           </div>
-          <button bind:this={closeButton} type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11 shrink-0 rounded-md" aria-label="Close project details" on:click={close}>
+          <button bind:this={closeButton} type="button" class="btn btn-ghost min-h-11 min-w-11 shrink-0 rounded-lg" aria-label="Close project details" on:click={close}>
             <AppIcon name="close" size={20}/>
           </button>
         </header>

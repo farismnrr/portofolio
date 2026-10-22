@@ -38,7 +38,7 @@
         <h1 class="mt-4 w-full text-balance text-[36px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[44px] md:text-[58px] 2xl:text-[64px]">{article.title}</h1>
         <p class="mt-5 w-full hyphens-auto text-left text-[15px] leading-7 text-black/62 sm:text-justify sm:text-[17px] sm:leading-8 2xl:text-[18px]">{article.excerpt}</p>
         <MediaImage
-          className="mt-7 aspect-[1.8] w-full sm:mt-8 sm:aspect-[2.2] 2xl:mt-10 2xl:aspect-[2.45]"
+          className="mt-7 aspect-[1.8] w-full overflow-hidden rounded-lg sm:mt-8 sm:aspect-[2.2] 2xl:mt-10 2xl:aspect-[2.45]"
           src={article.cover}
           srcset={coverSrcset}
           sizes="(min-width: 1536px) 1400px, (min-width: 1024px) calc(100vw - 6rem), calc(100vw - 3rem)"

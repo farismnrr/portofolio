@@ -23,7 +23,7 @@
             on:focus={() => prefetchRoute(articlePath)}
             on:pointerdown={() => prefetchRoute(articlePath)}
             on:click={(e)=>navigate(e,articlePath)}
-            class="grid gap-3 sm:gap-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-8"
+            class="grid rounded-lg px-2 py-2 gap-3 sm:gap-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-8"
           >
             <div class="flex flex-wrap gap-x-3 gap-y-1 text-[12px] leading-5 text-black/58 sm:text-[13px] md:block md:leading-6">
               <p>{formatArticleDate(article.published)}</p>

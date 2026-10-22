@@ -22,7 +22,9 @@
   --color-base-content: var(--page-fg);
   --color-primary: var(--accent);
   --color-primary-content: var(--surface);
+  --radius-box: 0.75rem;
   --radius-field: 0.5rem;
+  --radius-selector: 0.5rem;
   --size-field: 0.25rem;
   --border: 1px;
   --depth: 0;
@@ -36,6 +38,9 @@ html[data-theme="dark"] {
   --surface: #191c19;
   --accent: #a9bea5;
   --color-black: #f4f5ef;
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-selector: 0.5rem;
   color-scheme: dark;
 }
 
@@ -70,6 +75,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
   z-index: 100;
   transform: translateY(calc(-100% - 2rem));
   border: 1px solid color-mix(in srgb, var(--page-fg) 18%, transparent);
+  border-radius: var(--radius-field);
   background: var(--page-bg);
   color: var(--page-fg);
   padding: 0.7rem 1rem;

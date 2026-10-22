@@ -17,7 +17,7 @@
   <PageShell className="py-10 sm:py-12 lg:py-14">
     <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14 2xl:grid-cols-[280px_minmax(0,1fr)] 2xl:gap-16">
       <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:block lg:border-r lg:border-black/14 lg:pr-8 xl:pr-10 2xl:pr-12">
-        <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
+        <MediaImage className="aspect-[.8] w-full self-start overflow-hidden rounded-lg" src={profile.image} alt={profile.name}/>
 
         <div class="min-w-0">
           <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[25px] lg:mt-5">{profile.name}</h2>
@@ -30,11 +30,11 @@
         </div>
 
         <div class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-3 lg:mt-5 lg:block lg:space-y-1 lg:border-t lg:pt-4">
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
+          <a class="flex min-h-10 items-center gap-2.5 rounded-lg px-2 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
         </div>
         {#if roleMatchEnabled}
           <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">

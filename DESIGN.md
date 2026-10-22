@@ -1,8 +1,8 @@
-# Projects UI design
+# Site-wide interface design
 
 ## Direction
 
-Keep the site's existing warm, quiet editorial feel. The Projects page should read like a portfolio index: restrained framing around the project screenshots, clear titles, concise descriptions, and a single obvious action. The project cards and detail dialog use DaisyUI components so their surfaces and controls follow the site's light and dark themes.
+Keep the site's existing warm, quiet editorial feel. The Projects page should read like a portfolio index: restrained framing around the project screenshots, clear titles, concise descriptions, and a single obvious action. Carry the same restrained rounded corners through every page so the site feels coherent without looking pill-shaped or overly soft. Project cards and dialogs use DaisyUI components so their surfaces and controls follow the site's light and dark themes.
 
 The current palette and typography in `frontend/src/app.css` are the source of truth. The light page uses warm off-white, near-black text, white surfaces, and forest green accents. Dark mode keeps the same roles with charcoal surfaces and a lighter green accent. `html[data-theme]` already switches these values; DaisyUI receives them through `--color-base-100`, `--color-base-200`, `--color-base-300`, `--color-base-content`, `--color-primary`, and `--color-primary-content`.
 
@@ -15,7 +15,7 @@ The current palette and typography in `frontend/src/app.css` are the source of t
 - Interactive accent and focus: `primary`, mapped to the existing forest green accent.
 - Accent foreground: `primary-content`.
 - Typography: existing Inter system stack from `--font-sans`.
-- Shape: Projects-only radius scale. Cards and modal box use `rounded-xl` (0.75rem); image frames and buttons, site link, and close button use `rounded-md` (0.375rem); tech and kind badges use `rounded-md` (0.375rem). Carousel dots remain circular. Global DaisyUI radius tokens are not changed, so other pages keep their current shape.
+- Shape: global compact radius scale. DaisyUI `--radius-box` is 0.75rem for cards, modal boxes and larger panels. `--radius-field` and `--radius-selector` are 0.5rem for buttons, fields, badges, menu items and compact image frames. In Tailwind, use `rounded-xl` for box surfaces and `rounded-lg` for fields and controls. Carousel dots and the timeline marker remain circular by design. This scale is set in `frontend/src/app.css` for both themes.
 
 ## Layout
 
@@ -45,4 +45,8 @@ No new image assets are needed for this pass. Reuse the existing project cover i
 
 ## Scope
 
-This document covers the Projects index cards and project detail dialog only. The existing site theme, typeface, and shared page shell remain in use.
+This radius scale applies across home, about, experience, projects, blog, credentials, gallery, footer, desktop and mobile navigation, and the development-only role match panel. Keep avatar circles, carousel dots and the timeline marker circular. Keep `MediaImage.svelte` generic; round its frame at the call site with an overflow-hidden wrapper or rounded utility.
+
+## Radius review notes
+
+Text links use `rounded-lg` with a small horizontal inset so the shared focus-visible outline follows the field radius instead of forming square corners. This applies to About social and download links, the contents navigation, and blog list links. Timeline links inherit the same shared focus outline. The carousel `join` wrapper owns the selector group's radius; its `join-item` buttons remain unrounded so they read as one control. Loading skeletons and inline code use `rounded-lg`. Card imagery relies on the card's `rounded-xl` outer clipping rather than a second radius on its figure.

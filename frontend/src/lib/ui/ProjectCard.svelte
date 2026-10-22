@@ -16,7 +16,7 @@
     aria-label={`View ${project.cardTitle} details`}
     on:click={(event) => onSelect(project, event.currentTarget)}
   ></button>
-  <figure class="aspect-video w-full overflow-hidden rounded-md border-b border-base-300 bg-base-200">
+  <figure class="aspect-video w-full overflow-hidden border-b border-base-300 bg-base-200">
     <MediaImage
       className="aspect-video w-full"
       src={project.image}

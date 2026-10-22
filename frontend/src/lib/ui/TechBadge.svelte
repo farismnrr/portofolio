@@ -10,7 +10,7 @@
 {#if name === '-'}
   <span class="text-sm text-base-content/70">-</span>
 {:else}
-  <span class="badge badge-outline min-h-7 max-w-full rounded-md gap-1.5 px-2.5 text-xs text-base-content/80">
+  <span class="badge badge-outline min-h-7 max-w-full rounded-lg gap-1.5 px-2.5 text-xs text-base-content/80">
     <AppIcon brandPath={icon.path} brandStroke={icon.custom} size={14}/>
     <span class="truncate">{name}</span>
   </span>

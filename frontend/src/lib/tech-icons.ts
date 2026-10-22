@@ -47,16 +47,23 @@ import {
   siTimescale,
   siTauri,
   siDaisyui,
+  siCodemirror,
+  siClaude,
+  siMongodb,
   siEclipsemosquitto,
   siZigbee2mqtt,
   type SimpleIcon
 } from 'simple-icons';
 
-type TechIcon = Pick<SimpleIcon, 'path'> & { custom?: boolean; assetSrc?: string };
+type TechIcon = Partial<Pick<SimpleIcon, 'path'>> & {
+  custom?: boolean;
+  assetSrc?: string;
+  strokePaths?: string[];
+};
 
 const iconEntries: Array<[string, TechIcon]> = [
   ['rust', siRust], ['actix web', siActix], ['postgresql', siPostgresql],
-  ['mysql', siMysql], ['sqlite', siSqlite], ['rocksdb', siRocksdb], ['go', siGo],
+  ['mysql', siMysql], ['mongodb', siMongodb], ['sqlite', siSqlite], ['rocksdb', siRocksdb], ['go', siGo],
   ['svelte', siSvelte], ['sveltekit', siSvelte], ['typescript', siTypescript],
   ['javascript', siJavascript], ['vue', siVuedotjs], ['nuxt', siNuxt], ['bun', siBun],
   ['node.js', siNodedotjs], ['nodejs', siNodedotjs], ['express', siExpress],
@@ -65,6 +72,23 @@ const iconEntries: Array<[string, TechIcon]> = [
   ['react', siReact], ['tailwind css', siTailwindcss], ['nestjs', siNestjs],
   ['drizzle orm', siDrizzle], ['timescaledb', siTimescale],
   ['daisyui', siDaisyui],
+  ['codemirror', siCodemirror], ['claude code', siClaude],
+  ['openai codex', {
+    strokePaths: [
+      'M11.217 19.384a3.501 3.501 0 0 0 6.783 -1.217v-5.167l-6 -3.35',
+      'M5.214 15.014a3.501 3.501 0 0 0 4.446 5.266l4.34 -2.534v-6.946',
+      'M6 7.63c-1.391 -.236 -2.787 .395 -3.534 1.689a3.474 3.474 0 0 0 1.271 4.745l4.263 2.514l6 -3.348',
+      'M12.783 4.616a3.501 3.501 0 0 0 -6.783 1.217v5.067l6 3.45',
+      'M18.786 8.986a3.501 3.501 0 0 0 -4.446 -5.266l-4.34 2.534v6.946',
+      'M18 16.302c1.391 .236 2.787 -.395 3.534 -1.689a3.474 3.474 0 0 0 -1.271 -4.745l-4.308 -2.514l-5.955 3.42'
+    ]
+  }],
+  ['oauth 2.1', {
+    strokePaths: [
+      'M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0',
+      'M12.556 6c.65 0 1.235 .373 1.508 .947l2.839 7.848a1.646 1.646 0 0 1 -1.01 2.108a1.673 1.673 0 0 1 -2.068 -.851l-.46 -1.052h-2.73l-.398 .905a1.67 1.67 0 0 1 -1.977 1.045l-.153 -.047a1.647 1.647 0 0 1 -1.056 -1.956l2.824 -7.852a1.664 1.664 0 0 1 1.409 -1.087l1.272 -.008'
+    ]
+  }],
   ['android', siAndroid], ['tensorflow', siTensorflow], ['keras', siKeras],
   ['firebase', siFirebase], ['capacitor', siCapacitor], ['ollama', siOllama],
   ['langgraph', siLanggraph], ['tauri 2', siTauri], ['zigbee2mqtt', siZigbee2mqtt],
@@ -109,7 +133,8 @@ const aliases: Record<string, string> = {
   'google cloud platform': 'google cloud',
   'graph rag': 'rag',
   'vanilla javascript': 'javascript',
-  'llm tool calling': 'tool calling'
+  'llm tool calling': 'tool calling',
+  'fiber v3': 'fiber'
 };
 
 function normalize(name: string) {

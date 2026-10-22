@@ -5,13 +5,13 @@ slug: ai-workspace
 year: "2026"
 title: "AI Workspace for Non-Developers"
 cardTitle: "AI Workspace"
-subtitle: "For Non-Developers"
+subtitle: "Build software with an AI team."
 role: "Solo Developer"
 kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
+description: "An open-source agentic workspace that helps non-developers build applications with AI specialists, track their work, and verify results before accepting them."
 image: "/images/projects/featured/ai-workspace.png"
-tech: [Go, Fiber, Svelte 5, TypeScript, SQLite, MCP]
+techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
@@ -130,6 +130,17 @@ You switch individual abilities on or off, and every call is logged.
 Whoever controls the Docker socket controls the host, so the docs recommend rootless Docker.
 The sandbox does not cover disk quotas or the kernel that every container shares.
 A team costs more time and tokens than a single agent, which is why the lead sizes a job first.
+
+## What I Did
+
+- Designed and developed Masih Awam Workspace end-to-end, covering frontend, backend, AI orchestration, and infrastructure.
+- Built a multi-agent system with specialized roles for research, planning, design, development, security, testing, and code review.
+- Implemented agent orchestration with configurable models, tool permissions, task delegation, and human approval workflows.
+- Developed a task management system with live progress tracking, resumable sessions, file changes, and verification reports.
+- Built isolated Docker environments for code execution, automated testing, browser previews, and application hosting.
+- Integrated MCP and OAuth 2.1 to let external AI applications access workspace tools and projects with controlled permissions.
+- Added GitHub integration, support for multiple AI providers, and automated CI/CD pipelines for building and deploying the platform.
+- Packaged the Svelte frontend and Go backend into a single executable for simpler deployment.
 
 ## Links
 

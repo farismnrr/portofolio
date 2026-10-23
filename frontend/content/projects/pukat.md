@@ -7,7 +7,7 @@ title: "PUKAT"
 cardTitle: "PUKAT"
 subtitle: ""
 role: ""
-kind: Personal
+kind: Professional
 category: "Platform · Network"
 description: ""
 image: "/images/projects/pukat/cover.png"

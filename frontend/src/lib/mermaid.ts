@@ -1,4 +1,5 @@
 import type { Theme } from './theme';
+import { siteAssetUrl } from './router';
 
 function sizeMermaidCanvas(svg: SVGSVGElement, width: number, height: number) {
   if (width <= 0 || height <= 0) return;
@@ -60,7 +61,7 @@ export async function renderMermaid(root: HTMLElement, theme: Theme) {
   const nodes = [...root.querySelectorAll<HTMLElement>('.mermaid')];
   if (!nodes.length) return;
 
-  const mermaidUrl = '/vendor/mermaid.esm.min.mjs';
+  const mermaidUrl = siteAssetUrl('/vendor/mermaid.esm.min.mjs');
   const { default: mermaid } = await import(/* @vite-ignore */ mermaidUrl);
   mermaid.initialize({
     startOnLoad: false,

@@ -864,11 +864,13 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .experience,
-  .project {{
+  .project,
+  .certification {{
     margin: 0 0 {item_gap}px;
   }}
 
-  .project:last-child {{
+  .project:last-child,
+  .certification:last-child {{
     margin-bottom: 0;
   }}
 
@@ -930,8 +932,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .certification {{
-    font-size: 10pt;
-    line-height: {{line_height}};
+    line-height: inherit;
   }}
 
   .cert-title {{
@@ -943,7 +944,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .education {{
-    margin-bottom: 2px;
+    line-height: inherit;
   }}
 </style>
 </head>

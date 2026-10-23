@@ -11,7 +11,7 @@ kind: Professional
 category: "Platform · Network"
 description: "A site where Indonesian business owners, professionals and investors find each other by category and send messages."
 image: "/images/projects/pukat/cover.png"
-tech: [React, TypeScript, Node.js, SQL, RAG, Docker]
+tech: [React, TypeScript, Node.js, PostgreSQL, RAG, Docker]
 productUrl: "NDA"
 repoUrl: ""
 ---

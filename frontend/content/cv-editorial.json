@@ -40,6 +40,7 @@
       "sourceId": "28"
     }
   ],
+  "excludeExperienceOrders": [3],
   "experienceDescriptions": {
     "1": "Partnered with infrastructure and security engineers on releases, translated design mockups into screens, and took ownership of production fixes.",
     "2": "Coordinated GiziLens web app work with the food-recognition team, explaining API needs and aligning integration across disciplines.",

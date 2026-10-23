@@ -90,8 +90,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "tight",
         body_size: 10.0,
         line_height: 1.0,
-        section_gap: 9.0,
-        item_gap: 4.0,
+        section_gap: 11.0,
+        item_gap: 6.0,
         bullet_gap: 0.0,
         horizontal_margin: 0.50,
         vertical_margin: 0.50,
@@ -100,8 +100,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "compact",
         body_size: 10.0,
         line_height: 1.34,
-        section_gap: 9.0,
-        item_gap: 7.0,
+        section_gap: 11.0,
+        item_gap: 9.0,
         bullet_gap: 3.0,
         horizontal_margin: 0.60,
         vertical_margin: 0.61,
@@ -110,8 +110,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "balanced",
         body_size: 10.2,
         line_height: 1.40,
-        section_gap: 10.0,
-        item_gap: 8.0,
+        section_gap: 12.0,
+        item_gap: 10.0,
         bullet_gap: 4.0,
         horizontal_margin: 0.62,
         vertical_margin: 0.62,
@@ -120,8 +120,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "roomy",
         body_size: 10.4,
         line_height: 1.46,
-        section_gap: 12.0,
-        item_gap: 10.0,
+        section_gap: 14.0,
+        item_gap: 12.0,
         bullet_gap: 5.0,
         horizontal_margin: 0.64,
         vertical_margin: 0.64,
@@ -130,8 +130,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "spacious",
         body_size: 10.6,
         line_height: 1.50,
-        section_gap: 14.0,
-        item_gap: 12.0,
+        section_gap: 16.0,
+        item_gap: 14.0,
         bullet_gap: 6.0,
         horizontal_margin: 0.66,
         vertical_margin: 0.66,
@@ -1033,8 +1033,12 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "program")
                 .count(),
-            5
+            4
         );
+        assert!(!request
+            .experiences
+            .iter()
+            .any(|item| item.title.contains("Codepolitan")));
         assert_eq!(request.projects.len(), 5);
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await

@@ -68,7 +68,8 @@
         <a
           class="inline-flex min-h-11 items-center font-medium text-[var(--accent)] underline decoration-current/35 underline-offset-4 transition hover:text-black"
           href={item.evidenceUrl}
-          download
+          target="_blank"
+          rel="noopener noreferrer"
         >{item.evidenceTitle} (PDF) ↓</a>
       </div>
     {/if}

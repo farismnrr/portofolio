@@ -68,7 +68,6 @@ function cvDate(value: string) {
 function experienceCvTitle(order: number, role: string, company: string) {
   const programTitles: Record<number, string> = {
     2: 'Machine Learning Track',
-    3: 'Full Stack Development',
     4: 'Backend Engineering Program',
     5: 'SEO Trainee',
     6: 'Cloud Computing'

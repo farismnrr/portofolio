@@ -24,8 +24,8 @@
         {/each}
       </nav>
       <div class="flex items-center gap-1">
-        <a class="hidden h-11 w-11 items-center justify-center rounded-lg hover:bg-black/[0.035] sm:inline-flex" aria-label="GitHub" href={profile.github}><AppIcon name="github" size={18}/></a>
-        <a class="hidden h-11 w-11 items-center justify-center rounded-lg hover:bg-black/[0.035] sm:inline-flex" aria-label="LinkedIn" href={profile.linkedin}><AppIcon name="linkedin" size={18}/></a>
+          <a class="hidden h-11 w-11 items-center justify-center rounded-lg hover:bg-black/[0.035] sm:inline-flex" aria-label="GitHub" href={profile.github} target="_blank" rel="noopener noreferrer"><AppIcon name="github" size={18}/></a>
+          <a class="hidden h-11 w-11 items-center justify-center rounded-lg hover:bg-black/[0.035] sm:inline-flex" aria-label="LinkedIn" href={profile.linkedin} target="_blank" rel="noopener noreferrer"><AppIcon name="linkedin" size={18}/></a>
         <span class="mx-1 hidden h-6 w-px bg-black/12 sm:block"></span>
         <button
           class="flex h-11 w-11 items-center justify-center rounded-lg hover:bg-black/[0.035]"

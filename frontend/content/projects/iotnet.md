@@ -1,6 +1,6 @@
 ---
-id: "05"
-order: 5
+id: "06"
+order: 6
 slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"

@@ -294,8 +294,8 @@ Devices on Arduino and ESP32, messaging through MQTT with EMQX, and flows built 
 ### Masih Awam Workspace
 Source file: frontend/content/projects/ai-workspace.md
 ---
-id: "04"
-order: 4
+id: "05"
+order: 5
 slug: ai-workspace
 year: "2026"
 title: "Masih Awam Workspace"
@@ -448,8 +448,8 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 ### AskIn: AI Workspace
 Source file: frontend/content/projects/askin.md
 ---
-id: "07"
-order: 7
+id: "08"
+order: 8
 slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
@@ -506,8 +506,8 @@ Docker packaging lets the frontend and backend run as one application.
 ### GiziLens: A Team Capstone Around Food Recognition
 Source file: frontend/content/projects/gizilens.md
 ---
-id: "06"
-order: 6
+id: "07"
+order: 7
 slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"
@@ -565,8 +565,8 @@ The frontend covers registration, login, token refresh, logout, and a dashboard.
 ### IoTNet: IoT Operations Platform
 Source file: frontend/content/projects/iotnet.md
 ---
-id: "05"
-order: 5
+id: "06"
+order: 6
 slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
@@ -633,8 +633,8 @@ Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL 
 ### Parentify: Parenting Companion
 Source file: frontend/content/projects/parentify.md
 ---
-id: "08"
-order: 8
+id: "09"
+order: 9
 slug: parentify
 year: "Nov — Dec 2023"
 title: "Parentify: Parenting Companion"
@@ -692,8 +692,8 @@ That contract mattered most: each team could work on its own only because names,
 ### Personal Portfolio Website
 Source file: frontend/content/projects/portfolio-website.md
 ---
-id: "03"
-order: 3
+id: "04"
+order: 4
 slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
@@ -763,8 +763,8 @@ Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build tim
 ### PUKAT
 Source file: frontend/content/projects/pukat.md
 ---
-id: "09"
-order: 9
+id: "03"
+order: 3
 slug: pukat
 year: "2026"
 title: "PUKAT"

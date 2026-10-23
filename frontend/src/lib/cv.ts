@@ -32,19 +32,50 @@ function absolutePortfolioUrl(value: string) {
   return `https://farismnrr.com${value.startsWith('/') ? value : `/${value}`}`;
 }
 
-function projectWebUrl(slug: string) {
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) return '';
-  return 'https://farismnrr.com/projects';
-}
-
 function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  const company = experiences.find((item) => item.projects.includes(slug))?.company;
-  const link = (project.productUrl || project.repoUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
-  const personal = /^personal/i.test(project.category) ? 'Personal' : '';
-  return [company || personal, link, project.year].filter(Boolean).join(' | ');
+  if (project.productUrl.toLowerCase() === 'nda') return 'Private project, under NDA';
+  const publicUrl = [project.productUrl, project.repoUrl].find((url) => /^https?:\/\//i.test(url));
+  return publicUrl?.replace(/^https?:\/\//i, '').replace(/\/$/, '') ?? '';
+}
+
+function projectCvTitle(slug: string, title: string) {
+  const names: Record<string, string> = {
+    'sensio-notes': 'Sensio Notes',
+    'sensio-iot': 'Sensio IoT',
+    'portfolio-website': 'Personal Portfolio',
+    'ai-workspace': 'Masih Awam Workspace',
+    iotnet: 'IoTNet'
+  };
+  return names[slug] ?? title;
+}
+
+function cvDate(value: string) {
+  return value
+    .replace(/\bJan\b/g, 'January')
+    .replace(/\bFeb\b/g, 'February')
+    .replace(/\bMar\b/g, 'March')
+    .replace(/\bApr\b/g, 'April')
+    .replace(/\bJun\b/g, 'June')
+    .replace(/\bJul\b/g, 'July')
+    .replace(/\bAug\b/g, 'August')
+    .replace(/\bSep\b/g, 'September')
+    .replace(/\bOct\b/g, 'October')
+    .replace(/\bNov\b/g, 'November')
+    .replace(/\bDec\b/g, 'December')
+    .replace(/\s*[—–-]\s*/g, ' – ');
+}
+
+function experienceCvTitle(order: number, role: string, company: string) {
+  const programTitles: Record<number, string> = {
+    2: 'Machine Learning Track',
+    3: 'Full Stack Development',
+    4: 'Backend Engineering Program',
+    5: 'SEO Trainee',
+    6: 'Cloud Computing'
+  };
+  return `${programTitles[order] ?? role} | ${company}`;
 }
 
 function cvPlainText(value: string) {
@@ -58,26 +89,14 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
     .filter((source) => !draft.excludeExperienceOrders?.includes(source.order))
     .map((source) => {
 
-      const relatedProjects = source.projects
-        .map((slug) => {
-          const project = projects.find((candidate) => candidate.slug === slug);
-          if (!project) return null;
-
-          return {
-            title: project.title,
-            url: projectWebUrl(project.slug)
-          };
-        })
-        .filter((project): project is NonNullable<typeof project> => Boolean(project));
-
       const professional = source.kind === 'employment' || Boolean(draft.professionalExperienceOrders?.includes(source.order));
 
       return {
         kind: professional ? 'employment' : source.kind,
-        title: `${source.role} | ${source.company}`,
-        meta: [source.year, source.kind === 'program' ? '' : source.location].filter(Boolean).join(' | '),
+        title: experienceCvTitle(source.order, source.role, source.company),
+        meta: cvDate(source.year),
         summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary !== undefined ? draft.employmentSummary : cvPlainText(source.summary),
-        relatedProjects: [] as typeof relatedProjects,
+        relatedProjects: [],
         bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
       };
     })
@@ -89,10 +108,10 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
       if (!source) return null;
 
       return {
-        title: source.title,
+        title: projectCvTitle(source.slug, source.title),
         meta: projectMeta(source.slug),
         narrative: item.narrative,
-        url: projectWebUrl(source.slug)
+        url: ''
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -106,7 +125,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
 
       return {
         title: source.group === 'BNSP' ? `BNSP: ${source.title}` : source.title,
-        meta: [source.issuer, source.year].filter(Boolean).join(' | '),
+        meta: [source.issuer, cvDate(source.year)].filter(Boolean).join(' | '),
         url: absolutePortfolioUrl(source.url)
       };
     })

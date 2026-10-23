@@ -56,27 +56,27 @@
     "technicalScopes": [
       {
         "key": "languages",
-        "label": "Languages",
-        "guidance": "Node.js, Go, Python"
+        "label": "Languages & Runtime",
+        "guidance": "TypeScript, Go, Python, Rust"
       },
       {
         "key": "backend-systems",
         "label": "Backend",
-        "guidance": "NestJS, Fiber, FastAPI"
+        "guidance": "NestJS, Fiber, FastAPI, Axum"
       },
       {
         "key": "web-mobile",
-        "label": "Frontend & Mobile",
+        "label": "Frontend",
         "guidance": "React, Vue, Svelte, Capacitor"
       },
       {
         "key": "cloud-devops",
-        "label": "Data & Infra",
-        "guidance": "PostgreSQL, Redis, Docker, Linux, GitHub Actions"
+        "label": "Data & Tools",
+        "guidance": "PostgreSQL, Redis, Docker, GitHub Actions"
       }
     ],
     "budgets": {
-      "projects": 4,
+      "projects": 5,
       "experiences": 6,
       "certifications": 3
     },
@@ -98,8 +98,8 @@
       "minSecondPageFill": 0.4,
       "minBodySizePt": 10,
       "minimumItems": {
-        "projects": 2,
-        "experiences": 2,
+        "projects": 5,
+        "experiences": 6,
         "certifications": 3
       }
     }

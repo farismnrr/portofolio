@@ -43,7 +43,6 @@ pub struct ProjectSection {
     title: String,
     meta: String,
     narrative: String,
-    url: String,
 }
 
 #[derive(Clone, Deserialize)]
@@ -88,11 +87,11 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         name: "tight",
         body_size: 10.0,
         line_height: 1.28,
-        section_gap: 7.0,
-        item_gap: 5.0,
-        bullet_gap: 1.5,
-        horizontal_margin: 0.55,
-        vertical_margin: 0.38,
+        section_gap: 6.0,
+        item_gap: 4.0,
+        bullet_gap: 1.0,
+        horizontal_margin: 0.60,
+        vertical_margin: 0.60,
     },
     DensityProfile {
         name: "compact",
@@ -101,8 +100,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         section_gap: 9.0,
         item_gap: 7.0,
         bullet_gap: 3.0,
-        horizontal_margin: 0.56,
-        vertical_margin: 0.43,
+        horizontal_margin: 0.60,
+        vertical_margin: 0.61,
     },
     DensityProfile {
         name: "balanced",
@@ -111,8 +110,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         section_gap: 10.0,
         item_gap: 8.0,
         bullet_gap: 4.0,
-        horizontal_margin: 0.60,
-        vertical_margin: 0.48,
+        horizontal_margin: 0.62,
+        vertical_margin: 0.62,
     },
     DensityProfile {
         name: "roomy",
@@ -121,8 +120,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         section_gap: 12.0,
         item_gap: 10.0,
         bullet_gap: 5.0,
-        horizontal_margin: 0.62,
-        vertical_margin: 0.50,
+        horizontal_margin: 0.64,
+        vertical_margin: 0.64,
     },
     DensityProfile {
         name: "spacious",
@@ -131,8 +130,8 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
         section_gap: 14.0,
         item_gap: 12.0,
         bullet_gap: 6.0,
-        horizontal_margin: 0.64,
-        vertical_margin: 0.52,
+        horizontal_margin: 0.66,
+        vertical_margin: 0.66,
     },
 ];
 
@@ -483,9 +482,9 @@ fn validate_pdf_contents(
     let normalized = normalize_text(&inspection.text);
 
     for heading in [
-        "PROFESSIONAL SUMMARY",
+        "SUMMARY",
         "SKILLS",
-        "PROFESSIONAL EXPERIENCE",
+        "EXPERIENCE",
         "PROJECTS",
         "CERTIFICATIONS",
         "EDUCATION",
@@ -495,13 +494,6 @@ fn validate_pdf_contents(
         }
     }
 
-    if document
-        .experiences
-        .iter()
-        .any(|item| item.kind == "program")
-    {
-        ensure_text_present(&normalized, "TECHNICAL PROGRAMS", "section")?;
-    }
     for experience in &document.experiences {
         ensure_text_present(&normalized, &experience.title, "experience")?;
     }
@@ -598,13 +590,12 @@ fn standalone_project_html(project: &ProjectSection) -> String {
         r#"
         <article class="project">
           <div class="item-heading">
-            <a class="item-title" href="{url}">{title}</a>
+            <span class="item-title">{title}</span>
             <span class="item-meta">{meta}</span>
           </div>
           <p class="project-narrative">{narrative}</p>
         </article>
         "#,
-        url = escape(&project.url),
         title = escape(&project.title),
         meta = linkify_meta(&project.meta),
         narrative = escape(&project.narrative),
@@ -662,11 +653,11 @@ fn experience_html(experience: &ExperienceSection) -> String {
         String::new()
     } else {
         format!(
-            r#"<ul class="bullets">{}</ul>"#,
+            r#"<div class="bullets">{}</div>"#,
             experience
                 .bullets
                 .iter()
-                .map(|bullet| format!("<li>{}</li>", escape(bullet)))
+                .map(|bullet| format!(r#"<div class="bullet">• {}</div>"#, escape(bullet)))
                 .collect::<Vec<_>>()
                 .join("")
         )
@@ -747,15 +738,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     let experiences = document
         .experiences
         .iter()
-        .filter(|item| item.kind != "program")
-        .map(experience_html)
-        .collect::<Vec<_>>()
-        .join("");
-
-    let programs = document
-        .experiences
-        .iter()
-        .filter(|item| item.kind == "program")
         .map(experience_html)
         .collect::<Vec<_>>()
         .join("");
@@ -789,7 +771,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
 <title>{name} - CV</title>
 <style>
   @page {{
-    size: Letter;
+    size: A4;
     margin: {vertical_margin}in {horizontal_margin}in;
   }}
 
@@ -862,11 +844,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     widows: 3;
   }}
 
-  .skills {{
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    column-gap: 28px;
-  }}
+  .skills {{ display: block; }}
 
   .skill-line {{
     padding: 1px 0;
@@ -896,9 +874,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .item-title {{
     font-weight: 700;
     color: #111111;
-    text-decoration: underline;
-    text-decoration-thickness: 0.5px;
-    text-underline-offset: 1px;
   }}
 
   .item-meta,
@@ -919,14 +894,10 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     content: " | ";
   }}
 
-  .bullets {{
-    margin: 3px 0 0 16px;
-    padding: 0;
-  }}
+  .bullets {{ margin: 3px 0 0; }}
 
-  .bullets li {{
+  .bullet {{
     margin: 0 0 {bullet_gap}px;
-    padding-left: 2px;
     text-align: justify;
     text-align-last: start;
     hyphens: none;
@@ -980,7 +951,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   {skills_section}
   {experience_section}
   {projects_section}
-  {programs_section}
   {education_section}
   {certifications_section}
 </body>
@@ -993,16 +963,15 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
             r#"Portfolio: <a href="https://farismnrr.com">https://farismnrr.com</a>"#,
         ),
         summary_section = section(
-            "Professional Summary",
+            "Summary",
             &format!(
                 r#"<p class="summary">{}</p>"#,
                 escape(&document.profile_summary)
             ),
         ),
         skills_section = section("Skills", &format!(r#"<div class="skills">{scopes}</div>"#)),
-        experience_section = section("Professional Experience", &experiences),
-        projects_section = section("Selected Projects", &projects),
-        programs_section = section("Technical Programs", &programs),
+        experience_section = section("Experience", &experiences),
+        projects_section = section("Projects", &projects),
         certifications_section = section(
             "Certifications",
             &format!(r#"<div class="cert-list">{certifications}</div>"#),
@@ -1034,7 +1003,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
-    async fn renders_one_page_evidence_fixture() {
+    async fn renders_current_cv_one_page_fixture() {
         let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
         let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
         let request: CvRenderRequest =
@@ -1045,7 +1014,7 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "employment")
                 .count(),
-            2
+            1
         );
         assert_eq!(
             request
@@ -1053,8 +1022,9 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "program")
                 .count(),
-            2
+            5
         );
+        assert_eq!(request.projects.len(), 5);
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await
             .unwrap();
@@ -1134,6 +1104,6 @@ mod tests {
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
         assert_eq!(profile.max_pages, 1);
         assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 2);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 5);
     }
 }

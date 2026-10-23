@@ -1,15 +1,27 @@
 {
   "profileSummary": {
-    "text": "Fullstack developer with over a year of experience on production meeting-notes and IoT products. Works on features end to end: APIs, web and mobile screens, testing, release, and production fixes."
+    "text": "Fullstack Engineer building backend services, web and mobile apps, and AI and IoT products. Focused on clear APIs, useful interfaces, and reliable releases."
   },
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "A meeting assistant that turns long recordings into summaries, decisions, and action items you can search later. Worked on capturing recordings and showing progress."
+      "narrative": "Built recording and upload features for a meeting assistant with searchable summaries and action items."
+    },
+    {
+      "sourceId": "sensio-iot",
+      "narrative": "Built backend services for room controls and device feedback."
+    },
+    {
+      "sourceId": "portfolio-website",
+      "narrative": "Built this portfolio with Markdown content and a searchable project index."
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source tool where a team of AI roles (planner, developer, security, QA) builds software for non-developers, and nothing is accepted until real checks pass."
+      "narrative": "Built an open-source workspace where AI roles develop software and server-run checks verify results."
+    },
+    {
+      "sourceId": "iotnet",
+      "narrative": "An IoT platform for device, user, automation, and telemetry management."
     }
   ],
   "certifications": [
@@ -24,26 +36,27 @@
     }
   ],
   "employmentBullets": [
-    "Built resumable multipart uploads for recordings over 100 MB: after a dropped connection the upload continues from the last finished part, with retries that respect the server's backoff.",
-    "Added local backup of in-progress recordings on web and mobile, so a crash or closed tab no longer loses a meeting.",
-    "Built the Sensio IoT backend for room controls: users send a command and see the device's real state, even when it is offline, with per-user permissions.",
-    "Turned design mockups into working web and mobile screens.",
-    "Fixed production issues and shipped releases alongside the infrastructure and security engineers."
-  ],
-  "excludeExperienceOrders": [
-    2,
-    3
+    "Built resumable uploads for recordings over 100 MB.",
+    "Saved in-progress recordings locally on web and mobile.",
+    "Built Sensio IoT room-control services and shipped product releases."
   ],
   "employmentSummary": "",
-  "professionalExperienceOrders": [
-    5
-  ],
+  "professionalExperienceOrders": [],
   "experienceBullets": {
+    "2": [
+      "Built authentication and user APIs for the GiziLens capstone."
+    ],
+    "3": [
+      "Built Node.js and Express APIs with MongoDB, then connected Vue exercises."
+    ],
     "4": [
-      "Adapted an open-source AI chat app for the program project: authenticated APIs, model discovery and routing, and deployment."
+      "Built authenticated APIs and model routing for AskIn, then deployed the app."
+    ],
+    "5": [
+      "Reviewed pages and SEO issues, then used analytics to prioritize topics."
     ],
     "6": [
-      "Built the cloud side of the Parentify capstone with Mobile Development and Machine Learning teammates."
+      "Built the cloud side of the Parentify capstone with mobile and machine-learning teammates."
     ]
   },
   "educationNote": "Cum laude, GPA 3.91/4.00"

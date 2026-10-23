@@ -1,27 +1,27 @@
 {
   "profileSummary": {
-    "text": "Fullstack Engineer building backend services, web and mobile apps, and AI and IoT products. Focused on clear APIs, useful interfaces, and reliable releases."
+    "text": "Fullstack Engineer with over one year of production experience since July 2025 on meeting-intelligence and IoT products. Builds APIs, web and mobile features, and reliable releases."
   },
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Built recording and upload features for a meeting assistant with searchable summaries and action items."
+      "narrative": "Meeting assistant for searchable summaries and action items. Built resumable multipart uploads over 100 MB with server-backoff retries. Stack: React, NestJS, PostgreSQL, Redis, pgvector."
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Built backend services for room controls and device feedback."
+      "narrative": "Smart-room controls and automation. Built commands, offline device-state feedback, and per-user permissions. Stack: Rust, Axum, PostgreSQL, MQTT, Zigbee2MQTT."
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Built this portfolio with Markdown content and a searchable project index."
+      "narrative": "Markdown-driven portfolio with prerendered pages and AI job matching. Built hybrid retrieval over portfolio evidence. Stack: Svelte 5, TypeScript, Rust, PostgreSQL, pgvector."
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Built an open-source workspace where AI roles develop software and server-run checks verify results."
+      "narrative": "Open-source AI workspace with server-run proof before acceptance. Built role orchestration, task tracking, and isolated execution. Stack: Go, Svelte, SQLite, MCP, Docker."
     },
     {
       "sourceId": "iotnet",
-      "narrative": "An IoT platform for device, user, automation, and telemetry management."
+      "narrative": "IoT operations platform for devices, automations, and telemetry. Built MQTT provisioning, control, OTA tracking, and observability. Stack: Nuxt, Hapi, PostgreSQL, MQTT, OpenTelemetry."
     }
   ],
   "certifications": [
@@ -36,27 +36,32 @@
     }
   ],
   "employmentBullets": [
-    "Built resumable uploads for recordings over 100 MB.",
-    "Saved in-progress recordings locally on web and mobile.",
-    "Built Sensio IoT room-control services and shipped product releases."
+    "Built resumable multipart uploads for 100 MB+ recordings, resuming parts with server-backoff retries.",
+    "Added local backup of in-progress recordings on web and mobile for recovery after a crash or closed tab.",
+    "Built Sensio IoT room-control commands, offline device-state feedback, and per-user permissions.",
+    "Built screens from mockups; shipped releases and fixed production issues with infra/security engineers."
   ],
   "employmentSummary": "",
-  "professionalExperienceOrders": [],
   "experienceBullets": {
     "2": [
-      "Built authentication and user APIs for the GiziLens capstone."
+      "Built GiziLens authentication, sessions, and user APIs for the team capstone.",
+      "Connected PostgreSQL and Redis to Nuxt; containerized the services."
     ],
     "3": [
-      "Built Node.js and Express APIs with MongoDB, then connected Vue exercises."
+      "Built Node.js and Express APIs backed by MongoDB.",
+      "Connected Vue.js exercises to the APIs; completed Alibaba Cloud fundamentals."
     ],
     "4": [
-      "Built authenticated APIs and model routing for AskIn, then deployed the app."
+      "Built authenticated AskIn APIs, model discovery, and routing for Ollama and OpenAI services.",
+      "Integrated retrieval context and deployed the app with Docker."
     ],
     "5": [
-      "Reviewed pages and SEO issues, then used analytics to prioritize topics."
+      "Researched search queries and reviewed page structure and technical SEO.",
+      "Used analytics to prioritize pages and topics for attention."
     ],
     "6": [
-      "Built the cloud side of the Parentify capstone with mobile and machine-learning teammates."
+      "Built Parentify APIs for authentication, parenting articles, and food data with Node.js, Express, and MySQL.",
+      "Aligned API contracts with mobile and ML teammates; prepared Google Cloud notes and Postman docs."
     ]
   },
   "educationNote": "Cum laude, GPA 3.91/4.00"

@@ -5,7 +5,7 @@ import { profile } from './site-content';
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
-  'Portfolio of Faris Munir Mahdi, a fullstack engineer in Jakarta building backend services and web and mobile apps.';
+  'Faris Munir Mahdi is a Software Engineer in Jakarta.';
 const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
@@ -43,14 +43,7 @@ function personNode() {
       '@type': 'CollegeOrUniversity',
       name: 'UPN Veteran Jawa Timur',
       sameAs: 'https://www.upnjatim.ac.id/'
-    },
-    knowsAbout: [
-      'Software Engineering',
-      'Backend Engineering',
-      'Cloud Infrastructure',
-      'Internet of Things',
-      'Artificial Intelligence'
-    ]
+    }
   };
 }
 
@@ -93,7 +86,7 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
     const aboutDescription =
-      'Fullstack engineer Faris Munir Mahdi builds backend services and web and mobile apps, with public projects and professional experience.';
+      'Faris Munir Mahdi is a Software Engineer in Jakarta. See his projects and professional experience.';
     return {
       ...base,
       title: `About — ${profile.name}`,

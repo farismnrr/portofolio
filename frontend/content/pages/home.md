@@ -2,8 +2,8 @@
 slug: home
 eyebrow: Portfolio
 title: Home
-subtitle: "Fullstack engineer in Jakarta building backend services and web and mobile apps."
-description: "Faris Munir Mahdi is a fullstack engineer in Jakarta, building backend services and web and mobile apps."
+subtitle: "Software Engineer in Jakarta."
+description: "Faris Munir Mahdi is a Software Engineer in Jakarta."
 primaryAction: About me
 secondaryAction: Contact
 experienceLabel: Selected experience
@@ -14,4 +14,4 @@ aboutLabel: About
 aboutAction: More about me
 ---
 
-Backend services and web and mobile apps, mostly for meeting and IoT products.
+I work at PT Perkasa Pilar Utama and studied Informatics at UPN Veteran East Java.

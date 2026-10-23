@@ -1,7 +1,7 @@
 ---
 id: general
 label: General
-headline: Fullstack Engineer
+headline: Software Engineer
 maxPages: 2
 filename: Faris_Munir_Mahdi_CV.pdf
 retrievalQuery: "fullstack engineer backend frontend Node.js Go Python NestJS Hapi FastAPI Nuxt Vue Svelte PostgreSQL Redis pgvector REST MQTT Zigbee2MQTT WebSocket Docker Linux CI/CD OpenTelemetry LangGraph production"
@@ -26,11 +26,11 @@ minimumItems: ["projects=5", "experiences=6", "certifications=3"]
 
 ### Identity
 
-Present Faris as a Fullstack Engineer with about one year of production experience in meeting-processing and IoT products, working across backend services and web/mobile interfaces. Machine learning is not his identity.
+Present Faris as a Software Engineer. His current role began in July 2025 at PT Perkasa Pilar Utama. Keep the summary direct and let documented project entries show his work.
 
 ### Focus
 
-Emphasize fullstack delivery: backend services (Node.js, Go, Python), PostgreSQL and Redis, MQTT and IoT device flows, Nuxt/Vue/Svelte interfaces, and containerized deployments. State what was built and its result in plain words; use numbers only when they are real.
+Describe each documented project and contribution in plain words. Keep technologies in the technical scope labels and use numbers only when they are real.
 
 ### Summary range
 

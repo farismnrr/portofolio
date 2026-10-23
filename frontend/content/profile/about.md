@@ -11,7 +11,7 @@ email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: ""
 headline: ""
-intro: "I'm a Software Engineer at PT Perkasa Pilar Utama in Jakarta. I work on Sensio IoT, a smart-room platform, and Sensio Notes, a meeting assistant. I also build Masih Awam Workspace, an open-source AI workspace."
+intro: "I'm a software engineer in Jakarta. I work on smart-space and meeting products at my current job, and I build open-source projects on the side."
 availability: ""
 quote: ""
 ---

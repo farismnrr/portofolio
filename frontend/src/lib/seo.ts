@@ -5,7 +5,7 @@ import { profile } from './site-content';
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
-  'Faris Munir Mahdi is a Software Engineer in Jakarta who works on Sensio IoT and Sensio Notes and builds Masih Awam Workspace.';
+  "I'm a software engineer in Jakarta. I work on smart-space and meeting products, and build open-source projects on the side.";
 const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
@@ -86,7 +86,7 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
     const aboutDescription =
-      'Faris Munir Mahdi is a Software Engineer at PT Perkasa Pilar Utama in Jakarta. He works on Sensio IoT and Sensio Notes and builds Masih Awam Workspace.';
+      "I'm a software engineer in Jakarta. Since July 2025, I've worked on smart-space and meeting products at my current job. I also build open-source projects on the side.";
     return {
       ...base,
       title: `About — ${profile.name}`,

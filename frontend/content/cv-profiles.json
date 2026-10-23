@@ -57,22 +57,22 @@
       {
         "key": "languages",
         "label": "Languages",
-        "guidance": "TypeScript, JavaScript, Go, Python, Rust, SQL"
+        "guidance": "TypeScript, JavaScript, Go, Python"
       },
       {
         "key": "backend-systems",
         "label": "Backend & AI",
-        "guidance": "Node.js, NestJS, Hapi, Fiber, FastAPI, Axum, REST APIs, LangGraph, RAG"
+        "guidance": "Node.js, NestJS, Hapi, Fiber, FastAPI, LangGraph, RAG"
       },
       {
         "key": "web-mobile",
         "label": "Frontend & Mobile",
-        "guidance": "React, Vue, Svelte, Nuxt, Capacitor, Tauri"
+        "guidance": "React, Vue, Svelte"
       },
       {
         "key": "cloud-devops",
         "label": "Data & Infrastructure",
-        "guidance": "PostgreSQL, Redis, SQLite, pgvector, Docker, MQTT, Zigbee2MQTT, OpenTelemetry, CI/CD"
+        "guidance": "PostgreSQL, Redis, Docker, OpenTelemetry"
       }
     ],
     "budgets": {

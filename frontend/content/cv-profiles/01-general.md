@@ -44,7 +44,7 @@ Two concise sentences per project: what it is, the contribution, and a labeled s
 
 - Systems Architecture or architect positioning
 - Machine Learning Engineer or Data Scientist positioning
-- generic filler such as passionate, hardworking, cutting-edge, innovative
+- generic filler such as passionate, hardworking, innovative, or advanced without a specific example
 - unsupported metrics or invented outcomes
 - repeated 'Separated X from Y' sentence patterns
 - keyword stuffing without architectural context

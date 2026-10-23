@@ -1,6 +1,6 @@
 # Faris Munir Mahdi
 
-> Fullstack Engineer. I build backend services, web and mobile apps, and AI and IoT products. I work at PT Perkasa Pilar Utama and build open-source projects on the side.
+> Fullstack Engineer. I work at PT Perkasa Pilar Utama, where I build backend services, web and mobile apps, and AI and IoT products. I also build open-source projects.
 
 Canonical website: https://farismnrr.com/
 GitHub: https://github.com/farismnrr

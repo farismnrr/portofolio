@@ -19,7 +19,7 @@ email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: "Fullstack · Backend · Mobile · IoT"
 headline: "Fullstack engineer in Jakarta."
-intro: "I build backend services, web and mobile apps, and AI and IoT products. I work at PT Perkasa Pilar Utama and build open-source projects on the side."
+intro: "I work at PT Perkasa Pilar Utama, where I build backend services, web and mobile apps, and AI and IoT products. I also build open-source projects."
 availability: "Open to full-time, part-time, and contract work, remote or on-site in Jakarta."
 quote: ""
 ---
@@ -177,7 +177,7 @@ url: https://journal.sinov.id/index.php/juitik/article/view/1180
 doi: https://doi.org/10.55606/juitik.v5i2.1180
 ---
 
-Peer-reviewed journal article on a cloud-based OTA firmware update system for ESP32 devices, covering reliable remote updates for distributed IoT deployments.
+Peer-reviewed article on a cloud-based OTA firmware update system for ESP32 devices.
 
 ---
 

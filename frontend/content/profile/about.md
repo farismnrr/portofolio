@@ -11,7 +11,7 @@ email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: "Fullstack · Backend · Mobile · IoT"
 headline: "Fullstack engineer in Jakarta."
-intro: "I build backend services, web and mobile apps, and AI and IoT products. I work at PT Perkasa Pilar Utama and build open-source projects on the side."
+intro: "I work at PT Perkasa Pilar Utama, where I build backend services, web and mobile apps, and AI and IoT products. I also build open-source projects."
 availability: "Open to full-time, part-time, and contract work, remote or on-site in Jakarta."
 quote: ""
 ---

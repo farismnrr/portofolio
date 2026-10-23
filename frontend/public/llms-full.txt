@@ -98,7 +98,7 @@ year: Feb 2024 — Jun 2024
 company: Ruang Guru Academy
 role: Backend Engineer
 location: ""
-summary: A full-time MSIB Batch 6 backend engineering program (16 February to 30 June 2024).
+summary: "Completed a full-time backend engineering program (MSIB Batch 6) with a project that adapted AskIn, an open-source AI chat app. Built authenticated APIs, model routing, and deployment."
 tech: [Golang, Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 evidenceTitle: MSIB certificate and learning transcript
 evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
@@ -121,7 +121,7 @@ year: Jan 2024 — Mar 2024
 company: PT Tradeasia International Indonesia
 role: SEO Specialist (Student Trainee)
 location: ""
-summary: A student traineeship in search engine optimization.
+summary: "Completed a three-month SEO traineeship at the Jakarta office. Researched search queries, reviewed technical SEO issues, and used analytics to decide which pages and topics needed attention."
 tech: [SEO, Web Analytics]
 evidenceTitle: Training reference letter
 evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
@@ -144,7 +144,7 @@ year: Aug 2023 — Jan 2024
 company: Bangkit Academy
 role: Cloud Computing Cohort
 location: Remote · Indonesia
-summary: The Cloud Computing path of Bangkit 2023 Batch 2.
+summary: "Completed the Cloud Computing path of Bangkit 2023 Batch 2 through a three-track capstone, Parentify. Built the cloud side with mobile and machine-learning teammates, agreeing on API contracts and documenting the decisions."
 tech: [Google Cloud, Node.js, Express, MySQL, Docker]
 evidenceTitle: Certificate and learning transcript
 evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf

@@ -5,27 +5,27 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting assistant that turns recordings into searchable summaries, decisions, and action items. Built cross-platform recording, browser integrations, reliable uploads, background processing, and live status updates.",
+      "narrative": "Meeting assistant for searchable summaries and action items. Built recording, uploads, and processing.",
       "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis"
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Smart-room platform for controlling lights, climate, and equipment with sensor readings and automation. Built the Rust backend for device APIs, MQTT and Zigbee2MQTT integrations, telemetry, automations, and access control.",
+      "narrative": "Smart-room platform for devices and automations. Built the Rust backend, MQTT, and Zigbee2MQTT integrations.",
       "techStack": "Rust, Axum, MQTT, Zigbee2MQTT, PostgreSQL, Docker"
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Markdown-driven portfolio for projects, experience, certifications, and blog posts, with prerendered pages and SEO. Built Svelte and Rust apps with PostgreSQL-backed hybrid search and AI job matching.",
+      "narrative": "Markdown-driven portfolio with hybrid search and AI job matching. Built the Svelte and Rust apps.",
       "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker"
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source workspace that coordinates AI specialists to build software and verify results before acceptance. Built task orchestration, permissioned tools, isolated execution, and verification reports.",
+      "narrative": "Open-source workspace where AI specialists build software and verify results. Built orchestration and isolated tools.",
       "techStack": "Go, TypeScript, Svelte 5, Fiber v3, MCP, OpenAI Codex, Claude Code, OAuth 2.1, SQLite"
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT operations platform for managing devices, users, and telemetry. Built device provisioning, real-time monitoring dashboards, hardware communication, firmware lifecycle management, access control, and deployment workflows.",
+      "narrative": "IoT platform for devices, users, and telemetry. Built MQTT control, automations, and OTA firmware updates.",
       "techStack": "TypeScript, Vue, Nuxt, Hapi, Bun, PostgreSQL, MQTT"
     }
   ],

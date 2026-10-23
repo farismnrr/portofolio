@@ -9,7 +9,7 @@ subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
 kind: Personal
 category: "Web · Portfolio"
-description: "Markdown-driven portfolio for projects, experience, certifications, and blog posts, with prerendered pages and SEO. Built Svelte and Rust apps with PostgreSQL-backed hybrid search and AI job matching."
+description: "Markdown-driven portfolio with hybrid search and AI job matching. Built the Svelte and Rust apps."
 image: "/images/projects/portfolio/cover.png"
 imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
 techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]

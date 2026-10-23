@@ -59,11 +59,6 @@ evidenceUrl: /downloads/experience/coding-camp-2025-graduation-letter.pdf
 projects: [gizilens]
 ---
 
-- Built the web application side of the GiziLens capstone: authentication, sessions, and user APIs.
-- Connected PostgreSQL and Redis to the Nuxt frontend and containerized the services.
-
-- Graduated from the DBS Foundation and Dicoding Academy program (10 February to 16 July 2025). The graduation letter is dated 7 July 2025.
-
 ---
 
 ### 03-codepolitan
@@ -76,15 +71,11 @@ year: Sep 2024 — Dec 2024
 company: Codepolitan
 role: Full Stack Web Development Participant
 location: ""
-summary: An online full-stack development scholarship program.
+summary: "Completed an online full-stack development scholarship program. Built backend APIs with Node.js and Express.js on MongoDB, and frontend exercises with Vue.js against those APIs. Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications."
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
 certificationGroups: [Alibaba Cloud]
 ---
-
-- Built backend APIs with Node.js and Express.js, storing data in MongoDB.
-- Built frontend exercises with Vue.js against those APIs.
-- Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications.
 
 ---
 
@@ -105,10 +96,6 @@ evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
 projects: [askin]
 ---
 
-- Adapted an open-source AI chat app (AskIn): authenticated APIs, model discovery and routing, and deployment.
-
-- Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.
-
 ---
 
 ### 05-tradeasia
@@ -128,10 +115,6 @@ evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
 projects: []
 ---
 
-- Researched search queries, reviewed page structure and technical SEO issues, and used analytics data to decide which pages and topics needed attention.
-
-- Trained at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role.
-
 ---
 
 ### 06-bangkit-academy
@@ -150,11 +133,6 @@ evidenceTitle: Certificate and learning transcript
 evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf
 projects: [parentify]
 ---
-
-- Built the cloud side of the Parentify capstone with Mobile Development and Machine Learning teammates.
-- Agreed ownership and API contracts with the other two tracks and documented the decisions.
-
-- Graduated on 19 January 2024 with a completed capstone.
 ## Education
 
 ### 01-upn-veteran-jatim

@@ -11,7 +11,3 @@ evidenceTitle: Training reference letter
 evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
 projects: []
 ---
-
-- Researched search queries, reviewed page structure and technical SEO issues, and used analytics data to decide which pages and topics needed attention.
-
-- Trained at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role.

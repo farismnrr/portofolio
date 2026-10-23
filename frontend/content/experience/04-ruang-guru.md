@@ -11,7 +11,3 @@ evidenceTitle: MSIB certificate and learning transcript
 evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
 projects: [askin]
 ---
-
-- Adapted an open-source AI chat app (AskIn): authenticated APIs, model discovery and routing, and deployment.
-
-- Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.

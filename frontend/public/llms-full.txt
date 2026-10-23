@@ -35,7 +35,7 @@ year: July 2025 — Present
 company: PT Perkasa Pilar Utama
 role: Software Engineer
 location: "Jakarta, Indonesia"
-summary: Worked with AI, IoT, infrastructure, and UI/UX engineers to build software that meets both technical and user needs. Discussed requirements, solved integration problems, and handled production issues together, adjusting to changing priorities and seeing tasks through from development to release.
+summary: Coordinate requirements and integration work with AI, IoT, infrastructure, security, and UI/UX engineers. Resolve production issues together and adapt priorities while moving software from development through release.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---

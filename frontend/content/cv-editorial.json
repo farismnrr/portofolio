@@ -42,7 +42,7 @@
   ],
   "excludeExperienceOrders": [3],
   "experienceDescriptions": {
-    "1": "Worked with AI, IoT, infrastructure, and UI/UX engineers to build software that meets both technical and user needs. Discussed requirements, solved integration problems, and handled production issues together, adjusting to changing priorities and seeing tasks through from development to release.",
+    "1": "Coordinate requirements and integration work with AI, IoT, infrastructure, security, and UI/UX engineers. Resolve production issues together and adapt priorities while moving software from development through release.",
     "2": "Coordinated GiziLens web app work with the food-recognition team, explaining API needs and aligning integration across disciplines.",
     "3": "Learned Node.js, Express, MongoDB, and Vue through guided exercises, connecting each interface to its API.",
     "4": "Learned an unfamiliar open-source chat codebase, adapted it for the program project, and deployed authenticated APIs.",

@@ -57,6 +57,7 @@ pub struct ExperienceSection {
     meta: String,
     summary: String,
     related_projects: Vec<ProjectReference>,
+    #[serde(default)]
     bullets: Vec<String>,
 }
 
@@ -1088,6 +1089,22 @@ mod tests {
 
         serde_json::from_value::<CvRenderRequest>(payload)
             .expect("frontend CV render payload should deserialize");
+    }
+
+    #[test]
+    fn accepts_experience_without_bullets() {
+        let experience = serde_json::json!({
+            "title": "Backend Developer | PT Perkasa Pilar Utama",
+            "meta": "July 2025 - Present | Jakarta",
+            "summary": "Coordinate requirements across engineering teams.",
+            "relatedProjects": []
+        });
+
+        let parsed: super::ExperienceSection = serde_json::from_value(experience)
+            .expect("experience without bullets should deserialize");
+        assert!(parsed.bullets.is_empty());
+        let rendered = super::experience_html(&parsed);
+        assert!(!rendered.contains("class=\"bullets\""));
     }
 
     #[test]

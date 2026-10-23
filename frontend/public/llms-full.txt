@@ -760,6 +760,28 @@ Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build tim
 
 ---
 
+### PUKAT
+Source file: frontend/content/projects/pukat.md
+---
+id: "09"
+order: 9
+slug: pukat
+year: "2026"
+title: "PUKAT"
+cardTitle: "PUKAT"
+subtitle: ""
+role: ""
+kind: Personal
+category: "Platform · Network"
+description: ""
+image: "/images/projects/pukat/cover.png"
+tech: []
+productUrl: "NDA"
+repoUrl: ""
+---
+
+---
+
 ### Sensio IoT: Smart-Space Platform
 Source file: frontend/content/projects/sensio-iot.md
 ---

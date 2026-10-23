@@ -304,7 +304,7 @@ subtitle: "Build software with an AI team."
 role: "Solo Developer"
 kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source workspace that helps people describe software needs, guide a specialist team, and review verified results."
+description: "Masih Awam Workspace turns a software request into tasks for an AI team, then shows the work and evidence for review."
 image: "/images/projects/masih-awam-workspace/cover.png"
 imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
 techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
@@ -458,7 +458,7 @@ subtitle: "AI chat workspace"
 role: "Backend · Integration"
 kind: Personal
 category: "Ruangguru Academy · Learning Project"
-description: "An AI chat workspace adapted from an open-source project during Ruangguru Academy, helping users chat with models and files."
+description: "AskIn lets users choose an AI model, chat, add files as context, and get answers for each conversation in one workspace."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""
@@ -516,7 +516,7 @@ subtitle: "Team capstone: food recognition"
 role: "Web & Backend Engineering · Team Capstone"
 kind: Personal
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone exploring how food photos can help people identify ingredients and make informed food choices."
+description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
@@ -575,7 +575,7 @@ subtitle: "IoT management platform"
 role: "Solo Developer"
 kind: Professional
 category: "IoT · Platform"
-description: "Helps teams manage connected devices, monitor activity, automate responses, and keep equipment updated across locations."
+description: "IoTNet manages connected devices, tracks their readings, and runs rules for alerts, schedules, and room controls."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
 productUrl: "NDA"
@@ -643,7 +643,7 @@ subtitle: "Parenting guidance and food recognition"
 role: "Cloud · Backend"
 kind: Personal
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit capstone that helps parents find practical parenting guidance and learn about ingredients from food photos."
+description: "Parentify pairs parenting articles with food-photo recognition in an Android app built for the Bangkit capstone."
 image: "/images/projects/parentify/showcase.png"
 tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""
@@ -702,7 +702,7 @@ subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
 kind: Personal
 category: "Web · Portfolio"
-description: "A personal portfolio that helps visitors explore projects, experience, credentials, and writing, with evidence for each."
+description: "Faris's portfolio brings his projects, experience, certifications, and writing together in one place for visitors to explore."
 image: "/images/projects/portfolio/cover.png"
 imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
 techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
@@ -795,7 +795,7 @@ subtitle: "Smart-room controls"
 role: "Backend"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Helps people manage connected spaces by bringing room controls, live device readings, and automatic responses together."
+description: "Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change."
 image: "/images/projects/sensio-iot/cover.png"
 imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
 techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
@@ -842,7 +842,7 @@ subtitle: "Meeting assistant"
 role: "Fullstack"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Helps teams turn meetings into searchable summaries, decisions, and follow-up tasks they can revisit and share."
+description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
 image: "/images/projects/sensio-notes/cover.png"
 imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
 techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]

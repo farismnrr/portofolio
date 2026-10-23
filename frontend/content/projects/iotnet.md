@@ -9,7 +9,7 @@ subtitle: "IoT management platform"
 role: "Solo Developer"
 kind: Professional
 category: "IoT · Platform"
-description: "Helps teams manage connected devices, monitor activity, automate responses, and keep equipment updated across locations."
+description: "IoTNet manages connected devices, tracks their readings, and runs rules for alerts, schedules, and room controls."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
 productUrl: "NDA"

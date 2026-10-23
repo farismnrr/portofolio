@@ -1,7 +1,7 @@
 import { certifications, education, experiences, profile } from './structured-content';
 import { projects } from './project-content';
 import { CV_CONTRACT_VERSION, getCvProfile, type CvTarget } from './cv-profiles';
-import editorial from '../../content/cv-editorial.json';
+import { cvEditorial as editorial } from './cv-editorial';
 
 interface CvDraft {
   profileSummary: { text: string };
@@ -39,14 +39,7 @@ function projectMeta(slug: string) {
 }
 
 function projectCvTitle(slug: string, title: string) {
-  const names: Record<string, string> = {
-    'sensio-notes': 'Sensio Notes',
-    'sensio-iot': 'Sensio IoT',
-    'portfolio-website': 'Personal Portfolio',
-    'ai-workspace': 'Masih Awam Workspace',
-    iotnet: 'IoTNet'
-  };
-  return names[slug] ?? title;
+  return editorial.projects.find((project) => project.sourceId === slug)?.cvTitle ?? title;
 }
 
 function cvDate(value: string) {
@@ -66,13 +59,7 @@ function cvDate(value: string) {
 }
 
 function experienceCvTitle(order: number, role: string, company: string) {
-  const programTitles: Record<number, string> = {
-    2: 'Machine Learning Engineer',
-    4: 'Backend Engineer',
-    5: 'SEO Trainee',
-    6: 'Cloud Computing'
-  };
-  return `${programTitles[order] ?? role} | ${company}`;
+  return `${editorial.experienceTitles[String(order)] ?? role} | ${company}`;
 }
 
 export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {

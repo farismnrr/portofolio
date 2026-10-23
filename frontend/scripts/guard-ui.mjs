@@ -4,6 +4,7 @@ import { extname, join, relative, resolve, sep } from 'node:path';
 const frontendRoot = resolve(new URL('..', import.meta.url).pathname);
 const srcRoot = join(frontendRoot, 'src');
 const contentRoot = join(frontendRoot, 'content', 'projects');
+const allContentRoot = join(frontendRoot, 'content');
 const blogRoot = join(frontendRoot, 'content', 'blog');
 const navigationRoot = join(frontendRoot, 'content', 'navigation');
 const publicRoot = join(frontendRoot, 'public');
@@ -21,6 +22,17 @@ async function collectFiles(dir) {
     else files.push(absolute);
   }
   return files;
+}
+
+async function findStaticDataFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const matches = [];
+  for (const entry of entries) {
+    const absolute = join(dir, entry.name);
+    if (entry.isDirectory()) matches.push(...await findStaticDataFiles(absolute));
+    else if (/\.(json|ya?ml)$/i.test(entry.name)) matches.push(absolute);
+  }
+  return matches;
 }
 
 function importsOf(source) {
@@ -44,6 +56,26 @@ if (!deps.marked || !deps.mermaid) failures.push('Markdown case studies require 
 if (!deps['@tailwindcss/typography']) failures.push('Markdown prose requires @tailwindcss/typography.');
 
 const files = await collectFiles(srcRoot);
+const staticDataFiles = await findStaticDataFiles(allContentRoot);
+if (staticDataFiles.length) {
+  failures.push(`Static content must use Markdown: ${staticDataFiles.map((file) => normalize(relative(frontendRoot, file))).join(', ')}`);
+}
+for (const [file, expected] of [
+  ['lib/cv-profiles.ts', "../../content/cv-profiles/*.md"],
+  ['lib/cv-editorial.ts', "../../content/cv/editorial/*.md"]
+]) {
+  const source = await readFile(join(srcRoot, file), 'utf8');
+  if (!source.includes(expected)) failures.push(`${file}: CV content must load from Markdown collections.`);
+}
+for (const root of [srcRoot, join(frontendRoot, 'scripts')]) {
+  for (const absolute of await collectFiles(root)) {
+    if (!['.ts', '.mjs', '.svelte'].includes(extname(absolute))) continue;
+    const source = await readFile(absolute, 'utf8');
+    if (/cv-(?:profiles|editorial)\.json/.test(source)) {
+      failures.push(`${normalize(relative(frontendRoot, absolute))}: references a removed CV JSON file.`);
+    }
+  }
+}
 for (const absolute of files) {
   const extension = extname(absolute);
   if (!['.svelte', '.ts', '.js'].includes(extension)) continue;

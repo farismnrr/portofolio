@@ -9,7 +9,7 @@ subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
 kind: Personal
 category: "Web · Portfolio"
-description: "A personal portfolio that helps visitors explore projects, experience, credentials, and writing, with evidence for each."
+description: "Faris's portfolio brings his projects, experience, certifications, and writing together in one place for visitors to explore."
 image: "/images/projects/portfolio/cover.png"
 imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
 techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]

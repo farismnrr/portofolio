@@ -9,7 +9,7 @@ subtitle: "Build software with an AI team."
 role: "Solo Developer"
 kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source workspace that helps people describe software needs, guide a specialist team, and review verified results."
+description: "Masih Awam Workspace turns a software request into tasks for an AI team, then shows the work and evidence for review."
 image: "/images/projects/masih-awam-workspace/cover.png"
 imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
 techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]

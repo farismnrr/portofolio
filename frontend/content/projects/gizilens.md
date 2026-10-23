@@ -9,7 +9,7 @@ subtitle: "Team capstone: food recognition"
 role: "Web & Backend Engineering · Team Capstone"
 kind: Personal
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone exploring how food photos can help people identify ingredients and make informed food choices."
+description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""

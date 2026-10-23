@@ -24,7 +24,7 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 - IoTNet: IoT Operations Platform
 - Parentify: Parenting Companion | Source: https://github.com/orgs/Parentify/repositories
 - Personal Portfolio Website | Source: https://github.com/farismnrr/portofolio
-- PUKAT
+- PUKAT: Business Networking Platform
 - Sensio IoT: Smart-Space Platform
 - Sensio Notes: Meeting Intelligence Platform
 

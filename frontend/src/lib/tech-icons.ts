@@ -64,6 +64,10 @@ type TechIcon = Partial<Pick<SimpleIcon, 'path'>> & {
 
 const iconEntries: Array<[string, TechIcon]> = [
   ['rust', siRust], ['actix web', siActix], ['postgresql', siPostgresql],
+  ['sql', {
+    path: 'M12 3c-4.42 0-8 1.34-8 3v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6c0-1.66-3.58-3-8-3'
+      + 'm-8 3c0 1.66 3.58 3 8 3s8-1.34 8-3m-16 6c0 1.66 3.58 3 8 3s8-1.34 8-3'
+  }],
   ['mysql', siMysql], ['mongodb', siMongodb], ['sqlite', siSqlite], ['rocksdb', siRocksdb], ['go', siGo],
   ['svelte', siSvelte], ['sveltekit', siSvelte], ['typescript', siTypescript],
   ['javascript', siJavascript], ['vue', siVuedotjs], ['nuxt', siNuxt], ['bun', siBun],

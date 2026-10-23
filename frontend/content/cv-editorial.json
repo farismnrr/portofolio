@@ -25,7 +25,7 @@
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT operations platform for managing devices, users, automations, and telemetry. Built MQTT device control and telemetry, tenant-based access, event-driven automations, and OTA firmware tracking.",
+      "narrative": "IoT operations platform for managing devices, users, and telemetry. Built device provisioning, real-time monitoring dashboards, hardware communication, firmware lifecycle management, access control, and deployment workflows.",
       "techStack": "TypeScript, Vue, Nuxt, Hapi, Bun, PostgreSQL, MQTT"
     }
   ],

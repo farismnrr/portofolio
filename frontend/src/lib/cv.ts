@@ -19,7 +19,6 @@ function contactLine() {
     email,
     '+62 852-1565-2903',
     'Portfolio: https://farismnrr.com',
-    profile.github.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     profile.linkedin.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
   ].join(' | ');
 }

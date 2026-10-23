@@ -5,27 +5,27 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting assistant for searchable summaries and action items. Built recording, uploads, and processing.",
+      "narrative": "Meeting assistant for searchable summaries and action items. Built cross-platform recording, browser integrations, and audio processing.",
       "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis"
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Smart-room platform for devices and automations. Built the Rust backend, MQTT, and Zigbee2MQTT integrations.",
+      "narrative": "Smart-room platform for controls and automations. Built the Rust backend, real-time device monitoring, MQTT, and Zigbee2MQTT integrations.",
       "techStack": "Rust, Axum, MQTT, Zigbee2MQTT, PostgreSQL, Docker"
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Markdown-driven portfolio with hybrid search and AI job matching. Built the Svelte and Rust apps.",
+      "narrative": "Markdown-driven portfolio with hybrid search and AI job matching. Built prerendered Svelte pages and a Rust server backed by PostgreSQL.",
       "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker"
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source workspace where AI specialists build software and verify results. Built orchestration and isolated tools.",
+      "narrative": "Open-source workspace where AI specialists build software and verify results. Built task orchestration, approval flows, and isolated tools.",
       "techStack": "Go, TypeScript, Svelte 5, Fiber v3, MCP, OpenAI Codex, Claude Code, OAuth 2.1, SQLite"
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT platform for devices, users, and telemetry. Built MQTT control, automations, and OTA firmware updates.",
+      "narrative": "IoT platform for device operations, users, and telemetry. Built MQTT controls, event-based automations, and over-the-air firmware updates.",
       "techStack": "TypeScript, Vue, Nuxt, Hapi, Bun, PostgreSQL, MQTT"
     }
   ],

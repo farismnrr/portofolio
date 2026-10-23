@@ -168,7 +168,9 @@ for (const file of contentFiles) {
   slugs.add(slug);
   const tech = values.get('tech') ?? '';
   const techGroups = values.get('techGroups') ?? '';
-  if (!/^\[.+\]$/.test(tech.trim()) && !/^\[.+\]$/.test(techGroups.trim())) {
+  const permitsEmptyTech = file === 'pukat.md';
+  if (!/^\[.+\]$/.test(tech.trim()) && !/^\[.+\]$/.test(techGroups.trim())
+    && !(permitsEmptyTech && tech.trim() === '[]')) {
     failures.push(`${file}: tech or techGroups must be a non-empty inline list.`);
   }
   if (values.has('images') && !/^\[.+\]$/.test((values.get('images') ?? '').trim())) {

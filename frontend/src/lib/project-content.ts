@@ -76,7 +76,6 @@ function parseProject(path: string, source: string): ProjectDocument {
   const tech = techGroups.length
     ? techGroups.flatMap((group) => group.items)
     : parseInlineList(values.get('tech') ?? '');
-  if (!tech.length) throw new Error(`${path}: tech must contain at least one item`);
 
   const kind = unquote(values.get('kind') ?? '');
   if (kind !== 'Personal' && kind !== 'Professional') {

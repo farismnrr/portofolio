@@ -33,7 +33,7 @@ function absolutePortfolioUrl(value: string) {
 function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  if (project.productUrl.toLowerCase() === 'nda') return 'Private project, under NDA';
+  if (project.productUrl.toLowerCase() === 'nda') return 'Under NDA';
   const publicUrl = [project.productUrl, project.repoUrl].find((url) => /^https?:\/\//i.test(url));
   return publicUrl?.replace(/^https?:\/\//i, '').replace(/\/$/, '') ?? '';
 }

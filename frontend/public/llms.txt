@@ -1,6 +1,6 @@
 # Faris Munir Mahdi
 
-> Software Engineer. I'm Faris. Since July 2025, I have worked at PT Perkasa Pilar Utama. I studied Informatics at UPN Veteran East Java and graduated cum laude. See what I build on the projects page.
+> Software Engineer. I'm a Software Engineer at PT Perkasa Pilar Utama in Jakarta. I work on Sensio IoT, a smart-room platform, and Sensio Notes, a meeting assistant. I also build Masih Awam Workspace, an open-source AI workspace.
 
 Canonical website: https://farismnrr.com/
 GitHub: https://github.com/farismnrr

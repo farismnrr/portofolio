@@ -2,8 +2,8 @@
 slug: home
 eyebrow: Portfolio
 title: Home
-subtitle: "Software Engineer in Jakarta."
-description: "Faris Munir Mahdi is a Software Engineer in Jakarta."
+subtitle: ""
+description: "Software Engineer Faris Munir Mahdi works on Sensio IoT and Sensio Notes at PT Perkasa Pilar Utama and builds Masih Awam Workspace."
 primaryAction: About me
 secondaryAction: Contact
 experienceLabel: Selected experience
@@ -14,4 +14,4 @@ aboutLabel: About
 aboutAction: More about me
 ---
 
-I work at PT Perkasa Pilar Utama and studied Informatics at UPN Veteran East Java.
+I work on Sensio IoT, a smart-room platform, and Sensio Notes, a meeting assistant, at PT Perkasa Pilar Utama. I also build Masih Awam Workspace, an open-source AI workspace.

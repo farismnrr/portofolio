@@ -47,7 +47,7 @@
 
       <section class="min-w-0">
         <header class="border-b border-black/14 pb-8 sm:pb-9">
-          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.subtitle}</h1>
+          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.title}</h1>
 
           <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>

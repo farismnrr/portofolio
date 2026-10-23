@@ -6,7 +6,7 @@
     {
       "sourceId": "sensio-notes",
       "narrative": "Meeting assistant that turns recordings into searchable summaries, decisions, and action items. Built cross-platform recording, browser integrations, reliable uploads, background processing, and live status updates.",
-      "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis, Docker"
+      "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis"
     },
     {
       "sourceId": "sensio-iot",
@@ -21,7 +21,7 @@
     {
       "sourceId": "ai-workspace",
       "narrative": "Open-source workspace that coordinates AI specialists to build software and verify results before acceptance. Built task orchestration, permissioned tools, isolated execution, and verification reports.",
-      "techStack": "Go, TypeScript, Svelte 5, Fiber v3, SQLite, MCP, OpenAI Codex, Claude Code, OAuth 2.1, Docker"
+      "techStack": "Go, TypeScript, Svelte 5, Fiber v3, MCP, OpenAI Codex, Claude Code, OAuth 2.1, SQLite"
     },
     {
       "sourceId": "iotnet",

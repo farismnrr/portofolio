@@ -326,7 +326,7 @@ subtitle: "Build software with an AI team."
 role: "Solo Developer"
 kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source agentic workspace that helps non-developers build applications with AI specialists, track their work, and verify results before accepting them."
+description: "Open-source workspace that coordinates AI specialists to build software and verify results before acceptance. Built task orchestration, permissioned tools, isolated execution, and verification reports."
 image: "/images/projects/masih-awam-workspace/cover.png"
 imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
 techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
@@ -597,7 +597,7 @@ subtitle: "IoT management platform"
 role: "Solo Developer"
 kind: Professional
 category: "IoT · Platform"
-description: "Manage devices, users, automations, and telemetry in one place."
+description: "IoT operations platform for managing devices, users, automations, and telemetry. Built MQTT device control and telemetry, tenant-based access, event-driven automations, and OTA firmware tracking."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
 productUrl: "NDA"
@@ -724,7 +724,7 @@ subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
 kind: Personal
 category: "Web · Portfolio"
-description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
+description: "Markdown-driven portfolio for projects, experience, certifications, and blog posts, with prerendered pages and SEO. Built Svelte and Rust apps with PostgreSQL-backed hybrid search and AI job matching."
 image: "/images/projects/portfolio/cover.png"
 imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
 techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
@@ -795,7 +795,7 @@ subtitle: "Smart-room controls"
 role: "Backend"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Smart-room controls and automation, built by a team. I built the backend."
+description: "Smart-room platform for controlling lights, climate, and equipment with sensor readings and automation. Built the Rust backend for device APIs, MQTT and Zigbee2MQTT integrations, telemetry, automations, and access control."
 image: "/images/projects/sensio-iot/cover.png"
 imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
 techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
@@ -842,7 +842,7 @@ subtitle: "Meeting assistant"
 role: "Fullstack"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
+description: "Meeting assistant that turns recordings into searchable summaries, decisions, and action items. Built cross-platform recording, browser integrations, reliable uploads, background processing, and live status updates."
 image: "/images/projects/sensio-notes/cover.png"
 imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
 techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]

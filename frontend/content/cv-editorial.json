@@ -5,28 +5,28 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting assistant for searchable notes and action items. Built web and mobile recording, browser-based meeting integrations, background processing, and live status updates.",
-      "techStack": "Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis, Docker, OpenTelemetry"
+      "narrative": "Meeting assistant that turns recordings into searchable summaries, decisions, and action items. Built cross-platform recording, browser integrations, reliable uploads, background processing, and live status updates.",
+      "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis, Docker"
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Smart-room controls for lighting, climate, equipment, and sensors. Built device APIs, MQTT and Zigbee2MQTT flows, telemetry, automations, and permissions.",
-      "techStack": "Rust, Axum, PostgreSQL, Docker, GitHub Actions, OpenTelemetry, MQTT, Zigbee2MQTT"
+      "narrative": "Smart-room platform for controlling lights, climate, and equipment with sensor readings and automation. Built the Rust backend for device APIs, MQTT and Zigbee2MQTT integrations, telemetry, automations, and access control.",
+      "techStack": "Rust, Axum, MQTT, Zigbee2MQTT, PostgreSQL, Docker"
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Markdown-driven portfolio with prerendered pages and AI job matching. Built Svelte and Rust apps, hybrid retrieval, and cross-platform CI/CD deployment.",
-      "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker, GitHub Actions"
+      "narrative": "Markdown-driven portfolio for projects, experience, certifications, and blog posts, with prerendered pages and SEO. Built Svelte and Rust apps with PostgreSQL-backed hybrid search and AI job matching.",
+      "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker"
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source workspace that coordinates AI specialists and verifies results. Built task orchestration, permissioned tools, isolated execution, and proof reports.",
-      "techStack": "Go, TypeScript, Svelte 5, Fiber v3, SQLite, MCP, OpenAI Codex, Claude Code, OAuth 2.1, PostgreSQL, MySQL, MongoDB, Docker, GitHub Actions"
+      "narrative": "Open-source workspace that coordinates AI specialists to build software and verify results before acceptance. Built task orchestration, permissioned tools, isolated execution, and verification reports.",
+      "techStack": "Go, TypeScript, Svelte 5, Fiber v3, SQLite, MCP, OpenAI Codex, Claude Code, OAuth 2.1, Docker"
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT operations platform for devices, automations, and telemetry. Built tenant access, MQTT command flows, event rules, OTA tracking, and tracing.",
-      "techStack": "Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry"
+      "narrative": "IoT operations platform for managing devices, users, automations, and telemetry. Built MQTT device control and telemetry, tenant-based access, event-driven automations, and OTA firmware tracking.",
+      "techStack": "TypeScript, Vue, Nuxt, Hapi, Bun, PostgreSQL, MQTT"
     }
   ],
   "certifications": [

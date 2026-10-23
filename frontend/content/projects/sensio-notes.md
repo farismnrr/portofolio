@@ -9,7 +9,7 @@ subtitle: "Meeting assistant"
 role: "Fullstack"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
+description: "Meeting assistant that turns recordings into searchable summaries, decisions, and action items. Built cross-platform recording, browser integrations, reliable uploads, background processing, and live status updates."
 image: "/images/projects/sensio-notes/cover.png"
 imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
 techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]

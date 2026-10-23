@@ -39,10 +39,13 @@ pub struct ScopeLine {
 }
 
 #[derive(Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ProjectSection {
     title: String,
+    kind: String,
     meta: String,
     narrative: String,
+    tech_stack: String,
 }
 
 #[derive(Clone, Deserialize)]
@@ -86,12 +89,12 @@ const DENSITY_PROFILES: [DensityProfile; 5] = [
     DensityProfile {
         name: "tight",
         body_size: 10.0,
-        line_height: 1.12,
-        section_gap: 3.0,
-        item_gap: 0.0,
+        line_height: 1.0,
+        section_gap: 9.0,
+        item_gap: 4.0,
         bullet_gap: 0.0,
-        horizontal_margin: 0.60,
-        vertical_margin: 0.60,
+        horizontal_margin: 0.50,
+        vertical_margin: 0.50,
     },
     DensityProfile {
         name: "compact",
@@ -591,14 +594,17 @@ fn standalone_project_html(project: &ProjectSection) -> String {
         <article class="project">
           <div class="item-heading">
             <span class="item-title">{title}</span>
-            <span class="item-meta">{meta}</span>
+            <span class="item-meta">{kind} | {meta}</span>
           </div>
           <p class="project-narrative">{narrative}</p>
+          <div class="project-tech"><strong>Tech stack:</strong> {tech_stack}</div>
         </article>
         "#,
         title = escape(&project.title),
+        kind = escape(&project.kind),
         meta = linkify_meta(&project.meta),
         narrative = escape(&project.narrative),
+        tech_stack = escape(&project.tech_stack),
     )
 }
 
@@ -844,6 +850,12 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     widows: 3;
   }}
 
+  .project-tech {{
+    margin-top: 1px;
+    font-size: 10pt;
+    line-height: 1.0;
+  }}
+
   .skills {{ display: block; }}
 
   .skill-line {{
@@ -923,8 +935,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
 
   .certification {{
     font-size: 10pt;
-    line-height: 1.42;
-    padding-bottom: 1px;
+    line-height: {{line_height}};
   }}
 
   .cert-title {{
@@ -1046,8 +1057,10 @@ mod tests {
             "projects": [
                 {
                     "title": "Sensio Notes",
+                    "kind": "Professional",
                     "meta": "PT Perkasa Pilar Utama | 2026",
                     "narrative": "Grounded project narrative.",
+                    "techStack": "React, NestJS, PostgreSQL",
                     "url": "https://farismnrr.com/projects"
                 }
             ],

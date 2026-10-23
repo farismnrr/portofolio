@@ -5,13 +5,11 @@ import editorial from '../../content/cv-editorial.json';
 
 interface CvDraft {
   profileSummary: { text: string };
-  projects: { sourceId: string; narrative: string }[];
+  projects: { sourceId: string; narrative: string; techStack?: string }[];
   certifications: { sourceId: string }[];
-  employmentBullets?: string[];
   excludeExperienceOrders?: number[];
-  employmentSummary?: string;
   professionalExperienceOrders?: number[];
-  experienceBullets?: Record<string, string[]>;
+  experienceDescriptions?: Record<string, string>;
   educationNote?: string;
 }
 
@@ -78,10 +76,6 @@ function experienceCvTitle(order: number, role: string, company: string) {
   return `${programTitles[order] ?? role} | ${company}`;
 }
 
-function cvPlainText(value: string) {
-  return value.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\*\*/g, '').replace(/^I work /, 'Works ').replace(/^I build /, 'Builds ').replace(/^I also handle /, 'Handles ');
-}
-
 export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
   const cvProfile = getCvProfile(target);
 
@@ -95,9 +89,9 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
         kind: professional ? 'employment' : source.kind,
         title: experienceCvTitle(source.order, source.role, source.company),
         meta: cvDate(source.year),
-        summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary !== undefined ? draft.employmentSummary : cvPlainText(source.summary),
+        summary: draft.experienceDescriptions?.[String(source.order)] ?? '',
         relatedProjects: [],
-        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
+        bullets: []
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -109,8 +103,10 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
 
       return {
         title: projectCvTitle(source.slug, source.title),
+        kind: source.kind,
         meta: projectMeta(source.slug),
         narrative: item.narrative,
+        techStack: item.techStack ?? [...new Set(source.tech)].join(', '),
         url: ''
       };
     })

@@ -5,23 +5,28 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting assistant for searchable summaries and action items. Built resumable multipart uploads over 100 MB with server-backoff retries. Stack: React, NestJS, PostgreSQL, Redis, pgvector."
+      "narrative": "Meeting assistant for searchable notes and action items. Built web and mobile recording, browser-based meeting integrations, background processing, and live status updates.",
+      "techStack": "Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis, Docker, OpenTelemetry"
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Smart-room controls and automation. Built commands, offline device-state feedback, and per-user permissions. Stack: Rust, Axum, PostgreSQL, MQTT, Zigbee2MQTT."
+      "narrative": "Smart-room controls for lighting, climate, equipment, and sensors. Built device APIs, MQTT and Zigbee2MQTT flows, telemetry, automations, and permissions.",
+      "techStack": "Rust, Axum, PostgreSQL, Docker, GitHub Actions, OpenTelemetry, MQTT, Zigbee2MQTT"
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Markdown-driven portfolio with prerendered pages and AI job matching. Built hybrid retrieval over portfolio evidence. Stack: Svelte 5, TypeScript, Rust, PostgreSQL, pgvector."
+      "narrative": "Markdown-driven portfolio with prerendered pages and AI job matching. Built Svelte and Rust apps, hybrid retrieval, and cross-platform CI/CD deployment.",
+      "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker, GitHub Actions"
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source AI workspace with server-run proof before acceptance. Built role orchestration, task tracking, and isolated execution. Stack: Go, Svelte, SQLite, MCP, Docker."
+      "narrative": "Open-source workspace that coordinates AI specialists and verifies results. Built task orchestration, permissioned tools, isolated execution, and proof reports.",
+      "techStack": "Go, TypeScript, Svelte 5, Fiber v3, SQLite, MCP, OpenAI Codex, Claude Code, OAuth 2.1, PostgreSQL, MySQL, MongoDB, Docker, GitHub Actions"
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT operations platform for devices, automations, and telemetry. Built MQTT provisioning, control, OTA tracking, and observability. Stack: Nuxt, Hapi, PostgreSQL, MQTT, OpenTelemetry."
+      "narrative": "IoT operations platform for devices, automations, and telemetry. Built tenant access, MQTT command flows, event rules, OTA tracking, and tracing.",
+      "techStack": "Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry"
     }
   ],
   "certifications": [
@@ -35,34 +40,13 @@
       "sourceId": "28"
     }
   ],
-  "employmentBullets": [
-    "Built resumable multipart uploads for 100 MB+ recordings, resuming parts with server-backoff retries.",
-    "Added local backup of in-progress recordings on web and mobile for recovery after a crash or closed tab.",
-    "Built Sensio IoT room-control commands, offline device-state feedback, and per-user permissions.",
-    "Built screens from mockups; shipped releases and fixed production issues with infra/security engineers."
-  ],
-  "employmentSummary": "",
-  "experienceBullets": {
-    "2": [
-      "Built GiziLens authentication, sessions, and user APIs for the team capstone.",
-      "Connected PostgreSQL and Redis to Nuxt; containerized the services."
-    ],
-    "3": [
-      "Built Node.js and Express APIs backed by MongoDB.",
-      "Connected Vue.js exercises to the APIs; completed Alibaba Cloud fundamentals."
-    ],
-    "4": [
-      "Built authenticated AskIn APIs, model discovery, and routing for Ollama and OpenAI services.",
-      "Integrated retrieval context and deployed the app with Docker."
-    ],
-    "5": [
-      "Researched search queries and reviewed page structure and technical SEO.",
-      "Used analytics to prioritize pages and topics for attention."
-    ],
-    "6": [
-      "Built Parentify APIs for authentication, parenting articles, and food data with Node.js, Express, and MySQL.",
-      "Aligned API contracts with mobile and ML teammates; prepared Google Cloud notes and Postman docs."
-    ]
+  "experienceDescriptions": {
+    "1": "Partnered with infrastructure and security engineers on releases, translated design mockups into screens, and took ownership of production fixes.",
+    "2": "Coordinated GiziLens web app work with the food-recognition team, explaining API needs and aligning integration across disciplines.",
+    "3": "Learned Node.js, Express, MongoDB, and Vue through guided exercises, connecting each interface to its API.",
+    "4": "Learned an unfamiliar open-source chat codebase, adapted it for the program project, and deployed authenticated APIs.",
+    "5": "Used search research, technical SEO reviews, and analytics to prioritize pages and topics for attention.",
+    "6": "Aligned API contracts and documentation with mobile and machine-learning teammates in a three-track capstone."
   },
   "educationNote": "Cum laude, GPA 3.91/4.00"
 }

@@ -50,7 +50,7 @@ kind: program
 order: 2
 year: Feb 2025 — July 2025
 company: Coding Camp powered by DBS Foundation
-role: Machine Learning Engineer Track Participant
+role: Machine Learning Engineer
 location: ""
 summary: A semester-long training program with a team capstone, mixing machine-learning coursework with web application delivery.
 tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]

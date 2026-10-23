@@ -11,7 +11,7 @@ email: mailto:farismnrrbusiness@gmail.com
 resume: ""
 specialties: ""
 headline: ""
-intro: "I'm a software engineer in Jakarta. I work on smart-space and meeting products at my current job, and I build open-source projects on the side."
+intro: "I'm a software engineer in Jakarta. Since July 2025 I've worked on smart-space and meeting products, and I build open-source projects on the side. I studied Informatics and graduated cum laude."
 availability: ""
 quote: ""
 ---

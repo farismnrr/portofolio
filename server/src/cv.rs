@@ -841,9 +841,9 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .project-tech {{
-    margin-top: 1px;
-    font-size: 10pt;
-    line-height: 1.0;
+    margin-top: 2px;
+    font-size: inherit;
+    line-height: inherit;
   }}
 
   .skills {{ display: block; }}
@@ -866,6 +866,10 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .experience,
   .project {{
     margin: 0 0 {item_gap}px;
+  }}
+
+  .project:last-child {{
+    margin-bottom: 0;
   }}
 
   .item-heading {{

@@ -9,7 +9,7 @@ subtitle: "IoT management platform"
 role: "Solo Developer"
 kind: Professional
 category: "IoT · Platform"
-description: "IoT platform for device operations, users, and telemetry. Built MQTT controls, event-based automations, and over-the-air firmware updates."
+description: "Helps teams manage connected devices, monitor activity, automate responses, and keep equipment updated across locations."
 image: "/images/projects/iotnet/cover.png"
 tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
 productUrl: "NDA"

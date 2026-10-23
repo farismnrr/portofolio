@@ -9,7 +9,7 @@ subtitle: "Smart-room controls"
 role: "Backend"
 kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Smart-room platform for controls and automations. Built the Rust backend, real-time device monitoring, MQTT, and Zigbee2MQTT integrations."
+description: "Helps people manage connected spaces by bringing room controls, live device readings, and automatic responses together."
 image: "/images/projects/sensio-iot/cover.png"
 imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
 techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]

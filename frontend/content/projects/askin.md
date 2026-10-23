@@ -9,7 +9,7 @@ subtitle: "AI chat workspace"
 role: "Backend · Integration"
 kind: Personal
 category: "Ruangguru Academy · Learning Project"
-description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
+description: "An AI chat workspace adapted from an open-source project during Ruangguru Academy, helping users chat with models and files."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""

@@ -9,7 +9,7 @@ subtitle: "Parenting guidance and food recognition"
 role: "Cloud · Backend"
 kind: Personal
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
+description: "A Bangkit capstone that helps parents find practical parenting guidance and learn about ingredients from food photos."
 image: "/images/projects/parentify/showcase.png"
 tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""

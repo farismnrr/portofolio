@@ -5,27 +5,27 @@
   "projects": [
     {
       "sourceId": "sensio-notes",
-      "narrative": "Meeting assistant for searchable summaries and action items. Built cross-platform recording, browser integrations, and audio processing.",
+      "narrative": "Helps teams turn meetings into searchable summaries, decisions, and follow-up tasks they can revisit and share.",
       "techStack": "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis"
     },
     {
       "sourceId": "sensio-iot",
-      "narrative": "Smart-room platform for controls and automations. Built the Rust backend, real-time device monitoring, MQTT, and Zigbee2MQTT integrations.",
+      "narrative": "Helps people manage connected spaces by bringing room controls, live device readings, and automatic responses together.",
       "techStack": "Rust, Axum, MQTT, Zigbee2MQTT, PostgreSQL, Docker"
     },
     {
       "sourceId": "portfolio-website",
-      "narrative": "Markdown-driven portfolio with hybrid search and AI job matching. Built prerendered Svelte pages and a Rust server backed by PostgreSQL.",
+      "narrative": "A personal portfolio that helps visitors explore projects, experience, credentials, and writing, with evidence for each.",
       "techStack": "TypeScript, Rust, Svelte 5, Axum, RAG, PostgreSQL, pgvector, Docker"
     },
     {
       "sourceId": "ai-workspace",
-      "narrative": "Open-source workspace where AI specialists build software and verify results. Built task orchestration, approval flows, and isolated tools.",
+      "narrative": "An open-source workspace that helps people describe software needs, guide a specialist team, and review verified results.",
       "techStack": "Go, TypeScript, Svelte 5, Fiber v3, MCP, OpenAI Codex, Claude Code, OAuth 2.1, SQLite"
     },
     {
       "sourceId": "iotnet",
-      "narrative": "IoT platform for device operations, users, and telemetry. Built MQTT controls, event-based automations, and over-the-air firmware updates.",
+      "narrative": "Helps teams manage connected devices, monitor activity, automate responses, and keep equipment updated across locations.",
       "techStack": "TypeScript, Vue, Nuxt, Hapi, Bun, PostgreSQL, MQTT"
     }
   ],

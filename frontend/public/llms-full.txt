@@ -33,9 +33,9 @@ kind: employment
 order: 1
 year: July 2025 — Present
 company: PT Perkasa Pilar Utama
-role: Backend & Fullstack Developer
+role: Software Engineer
 location: "Jakarta, Indonesia"
-summary: Backend and fullstack developer on Sensio Notes, a meeting assistant, and Sensio IoT, smart-room controls.
+summary: Worked with AI, IoT, infrastructure, and UI/UX engineers to build software that meets both technical and user needs. Discussed requirements, solved integration problems, and handled production issues together, adjusting to changing priorities and seeing tasks through from development to release.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---

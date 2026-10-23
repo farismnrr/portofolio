@@ -120,7 +120,7 @@ export function getSeo(currentPath: string) {
     return {
       ...base,
       title: `Experience — ${profile.name}`,
-      description: `Work experience of ${profile.name}: fullstack work on AI and IoT products, plus earlier training programs.`,
+      description: `Work experience of ${profile.name}: software engineering on AI and IoT products, plus earlier training programs.`,
       structuredData: graph({
         '@type': 'WebPage',
         '@id': `${canonical}#webpage`,

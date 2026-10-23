@@ -11,6 +11,7 @@ kind: Personal
 category: "Web · Portfolio"
 description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
 image: "/images/projects/portfolio/cover.png"
+imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
 techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"

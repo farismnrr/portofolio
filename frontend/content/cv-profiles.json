@@ -3,7 +3,7 @@
     "id": "general",
     "label": "General",
     "headline": "Fullstack Engineer",
-    "maxPages": 1,
+    "maxPages": 2,
     "filename": "Faris_Munir_Mahdi_CV.pdf",
     "retrievalQuery": "fullstack engineer backend frontend Node.js Go Python NestJS Hapi FastAPI Nuxt Vue Svelte PostgreSQL Redis pgvector REST MQTT Zigbee2MQTT WebSocket Docker Linux CI/CD OpenTelemetry LangGraph production",
     "preferredSignals": [
@@ -95,8 +95,8 @@
       ]
     },
     "layoutPolicy": {
-      "minSecondPageFill": 0.4,
-      "minBodySizePt": 10,
+      "minSecondPageFill": 0.3,
+      "minBodySizePt": 10.5,
       "minimumItems": {
         "projects": 5,
         "experiences": 6,

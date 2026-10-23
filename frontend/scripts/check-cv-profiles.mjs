@@ -9,7 +9,7 @@ const registry = JSON.parse(
 
 const expected = {
   general: {
-    maxPages: 1,
+    maxPages: 2,
     scopes: 4,
     filename: 'Faris_Munir_Mahdi_CV.pdf'
   }

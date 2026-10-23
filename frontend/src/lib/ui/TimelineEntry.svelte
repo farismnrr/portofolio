@@ -75,13 +75,15 @@
     {/if}
 
     {#if !compact}
-      <ul class={wide ? "mt-3 list-disc space-y-2 pl-5 hyphens-auto text-left text-[14px] leading-6 text-black/60 sm:mt-4 sm:text-justify 2xl:text-[15px] 2xl:leading-7" : "mt-3 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/60 sm:mt-4 2xl:text-[15px] 2xl:leading-7"}>
-        {#each item.bullets as bullet}
-          <li class="[&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded-lg [&_code]:bg-black/5 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/80">
-            {@html renderInlineMarkdown(bullet)}
-          </li>
-        {/each}
-      </ul>
+      {#if item.bullets.length}
+        <ul class={wide ? "mt-3 list-disc space-y-2 pl-5 hyphens-auto text-left text-[14px] leading-6 text-black/60 sm:mt-4 sm:text-justify 2xl:text-[15px] 2xl:leading-7" : "mt-3 list-disc space-y-2 pl-5 text-[14px] leading-6 text-black/60 sm:mt-4 2xl:text-[15px] 2xl:leading-7"}>
+          {#each item.bullets as bullet}
+            <li class="[&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded-lg [&_code]:bg-black/5 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[0.92em] [&_strong]:font-semibold [&_strong]:text-black/80">
+              {@html renderInlineMarkdown(bullet)}
+            </li>
+          {/each}
+        </ul>
+      {/if}
       {#if !wide}<div class="mt-5"><TechList items={item.tech}/></div>{/if}
     {/if}
   </div>

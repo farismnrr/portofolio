@@ -9,8 +9,3 @@ summary: Coordinate requirements and integration work with AI, IoT, infrastructu
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
-
-- Built resumable uploads and local recording backup for Sensio Notes, on web and mobile.
-- Built the backend for room controls in Sensio IoT: commands, device-state feedback, and permissions.
-- Turned design mockups into working web and mobile screens.
-- Fixed production issues and shipped releases alongside the infrastructure and security engineers.

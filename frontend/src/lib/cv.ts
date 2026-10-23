@@ -10,6 +10,7 @@ interface CvDraft {
   excludeExperienceOrders?: number[];
   professionalExperienceOrders?: number[];
   experienceDescriptions?: Record<string, string>;
+  employmentBullets?: Record<string, string[]>;
   educationNote?: string;
 }
 
@@ -89,7 +90,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
         meta: cvDate(source.year),
         summary: draft.experienceDescriptions?.[String(source.order)] ?? '',
         relatedProjects: [],
-        bullets: []
+        bullets: draft.employmentBullets?.[String(source.order)] ?? []
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

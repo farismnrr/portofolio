@@ -85,56 +85,36 @@ struct DensityProfile {
     vertical_margin: f32,
 }
 
-const DENSITY_PROFILES: [DensityProfile; 5] = [
+const DENSITY_PROFILES: [DensityProfile; 3] = [
     DensityProfile {
-        name: "tight",
-        body_size: 10.0,
-        line_height: 1.0,
-        section_gap: 11.0,
-        item_gap: 6.0,
-        bullet_gap: 0.0,
-        horizontal_margin: 0.50,
-        vertical_margin: 0.50,
-    },
-    DensityProfile {
-        name: "compact",
-        body_size: 10.0,
-        line_height: 1.34,
-        section_gap: 11.0,
-        item_gap: 9.0,
-        bullet_gap: 3.0,
-        horizontal_margin: 0.60,
-        vertical_margin: 0.61,
-    },
-    DensityProfile {
-        name: "balanced",
-        body_size: 10.2,
-        line_height: 1.40,
-        section_gap: 12.0,
-        item_gap: 10.0,
+        name: "comfortable",
+        body_size: 10.5,
+        line_height: 1.42,
+        section_gap: 18.0,
+        item_gap: 12.0,
         bullet_gap: 4.0,
-        horizontal_margin: 0.62,
-        vertical_margin: 0.62,
+        horizontal_margin: 0.70,
+        vertical_margin: 0.70,
     },
     DensityProfile {
         name: "roomy",
-        body_size: 10.4,
+        body_size: 10.8,
         line_height: 1.46,
-        section_gap: 14.0,
-        item_gap: 12.0,
+        section_gap: 20.0,
+        item_gap: 14.0,
         bullet_gap: 5.0,
-        horizontal_margin: 0.64,
-        vertical_margin: 0.64,
+        horizontal_margin: 0.72,
+        vertical_margin: 0.72,
     },
     DensityProfile {
         name: "spacious",
-        body_size: 10.6,
-        line_height: 1.50,
-        section_gap: 16.0,
-        item_gap: 14.0,
+        body_size: 11.0,
+        line_height: 1.5,
+        section_gap: 22.0,
+        item_gap: 16.0,
         bullet_gap: 6.0,
-        horizontal_margin: 0.66,
-        vertical_margin: 0.66,
+        horizontal_margin: 0.75,
+        vertical_margin: 0.75,
     },
 ];
 
@@ -264,19 +244,19 @@ async fn render_validated_pdf(
         let mut smallest_page_count = usize::MAX;
 
         for density in DENSITY_PROFILES {
-            if density.body_size < profile.layout_policy.min_body_size_pt.max(10.0) {
+            if density.body_size < profile.layout_policy.min_body_size_pt.max(10.5) {
                 continue;
             }
             let candidate = render_candidate(&document, density, pass).await?;
             smallest_page_count = smallest_page_count.min(candidate.1.pages);
 
-            if candidate.1.pages != usize::from(profile.max_pages) {
+            if candidate.1.pages > usize::from(profile.max_pages) {
                 continue;
             }
 
             validate_pdf_contents(&document, &candidate.1)?;
 
-            if profile.max_pages > 1
+            if candidate.1.pages > 1
                 && candidate.1.fill_ratio < profile.layout_policy.min_second_page_fill
             {
                 continue;
@@ -298,13 +278,6 @@ async fn render_validated_pdf(
 
         if let Some(best) = best {
             return Ok(best);
-        }
-
-        if smallest_page_count < usize::from(profile.max_pages) {
-            return Err(format!(
-                "document underfilled: rendered {smallest_page_count} page(s), expected {}",
-                profile.max_pages
-            ));
         }
 
         if trim_lowest_priority_optional_item(&mut document, profile) {
@@ -711,17 +684,27 @@ fn certification_html(certification: &CertificationSection) -> String {
 }
 
 fn section(title: &str, body: &str) -> String {
+    section_with_class(title, body, "section")
+}
+
+/// A section that always starts on a new page, so the CV breaks between sections instead of inside one.
+fn section_on_new_page(title: &str, body: &str) -> String {
+    section_with_class(title, body, "section new-page")
+}
+
+fn section_with_class(title: &str, body: &str, class: &str) -> String {
     if body.trim().is_empty() {
         return String::new();
     }
 
     format!(
         r#"
-        <section class="section">
+        <section class="{class}">
           <div class="section-title">{title}</div>
           {body}
         </section>
         "#,
+        class = class,
         title = escape(title),
         body = body,
     )
@@ -828,6 +811,12 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     margin-top: {section_gap}px;
   }}
 
+  .new-page {{
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }}
+
   .section-title {{
     font-size: 11pt;
     font-weight: 700;
@@ -910,6 +899,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
 
   .bullet {{
     margin: 0 0 {bullet_gap}px;
+    padding-left: 1em;
+    text-indent: -1em;
     text-align: justify;
     text-align-last: start;
     hyphens: none;
@@ -982,7 +973,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         ),
         skills_section = section("Skills", &format!(r#"<div class="skills">{scopes}</div>"#)),
         experience_section = section("Experience", &experiences),
-        projects_section = section("Projects", &projects),
+        projects_section = section_on_new_page("Projects", &projects),
         certifications_section = section(
             "Certifications",
             &format!(r#"<div class="cert-list">{certifications}</div>"#),
@@ -1014,7 +1005,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
-    async fn renders_current_cv_one_page_fixture() {
+    async fn renders_current_cv_fixture() {
         let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
         let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
         let request: CvRenderRequest =
@@ -1100,6 +1091,13 @@ mod tests {
     }
 
     #[test]
+    fn projects_section_starts_on_a_new_page() {
+        let html = super::section_on_new_page("Projects", "<p>x</p>");
+        assert!(html.contains(r#"class="section new-page""#));
+        assert!(super::section("Skills", "<p>x</p>").contains(r#"class="section""#));
+    }
+
+    #[test]
     fn measures_last_page_fill_from_bbox_output() {
         let bbox = r#"
             <page width="612.000000" height="792.000000">
@@ -1119,8 +1117,8 @@ mod tests {
         let profile = profiles::get("general").expect("General profile");
 
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert_eq!(profile.max_pages, 1);
-        assert!(profile.layout_policy.min_body_size_pt >= 10.0);
+        assert_eq!(profile.max_pages, 2);
+        assert!(profile.layout_policy.min_body_size_pt >= 10.5);
         assert_eq!(profile.layout_policy.minimum_items.projects, 5);
     }
 }

@@ -14,6 +14,7 @@ frontend/public/project-source-images.txt
 release/amd64/
 target/
 server/target/
+server/generated/cv-profiles.json
 server/Cargo.lock
 .DS_Store
 .env

@@ -71,7 +71,7 @@ for (const root of [srcRoot, join(frontendRoot, 'scripts')]) {
   for (const absolute of await collectFiles(root)) {
     if (!['.ts', '.mjs', '.svelte'].includes(extname(absolute))) continue;
     const source = await readFile(absolute, 'utf8');
-    if (/cv-(?:profiles|editorial)\.json/.test(source)) {
+    if (/content\/cv-(?:profiles|editorial)\.json/.test(source)) {
       failures.push(`${normalize(relative(frontendRoot, absolute))}: references a removed CV JSON file.`);
     }
   }

@@ -17,7 +17,7 @@ minimumItems: ["projects=5", "experiences=6", "certifications=3"]
 ---
 ## Technical scopes
 
-- languages | Languages | TypeScript, JavaScript, Go, Python
+- languages | Languages | TypeScript, Rust, Go, Python
 - backend-systems | Backend & AI | Node.js, NestJS, Hapi, Fiber, FastAPI, LangGraph, RAG
 - web-mobile | Frontend & Mobile | React, Vue, Svelte
 - cloud-devops | Data & Infrastructure | PostgreSQL, Redis, Docker, OpenTelemetry
@@ -26,7 +26,9 @@ minimumItems: ["projects=5", "experiences=6", "certifications=3"]
 
 ### Identity
 
-Present Faris as a Software Engineer. His current role began in July 2025 at PT Perkasa Pilar Utama. Keep the summary direct and let documented project entries show his work.
+Present Faris as a Software Engineer with over a year of professional experience.
+
+His current role at PT Perkasa Pilar Utama began in July 2025. Use the profile summary for his fullstack work; let documented project entries show the specifics.
 
 ### Focus
 
@@ -34,7 +36,7 @@ Describe each documented project and contribution in plain words. Keep technolog
 
 ### Summary range
 
-35-45 words in no more than three rendered lines
+45-60 words in no more than three rendered lines
 
 ### Project range
 

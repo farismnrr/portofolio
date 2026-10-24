@@ -3,7 +3,9 @@ slug: about
 eyebrow: About me
 title: About
 subtitle: ""
-description: "I'm a software engineer in Jakarta. I work on smart-space and meeting products, and build open-source projects on the side."
+description: "Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments."
 ---
 
-I'm a software engineer in Jakarta. Since July 2025 I've worked on smart-space and meeting products, and I build open-source projects on the side. I studied Informatics and graduated cum laude.
+Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.
+
+I studied Informatics and graduated cum laude.

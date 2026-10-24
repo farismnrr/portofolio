@@ -112,10 +112,18 @@ jobs:
         with:
           ref: dev
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
       - name: Download frontend dist
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name frontend-dist --dir frontend/dist
+
+      - name: Generate Rust CV profile registry
+        run: npm --prefix frontend run cv:profiles
 
       - name: Install musl toolchain
         run: |

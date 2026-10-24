@@ -5,7 +5,7 @@ import { profile } from './site-content';
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
-  "I'm a software engineer in Jakarta. I work on smart-space and meeting products, and build open-source projects on the side.";
+  'Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.';
 const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
@@ -86,7 +86,7 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
     const aboutDescription =
-      "I'm a software engineer in Jakarta. Since July 2025, I've worked on smart-space and meeting products at my current job. I also build open-source projects on the side.";
+      'Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.';
     return {
       ...base,
       title: `About — ${profile.name}`,

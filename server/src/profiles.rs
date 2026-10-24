@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::OnceLock};
 use serde::Deserialize;
 
 pub const CONTRACT_VERSION: &str = "cv-contract/v1";
-const PROFILE_REGISTRY_JSON: &str = include_str!("../../frontend/content/cv-profiles.json");
+const PROFILE_REGISTRY_JSON: &str = include_str!("../generated/cv-profiles.json");
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

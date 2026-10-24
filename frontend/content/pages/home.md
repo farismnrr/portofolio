@@ -3,7 +3,7 @@ slug: home
 eyebrow: Portfolio
 title: Home
 subtitle: ""
-description: "I'm a software engineer in Jakarta. I work on smart-space and meeting products, and build open-source projects on the side."
+description: "Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments."
 primaryAction: About me
 secondaryAction: Contact
 experienceLabel: Selected experience
@@ -14,4 +14,4 @@ aboutLabel: About
 aboutAction: More about me
 ---
 
-I'm a software engineer in Jakarta. I work on smart-space and meeting products at my current job, and I build open-source projects on the side.
+Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.

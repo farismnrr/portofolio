@@ -262,9 +262,18 @@ mod tests {
             project_redirect_location(&"/projects/askin/details?source=old-link".parse().unwrap()),
             Some("/projects?source=old-link".to_owned())
         );
-        assert_eq!(project_redirect_location(&"/projects".parse().unwrap()), None);
-        assert_eq!(project_redirect_location(&"/projects/".parse().unwrap()), None);
-        assert_eq!(project_redirect_location(&"/projects-other/askin".parse().unwrap()), None);
+        assert_eq!(
+            project_redirect_location(&"/projects".parse().unwrap()),
+            None
+        );
+        assert_eq!(
+            project_redirect_location(&"/projects/".parse().unwrap()),
+            None
+        );
+        assert_eq!(
+            project_redirect_location(&"/projects-other/askin".parse().unwrap()),
+            None
+        );
     }
 
     #[test]

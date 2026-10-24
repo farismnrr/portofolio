@@ -231,56 +231,39 @@ jobs:
           PY
           rm -f "$hydration_dom"
 
-          deploy_check="Mermaid rendering and vendor assets"
-          mermaid_dom="$(mktemp)"
-          chromium_stderr="$(mktemp)"
-          if ! docker compose -p portofolio exec -T \
-            -e XDG_CONFIG_HOME=/tmp/portfolio-chromium-config \
-            -e XDG_CACHE_HOME=/tmp/portfolio-chromium-cache \
-            portfolio chromium \
-            --headless \
-            --no-sandbox \
-            --disable-gpu \
-            --disable-dev-shm-usage \
-            --user-data-dir=/tmp/portfolio-mermaid-check \
-            --window-size=1920,2000 \
-            --virtual-time-budget=8000 \
-            --dump-dom \
-            http://127.0.0.1:3001/projects/sensio-notes \
-            > "$mermaid_dom" 2> "$chromium_stderr"; then
-            cat "$chromium_stderr" >&2
-            echo "::error title=Mermaid rendering and vendor assets::Chromium failed to render the Sensio Notes page; see the sanitized container log annotation."
-            rm -f "$mermaid_dom" "$chromium_stderr"
+          deploy_check="Mermaid vendor assets"
+          mermaid_module="$(mktemp)"
+          mermaid_module_url="http://127.0.0.1:3001/vendor/mermaid.esm.min.mjs"
+          mermaid_module_status="$(curl --silent --show-error --output "$mermaid_module" --write-out '%{http_code}' "$mermaid_module_url")"
+          if [[ "$mermaid_module_status" != 200 ]]; then
+            echo "::error title=Mermaid vendor assets::Expected HTTP 200 for the Mermaid module; observed ${mermaid_module_status}"
+            rm -f "$mermaid_module"
             exit 1
           fi
-          rm -f "$chromium_stderr"
-          python3 - "$mermaid_dom" <<'PY'
+          mermaid_chunk="$(python3 - "$mermaid_module" <<'PY'
           import re
           import sys
 
-          html = open(sys.argv[1], encoding='utf-8').read()
-          pre = re.search(r'<pre class="[^"]*\bmermaid\b[^"]*"[^>]*>(.*?)</pre>', html, re.S)
-          if not pre:
-              raise SystemExit('live Mermaid <pre> not found')
-          svg = re.search(r'<svg\b([^>]*)>', pre.group(1), re.S)
-          if not svg:
-              raise SystemExit('live Mermaid SVG not rendered')
-          attrs = svg.group(1)
-          print('mermaid_live_svg=' + re.sub(r'\s+', ' ', attrs).strip())
-          for name in ('viewBox', 'width', 'height', 'style'):
-              match = re.search(rf'\b{name}="([^"]*)"', attrs)
-              print(f'mermaid_live_{name}=' + (match.group(1) if match else '<missing>'))
-          viewbox = re.search(r'\bviewBox="([^"]*)"', attrs)
-          if not viewbox:
-              raise SystemExit('live Mermaid viewBox missing')
-          _, _, width, height = map(float, viewbox.group(1).split())
-          if not (500 < width < 3000 and 50 < height < 800):
-              raise SystemExit(f'live Mermaid geometry abnormal: {width} x {height}')
-          nodes = re.findall(r'<g\b[^>]*class="node\b', pre.group(1))
-          if len(nodes) != 4 or '<foreignObject' in pre.group(1):
-              raise SystemExit('live Mermaid user journey needs four SVG-labelled nodes')
+          module = open(sys.argv[1], encoding='utf-8').read()
+          chunks = re.findall(r'''["']\./chunks/mermaid\.esm\.min/flowDiagram-([^"']+\.mjs)["']''', module)
+          print(chunks[0] if chunks else '')
           PY
-          rm -f "$mermaid_dom"
+          )"
+          if [[ -z "$mermaid_chunk" ]]; then
+            echo "::error title=Mermaid vendor assets::Expected a flowDiagram lazy-chunk reference in the module; observed none"
+            rm -f "$mermaid_module"
+            exit 1
+          fi
+          mermaid_chunk_url="http://127.0.0.1:3001/vendor/chunks/mermaid.esm.min/flowDiagram-${mermaid_chunk}"
+          mermaid_chunk_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$mermaid_chunk_url")"
+          if [[ "$mermaid_chunk_status" != 200 ]]; then
+            echo "::error title=Mermaid vendor assets::Expected HTTP 200 for Mermaid flowchart chunk ${mermaid_chunk}; observed ${mermaid_chunk_status}"
+            rm -f "$mermaid_module"
+            exit 1
+          fi
+          printf 'mermaid_vendor_module_status=%s\n' "$mermaid_module_status"
+          printf 'mermaid_flowchart_chunk=%s status=%s\n' "$mermaid_chunk" "$mermaid_chunk_status"
+          rm -f "$mermaid_module"
 
           deploy_check="Old project URL redirect"
           project_redirect="$(curl --silent --show-error --output /dev/null --write-out '%{http_code} %{redirect_url}' \

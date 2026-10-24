@@ -44,7 +44,7 @@
         src={profile.image}
         srcset={profileSrcset}
         sizes="(min-width: 1536px) 760px, (min-width: 1024px) 44vw, calc(100vw - 3rem)"
-        alt={profile.name}
+        alt="Faris Munir Mahdi wearing a black suit and tie"
         eager
       />
       </div>

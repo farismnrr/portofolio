@@ -145,15 +145,55 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          deploy_check="Deploy setup"
+
+          report_deploy_failure() {
+            local status="$1"
+            local failed_command="$2"
+            local container_id
+            local logs
+            echo "::error title=${deploy_check}::Command failed with exit ${status}: ${failed_command}"
+            container_id="$(docker compose -p portofolio ps -q portfolio 2>/dev/null || true)"
+            if [[ -n "$container_id" ]]; then
+              logs="$(docker logs --tail 40 "$container_id" 2>&1 || true)"
+            else
+              logs="$(docker logs --tail 40 portofolio-portfolio-1 2>&1 || true)"
+            fi
+            logs="$(printf '%s' "$logs" | sed -E \
+              -e 's#(postgres(ql)?://)[^/@[:space:]]+(:[^/@[:space:]]+)?@#\1<redacted>@#g' \
+              -e 's#(Bearer )[A-Za-z0-9._~+/=-]+#\1<redacted>#g' \
+              -e 's#((api[_-]?key|password|token)[=:][[:space:]]*)[^[:space:]]+#\1<redacted>#Ig' \
+              -e 's#(https?://)[^/@[:space:]]+:[^/@[:space:]]+@#\1<redacted>@#g')"
+            logs="${logs//%/%25}"
+            logs="${logs//$'\r'/%0D}"
+            logs="${logs//$'\n'/%0A}"
+            echo "::error title=Portfolio container logs (tail 40)::$logs"
+          }
+          trap 'report_deploy_failure "$?" "$BASH_COMMAND"' ERR
+
+          deploy_check="PORTFOLIO_DATABASE_URL secret"
           : "${PORTFOLIO_DATABASE_URL:?Configure the PORTFOLIO_DATABASE_URL repository secret}"
-          test "$(docker inspect --format '{{.State.Health.Status}}' shared-postgres)" = healthy
+
+          deploy_check="shared-postgres health"
+          postgres_health="$(docker inspect --format '{{.State.Health.Status}}' shared-postgres)"
+          if [[ "$postgres_health" != healthy ]]; then
+            echo "::error title=shared-postgres health::Expected healthy; observed ${postgres_health}"
+            exit 1
+          fi
+
+          deploy_check="Compose configuration"
           docker compose -p portofolio config --quiet
+
+          deploy_check="Compose application startup"
           docker compose -p portofolio up -d --remove-orphans --no-build
+          deploy_check="Compose application status"
           docker compose -p portofolio ps
 
+          deploy_check="Homepage reachable"
           curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             http://127.0.0.1:3001/ > /dev/null
 
+          deploy_check="Homepage media hydration"
           hydration_dom="$(mktemp)"
           chromium_stderr="$(mktemp)"
           if ! docker compose -p portofolio exec -T \
@@ -171,6 +211,7 @@ jobs:
             http://127.0.0.1:3001/ \
             > "$hydration_dom" 2> "$chromium_stderr"; then
             cat "$chromium_stderr" >&2
+            echo "::error title=Homepage media hydration::Chromium failed to render the homepage DOM; see the sanitized container log annotation."
             rm -f "$hydration_dom" "$chromium_stderr"
             exit 1
           fi
@@ -190,6 +231,7 @@ jobs:
           PY
           rm -f "$hydration_dom"
 
+          deploy_check="Mermaid rendering and vendor assets"
           mermaid_dom="$(mktemp)"
           chromium_stderr="$(mktemp)"
           if ! docker compose -p portofolio exec -T \
@@ -207,6 +249,7 @@ jobs:
             http://127.0.0.1:3001/projects/sensio-notes \
             > "$mermaid_dom" 2> "$chromium_stderr"; then
             cat "$chromium_stderr" >&2
+            echo "::error title=Mermaid rendering and vendor assets::Chromium failed to render the Sensio Notes page; see the sanitized container log annotation."
             rm -f "$mermaid_dom" "$chromium_stderr"
             exit 1
           fi
@@ -239,11 +282,16 @@ jobs:
           PY
           rm -f "$mermaid_dom"
 
+          deploy_check="Old project URL redirect"
           project_redirect="$(curl --silent --show-error --output /dev/null --write-out '%{http_code} %{redirect_url}' \
             --max-redirs 0 http://127.0.0.1:3001/projects/sensio-notes)"
-          test "$project_redirect" = '301 http://127.0.0.1:3001/projects'
+          if [[ "$project_redirect" != '301 http://127.0.0.1:3001/projects' ]]; then
+            echo "::error title=Old project URL redirect::Expected '301 http://127.0.0.1:3001/projects'; observed '${project_redirect}'"
+            exit 1
+          fi
           printf 'old_project_redirect=%s\n' "$project_redirect"
 
+          deploy_check="Profile image cache headers"
           asset_url="http://127.0.0.1:3001/images/profile/faris-munir-1024.webp"
           asset_headers="$(mktemp)"
           trap 'rm -f "$asset_headers"' EXIT
@@ -252,35 +300,51 @@ jobs:
             -o /dev/null \
             "$asset_url"
           etag="$(awk 'BEGIN { IGNORECASE=1 } /^etag:/ { gsub(/\r/, "", $2); print $2; exit }' "$asset_headers")"
-          test -n "$etag"
+          if [[ -z "$etag" ]]; then
+            echo "::error title=Profile image cache headers::Expected a nonempty ETag; observed none"
+            exit 1
+          fi
           asset_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
             -H "If-None-Match: $etag" \
             "$asset_url")"
-          test "$asset_status" = "304"
+          if [[ "$asset_status" != 304 ]]; then
+            echo "::error title=Profile image cache headers::Expected conditional request status 304; observed ${asset_status}"
+            exit 1
+          fi
           printf 'asset_conditional_cache_status=%s\n' "$asset_status"
 
+          deploy_check="CV retrieval database evidence"
           retrieve="$(curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
             -X POST http://127.0.0.1:3001/api/cv/retrieve \
             -H 'Content-Type: application/json' \
             --data '{"target":"general","query":"backend PostgreSQL Rust Docker","limit":6}')"
-          printf '%s\n' "$retrieve" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("backend") == "pgvector+postgres-fts", "retrieval backend is not pgvector+postgres-fts"; assert d.get("evidence"), "retrieval evidence is empty"; print("retrieval_backend=" + d["backend"]); print("retrieval_evidence_count=" + str(len(d["evidence"])))'
+          printf '%s\n' "$retrieve" | python3 -c 'import json,sys; d=json.load(sys.stdin); backend=d.get("backend"); evidence=d.get("evidence") or []; count=len(evidence); print("retrieval_backend=" + str(backend)); print("retrieval_evidence_count=" + str(count)); fail=lambda message: (print("::error title=CV retrieval database evidence::" + message), sys.exit(1)); backend == "pgvector+postgres-fts" or fail("Expected backend pgvector+postgres-fts; observed " + str(backend)); count > 0 or fail("Expected nonempty evidence; observed count 0")'
 
+          deploy_check="AI chat response"
           ai_response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
             -X POST http://127.0.0.1:3001/api/ai/chat \
             -H 'Content-Type: application/json' \
             --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
-          printf '%s\n' "$ai_response" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("message", "").strip(), "AI response is empty"; print("ai_response_nonempty=true")'
+          printf '%s\n' "$ai_response" | python3 -c 'import json,sys; d=json.load(sys.stdin); size=len(d.get("message", "").strip()); print("ai_response_chars=" + str(size)); size > 0 or (print("::error title=AI chat response::Expected a nonempty answer; observed 0 characters"), sys.exit(1))'
 
+          deploy_check="Role Match development UI"
           about_html="$(mktemp)"
           curl --fail --silent --show-error --retry 5 --retry-delay 2 \
             http://127.0.0.1:3001/about > "$about_html"
-          grep -Fq 'Match a role' "$about_html"
+          if ! grep -Fq 'Match a role' "$about_html"; then
+            echo "::error title=Role Match development UI::Expected 'Match a role' in /about HTML; observed no matching text"
+            exit 1
+          fi
           rm -f "$about_html"
           printf 'role_match_dev_ui_present=true\n'
 
+          deploy_check="Role Match development endpoint"
           role_match_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
             -X POST http://127.0.0.1:3001/api/role-match/report \
             -H 'Content-Type: application/json' \
             --data '{"jobDescription":"short"}')"
-          test "$role_match_status" = "400"
+          if [[ "$role_match_status" != 400 ]]; then
+            echo "::error title=Role Match development endpoint::Expected HTTP 400 for an invalid short request; observed ${role_match_status}"
+            exit 1
+          fi
           printf 'role_match_dev_endpoint_status=%s\n' "$role_match_status"

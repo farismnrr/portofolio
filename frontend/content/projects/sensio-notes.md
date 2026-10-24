@@ -19,7 +19,7 @@ repoUrl: ""
 ## What it is
 
 Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
-I work on it as part of a team with AI, infrastructure, security, and UI/UX engineers.
+I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR

@@ -18,7 +18,7 @@ repoUrl: ""
 ---
 ## What it is
 
-Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. A team builds it across application engineering, device integration, infrastructure, security, and UI/UX.
+Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. I work on it with AI, IoT, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR

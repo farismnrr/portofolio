@@ -8,6 +8,7 @@ const variants = [640, 1280];
 const defaultVariantMaxBytes = 300_000;
 const totalVariantsMaxBytes = 2_000_000;
 const sourceManifest = resolve(publicDir, 'project-source-images.txt');
+const projectImagesDir = resolve(publicDir, 'images/projects');
 
 function unquote(value) {
   const trimmed = value.trim();
@@ -20,32 +21,64 @@ function unquote(value) {
   return trimmed;
 }
 
-function coverPath(source, file) {
+function projectImages(source, file) {
   const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const imageLine = frontmatter?.[1].match(/^image:\s*(.+)$/m);
   if (!imageLine) throw new Error(`${file}: missing project image frontmatter`);
-  const image = unquote(imageLine[1]);
-  if (!/^\/images\/projects\/.+\.(?:png|jpe?g)$/i.test(image)) {
-    throw new Error(`${file}: unsupported project cover source ${image}`);
+  const cover = unquote(imageLine[1]);
+  const imagesLine = frontmatter?.[1].match(/^images:\s*(.+)$/m);
+  const images = imagesLine
+    ? imagesLine[1].trim().slice(1, -1).split(',').map(unquote).filter(Boolean)
+    : [cover];
+  if (!images.includes(cover)) images.unshift(cover);
+  const body = source.slice(frontmatter?.[0].length ?? 0);
+
+  for (const image of images) {
+    if (!/^\/images\/projects\/.+\.(?:png|jpe?g)$/i.test(image)) {
+      throw new Error(`${file}: unsupported project image source ${image}`);
+    }
+    if (body.includes(image)) {
+      throw new Error(`${file}: project image ${image} is also referenced in the Markdown body`);
+    }
   }
-  if (source.split(image).length - 1 !== 1) {
-    throw new Error(`${file}: project cover ${image} is also referenced in the Markdown body`);
-  }
-  return image;
+  return images;
 }
 
 const files = (await readdir(projectDir)).filter((file) => file.endsWith('.md')).sort();
 const covers = [];
 for (const file of files) {
   const source = await readFile(resolve(projectDir, file), 'utf8');
-  covers.push({ file, image: coverPath(source, file) });
+  covers.push({ file, images: projectImages(source, file) });
 }
 
-const uniqueCovers = [...new Map(covers.map((item) => [item.image, item])).values()];
+const uniqueImages = [...new Map(
+  covers.flatMap(({ file, images }) => images.map((image) => [image, { file, image }]))
+).values()];
+const referencedVariants = new Set(
+  uniqueImages.flatMap(({ image }) =>
+    variants.map((width) => image.replace(/\.(?:png|jpe?g)$/i, `-${width}.webp`).replace(/^\//, ''))
+  )
+);
+const unusedVariants = [];
+const referencedSources = new Set(uniqueImages.map(({ image }) => image.replace(/^\//, '')));
+const unusedSources = [];
+for (const directory of await readdir(projectImagesDir, { withFileTypes: true })) {
+  if (!directory.isDirectory()) continue;
+  const absoluteDirectory = resolve(projectImagesDir, directory.name);
+  for (const file of await readdir(absoluteDirectory)) {
+    if (/\.(?:png|jpe?g)$/i.test(file)) {
+      const relativePath = `images/projects/${directory.name}/${file}`;
+      if (!referencedSources.has(relativePath)) unusedSources.push(relativePath);
+    }
+    if (!/-\d+\.webp$/i.test(file)) continue;
+    const relativePath = `images/projects/${directory.name}/${file}`;
+    if (!referencedVariants.has(relativePath)) unusedVariants.push(relativePath);
+  }
+}
 let total = 0;
 const summaries = [];
 
-for (const { file, image } of uniqueCovers) {
+for (const { file, image } of uniqueImages) {
   const source = resolve(publicDir, image.replace(/^\//, ''));
   const sourceInfo = await stat(source);
   const extension = extname(source);
@@ -83,7 +116,11 @@ if (total > totalVariantsMaxBytes) {
 
 await writeFile(
   sourceManifest,
-  `${uniqueCovers.map(({ image }) => image.replace(/^\//, '')).join('\n')}\n`,
+  `${[
+    ...uniqueImages.map(({ image }) => image.replace(/^\//, '')),
+    ...unusedSources,
+    ...unusedVariants
+  ].join('\n')}\n`,
   'utf8'
 );
 

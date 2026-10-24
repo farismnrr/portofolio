@@ -1,16 +1,17 @@
 ---
-id: "08"
-order: 8
+id: "09"
+order: 9
 slug: parentify
 year: "Nov — Dec 2023"
 title: "Parentify: Parenting Companion"
 cardTitle: "Parentify"
 subtitle: "Parenting guidance and food recognition"
 role: "Cloud · Backend"
+kind: Personal
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
+description: "Parentify pairs parenting articles with food-photo recognition in an Android app built for the Bangkit capstone."
 image: "/images/projects/parentify/showcase.png"
-tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
+tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---

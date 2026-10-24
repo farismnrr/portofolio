@@ -1,17 +1,16 @@
 import { certifications, education, experiences, profile } from './structured-content';
 import { projects } from './project-content';
 import { CV_CONTRACT_VERSION, getCvProfile, type CvTarget } from './cv-profiles';
-import editorial from '../../content/cv-editorial.json';
+import { cvEditorial as editorial } from './cv-editorial';
 
 interface CvDraft {
   profileSummary: { text: string };
-  projects: { sourceId: string; narrative: string }[];
+  projects: { sourceId: string; narrative: string; techStack?: string }[];
   certifications: { sourceId: string }[];
-  employmentBullets?: string[];
   excludeExperienceOrders?: number[];
-  employmentSummary?: string;
   professionalExperienceOrders?: number[];
-  experienceBullets?: Record<string, string[]>;
+  experienceDescriptions?: Record<string, string>;
+  employmentBullets?: Record<string, string[]>;
   educationNote?: string;
 }
 
@@ -21,7 +20,6 @@ function contactLine() {
     email,
     '+62 852-1565-2903',
     'Portfolio: https://farismnrr.com',
-    profile.github.replace(/^https?:\/\//, '').replace(/\/$/, ''),
     profile.linkedin.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
   ].join(' | ');
 }
@@ -32,23 +30,36 @@ function absolutePortfolioUrl(value: string) {
   return `https://farismnrr.com${value.startsWith('/') ? value : `/${value}`}`;
 }
 
-function projectWebUrl(slug: string) {
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) return '';
-  return `https://farismnrr.com/projects/${encodeURIComponent(project.slug)}`;
-}
-
 function projectMeta(slug: string) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return '';
-  const company = experiences.find((item) => item.projects.includes(slug))?.company;
-  const link = (project.productUrl || project.repoUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
-  const personal = /^personal/i.test(project.category) ? 'Personal' : '';
-  return [company || personal, link, project.year].filter(Boolean).join(' | ');
+  if (project.productUrl.toLowerCase() === 'nda') return 'Under NDA';
+  const publicUrl = [project.productUrl, project.repoUrl].find((url) => /^https?:\/\//i.test(url));
+  return publicUrl?.replace(/^https?:\/\//i, '').replace(/\/$/, '') ?? '';
 }
 
-function cvPlainText(value: string) {
-  return value.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\*\*/g, '').replace(/^I work /, 'Works ').replace(/^I build /, 'Builds ').replace(/^I also handle /, 'Handles ');
+function projectCvTitle(slug: string, title: string) {
+  return editorial.projects.find((project) => project.sourceId === slug)?.cvTitle ?? title;
+}
+
+function cvDate(value: string) {
+  return value
+    .replace(/\bJan\b/g, 'January')
+    .replace(/\bFeb\b/g, 'February')
+    .replace(/\bMar\b/g, 'March')
+    .replace(/\bApr\b/g, 'April')
+    .replace(/\bJun\b/g, 'June')
+    .replace(/\bJul\b/g, 'July')
+    .replace(/\bAug\b/g, 'August')
+    .replace(/\bSep\b/g, 'September')
+    .replace(/\bOct\b/g, 'October')
+    .replace(/\bNov\b/g, 'November')
+    .replace(/\bDec\b/g, 'December')
+    .replace(/\s*[—–-]\s*/g, ' – ');
+}
+
+function experienceCvTitle(order: number, role: string, company: string) {
+  return `${editorial.experienceTitles[String(order)] ?? role} | ${company}`;
 }
 
 export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
@@ -58,27 +69,15 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
     .filter((source) => !draft.excludeExperienceOrders?.includes(source.order))
     .map((source) => {
 
-      const relatedProjects = source.projects
-        .map((slug) => {
-          const project = projects.find((candidate) => candidate.slug === slug);
-          if (!project) return null;
-
-          return {
-            title: project.title,
-            url: projectWebUrl(project.slug)
-          };
-        })
-        .filter((project): project is NonNullable<typeof project> => Boolean(project));
-
       const professional = source.kind === 'employment' || Boolean(draft.professionalExperienceOrders?.includes(source.order));
 
       return {
         kind: professional ? 'employment' : source.kind,
-        title: `${source.role} | ${source.company}`,
-        meta: [source.year, source.kind === 'program' ? '' : source.location].filter(Boolean).join(' | '),
-        summary: source.kind === 'program' ? '' : source.order === 1 && draft.employmentSummary !== undefined ? draft.employmentSummary : cvPlainText(source.summary),
-        relatedProjects: [] as typeof relatedProjects,
-        bullets: source.kind === 'employment' && source.order === 1 && draft.employmentBullets ? draft.employmentBullets : draft.experienceBullets?.[String(source.order)] ? draft.experienceBullets[String(source.order)] : source.bullets.slice(0, source.kind === 'employment' ? 4 : 1).map(cvPlainText)
+        title: experienceCvTitle(source.order, source.role, source.company),
+        meta: cvDate(source.year),
+        summary: draft.experienceDescriptions?.[String(source.order)] ?? '',
+        relatedProjects: [],
+        bullets: draft.employmentBullets?.[String(source.order)] ?? []
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -89,10 +88,12 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
       if (!source) return null;
 
       return {
-        title: source.title,
+        title: projectCvTitle(source.slug, source.title),
+        kind: source.kind,
         meta: projectMeta(source.slug),
         narrative: item.narrative,
-        url: projectWebUrl(source.slug)
+        techStack: item.techStack ?? [...new Set(source.tech)].join(', '),
+        url: ''
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -106,7 +107,7 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
 
       return {
         title: source.group === 'BNSP' ? `BNSP: ${source.title}` : source.title,
-        meta: [source.issuer, source.year].filter(Boolean).join(' | '),
+        meta: [source.issuer, cvDate(source.year)].filter(Boolean).join(' | '),
         url: absolutePortfolioUrl(source.url)
       };
     })

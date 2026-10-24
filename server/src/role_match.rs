@@ -466,7 +466,7 @@ fn escape(text: &str) -> String {
 
 fn source_url(source: &PortfolioEvidence) -> String {
     match source.source_type.as_str() {
-        "project" => format!("https://farismnrr.com/projects/{}", source.source_id),
+        "project" => "https://farismnrr.com/projects".to_string(),
         "blog" => format!("https://farismnrr.com/blog/{}", source.source_id),
         "principle" => "https://farismnrr.com/".into(),
         "skill" => "https://farismnrr.com/skills".into(),

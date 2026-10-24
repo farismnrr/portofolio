@@ -15,9 +15,9 @@
         <span>{profile.role}</span>
       </div>
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
-        <a class="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/[0.05] hover:text-black" href={profile.github} aria-label="GitHub"><AppIcon name="github" size={15}/></a>
-        <a class="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/[0.05] hover:text-black" href={profile.linkedin} aria-label="LinkedIn"><AppIcon name="linkedin" size={15}/></a>
-        <a class="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/[0.05] hover:text-black" href={profile.email} aria-label={`Email ${profile.name}`} title={profile.email.replace(/^mailto:/, '')}><AppIcon name="mail" size={15}/></a>
+        <a class="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-black/[0.05] hover:text-black" href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><AppIcon name="github" size={15}/></a>
+        <a class="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-black/[0.05] hover:text-black" href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><AppIcon name="linkedin" size={15}/></a>
+        <a class="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-black/[0.05] hover:text-black" href={profile.email} aria-label={`Email ${profile.name}`} title={profile.email.replace(/^mailto:/, '')}><AppIcon name="mail" size={15}/></a>
         <span class="basis-full pt-1 sm:ml-1 sm:basis-auto sm:pt-0">© {year} {profile.name}</span>
       </div>
     </div>

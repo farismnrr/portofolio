@@ -2,8 +2,8 @@
 slug: home
 eyebrow: Portfolio
 title: Home
-subtitle: "Fullstack engineer in Jakarta building backend services and web and mobile apps."
-description: "Faris Munir Mahdi is a fullstack engineer in Jakarta, building backend services and web and mobile apps."
+subtitle: ""
+description: "Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments."
 primaryAction: About me
 secondaryAction: Contact
 experienceLabel: Selected experience
@@ -14,4 +14,4 @@ aboutLabel: About
 aboutAction: More about me
 ---
 
-Backend services and web and mobile apps, mostly for meeting and IoT products.
+Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.

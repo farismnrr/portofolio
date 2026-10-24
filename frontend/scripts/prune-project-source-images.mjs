@@ -17,5 +17,5 @@ for (const path of paths) {
 await unlink(manifest);
 
 process.stdout.write(
-  `Pruned ${paths.length} source project images from dist (${removedBytes}B); responsive WebPs remain.\n`
+  `Pruned ${paths.length} source images and unused WebPs from dist (${removedBytes}B).\n`
 );

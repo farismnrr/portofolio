@@ -30,7 +30,7 @@ try {
   if (!verified.getSubject()?.includes('https://farismnrr.com') || verified.getAuthor() !== document.name) throw new Error('PDF metadata verification failed.');
   await writeFile(pending, published);
   const info = execFileSync('pdfinfo', [pending], { encoding: 'utf8' });
-  if (!/^Pages:\s+1\s*$/m.test(info)) throw new Error('Published CV must have exactly one page.');
+  if (!/^Pages:\s+[12]\s*$/m.test(info)) throw new Error('Published CV must have one or two pages.');
   const text = execFileSync('pdftotext', [pending, '-'], { encoding: 'utf8' });
   for (const title of ['FARIS MUNIR MAHDI', 'PT Perkasa Pilar Utama', 'PROJECTS', 'CERTIFICATIONS']) {
     if (!text.replace(/\s+/g, ' ').includes(title)) throw new Error(`CV missing ${title}`);

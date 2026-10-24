@@ -2,12 +2,10 @@
 slug: about
 eyebrow: About me
 title: About
-subtitle: "Fullstack engineer. A meeting assistant and an IoT platform at work, an open-source AI workspace on the side."
-description: "Faris Munir Mahdi is a fullstack engineer in Jakarta working on a meeting assistant and an IoT platform."
+subtitle: ""
+description: "Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments."
 ---
 
-I am Faris, a fullstack engineer based in Jakarta.
+Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.
 
-Since July 2025 I have worked at PT Perkasa Pilar Utama on a meeting assistant and an IoT platform. I studied Informatics at UPN Veteran East Java and graduated with cum laude honors.
-
-Outside work I build my own projects, including an open-source [AI workspace](/projects/ai-workspace) and an IoT management platform. The rest are on the [projects](/projects) page.
+I studied Informatics and graduated cum laude.

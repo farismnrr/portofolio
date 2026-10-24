@@ -2,7 +2,7 @@ import { mkdir, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
-const source = resolve(new URL('../assets-source/profile/faris-munir.png', import.meta.url).pathname);
+const source = resolve(new URL('../assets-source/profile/faris-munir-formal.jpg', import.meta.url).pathname);
 const outputDir = resolve(new URL('../public/images/profile', import.meta.url).pathname);
 const variants = [640, 1024, 1536];
 const defaultVariantMaxBytes = 150_000;
@@ -16,7 +16,10 @@ for (const width of variants) {
   const output = resolve(outputDir, `faris-munir-${width}.webp`);
   const info = await sharp(source)
     .autoOrient()
-    .resize({ width, withoutEnlargement: true })
+    // Keep the original portrait and red background. A top-aligned square crop
+    // retains the hairline when the homepage's wider frame uses object-fit: cover.
+    .extract({ left: 0, top: 0, width: 3049, height: 3049 })
+    .resize({ width, height: width, fit: 'fill' })
     .webp({ quality: 82, effort: 5 })
     .toFile(output);
   results.push({ width, size: info.size });

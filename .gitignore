@@ -14,9 +14,24 @@ frontend/public/project-source-images.txt
 release/amd64/
 target/
 server/target/
+server/generated/cv-profiles.json
 server/Cargo.lock
 .DS_Store
 .env
 *.pdf
 
 !frontend/public/downloads/*.pdf
+.env.*
+*.pem
+*.key
+id_rsa*
+node_modules
+.next
+.nuxt
+.output
+dist
+target
+__pycache__
+.venv
+
+project-notes/

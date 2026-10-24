@@ -1,16 +1,18 @@
 ---
-id: "02"
-order: 2
+id: "05"
+order: 5
 slug: ai-workspace
 year: "2026"
-title: "AI Workspace for Non-Developers"
-cardTitle: "AI Workspace"
-subtitle: "For Non-Developers"
+title: "Masih Awam Workspace"
+cardTitle: "Masih Awam Workspace"
+subtitle: "Build software with an AI team."
 role: "Solo Developer"
+kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
-image: "/images/projects/featured/ai-workspace.png"
-tech: [Go, Svelte, Docker, MCP]
+description: "Masih Awam Workspace turns a software request into tasks for an AI team, then shows the work and evidence for review."
+image: "/images/projects/masih-awam-workspace/cover.png"
+imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
+techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
@@ -20,7 +22,7 @@ repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 AI can now build and fix software for someone who cannot read code. What that person cannot do is check the result.
 When the AI says "it works", they either believe it or skip the tool.
 
-I built AI Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
+I built Masih Awam Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
 
 ## How a request flows
 
@@ -129,6 +131,17 @@ You switch individual abilities on or off, and every call is logged.
 Whoever controls the Docker socket controls the host, so the docs recommend rootless Docker.
 The sandbox does not cover disk quotas or the kernel that every container shares.
 A team costs more time and tokens than a single agent, which is why the lead sizes a job first.
+
+## What I Did
+
+- Designed and developed Masih Awam Workspace end-to-end, covering frontend, backend, AI orchestration, and infrastructure.
+- Built a multi-agent system with specialized roles for research, planning, design, development, security, testing, and code review.
+- Implemented agent orchestration with configurable models, tool permissions, task delegation, and human approval workflows.
+- Developed a task management system with live progress tracking, resumable sessions, file changes, and verification reports.
+- Built isolated Docker environments for code execution, automated testing, browser previews, and application hosting.
+- Integrated MCP and OAuth 2.1 to let external AI applications access workspace tools and projects with controlled permissions.
+- Added GitHub integration, support for multiple AI providers, and automated CI/CD pipelines for building and deploying the platform.
+- Packaged the Svelte frontend and Go backend into a single executable for simpler deployment.
 
 ## Links
 

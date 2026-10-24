@@ -1,6 +1,6 @@
 # Faris Munir Mahdi
 
-> Fullstack Engineer. I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, an open-source AI workspace.
+> Software Engineer. Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.
 
 Canonical website: https://farismnrr.com/
 GitHub: https://github.com/farismnrr
@@ -18,16 +18,15 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 
 ## Projects
 
-- AI Workspace for Non-Developers: https://farismnrr.com/projects/ai-workspace | Source: https://github.com/farismnrr/agentic-ai-workspace
-- AskIn: AI Workspace: https://farismnrr.com/projects/askin | Source: https://github.com/farismnrr/askin
-- GiziLens: A Team Capstone Around Food Recognition: https://farismnrr.com/projects/gizilens | Source: https://github.com/orgs/Group-CC25-CF047/repositories
-- IoTNet: IoT Operations Platform: https://farismnrr.com/projects/iotnet
-- Masih Awam LMS: Game-Based Learning Platform: https://farismnrr.com/projects/masih-awam-lms
-- Multi-Tenant User Management Service: https://farismnrr.com/projects/multitenant-user-management | Source: https://github.com/farismnrr/Multitenant-User-Management-Service
-- Parentify: Parenting Companion: https://farismnrr.com/projects/parentify | Source: https://github.com/orgs/Parentify/repositories
-- Personal Portfolio Website: https://farismnrr.com/projects/portfolio-website | Source: https://github.com/farismnrr/portofolio
-- Sensio IoT: Smart-Space Platform: https://farismnrr.com/projects/sensio-iot
-- Sensio Notes: Meeting Intelligence Platform: https://farismnrr.com/projects/sensio-notes
+- Masih Awam Workspace | Source: https://github.com/farismnrr/agentic-ai-workspace
+- AskIn: AI Workspace | Source: https://github.com/farismnrr/askin
+- GiziLens: A Team Capstone Around Food Recognition | Source: https://github.com/orgs/Group-CC25-CF047/repositories
+- IoTNet: IoT Operations Platform
+- Parentify: Parenting Companion | Source: https://github.com/orgs/Parentify/repositories
+- Personal Portfolio Website | Source: https://github.com/farismnrr/portofolio
+- PUKAT: Business Networking Platform
+- Sensio IoT: Smart-Space Platform
+- Sensio Notes: Meeting Intelligence Platform
 
 ## Writing
 

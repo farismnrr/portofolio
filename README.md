@@ -13,7 +13,7 @@ The site uses Svelte for the frontend and a small Rust + Axum runtime for produc
 - Development and release workflows: `.github/workflows/`
 - Orange Pi production deployment files: `deploy/orangepi/`
 
-Most portfolio data is Markdown-driven. Projects, experience, education, skills, certifications, gallery entries, and page copy can be updated without hardcoding new UI data.
+Most portfolio data is Markdown-driven. Projects, experience, education, skills, certifications, gallery entries, page copy, and CV profiles can be updated without hardcoding new UI data. CV profile files live in `frontend/content/cv-profiles/`; the Rust server embeds a JSON registry generated from those Markdown files during `npm run build` and `npm run cv:check`. The generated `server/generated/cv-profiles.json` file is gitignored and is never hand-authored.
 
 ## Main stack
 
@@ -49,7 +49,7 @@ npm run build
 
 Content is stored under `frontend/content/`.
 
-Project pages are regular Markdown files with frontmatter. The same content collection drives project listings, homepage selections, and detail pages, so adding or changing a project normally does not require a project-specific Svelte component.
+Projects are regular Markdown files with frontmatter. The same content collection drives the project cards, project modal, and homepage selections, so adding or changing a project normally does not require a project-specific Svelte component.
 
 Visible Markdown copy is checked by the repository writing-style guard. It catches a small set of high-confidence style problems and reports softer warnings such as overly long sentences or repeated writing patterns.
 

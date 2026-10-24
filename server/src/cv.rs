@@ -39,11 +39,13 @@ pub struct ScopeLine {
 }
 
 #[derive(Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ProjectSection {
     title: String,
+    kind: String,
     meta: String,
     narrative: String,
-    url: String,
+    tech_stack: String,
 }
 
 #[derive(Clone, Deserialize)]
@@ -55,6 +57,7 @@ pub struct ExperienceSection {
     meta: String,
     summary: String,
     related_projects: Vec<ProjectReference>,
+    #[serde(default)]
     bullets: Vec<String>,
 }
 
@@ -83,56 +86,36 @@ struct DensityProfile {
     vertical_margin: f32,
 }
 
-const DENSITY_PROFILES: [DensityProfile; 5] = [
+const DENSITY_PROFILES: [DensityProfile; 3] = [
     DensityProfile {
-        name: "tight",
-        body_size: 10.0,
-        line_height: 1.28,
-        section_gap: 7.0,
-        item_gap: 5.0,
-        bullet_gap: 1.5,
-        horizontal_margin: 0.55,
-        vertical_margin: 0.38,
-    },
-    DensityProfile {
-        name: "compact",
-        body_size: 10.0,
-        line_height: 1.34,
-        section_gap: 9.0,
-        item_gap: 7.0,
-        bullet_gap: 3.0,
-        horizontal_margin: 0.56,
-        vertical_margin: 0.43,
-    },
-    DensityProfile {
-        name: "balanced",
-        body_size: 10.2,
-        line_height: 1.40,
-        section_gap: 10.0,
-        item_gap: 8.0,
+        name: "comfortable",
+        body_size: 10.5,
+        line_height: 1.42,
+        section_gap: 18.0,
+        item_gap: 12.0,
         bullet_gap: 4.0,
-        horizontal_margin: 0.60,
-        vertical_margin: 0.48,
+        horizontal_margin: 0.70,
+        vertical_margin: 0.70,
     },
     DensityProfile {
         name: "roomy",
-        body_size: 10.4,
+        body_size: 10.8,
         line_height: 1.46,
-        section_gap: 12.0,
-        item_gap: 10.0,
+        section_gap: 20.0,
+        item_gap: 14.0,
         bullet_gap: 5.0,
-        horizontal_margin: 0.62,
-        vertical_margin: 0.50,
+        horizontal_margin: 0.72,
+        vertical_margin: 0.72,
     },
     DensityProfile {
         name: "spacious",
-        body_size: 10.6,
-        line_height: 1.50,
-        section_gap: 14.0,
-        item_gap: 12.0,
+        body_size: 11.0,
+        line_height: 1.5,
+        section_gap: 22.0,
+        item_gap: 16.0,
         bullet_gap: 6.0,
-        horizontal_margin: 0.64,
-        vertical_margin: 0.52,
+        horizontal_margin: 0.75,
+        vertical_margin: 0.75,
     },
 ];
 
@@ -262,19 +245,19 @@ async fn render_validated_pdf(
         let mut smallest_page_count = usize::MAX;
 
         for density in DENSITY_PROFILES {
-            if density.body_size < profile.layout_policy.min_body_size_pt.max(10.0) {
+            if density.body_size < profile.layout_policy.min_body_size_pt.max(10.5) {
                 continue;
             }
             let candidate = render_candidate(&document, density, pass).await?;
             smallest_page_count = smallest_page_count.min(candidate.1.pages);
 
-            if candidate.1.pages != usize::from(profile.max_pages) {
+            if candidate.1.pages > usize::from(profile.max_pages) {
                 continue;
             }
 
             validate_pdf_contents(&document, &candidate.1)?;
 
-            if profile.max_pages > 1
+            if candidate.1.pages > 1
                 && candidate.1.fill_ratio < profile.layout_policy.min_second_page_fill
             {
                 continue;
@@ -296,13 +279,6 @@ async fn render_validated_pdf(
 
         if let Some(best) = best {
             return Ok(best);
-        }
-
-        if smallest_page_count < usize::from(profile.max_pages) {
-            return Err(format!(
-                "document underfilled: rendered {smallest_page_count} page(s), expected {}",
-                profile.max_pages
-            ));
         }
 
         if trim_lowest_priority_optional_item(&mut document, profile) {
@@ -483,9 +459,9 @@ fn validate_pdf_contents(
     let normalized = normalize_text(&inspection.text);
 
     for heading in [
-        "PROFESSIONAL SUMMARY",
+        "SUMMARY",
         "SKILLS",
-        "PROFESSIONAL EXPERIENCE",
+        "EXPERIENCE",
         "PROJECTS",
         "CERTIFICATIONS",
         "EDUCATION",
@@ -495,13 +471,6 @@ fn validate_pdf_contents(
         }
     }
 
-    if document
-        .experiences
-        .iter()
-        .any(|item| item.kind == "program")
-    {
-        ensure_text_present(&normalized, "TECHNICAL PROGRAMS", "section")?;
-    }
     for experience in &document.experiences {
         ensure_text_present(&normalized, &experience.title, "experience")?;
     }
@@ -598,16 +567,18 @@ fn standalone_project_html(project: &ProjectSection) -> String {
         r#"
         <article class="project">
           <div class="item-heading">
-            <a class="item-title" href="{url}">{title}</a>
-            <span class="item-meta">{meta}</span>
+            <span class="item-title">{title}</span>
+            <span class="item-meta">{kind} | {meta}</span>
           </div>
           <p class="project-narrative">{narrative}</p>
+          <div class="project-tech"><strong>Tech stack:</strong> {tech_stack}</div>
         </article>
         "#,
-        url = escape(&project.url),
         title = escape(&project.title),
+        kind = escape(&project.kind),
         meta = linkify_meta(&project.meta),
         narrative = escape(&project.narrative),
+        tech_stack = escape(&project.tech_stack),
     )
 }
 
@@ -662,11 +633,11 @@ fn experience_html(experience: &ExperienceSection) -> String {
         String::new()
     } else {
         format!(
-            r#"<ul class="bullets">{}</ul>"#,
+            r#"<div class="bullets">{}</div>"#,
             experience
                 .bullets
                 .iter()
-                .map(|bullet| format!("<li>{}</li>", escape(bullet)))
+                .map(|bullet| format!(r#"<div class="bullet">• {}</div>"#, escape(bullet)))
                 .collect::<Vec<_>>()
                 .join("")
         )
@@ -714,17 +685,27 @@ fn certification_html(certification: &CertificationSection) -> String {
 }
 
 fn section(title: &str, body: &str) -> String {
+    section_with_class(title, body, "section")
+}
+
+/// A section that always starts on a new page, so the CV breaks between sections instead of inside one.
+fn section_on_new_page(title: &str, body: &str) -> String {
+    section_with_class(title, body, "section new-page")
+}
+
+fn section_with_class(title: &str, body: &str, class: &str) -> String {
     if body.trim().is_empty() {
         return String::new();
     }
 
     format!(
         r#"
-        <section class="section">
+        <section class="{class}">
           <div class="section-title">{title}</div>
           {body}
         </section>
         "#,
+        class = class,
         title = escape(title),
         body = body,
     )
@@ -747,15 +728,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     let experiences = document
         .experiences
         .iter()
-        .filter(|item| item.kind != "program")
-        .map(experience_html)
-        .collect::<Vec<_>>()
-        .join("");
-
-    let programs = document
-        .experiences
-        .iter()
-        .filter(|item| item.kind == "program")
         .map(experience_html)
         .collect::<Vec<_>>()
         .join("");
@@ -789,7 +761,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
 <title>{name} - CV</title>
 <style>
   @page {{
-    size: Letter;
+    size: A4;
     margin: {vertical_margin}in {horizontal_margin}in;
   }}
 
@@ -840,6 +812,12 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     margin-top: {section_gap}px;
   }}
 
+  .new-page {{
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }}
+
   .section-title {{
     font-size: 11pt;
     font-weight: 700;
@@ -862,11 +840,13 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     widows: 3;
   }}
 
-  .skills {{
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    column-gap: 28px;
+  .project-tech {{
+    margin-top: 2px;
+    font-size: inherit;
+    line-height: inherit;
   }}
+
+  .skills {{ display: block; }}
 
   .skill-line {{
     padding: 1px 0;
@@ -884,8 +864,14 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .experience,
-  .project {{
+  .project,
+  .certification {{
     margin: 0 0 {item_gap}px;
+  }}
+
+  .project:last-child,
+  .certification:last-child {{
+    margin-bottom: 0;
   }}
 
   .item-heading {{
@@ -896,9 +882,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .item-title {{
     font-weight: 700;
     color: #111111;
-    text-decoration: underline;
-    text-decoration-thickness: 0.5px;
-    text-underline-offset: 1px;
   }}
 
   .item-meta,
@@ -919,14 +902,12 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
     content: " | ";
   }}
 
-  .bullets {{
-    margin: 3px 0 0 16px;
-    padding: 0;
-  }}
+  .bullets {{ margin: 3px 0 0; }}
 
-  .bullets li {{
+  .bullet {{
     margin: 0 0 {bullet_gap}px;
-    padding-left: 2px;
+    padding-left: 1em;
+    text-indent: -1em;
     text-align: justify;
     text-align-last: start;
     hyphens: none;
@@ -951,9 +932,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .certification {{
-    font-size: 10pt;
-    line-height: 1.42;
-    padding-bottom: 1px;
+    line-height: inherit;
   }}
 
   .cert-title {{
@@ -965,7 +944,7 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   }}
 
   .education {{
-    margin-bottom: 2px;
+    line-height: inherit;
   }}
 </style>
 </head>
@@ -980,7 +959,6 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   {skills_section}
   {experience_section}
   {projects_section}
-  {programs_section}
   {education_section}
   {certifications_section}
 </body>
@@ -993,16 +971,15 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
             r#"Portfolio: <a href="https://farismnrr.com">https://farismnrr.com</a>"#,
         ),
         summary_section = section(
-            "Professional Summary",
+            "Summary",
             &format!(
                 r#"<p class="summary">{}</p>"#,
                 escape(&document.profile_summary)
             ),
         ),
         skills_section = section("Skills", &format!(r#"<div class="skills">{scopes}</div>"#)),
-        experience_section = section("Professional Experience", &experiences),
-        projects_section = section("Selected Projects", &projects),
-        programs_section = section("Technical Programs", &programs),
+        experience_section = section("Experience", &experiences),
+        projects_section = section_on_new_page("Projects", &projects),
         certifications_section = section(
             "Certifications",
             &format!(r#"<div class="cert-list">{certifications}</div>"#),
@@ -1034,7 +1011,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "requires Chromium and an evidence-backed CV_RENDER_FIXTURE"]
-    async fn renders_one_page_evidence_fixture() {
+    async fn renders_current_cv_fixture() {
         let fixture = std::env::var("CV_RENDER_FIXTURE").expect("fixture path");
         let output = std::env::var("CV_RENDER_OUTPUT").expect("output path");
         let request: CvRenderRequest =
@@ -1045,7 +1022,7 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "employment")
                 .count(),
-            2
+            1
         );
         assert_eq!(
             request
@@ -1053,8 +1030,13 @@ mod tests {
                 .iter()
                 .filter(|item| item.kind == "program")
                 .count(),
-            2
+            4
         );
+        assert!(!request
+            .experiences
+            .iter()
+            .any(|item| item.title.contains("Codepolitan")));
+        assert_eq!(request.projects.len(), 5);
         let candidate = super::render_validated_pdf(request, profiles::get("general").unwrap())
             .await
             .unwrap();
@@ -1076,9 +1058,11 @@ mod tests {
             "projects": [
                 {
                     "title": "Sensio Notes",
+                    "kind": "Professional",
                     "meta": "PT Perkasa Pilar Utama | 2026",
                     "narrative": "Grounded project narrative.",
-                    "url": "https://farismnrr.com/projects/sensio-notes"
+                    "techStack": "React, NestJS, PostgreSQL",
+                    "url": "https://farismnrr.com/projects"
                 }
             ],
             "experiences": [
@@ -1089,7 +1073,7 @@ mod tests {
                     "relatedProjects": [
                         {
                             "title": "Sensio Notes",
-                            "url": "https://farismnrr.com/projects/sensio-notes"
+                            "url": "https://farismnrr.com/projects"
                         }
                     ],
                     "bullets": []
@@ -1113,6 +1097,29 @@ mod tests {
     }
 
     #[test]
+    fn accepts_experience_without_bullets() {
+        let experience = serde_json::json!({
+            "title": "Backend Developer | PT Perkasa Pilar Utama",
+            "meta": "July 2025 - Present | Jakarta",
+            "summary": "Coordinate requirements across engineering teams.",
+            "relatedProjects": []
+        });
+
+        let parsed: super::ExperienceSection = serde_json::from_value(experience)
+            .expect("experience without bullets should deserialize");
+        assert!(parsed.bullets.is_empty());
+        let rendered = super::experience_html(&parsed);
+        assert!(!rendered.contains("class=\"bullets\""));
+    }
+
+    #[test]
+    fn projects_section_starts_on_a_new_page() {
+        let html = super::section_on_new_page("Projects", "<p>x</p>");
+        assert!(html.contains(r#"class="section new-page""#));
+        assert!(super::section("Skills", "<p>x</p>").contains(r#"class="section""#));
+    }
+
+    #[test]
     fn measures_last_page_fill_from_bbox_output() {
         let bbox = r#"
             <page width="612.000000" height="792.000000">
@@ -1132,8 +1139,8 @@ mod tests {
         let profile = profiles::get("general").expect("General profile");
 
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert_eq!(profile.max_pages, 1);
-        assert!(profile.layout_policy.min_body_size_pt >= 10.0);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 2);
+        assert_eq!(profile.max_pages, 2);
+        assert!(profile.layout_policy.min_body_size_pt >= 10.5);
+        assert_eq!(profile.layout_policy.minimum_items.projects, 5);
     }
 }

@@ -40,12 +40,34 @@
     | 'certifications'
     | 'gallery';
 
-  export let name: IconName;
+  export let name: IconName | undefined = undefined;
   export let size = 18;
   export let strokeWidth = 1.8;
+  export let brandPath: string | undefined = undefined;
+  export let brandPaths: string[] | undefined = undefined;
+  export let brandStroke = false;
 </script>
 
-{#if name === 'close'}
+{#if brandPaths}
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    class="shrink-0 fill-none stroke-current"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    {#each brandPaths as path}
+      <path d={path}/>
+    {/each}
+  </svg>
+{:else if brandPath}
+  <svg aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} class={`shrink-0 ${brandStroke ? 'fill-none stroke-current' : 'fill-current'}`} stroke-width={brandStroke ? 1.8 : undefined} stroke-linecap={brandStroke ? 'round' : undefined} stroke-linejoin={brandStroke ? 'round' : undefined}>
+    <path d={brandPath}/>
+  </svg>
+{:else if name === 'close'}
   <IconX {size} stroke={strokeWidth} aria-hidden="true" />
 {:else if name === 'chevron-left'}
   <IconChevronLeft {size} stroke={strokeWidth} aria-hidden="true" />

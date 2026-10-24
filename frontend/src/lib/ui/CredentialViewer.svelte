@@ -32,20 +32,20 @@
   }
 </script>
 
-<dialog bind:this={dialog} on:keydown={handleKey} on:close={() => { if (!dialog.open) dispatch('close'); }} aria-labelledby="credential-title" class="m-auto max-h-[95dvh] w-[calc(100vw-1rem)] max-w-[1000px] border border-black/20 bg-[var(--surface)] p-0 text-black backdrop:bg-black/75">
+<dialog bind:this={dialog} on:keydown={handleKey} on:close={() => { if (!dialog.open) dispatch('close'); }} aria-labelledby="credential-title" class="m-auto max-h-[95dvh] w-[calc(100vw-1rem)] max-w-[1000px] rounded-xl border border-black/20 bg-[var(--surface)] p-0 text-black backdrop:bg-black/75">
   {#if credential}
     <header class="flex items-start justify-between gap-4 border-b border-black/16 p-4 sm:px-6">
       <div>
         <h2 id="credential-title" class="text-[16px] font-semibold leading-6">{credential.title}</h2>
         <p class="mt-1 text-[12px] text-black/58">{credential.issuer}</p>
       </div>
-      <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label="Close credential viewer" on:click={() => dialog.close()}><AppIcon name="close" size={20}/></button>
+      <button type="button" class="btn btn-ghost min-h-11 min-w-11 rounded-lg" aria-label="Close credential viewer" on:click={() => dialog.close()}><AppIcon name="close" size={20}/></button>
     </header>
     <div class="relative px-14 py-3 sm:px-16">
-      <MediaImage src={pages[page]} alt={`${credential.title}, ${page === 0 ? 'front' : 'back'}`} fit="contain" eager className="h-[65dvh] w-full"/>
+      <MediaImage src={pages[page]} alt={`${credential.title}, ${page === 0 ? 'front' : 'back'}`} fit="contain" eager className="h-[65dvh] w-full overflow-hidden rounded-lg"/>
       {#if pages.length > 1}
-        <button type="button" class="btn btn-ghost btn-circle absolute left-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 sm:left-2" aria-label="Previous credential page" disabled={page === 0} on:click={() => navigate(-1)}><AppIcon name="chevron-left" size={24}/></button>
-        <button type="button" class="btn btn-ghost btn-circle absolute right-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 sm:right-2" aria-label="Next credential page" disabled={page === pages.length - 1} on:click={() => navigate(1)}><AppIcon name="chevron-right" size={24}/></button>
+        <button type="button" class="btn btn-ghost absolute left-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 rounded-lg sm:left-2" aria-label="Previous credential page" disabled={page === 0} on:click={() => navigate(-1)}><AppIcon name="chevron-left" size={24}/></button>
+        <button type="button" class="btn btn-ghost absolute right-1 top-1/2 min-h-11 min-w-11 -translate-y-1/2 rounded-lg sm:right-2" aria-label="Next credential page" disabled={page === pages.length - 1} on:click={() => navigate(1)}><AppIcon name="chevron-right" size={24}/></button>
       {/if}
     </div>
     <footer class="border-t border-black/16 p-3 text-center text-[13px]" aria-live="polite">

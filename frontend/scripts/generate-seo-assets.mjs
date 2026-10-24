@@ -117,9 +117,8 @@ if (duplicateProjectSlugs.length || duplicateArticleSlugs.length) {
 }
 
 const staticRoutes = ['/', '/about', '/experience', '/skills', '/projects', '/blog', '/certifications', '/gallery'];
-const projectRoutes = projects.map((project) => `/projects/${project.slug}`);
 const articleRoutes = articles.map((article) => `/blog/${article.slug}`);
-const routes = [...staticRoutes, ...projectRoutes, ...articleRoutes];
+const routes = [...staticRoutes, ...articleRoutes];
 await writeFile(join(publicRoot, 'routes.txt'), `${routes.join('\n')}\n`, 'utf8');
 
 const routeLastmod = new Map([
@@ -135,7 +134,6 @@ const routeLastmod = new Map([
 
 const sitemapEntries = [
   ...staticRoutes.map((path) => urlEntry(path, routeLastmod.get(path) ?? '')),
-  ...projects.map((project) => urlEntry(`/projects/${project.slug}`, gitLastModified(project.file.repoPath))),
   ...articles.map((article) => urlEntry(`/blog/${article.slug}`, gitLastModified(article.file.repoPath)))
 ];
 
@@ -146,8 +144,8 @@ const robots = `User-agent: *\nAllow: /\n\n# Explicitly document AI/search disco
 await writeFile(join(publicRoot, 'robots.txt'), robots, 'utf8');
 
 const profileName = profile?.values.get('name') ?? 'Faris Munir Mahdi';
-const profileRole = profile?.values.get('role') ?? 'Fullstack Engineer';
-const profileIntro = profile?.values.get('intro') ?? 'Fullstack engineer in Jakarta building backend services and web and mobile apps.';
+const profileRole = profile?.values.get('role') ?? 'Software Engineer';
+const profileIntro = profile?.values.get('intro') ?? 'Software Engineer in Jakarta.';
 const github = profile?.values.get('github') ?? 'https://github.com/farismnrr';
 const linkedin = profile?.values.get('linkedin') ?? 'https://www.linkedin.com/in/farismnrr';
 
@@ -185,7 +183,7 @@ const llms = [
   '',
   '## Projects',
   '',
-  ...projects.map((project) => `- ${project.title}: ${siteUrl}/projects/${project.slug}${project.repoUrl ? ` | Source: ${project.repoUrl}` : ''}`),
+  ...projects.map((project) => `- ${project.title}${project.repoUrl ? ` | Source: ${project.repoUrl}` : ''}`),
   '',
   '## Writing',
   '',
@@ -235,7 +233,7 @@ const llmsFull = [
   '',
   sourceSection('Skills', skillFiles, () => `${siteUrl}/skills`),
   '',
-  sourceSection('Projects', projectFiles, (file) => `${siteUrl}/projects/${file.values.get('slug') ?? basename(file.name, '.md')}`),
+  sourceSection('Projects', projectFiles),
   '',
   sourceSection('Writing', blogFiles, (file) => `${siteUrl}/blog/${file.values.get('slug') ?? basename(file.name, '.md')}`),
   '',

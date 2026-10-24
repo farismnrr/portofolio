@@ -1,23 +1,25 @@
 ---
-id: "07"
-order: 7
+id: "04"
+order: 4
 slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
 cardTitle: "Portfolio"
 subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
+kind: Personal
 category: "Web · Portfolio"
-description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
+description: "Faris's portfolio brings his projects, experience, certifications, and writing together in one place for visitors to explore."
 image: "/images/projects/portfolio/cover.png"
-tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
+imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
+techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---
 ## What it is
 
 This site.
-Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives every view: the project list, the home page, and each detail page.
+Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives the project cards, project modal, and homepage selections.
 Adding a project means writing a file, not editing a component.
 
 ## How it is built
@@ -48,6 +50,15 @@ Every project can tell a different story, so a writing check in the build keeps 
 ## Stack
 
 Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build time, Rust with Axum in production, and GitHub Actions for validation, build, and deployment.
+
+## What I Did
+
+- Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
+- Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
+- Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
+- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
+- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
+- Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
 
 ## Links
 

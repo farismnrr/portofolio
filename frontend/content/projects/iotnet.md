@@ -1,22 +1,33 @@
 ---
-id: "05"
-order: 5
+id: "06"
+order: 6
 slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
 subtitle: "IoT management platform"
 role: "Solo Developer"
+kind: Professional
 category: "IoT · Platform"
-description: "Manage devices, users, automations, and telemetry in one place."
+description: "IoTNet manages connected devices, tracks their readings, and runs rules for alerts, schedules, and room controls."
 image: "/images/projects/iotnet/cover.png"
-tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
-productUrl: "https://i-ot.net/"
+tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
+productUrl: "NDA"
 repoUrl: ""
 ---
 ## What it is
 
 IoTNet manages devices, users, automations, and telemetry in one place. I built it alone. It sits between people and connected hardware, so users work with devices and rules instead of broker topics and raw messages.
+
+## What I Did
+
+- Designed and developed an IoT operations platform end-to-end, covering frontend, backend, device integration, and infrastructure.
+- Implemented device provisioning, authentication, and management workflows.
+- Built customizable real-time dashboards for device monitoring and control.
+- Integrated IoT hardware communication, telemetry processing, and remote device operations.
+- Developed firmware lifecycle management and remote update capabilities.
+- Implemented user authentication, access control, and device ownership management.
+- Established application monitoring, structured logging, and automated deployment workflows.
 
 ## A command is not a result
 
@@ -45,8 +56,8 @@ The same model covers alerts, schedules, and environment control.
 
 ## Stack
 
-Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT through EMQX for devices, and OpenTelemetry for tracing.
+Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT for device communication, and OpenTelemetry for tracing.
 
 ## Links
 
-- Product: [i-ot.net](https://i-ot.net/)
+- Product: NDA

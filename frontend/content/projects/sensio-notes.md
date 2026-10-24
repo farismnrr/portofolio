@@ -7,17 +7,19 @@ title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
 subtitle: "Meeting assistant"
 role: "Fullstack"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
-image: "/images/projects/sensio-notes/showcase.png"
-tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
+image: "/images/projects/sensio-notes/cover.png"
+imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
+techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 ## What it is
 
 Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
-I work on it as part of a team with AI, infrastructure, security, and UI/UX engineers.
+I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR
@@ -26,15 +28,14 @@ flowchart LR
     V --> F[Find decisions and follow-up work]
 ```
 
-## What I worked on
+## What I Did
 
-My part is getting a recording into the system safely and keeping the user informed until the results are ready.
-
-- **Uploads that survive a bad connection.** Recordings over 100 MB are sent in parts. After a dropped connection, the upload continues from the last finished part, and retries respect the server's backoff.
-- **No lost meetings.** An in-progress recording is backed up locally on web and mobile, so a crash or a closed tab does not lose it.
-- **Progress and errors people can read.** The interface separates work that is continuing, work that needs attention, and results that are ready, and it keeps web and mobile behavior consistent.
-
-I also take part in testing, diagnosing production issues, and releases. The AI features are built by other members of the team.
+- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
+- Built cross-platform meeting recording capabilities and browser-based meeting integrations.
+- Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
+- Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.
+- Built meeting intelligence features including interactive knowledge graphs, mind maps, searchable transcripts, and AI chat with source references.
+- Implemented background processing, reliable audio uploads, real-time status updates, and containerized deployment.
 
 ## Links
 

@@ -14,7 +14,7 @@
     <div class="grid gap-x-4 gap-y-7 pt-7 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-8 sm:pt-8 lg:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-6 2xl:gap-y-10">
       {#each gallery as item}
         <figure>
-          <MediaImage className="aspect-[4/3] w-full" src={item.image} srcset={`${item.image.replace(/-1280\.webp$/, '-640.webp')} 640w, ${item.image} 1280w`} sizes="(min-width: 1536px) 23vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 3rem)" alt={item.caption}/>
+          <MediaImage className="aspect-[4/3] w-full overflow-hidden rounded-lg" src={item.image} srcset={`${item.image.replace(/-1280\.webp$/, '-640.webp')} 640w, ${item.image} 1280w`} sizes="(min-width: 1536px) 23vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 3rem)" alt={item.caption}/>
           {#if item.caption}<figcaption class="mt-2 text-[12px] leading-5 text-black/58">{item.caption}</figcaption>{/if}
         </figure>
       {/each}

@@ -1,5 +1,4 @@
 import { getArticleByPath } from './blog-content';
-import { getProjectByPath } from './project-content';
 
 type PageModule = { default: any };
 type PageLoader = () => Promise<PageModule>;
@@ -10,7 +9,6 @@ const loaders: Record<string, PageLoader> = {
   experience: () => import('../pages/ExperiencePage.svelte'),
   skills: () => import('../pages/SkillsPage.svelte'),
   projects: () => import('../pages/ProjectsPage.svelte'),
-  projectDetail: () => import('../pages/ProjectDetailPage.svelte'),
   blog: () => import('../pages/BlogPage.svelte'),
   article: () => import('../pages/ArticlePage.svelte'),
   certifications: () => import('../pages/CertificationsPage.svelte'),
@@ -31,7 +29,7 @@ function keyForPath(path: string) {
   if (cleanPath === '/experience') return 'experience';
   if (cleanPath === '/skills') return 'skills';
   if (cleanPath === '/projects') return 'projects';
-  if (cleanPath.startsWith('/projects/')) return getProjectByPath(cleanPath) ? 'projectDetail' : 'notFound';
+  if (cleanPath.startsWith('/projects/')) return 'projects';
   if (cleanPath === '/blog') return 'blog';
   if (cleanPath.startsWith('/blog/')) return getArticleByPath(cleanPath) ? 'article' : 'notFound';
   if (cleanPath === '/certifications') return 'certifications';

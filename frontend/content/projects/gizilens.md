@@ -1,14 +1,15 @@
 ---
-id: "10"
-order: 10
+id: "07"
+order: 7
 slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"
 cardTitle: "GiziLens"
 subtitle: "Team capstone: food recognition"
 role: "Web & Backend Engineering · Team Capstone"
+kind: Personal
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone. One side of the team built a food-image classifier. I built the web app around it: accounts, sessions, database, and deployment."
+description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""

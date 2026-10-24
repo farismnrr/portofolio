@@ -8,7 +8,7 @@ Canonical: https://farismnrr.com/about
 Source file: frontend/content/profile/about.md
 ---
 name: Faris Munir Mahdi
-role: "Fullstack Engineer"
+role: "Software Engineer"
 location: Asia/Jakarta
 languages: English, Bahasa
 image: /images/profile/faris-munir-1024.webp
@@ -17,10 +17,10 @@ linkedin: https://www.linkedin.com/in/farismnrr
 googleCloudSkills: https://www.cloudskillsboost.google/public_profiles/df853200-781c-4be5-a59b-0d4aa93f6fe3
 email: mailto:farismnrrbusiness@gmail.com
 resume: ""
-specialties: "Fullstack · Backend · Mobile · IoT"
-headline: "Fullstack engineer in Jakarta."
-intro: "I build backend services and web and mobile apps. At work that means a meeting assistant and an IoT platform. On my own, an open-source AI workspace."
-availability: "Open to full-time, part-time, and contract work, remote or on-site in Jakarta."
+specialties: ""
+headline: "Fullstack software engineer with over a year of professional experience."
+intro: "Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments."
+availability: ""
 quote: ""
 ---
 ## Experience
@@ -33,17 +33,12 @@ kind: employment
 order: 1
 year: July 2025 — Present
 company: PT Perkasa Pilar Utama
-role: Backend & Fullstack Developer
+role: Software Engineer
 location: "Jakarta, Indonesia"
-summary: Backend and fullstack developer on Sensio Notes, a meeting assistant, and Sensio IoT, smart-room controls.
+summary: Develop and maintain the company's products in production, covering backend, web, mobile, and device integrations. Work closely with AI, IoT, infrastructure, and UI/UX engineers.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
-
-- Built resumable uploads and local recording backup for **[Sensio Notes](/projects/sensio-notes)**, on web and mobile.
-- Built the backend for room controls in **[Sensio IoT](/projects/sensio-iot)**: commands, device-state feedback, and permissions.
-- Turned design mockups into working web and mobile screens.
-- Fixed production issues and shipped releases alongside the infrastructure and security engineers.
 
 ---
 
@@ -55,19 +50,14 @@ kind: program
 order: 2
 year: Feb 2025 — July 2025
 company: Coding Camp powered by DBS Foundation
-role: Machine Learning Engineer Track Participant
+role: Machine Learning Engineer
 location: ""
-summary: A semester-long training program with a team capstone, mixing machine-learning coursework with web application delivery.
+summary: "Completed the Machine Learning track through a team capstone, GiziLens. Coordinated web app work with the food-recognition team, clarifying API needs and aligning integration across disciplines while contributing the app's accounts, sessions, and user APIs."
 tech: [Python, TensorFlow, TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker]
 evidenceTitle: Graduation letter
 evidenceUrl: /downloads/experience/coding-camp-2025-graduation-letter.pdf
 projects: [gizilens]
 ---
-
-- Built the web application side of the **[GiziLens](/projects/gizilens)** capstone: authentication, sessions, and user APIs.
-- Connected PostgreSQL and Redis to the Nuxt frontend and containerized the services.
-
-- Graduated from the DBS Foundation and Dicoding Academy program (10 February to 16 July 2025). The graduation letter is dated 7 July 2025.
 
 ---
 
@@ -81,15 +71,11 @@ year: Sep 2024 — Dec 2024
 company: Codepolitan
 role: Full Stack Web Development Participant
 location: ""
-summary: An online full-stack development scholarship program.
+summary: "Completed an online full-stack development scholarship program. Built backend APIs with Node.js and Express.js on MongoDB, and frontend exercises with Vue.js against those APIs. Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications."
 tech: [Node.js, Express.js, MongoDB, Vue.js, Alibaba Cloud]
 projects: []
 certificationGroups: [Alibaba Cloud]
 ---
-
-- Built backend APIs with Node.js and Express.js, storing data in MongoDB.
-- Built frontend exercises with Vue.js against those APIs.
-- Cloud fundamentals led to the Alibaba Cloud credentials listed under Certifications.
 
 ---
 
@@ -101,18 +87,14 @@ kind: program
 order: 4
 year: Feb 2024 — Jun 2024
 company: Ruang Guru Academy
-role: Backend Engineering Participant
+role: Backend Engineer
 location: ""
-summary: A full-time MSIB Batch 6 backend engineering program (16 February to 30 June 2024).
+summary: "Completed a full-time backend engineering program (MSIB Batch 6) with a project that adapted AskIn, an open-source AI chat app. Built authenticated APIs, model routing, and deployment."
 tech: [Golang, Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 evidenceTitle: MSIB certificate and learning transcript
 evidenceUrl: /downloads/experience/ruangguru-2024-backend-engineering.pdf
 projects: [askin]
 ---
-
-- Adapted an open-source AI chat app (**[AskIn](/projects/askin)**): authenticated APIs, model discovery and routing, and deployment.
-
-- Coursework covered Go APIs, concurrency, testing, authentication, clean architecture, databases, and AI integration.
 
 ---
 
@@ -126,16 +108,12 @@ year: Jan 2024 — Mar 2024
 company: PT Tradeasia International Indonesia
 role: SEO Specialist (Student Trainee)
 location: ""
-summary: A student traineeship in search engine optimization.
+summary: "Completed a three-month SEO traineeship at the Jakarta office. Researched search queries, reviewed technical SEO issues, and used analytics to decide which pages and topics needed attention."
 tech: [SEO, Web Analytics]
 evidenceTitle: Training reference letter
 evidenceUrl: /downloads/experience/tradeasia-2024-reference-letter.pdf
 projects: []
 ---
-
-- Researched search queries, reviewed page structure and technical SEO issues, and used analytics data to decide which pages and topics needed attention.
-
-- Trained at the Jakarta office from January to March 2024. The reference letter confirms the Student Trainee role.
 
 ---
 
@@ -149,17 +127,12 @@ year: Aug 2023 — Jan 2024
 company: Bangkit Academy
 role: Cloud Computing Cohort
 location: Remote · Indonesia
-summary: The Cloud Computing path of Bangkit 2023 Batch 2.
+summary: "Completed the Cloud Computing path of Bangkit 2023 Batch 2 through a three-track capstone, Parentify. Built the cloud side with mobile and machine-learning teammates, agreeing on API contracts and documenting the decisions."
 tech: [Google Cloud, Node.js, Express, MySQL, Docker]
 evidenceTitle: Certificate and learning transcript
 evidenceUrl: /downloads/experience/bangkit-2023-cloud-computing.pdf
 projects: [parentify]
 ---
-
-- Built the cloud side of the **[Parentify](/projects/parentify)** capstone with Mobile Development and Machine Learning teammates.
-- Agreed ownership and API contracts with the other two tracks and documented the decisions.
-
-- Graduated on 19 January 2024 with a completed capstone.
 ## Education
 
 ### 01-upn-veteran-jatim
@@ -204,7 +177,7 @@ url: https://journal.sinov.id/index.php/juitik/article/view/1180
 doi: https://doi.org/10.55606/juitik.v5i2.1180
 ---
 
-Peer-reviewed journal article on a cloud-based OTA firmware update system for ESP32 devices, covering reliable remote updates for distributed IoT deployments.
+Peer-reviewed article on a cloud-based OTA firmware update system for ESP32 devices.
 
 ---
 
@@ -318,22 +291,23 @@ items: [Arduino, ESP32, EMQX, Grafana, Node-RED]
 Devices on Arduino and ESP32, messaging through MQTT with EMQX, and flows built in Node-RED. Includes firmware updates over the air (OTA).
 ## Projects
 
-### AI Workspace for Non-Developers
-Canonical: https://farismnrr.com/projects/ai-workspace
+### Masih Awam Workspace
 Source file: frontend/content/projects/ai-workspace.md
 ---
-id: "02"
-order: 2
+id: "05"
+order: 5
 slug: ai-workspace
 year: "2026"
-title: "AI Workspace for Non-Developers"
-cardTitle: "AI Workspace"
-subtitle: "For Non-Developers"
+title: "Masih Awam Workspace"
+cardTitle: "Masih Awam Workspace"
+subtitle: "Build software with an AI team."
 role: "Solo Developer"
+kind: Personal
 category: "Personal · AI · Open Source"
-description: "An open-source AI workspace for people who are not developers. An orchestrator leads a team of AI roles, and you accept only work that a check has proven."
-image: "/images/projects/featured/ai-workspace.png"
-tech: [Go, Svelte, Docker, MCP]
+description: "Masih Awam Workspace turns a software request into tasks for an AI team, then shows the work and evidence for review."
+image: "/images/projects/masih-awam-workspace/cover.png"
+imageAlt: "Masih Awam Workspace cover with the headline Tell it what you need, See it done, And proven, an inbox card showing a verified task and a proof receipt."
+techGroups: [Languages & Runtime::Go|TypeScript, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI|CodeMirror, Backend::Go|Fiber v3|SQLite, Agentic AI::LLM Tool Calling|MCP|OpenAI Codex|Claude Code, Security & Execution::OAuth 2.1, Integrations::GitHub|PostgreSQL|MySQL|MongoDB, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://workspace.masihawam.com"
 repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 ---
@@ -343,7 +317,7 @@ repoUrl: "https://github.com/farismnrr/agentic-ai-workspace"
 AI can now build and fix software for someone who cannot read code. What that person cannot do is check the result.
 When the AI says "it works", they either believe it or skip the tool.
 
-I built AI Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
+I built Masih Awam Workspace so nobody has to take the AI's word for it. Every result comes with checks that the server ran itself.
 
 ## How a request flows
 
@@ -453,6 +427,17 @@ Whoever controls the Docker socket controls the host, so the docs recommend root
 The sandbox does not cover disk quotas or the kernel that every container shares.
 A team costs more time and tokens than a single agent, which is why the lead sizes a job first.
 
+## What I Did
+
+- Designed and developed Masih Awam Workspace end-to-end, covering frontend, backend, AI orchestration, and infrastructure.
+- Built a multi-agent system with specialized roles for research, planning, design, development, security, testing, and code review.
+- Implemented agent orchestration with configurable models, tool permissions, task delegation, and human approval workflows.
+- Developed a task management system with live progress tracking, resumable sessions, file changes, and verification reports.
+- Built isolated Docker environments for code execution, automated testing, browser previews, and application hosting.
+- Integrated MCP and OAuth 2.1 to let external AI applications access workspace tools and projects with controlled permissions.
+- Added GitHub integration, support for multiple AI providers, and automated CI/CD pipelines for building and deploying the platform.
+- Packaged the Svelte frontend and Go backend into a single executable for simpler deployment.
+
 ## Links
 
 - Product: [workspace.masihawam.com](https://workspace.masihawam.com)
@@ -461,19 +446,19 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 ---
 
 ### AskIn: AI Workspace
-Canonical: https://farismnrr.com/projects/askin
 Source file: frontend/content/projects/askin.md
 ---
-id: "09"
-order: 9
+id: "08"
+order: 8
 slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
 subtitle: "AI chat workspace"
 role: "Backend · Integration"
+kind: Personal
 category: "Ruangguru Academy · Learning Project"
-description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
+description: "AskIn lets users choose an AI model, chat, add files as context, and get answers for each conversation in one workspace."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""
@@ -519,19 +504,19 @@ Docker packaging lets the frontend and backend run as one application.
 ---
 
 ### GiziLens: A Team Capstone Around Food Recognition
-Canonical: https://farismnrr.com/projects/gizilens
 Source file: frontend/content/projects/gizilens.md
 ---
-id: "10"
-order: 10
+id: "07"
+order: 7
 slug: gizilens
 year: "2025"
 title: "GiziLens: A Team Capstone Around Food Recognition"
 cardTitle: "GiziLens"
 subtitle: "Team capstone: food recognition"
 role: "Web & Backend Engineering · Team Capstone"
+kind: Personal
 category: "DBS Foundation · Capstone Project"
-description: "A DBS Foundation team capstone. One side of the team built a food-image classifier. I built the web app around it: accounts, sessions, database, and deployment."
+description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
 image: "/images/projects/gizi-lens/GiziLens-showcase.png"
 tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
 productUrl: ""
@@ -578,27 +563,37 @@ The frontend covers registration, login, token refresh, logout, and a dashboard.
 ---
 
 ### IoTNet: IoT Operations Platform
-Canonical: https://farismnrr.com/projects/iotnet
 Source file: frontend/content/projects/iotnet.md
 ---
-id: "05"
-order: 5
+id: "06"
+order: 6
 slug: iotnet
 year: "2026"
 title: "IoTNet: IoT Operations Platform"
 cardTitle: "IoTNet"
 subtitle: "IoT management platform"
 role: "Solo Developer"
+kind: Professional
 category: "IoT · Platform"
-description: "Manage devices, users, automations, and telemetry in one place."
+description: "IoTNet manages connected devices, tracks their readings, and runs rules for alerts, schedules, and room controls."
 image: "/images/projects/iotnet/cover.png"
-tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, EMQX, OpenTelemetry]
-productUrl: "https://i-ot.net/"
+tech: [Nuxt, Vue, TypeScript, Hapi, Bun, PostgreSQL, MQTT, OpenTelemetry]
+productUrl: "NDA"
 repoUrl: ""
 ---
 ## What it is
 
 IoTNet manages devices, users, automations, and telemetry in one place. I built it alone. It sits between people and connected hardware, so users work with devices and rules instead of broker topics and raw messages.
+
+## What I Did
+
+- Designed and developed an IoT operations platform end-to-end, covering frontend, backend, device integration, and infrastructure.
+- Implemented device provisioning, authentication, and management workflows.
+- Built customizable real-time dashboards for device monitoring and control.
+- Integrated IoT hardware communication, telemetry processing, and remote device operations.
+- Developed firmware lifecycle management and remote update capabilities.
+- Implemented user authentication, access control, and device ownership management.
+- Established application monitoring, structured logging, and automated deployment workflows.
 
 ## A command is not a result
 
@@ -627,162 +622,30 @@ The same model covers alerts, schedules, and environment control.
 
 ## Stack
 
-Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT through EMQX for devices, and OpenTelemetry for tracing.
+Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL for application data, MQTT for device communication, and OpenTelemetry for tracing.
 
 ## Links
 
-- Product: [i-ot.net](https://i-ot.net/)
-
----
-
-### Masih Awam LMS: Game-Based Learning Platform
-Canonical: https://farismnrr.com/projects/masih-awam-lms
-Source file: frontend/content/projects/masih-awam-lms.md
----
-id: "03"
-order: 3
-slug: masih-awam-lms
-year: "2026"
-title: "Masih Awam LMS: Game-Based Learning Platform"
-cardTitle: "Masih Awam LMS"
-subtitle: "Game-Based Learning Platform"
-role: "Backend"
-category: "Learning · Rust"
-description: "A learning platform where courses become worlds, quests, and lessons."
-image: "/images/projects/featured/masih-awam-lms.png"
-tech: [Rust, Axum, PostgreSQL, HTML, SCSS, JavaScript, OpenTelemetry, Prometheus]
-productUrl: ""
-repoUrl: ""
----
-## What it is
-
-A learning platform where courses become worlds, quests, and lessons. A normal course list tells you what exists. This one tries to tell the learner what to do next.
-
-The learning structure stays familiar: courses, modules, lessons. The learner moves through worlds, quests, and checkpoints instead of a flat catalog.
-
-```mermaid
-journey
-    title A learner moves through a world
-    section Discover
-      Enter a learning world: 5: Learner
-      Understand the current quest: 4: Learner
-    section Learn
-      Complete a lesson: 4: Learner
-      Reach a checkpoint: 5: Learner
-    section Progress
-      See progress update: 5: Learner
-      Unlock the next stage: 5: Learner
-```
-
-## How it is built
-
-Progress is simple on purpose: completed lessons divided by total lessons, at the lesson, quest, world, and overall level.
-The story gives context for why the next lesson matters, but it never decides what counts as complete.
-
-The product keeps three layers apart.
-The experience layer holds worlds, quests, and scenes.
-The learning domain holds courses, modules, lessons, and enrollment.
-The progress state records what the learner actually finished.
-Story and presentation can change without touching completion.
-
-Pages are rendered according to who owns their data. Public course pages are prerendered, a learner's dashboard is rendered privately on the server, and interactive state stays in the browser.
-
-## Stack
-
-A Rust backend with Axum and PostgreSQL, a lightweight browser interface, and observability through OpenTelemetry, Prometheus, Loki, Tempo, and Grafana.
-
----
-
-### Multi-Tenant User Management Service
-Canonical: https://farismnrr.com/projects/multitenant-user-management
-Source file: frontend/content/projects/multitenant-user-management.md
----
-id: "06"
-order: 6
-slug: multitenant-user-management
-year: "2026"
-title: "Multi-Tenant User Management Service"
-cardTitle: "User Management"
-subtitle: "Authentication and Tenant Identity Service"
-role: "Solo Developer"
-category: "Backend · Security"
-description: "A reusable login service: one account can belong to several tenants, with a different role in each."
-image: "/images/projects/user-management/cover.png"
-tech: [Rust, Actix-web, PostgreSQL, RocksDB, JWT, Argon2, Docker]
-productUrl: ""
-repoUrl: "https://github.com/farismnrr/Multitenant-User-Management-Service"
----
-## What it is
-
-A login and identity service that several applications can share. I built it alone.
-
-One person has one account, and that account can belong to several tenants with a different role in each.
-Someone can be an admin in one organization and a normal user in another, with the same password and the same session logic everywhere.
-
-```mermaid
-erDiagram
-    ACCOUNT ||--o{ TENANT_MEMBERSHIP : has
-    TENANT ||--o{ TENANT_MEMBERSHIP : contains
-    TENANT_MEMBERSHIP ||--o{ ROLE_ASSIGNMENT : receives
-    ROLE ||--o{ ROLE_ASSIGNMENT : defines
-```
-
-## Why it is separate
-
-When every application keeps its own users table, the same person ends up with several accounts and several role schemes, and each application handles sessions a little differently.
-One service gives all of them the same answers.
-
-## How sign-in and permissions work
-
-Signing in proves who you are and loads your memberships. What you may do depends on the tenant you act in.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant App
-    participant Identity as Identity service
-    participant DB
-
-    User->>App: Sign in
-    App->>Identity: Authenticate
-    Identity->>DB: Load account and memberships
-    DB-->>Identity: Identity, tenants, roles
-    Identity-->>App: Session and claims
-    App-->>User: Authorized experience
-```
-
-Every protected action follows the same chain: identity, tenant, membership, role, permission, then allow or deny. A valid login alone never grants access.
-
-## Tradeoffs
-
-Applications now depend on the identity service being available. Tenant boundaries have to stay explicit everywhere, because accounts are shared. A rich role model covers more cases, but it needs discipline to stay readable.
-
-## Stack
-
-Rust with Actix-web, PostgreSQL for identity data, RocksDB for local caching, JWT sessions, Argon2 for password hashing, and Docker for packaging.
-
-## Links
-
-- Source: [github.com/farismnrr/Multitenant-User-Management-Service](https://github.com/farismnrr/Multitenant-User-Management-Service)
+- Product: NDA
 
 ---
 
 ### Parentify: Parenting Companion
-Canonical: https://farismnrr.com/projects/parentify
 Source file: frontend/content/projects/parentify.md
 ---
-id: "08"
-order: 8
+id: "09"
+order: 9
 slug: parentify
 year: "Nov — Dec 2023"
 title: "Parentify: Parenting Companion"
 cardTitle: "Parentify"
 subtitle: "Parenting guidance and food recognition"
 role: "Cloud · Backend"
+kind: Personal
 category: "Bangkit Capstone · Cross-functional"
-description: "A Bangkit capstone: an Android app for parenting guidance and food recognition. I worked on the cloud and backend side."
+description: "Parentify pairs parenting articles with food-photo recognition in an Android app built for the Bangkit capstone."
 image: "/images/projects/parentify/showcase.png"
-tech: [Google Cloud, Node.js, Express, MySQL, JWT, Kotlin, Android, CameraX, Retrofit, Room, Hilt, Firebase Auth, TensorFlow, Keras, TensorFlow Lite]
+tech: [Node.js, Express, MySQL, Kotlin, Android, TensorFlow]
 productUrl: ""
 repoUrl: "https://github.com/orgs/Parentify/repositories"
 ---
@@ -827,28 +690,29 @@ That contract mattered most: each team could work on its own only because names,
 ---
 
 ### Personal Portfolio Website
-Canonical: https://farismnrr.com/projects/portfolio-website
 Source file: frontend/content/projects/portfolio-website.md
 ---
-id: "07"
-order: 7
+id: "04"
+order: 4
 slug: portfolio-website
 year: "2026"
 title: "Personal Portfolio Website"
 cardTitle: "Portfolio"
 subtitle: "Markdown-driven portfolio"
 role: "Solo Developer"
+kind: Personal
 category: "Web · Portfolio"
-description: "This site. Projects, experience, and certifications are Markdown files, not hardcoded UI data."
+description: "Faris's portfolio brings his projects, experience, certifications, and writing together in one place for visitors to explore."
 image: "/images/projects/portfolio/cover.png"
-tech: [Svelte 5, Vite, TypeScript, Markdown, Mermaid, Rust, Axum, GitHub Actions]
+imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
+techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---
 ## What it is
 
 This site.
-Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives every view: the project list, the home page, and each detail page.
+Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives the project cards, project modal, and homepage selections.
 Adding a project means writing a file, not editing a component.
 
 ## How it is built
@@ -880,6 +744,15 @@ Every project can tell a different story, so a writing check in the build keeps 
 
 Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build time, Rust with Axum in production, and GitHub Actions for validation, build, and deployment.
 
+## What I Did
+
+- Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
+- Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
+- Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
+- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
+- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
+- Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
+
 ## Links
 
 - Site: [farismnrr.com](https://farismnrr.com)
@@ -887,28 +760,64 @@ Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build tim
 
 ---
 
+### PUKAT: Business Networking Platform
+Source file: frontend/content/projects/pukat.md
+---
+id: "03"
+order: 3
+slug: pukat
+year: "2026"
+title: "PUKAT: Business Networking Platform"
+cardTitle: "PUKAT"
+subtitle: "Business networking platform"
+role: ""
+kind: Professional
+category: "Platform · Network"
+description: "A site where Indonesian business owners, professionals and investors find each other by category and send messages."
+image: "/images/projects/pukat/cover.png"
+tech: [React, TypeScript, Node.js, PostgreSQL, RAG, Docker]
+productUrl: "NDA"
+repoUrl: ""
+---
+## What I Did
+
+- Built PUKAT as a full-stack platform, from the frontend and backend to the database and infrastructure.
+- Created business and professional directories with search and category filters.
+- Added sign-up, login, profile pages, and access control.
+- Built connections, invitations, and direct messages between members.
+- Added an AI assistant that uses RAG to answer questions from the platform's information.
+- Built responsive screens for browsing profiles, networking, and account settings.
+- Wrote the database operations and backend APIs behind the core features.
+
+## Links
+
+- Product: NDA
+
+---
+
 ### Sensio IoT: Smart-Space Platform
-Canonical: https://farismnrr.com/projects/sensio-iot
 Source file: frontend/content/projects/sensio-iot.md
 ---
-id: "04"
-order: 4
+id: "02"
+order: 2
 slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
 subtitle: "Smart-room controls"
 role: "Backend"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Smart-room controls and automation, built by a team. I built the backend."
-image: "/images/projects/featured/sensio-iot.png"
-tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
+description: "Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change."
+image: "/images/projects/sensio-iot/cover.png"
+imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
+techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 ## What it is
 
-Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. A team builds it across application engineering, device integration, infrastructure, security, and UI/UX.
+Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. I work on it with AI, IoT, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR
@@ -917,15 +826,15 @@ flowchart LR
     A --> F[Follow the feedback]
 ```
 
-## What I worked on
+## What I Did
 
-I build the backend side: commands, device-state feedback, and permissions.
-
-- **Request and result are separate.** Sending a command is not the same as the device changing, so the app keeps the requested action apart from the state the device reports, and the interface shows what actually happened.
-- **Clear feedback when a device is unavailable.** An interruption produces an understandable message instead of an action that looks finished.
-- **Permissions on controls.** Users see which actions they may take, and get a useful reason when one cannot be completed.
-
-I also test, troubleshoot with the device engineers, and work with the infrastructure and security engineers on releases.
+- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
+- Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
+- Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
+- Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.
+- Integrated an AI assistant using LangGraph and tool calling for natural-language device monitoring, control, and automation management.
+- Built a responsive dashboard, voice assistant features, and Android application integration using Tauri.
+- Implemented secure authentication, site-based access control, HMI device pairing, and automated deployment using Docker and GitHub Actions.
 
 ## Links
 
@@ -934,7 +843,6 @@ I also test, troubleshoot with the device engineers, and work with the infrastru
 ---
 
 ### Sensio Notes: Meeting Intelligence Platform
-Canonical: https://farismnrr.com/projects/sensio-notes
 Source file: frontend/content/projects/sensio-notes.md
 ---
 id: "01"
@@ -945,17 +853,19 @@ title: "Sensio Notes: Meeting Intelligence Platform"
 cardTitle: "Sensio Notes"
 subtitle: "Meeting assistant"
 role: "Fullstack"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "A meeting assistant that turns recordings into summaries and action items. I worked on recording, upload, and progress."
-image: "/images/projects/sensio-notes/showcase.png"
-tech: [Backend Development, Web Applications, Mobile Integration, Application Reliability]
+description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
+image: "/images/projects/sensio-notes/cover.png"
+imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
+techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 ## What it is
 
 Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
-I work on it as part of a team with AI, infrastructure, security, and UI/UX engineers.
+I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR
@@ -964,15 +874,14 @@ flowchart LR
     V --> F[Find decisions and follow-up work]
 ```
 
-## What I worked on
+## What I Did
 
-My part is getting a recording into the system safely and keeping the user informed until the results are ready.
-
-- **Uploads that survive a bad connection.** Recordings over 100 MB are sent in parts. After a dropped connection, the upload continues from the last finished part, and retries respect the server's backoff.
-- **No lost meetings.** An in-progress recording is backed up locally on web and mobile, so a crash or a closed tab does not lose it.
-- **Progress and errors people can read.** The interface separates work that is continuing, work that needs attention, and results that are ready, and it keeps web and mobile behavior consistent.
-
-I also take part in testing, diagnosing production issues, and releases. The AI features are built by other members of the team.
+- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
+- Built cross-platform meeting recording capabilities and browser-based meeting integrations.
+- Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
+- Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.
+- Built meeting intelligence features including interactive knowledge graphs, mind maps, searchable transcripts, and AI chat with source references.
+- Implemented background processing, reliable audio uploads, real-time status updates, and containerized deployment.
 
 ## Links
 
@@ -1035,7 +944,7 @@ HTTP serves the people using the app, and MQTT carries the device traffic. The b
 
 The frameworks can change. These boundaries are the part I would carry to the next project.
 
-The full project page is here: [IoTNet](/projects/iotnet). The live product is [i-ot.net](https://i-ot.net/).
+The project is listed on the [projects page](/projects).
 ## Certifications
 
 ### Alibaba Cloud Certified Associate

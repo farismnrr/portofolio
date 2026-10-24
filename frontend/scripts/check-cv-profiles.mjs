@@ -1,15 +1,9 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readCvProfileRegistry } from './lib/cv-profile-registry.mjs';
 
-const directory = path.dirname(fileURLToPath(import.meta.url));
-const registry = JSON.parse(
-  await readFile(path.join(directory, '..', 'content', 'cv-profiles.json'), 'utf8')
-);
-
+const registry = await readCvProfileRegistry();
 const expected = {
   general: {
-    maxPages: 1,
+    maxPages: 2,
     scopes: 4,
     filename: 'Faris_Munir_Mahdi_CV.pdf'
   }
@@ -33,7 +27,7 @@ for (const [id, policy] of Object.entries(expected)) {
   if (profile.technicalScopes.length !== policy.scopes) {
     throw new Error(`${id}: expected ${policy.scopes} technical scopes`);
   }
-  if (new Set(profile.technicalScopes.map((scope) => scope.key)).size !== policy.scopes) {
+  if (new Set(profile.technicalScopes.map(({ key }) => key)).size !== policy.scopes) {
     throw new Error(`${id}: technical scope keys must be unique`);
   }
   for (const field of ['projects', 'experiences', 'certifications']) {
@@ -43,6 +37,9 @@ for (const [id, policy] of Object.entries(expected)) {
   }
   if (profile.layoutPolicy.minBodySizePt < 10) {
     throw new Error(`${id}: body typography floor must be at least 10pt`);
+  }
+  for (const field of ['identity', 'focus', 'summaryRange', 'projectRange']) {
+    if (!profile.writingPolicy[field]) throw new Error(`${id}: writing policy ${field} is required`);
   }
 }
 

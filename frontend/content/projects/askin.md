@@ -1,14 +1,15 @@
 ---
-id: "09"
-order: 9
+id: "08"
+order: 8
 slug: askin
 year: "2024"
 title: "AskIn: AI Workspace"
 cardTitle: "AskIn"
 subtitle: "AI chat workspace"
 role: "Backend · Integration"
+kind: Personal
 category: "Ruangguru Academy · Learning Project"
-description: "An AI chat app adapted from an open-source base during Ruangguru Academy: authenticated APIs, model discovery and routing, and deployment."
+description: "AskIn lets users choose an AI model, chat, add files as context, and get answers for each conversation in one workspace."
 image: "/images/projects/askin/showcase.png"
 tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
 productUrl: ""

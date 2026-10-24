@@ -1,12 +1,11 @@
 import { articles, getArticleByPath } from './blog-content';
-import { getProjectByPath, projects } from './project-content';
 import { certifications, publications } from './seo-content';
 import { profile } from './site-content';
 
 const siteUrl = 'https://farismnrr.com';
 const personId = `${siteUrl}/#person`;
 const defaultDescription =
-  'Portfolio of Faris Munir Mahdi, a fullstack engineer in Jakarta building backend services and web and mobile apps.';
+  'Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.';
 const indexRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 function absoluteUrl(value: string) {
@@ -44,14 +43,7 @@ function personNode() {
       '@type': 'CollegeOrUniversity',
       name: 'UPN Veteran Jawa Timur',
       sameAs: 'https://www.upnjatim.ac.id/'
-    },
-    knowsAbout: [
-      'Software Engineering',
-      'Backend Engineering',
-      'Cloud Infrastructure',
-      'Internet of Things',
-      'Artificial Intelligence'
-    ]
+    }
   };
 }
 
@@ -94,7 +86,7 @@ export function getSeo(currentPath: string) {
   if (cleanPath === '/about') {
     const publicationNodes = publications.map(publicationNode);
     const aboutDescription =
-      'Fullstack engineer Faris Munir Mahdi builds backend services and web and mobile apps, with public projects and professional experience.';
+      'Fullstack software engineer with over a year of professional experience building and maintaining applications, including their infrastructure and AI integrations, for day-to-day production use. I work in TypeScript, Rust, Go, and Python, on APIs, databases, LLM orchestration, and containerized deployments.';
     return {
       ...base,
       title: `About — ${profile.name}`,
@@ -121,7 +113,7 @@ export function getSeo(currentPath: string) {
     return {
       ...base,
       title: `Experience — ${profile.name}`,
-      description: `Work experience of ${profile.name}: fullstack work on a meeting assistant and an IoT platform, plus earlier training programs.`,
+      description: `Work experience of ${profile.name}: software engineering on AI and IoT products, plus earlier training programs.`,
       structuredData: graph({
         '@type': 'WebPage',
         '@id': `${canonical}#webpage`,
@@ -161,55 +153,9 @@ export function getSeo(currentPath: string) {
         url: canonical,
         name: `Projects — ${profile.name}`,
         description: `Selected projects by ${profile.name}.`,
-        mainEntity: {
-          '@type': 'ItemList',
-          itemListElement: projects.map((project, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: project.title,
-            url: `${siteUrl}/projects/${project.slug}`
-          }))
-        },
         inLanguage: 'en'
       }, breadcrumb([{ name: 'Home', path: '/' }, { name: 'Projects', path: '/projects' }]))
     };
-  }
-
-  if (cleanPath.startsWith('/projects/')) {
-    const project = getProjectByPath(cleanPath);
-    if (project) {
-      const projectNode: Record<string, unknown> = {
-        '@type': project.repoUrl ? 'SoftwareSourceCode' : 'CreativeWork',
-        '@id': `${canonical}#project`,
-        url: canonical,
-        mainEntityOfPage: canonical,
-        name: project.title,
-        headline: project.subtitle,
-        description: project.description,
-        image: absoluteUrl(project.image),
-        author: { '@id': personId },
-        keywords: project.tech.join(', '),
-        about: project.category,
-        inLanguage: 'en'
-      };
-      if (project.repoUrl) projectNode.codeRepository = project.repoUrl;
-      if (project.productUrl) projectNode.workExample = project.productUrl;
-
-      const metaDescription = project.description;
-
-      return {
-        ...base,
-        title: `${project.title} — ${profile.name}`,
-        description: metaDescription,
-        image: absoluteUrl(project.image),
-        imageAlt: `${project.title} project by ${profile.name}`,
-        structuredData: graph(projectNode, breadcrumb([
-          { name: 'Home', path: '/' },
-          { name: 'Projects', path: '/projects' },
-          { name: project.title, path: cleanPath }
-        ]))
-      };
-    }
   }
 
   if (cleanPath === '/blog') {

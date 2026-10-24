@@ -1,22 +1,24 @@
 ---
-id: "04"
-order: 4
+id: "02"
+order: 2
 slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"
 cardTitle: "Sensio IoT"
 subtitle: "Smart-room controls"
 role: "Backend"
+kind: Professional
 category: "PT Perkasa Pilar Utama · Product Development"
-description: "Smart-room controls and automation, built by a team. I built the backend."
-image: "/images/projects/featured/sensio-iot.png"
-tech: [Backend Development, Systems Engineering, IoT Integration, Application Reliability]
+description: "Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change."
+image: "/images/projects/sensio-iot/cover.png"
+imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
+techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 ## What it is
 
-Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. A team builds it across application engineering, device integration, infrastructure, security, and UI/UX.
+Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. I work on it with AI, IoT, infrastructure, and UI/UX engineers.
 
 ```mermaid
 flowchart LR
@@ -25,15 +27,15 @@ flowchart LR
     A --> F[Follow the feedback]
 ```
 
-## What I worked on
+## What I Did
 
-I build the backend side: commands, device-state feedback, and permissions.
-
-- **Request and result are separate.** Sending a command is not the same as the device changing, so the app keeps the requested action apart from the state the device reports, and the interface shows what actually happened.
-- **Clear feedback when a device is unavailable.** An interruption produces an understandable message instead of an action that looks finished.
-- **Permissions on controls.** Users see which actions they may take, and get a useful reason when one cannot be completed.
-
-I also test, troubleshoot with the device engineers, and work with the infrastructure and security engineers on releases.
+- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
+- Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
+- Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
+- Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.
+- Integrated an AI assistant using LangGraph and tool calling for natural-language device monitoring, control, and automation management.
+- Built a responsive dashboard, voice assistant features, and Android application integration using Tauri.
+- Implemented secure authentication, site-based access control, HMI device pairing, and automated deployment using Docker and GitHub Actions.
 
 ## Links
 

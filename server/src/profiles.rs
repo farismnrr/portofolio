@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::OnceLock};
 use serde::Deserialize;
 
 pub const CONTRACT_VERSION: &str = "cv-contract/v1";
-const PROFILE_REGISTRY_JSON: &str = include_str!("../../frontend/content/cv-profiles.json");
+const PROFILE_REGISTRY_JSON: &str = include_str!("../generated/cv-profiles.json");
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -78,9 +78,9 @@ mod tests {
     fn registry_keeps_general_layout_and_filename() {
         let general = get("general").expect("general profile");
 
-        assert_eq!(general.max_pages, 1);
+        assert_eq!(general.max_pages, 2);
         assert!(general.layout_policy.min_second_page_fill > 0.0);
         assert_eq!(general.filename, "Faris_Munir_Mahdi_CV.pdf");
-        assert!(general.layout_policy.min_body_size_pt >= 10.0);
+        assert!(general.layout_policy.min_body_size_pt >= 10.5);
     }
 }

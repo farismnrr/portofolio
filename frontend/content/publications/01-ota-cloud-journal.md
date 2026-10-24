@@ -8,4 +8,4 @@ url: https://journal.sinov.id/index.php/juitik/article/view/1180
 doi: https://doi.org/10.55606/juitik.v5i2.1180
 ---
 
-Peer-reviewed journal article on a cloud-based OTA firmware update system for ESP32 devices, covering reliable remote updates for distributed IoT deployments.
+Peer-reviewed article on a cloud-based OTA firmware update system for ESP32 devices.

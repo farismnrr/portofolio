@@ -61,7 +61,7 @@
         <div class="mt-6 grid gap-x-6 gap-y-9 sm:mt-7 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-10 2xl:gap-y-12">
           {#each group.items as cert}
             <article id={certificationId(cert)} class="scroll-mt-28">
-              <div class="aspect-[1.78] overflow-hidden border border-black/16 bg-[var(--surface)]">
+              <div class="aspect-[1.78] overflow-hidden rounded-lg border border-black/16 bg-[var(--surface)]">
                 <MediaImage
                   className="h-full w-full"
                   src={cert.image}

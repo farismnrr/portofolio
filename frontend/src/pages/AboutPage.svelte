@@ -7,34 +7,36 @@
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
   import RoleMatchPanel from '../lib/ui/RoleMatchPanel.svelte';
+  import { siteAssetUrl } from '../lib/router';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
   const roleMatchEnabled = import.meta.env.VITE_ROLE_MATCH_ENABLED === 'true';
+  $: cvHref = siteAssetUrl('/downloads/Faris_Munir_Mahdi_CV.pdf');
 </script>
 
 <main>
   <PageShell className="py-10 sm:py-12 lg:py-14">
     <div class="grid gap-9 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[260px_minmax(0,1fr)] xl:gap-14 2xl:grid-cols-[280px_minmax(0,1fr)] 2xl:gap-16">
       <aside class="grid grid-cols-[112px_minmax(0,1fr)] gap-x-5 gap-y-4 self-start sm:grid-cols-[150px_minmax(0,1fr)] lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:block lg:border-r lg:border-black/14 lg:pr-8 xl:pr-10 2xl:pr-12">
-        <MediaImage className="aspect-[.8] w-full self-start" src={profile.image} alt={profile.name}/>
+        <MediaImage className="aspect-[.8] w-full self-start overflow-hidden rounded-lg" src={profile.image} alt="Faris Munir Mahdi wearing a black suit and tie"/>
 
         <div class="min-w-0">
           <h2 class="text-[22px] font-semibold leading-tight tracking-[-0.025em] sm:text-[25px] lg:mt-5">{profile.name}</h2>
           <p class="mt-1 text-[14px] text-black/62 sm:text-[15px]">{profile.role}</p>
 
           <div class="mt-4 space-y-2.5 text-[12px] text-black/62 sm:mt-5 sm:text-[13px]">
-            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={15}/>{profile.location}</p>
-            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={15}/>{profile.languages}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="map-pin" size={16}/>{profile.location}</p>
+            <p class="flex items-center gap-2.5"><AppIcon name="globe" size={16}/>{profile.languages}</p>
           </div>
         </div>
 
         <div class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-3 lg:mt-5 lg:block lg:space-y-1 lg:border-t lg:pt-4">
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.github}><AppIcon name="github" size={16}/>GitHub</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin}><AppIcon name="linkedin" size={16}/>LinkedIn</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills}><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.github} target="_blank" rel="noopener noreferrer"><AppIcon name="github" size={16}/>GitHub</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.linkedin} target="_blank" rel="noopener noreferrer"><AppIcon name="linkedin" size={16}/>LinkedIn</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.googleCloudSkills} target="_blank" rel="noopener noreferrer"><AppIcon name="globe" size={16}/>Google Cloud Skills</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
-          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href="/downloads/Faris_Munir_Mahdi_CV.pdf" download="Faris_Munir_Mahdi_CV.pdf"><AppIcon name="file-text" size={16}/>Download CV</a>
+          <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={cvHref} target="_blank" rel="noopener noreferrer" aria-label="Download CV (opens in a new tab)"><AppIcon name="file-text" size={16}/>Download CV</a>
         </div>
         {#if roleMatchEnabled}
           <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
@@ -45,7 +47,7 @@
 
       <section class="min-w-0">
         <header class="border-b border-black/14 pb-8 sm:pb-9">
-          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.subtitle}</h1>
+          <h1 class="w-full max-w-none text-balance text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[38px] md:text-[48px] 2xl:text-[52px]">{page.title}</h1>
 
           <div class="mt-6 w-full text-[15px] leading-7 text-black/62 sm:mt-7 sm:text-[16px] 2xl:text-[17px] 2xl:leading-8 [&_.project-markdown_p]:hyphens-auto [&_.project-markdown_p]:text-justify">
             <MarkdownArticle html={rendered.html} hasMermaid={rendered.hasMermaid}/>
@@ -101,7 +103,7 @@
                 <article class="grid gap-3 py-6 sm:gap-4 sm:py-7 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8 2xl:grid-cols-[190px_minmax(0,1fr)] 2xl:gap-10">
                   <div>
                     <p class="text-[13px] text-black/58">{item.year}</p>
-                    <p class="mt-1 text-[11px] uppercase tracking-[0.12em] text-black/58">{item.type.replace('-', ' ')}</p>
+                    <p class="mt-1 text-[13px] text-black/58">{item.type === 'project-report' ? 'Project report' : item.type === 'journal' ? 'Journal' : 'Thesis'}</p>
                   </div>
                   <div class="min-w-0">
                     <h3 class="text-[17px] font-semibold leading-7 tracking-[-0.012em] text-black/86 sm:text-[18px]">

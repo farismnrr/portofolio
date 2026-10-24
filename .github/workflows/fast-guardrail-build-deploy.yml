@@ -71,27 +71,6 @@ jobs:
           export RUSTUP_HOME="$cache_root/rustup"
           export PATH="$CARGO_HOME/bin:$HOME/.cargo/bin:$PATH"
 
-          run_phase() {
-            local phase="$1"
-            shift
-            local output status summary
-            output="$(mktemp)"
-            if "$@" >"$output" 2>&1; then
-              cat "$output"
-              rm -f "$output"
-              return 0
-            else
-              status=$?
-              summary="$(tail -n 40 "$output")"
-              summary="${summary//'%'/'%25'}"
-              summary="${summary//$'\r'/'%0D'}"
-              summary="${summary//$'\n'/'%0A'}"
-              printf '::error title=%s::%s\n' "$phase" "$summary"
-              rm -f "$output"
-              return "$status"
-            fi
-          }
-
           mkdir -p \
             "$NPM_CONFIG_CACHE" \
             "$CARGO_TARGET_DIR" \
@@ -104,16 +83,15 @@ jobs:
             -e frontend/dist/ \
             -e release/amd64/
 
-          run_phase "frontend checks" bash -c '
-            set -euo pipefail
+          (
             cd frontend
             npm install --ignore-scripts --no-audit --no-fund --prefer-offline
             npm rebuild esbuild --dangerously-allow-all-scripts --no-audit --no-fund
             npm run guard
             npm run content:check
             npm run check
-          '
-          run_phase "npm run build" bash -c 'cd frontend && npm run build'
+            npm run build
+          )
 
           command -v rustup >/dev/null 2>&1 || {
             echo "rustup is required on the self-hosted runner."
@@ -137,16 +115,19 @@ jobs:
             cargo install cargo-zigbuild --locked
           fi
 
-          run_phase "cargo fmt --check" bash -c 'cd server && cargo fmt --check'
-          run_phase "cargo clippy" bash -c 'cd server && cargo clippy --release --all-targets --features role-match -- -D warnings'
-          run_phase "cargo test" bash -c 'cd server && cargo test --release --all-targets --features role-match'
-          run_phase "cargo zigbuild" bash -c 'cd server && cargo zigbuild --release --target "$RUST_TARGET_AMD64" --features role-match'
+          (
+            cd server
+            cargo fmt --check
+            cargo clippy --release --all-targets --features role-match -- -D warnings
+            cargo test --release --all-targets --features role-match
+            cargo zigbuild --release --target "$RUST_TARGET_AMD64" --features role-match
+          )
 
           mkdir -p release/amd64
           cp "$CARGO_TARGET_DIR/$RUST_TARGET_AMD64/release/portfolio-server" release/amd64/portfolio-server
           chmod +x release/amd64/portfolio-server
 
-          run_phase "docker build" env DOCKER_BUILDKIT=1 docker build \
+          DOCKER_BUILDKIT=1 docker build \
             --build-arg TARGETARCH=amd64 \
             --tag "$DEV_IMAGE" \
             .

@@ -30,7 +30,7 @@ flowchart LR
 
 ## What I Did
 
-- Developed Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
+- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
 - Built cross-platform meeting recording capabilities and browser-based meeting integrations.
 - Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
 - Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.

@@ -29,7 +29,7 @@ flowchart LR
 
 ## What I Did
 
-- Developed Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
+- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
 - Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
 - Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
 - Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.

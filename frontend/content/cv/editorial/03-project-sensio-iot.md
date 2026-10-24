@@ -5,4 +5,4 @@ sourceId: sensio-iot
 cvTitle: "Sensio IoT"
 techStack: "Rust, Axum, MQTT, Zigbee2MQTT, PostgreSQL, Docker"
 ---
-Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change.
+Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.

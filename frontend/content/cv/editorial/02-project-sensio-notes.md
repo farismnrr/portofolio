@@ -5,4 +5,4 @@ sourceId: sensio-notes
 cvTitle: "Sensio Notes"
 techStack: "TypeScript, React, Capacitor, NestJS, LangGraph, Graph RAG, PostgreSQL, pgvector, Redis"
 ---
-Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks.
+Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.

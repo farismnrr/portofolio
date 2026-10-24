@@ -35,7 +35,7 @@ year: July 2025 — Present
 company: PT Perkasa Pilar Utama
 role: Software Engineer
 location: "Jakarta, Indonesia"
-summary: Coordinate requirements and integration work with AI, IoT, infrastructure, security, and UI/UX engineers. Resolve production issues together and adapt priorities while moving software from development through release.
+summary: Develop and maintain Sensio products with AI, IoT, infrastructure, security, and UI/UX engineers. Resolve production issues and move software from development through release.
 tech: [Backend Development, Web Applications, Mobile Integration, IoT Integration, Application Reliability]
 projects: [sensio-notes, sensio-iot]
 ---
@@ -828,7 +828,7 @@ flowchart LR
 
 ## What I Did
 
-- Developed Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
+- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
 - Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
 - Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
 - Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.
@@ -876,7 +876,7 @@ flowchart LR
 
 ## What I Did
 
-- Developed Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
+- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
 - Built cross-platform meeting recording capabilities and browser-based meeting integrations.
 - Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
 - Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.

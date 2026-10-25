@@ -605,11 +605,7 @@ fn linkify_meta(meta: &str) -> String {
 fn experience_html(experience: &ExperienceSection) -> String {
     let title = if experience.kind == "employment" {
         if let Some((company, role)) = experience.title.split_once(" | ") {
-            format!(
-                "<strong>{}</strong> | {}",
-                escape(company),
-                escape(role)
-            )
+            format!("<strong>{}</strong> | {}", escape(company), escape(role))
         } else {
             escape(&experience.title)
         }

@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 3
 kind: project
 sourceId: sensio-notes
 cvTitle: "Sensio Notes"

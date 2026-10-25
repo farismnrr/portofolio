@@ -1,6 +1,6 @@
 ---
-id: "02"
-order: 2
+id: "03"
+order: 3
 slug: sensio-iot
 year: "2026"
 title: "Sensio IoT: Smart-Space Platform"

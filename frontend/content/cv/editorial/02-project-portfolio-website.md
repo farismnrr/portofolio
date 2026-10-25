@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 2
 kind: project
 sourceId: portfolio-website
 cvTitle: "Personal Portfolio"

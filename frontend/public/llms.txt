@@ -18,15 +18,15 @@ LinkedIn: https://www.linkedin.com/in/farismnrr
 
 ## Projects
 
-- Masih Awam Workspace | Source: https://github.com/farismnrr/agentic-ai-workspace
-- AskIn: AI Workspace | Source: https://github.com/farismnrr/askin
-- GiziLens: A Team Capstone Around Food Recognition | Source: https://github.com/orgs/Group-CC25-CF047/repositories
-- IoTNet: IoT Operations Platform
-- Parentify: Parenting Companion | Source: https://github.com/orgs/Parentify/repositories
 - Personal Portfolio Website | Source: https://github.com/farismnrr/portofolio
-- PUKAT: Business Networking Platform
-- Sensio IoT: Smart-Space Platform
 - Sensio Notes: Meeting Intelligence Platform
+- Sensio IoT: Smart-Space Platform
+- PUKAT: Business Networking Platform
+- Masih Awam Workspace | Source: https://github.com/farismnrr/agentic-ai-workspace
+- IoTNet: IoT Operations Platform
+- GiziLens: A Team Capstone Around Food Recognition | Source: https://github.com/orgs/Group-CC25-CF047/repositories
+- AskIn: AI Workspace | Source: https://github.com/farismnrr/askin
+- Parentify: Parenting Companion | Source: https://github.com/orgs/Parentify/repositories
 
 ## Writing
 

@@ -19,7 +19,7 @@ function contactLine() {
   return [
     email,
     '+62 852-1565-2903',
-    'Portfolio: https://farismnrr.com',
+    'farismnrr.com',
     profile.linkedin.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
   ].join(' | ');
 }

@@ -967,8 +967,8 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
         name_upper = escape(&document.name.to_uppercase()),
         headline = escape(&document.headline),
         contact = escape(&document.contact).replace(
-            "Portfolio: https://farismnrr.com",
-            r#"Portfolio: <a href="https://farismnrr.com">https://farismnrr.com</a>"#,
+            "farismnrr.com",
+            r#"<a href="https://farismnrr.com">farismnrr.com</a>"#,
         ),
         summary_section = section(
             "Summary",

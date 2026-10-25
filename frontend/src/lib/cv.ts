@@ -59,8 +59,16 @@ function cvDate(value: string) {
 }
 
 function experienceCvTitle(order: number, role: string, company: string) {
+  if (order === 1) return `${company} | ${role}`;
   return `${editorial.experienceTitles[String(order)] ?? role} | ${company}`;
 }
+
+const perkasaCvBullets = [
+  'Developed and maintained production applications across frontend, backend, mobile, and infrastructure, supporting AI-powered workflows and IoT device management.',
+  'Built AI-powered meeting processing and knowledge retrieval using LangGraph, Graph RAG, and PostgreSQL, enabling searchable transcripts, summaries, decisions, and action items.',
+  'Developed Rust-based IoT services integrating MQTT and Zigbee2MQTT for real-time device monitoring, remote control, and rule-based automation.',
+  'Implemented containerized deployments and CI/CD workflows using Docker and GitHub Actions, collaborating with AI, IoT, infrastructure, and UI/UX engineers to deliver production features.'
+];
 
 export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
   const cvProfile = getCvProfile(target);
@@ -74,10 +82,12 @@ export function buildCvRenderRequest(draft: CvDraft, target: CvTarget) {
       return {
         kind: professional ? 'employment' : source.kind,
         title: experienceCvTitle(source.order, source.role, source.company),
-        meta: cvDate(source.year),
-        summary: draft.experienceDescriptions?.[String(source.order)] ?? '',
+        meta: source.order === 1 ? 'Jul 2025 – Present' : cvDate(source.year),
+        summary: source.order === 1 ? '' : draft.experienceDescriptions?.[String(source.order)] ?? '',
         relatedProjects: [],
-        bullets: draft.employmentBullets?.[String(source.order)] ?? []
+        bullets: source.order === 1
+          ? perkasaCvBullets
+          : draft.employmentBullets?.[String(source.order)] ?? []
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

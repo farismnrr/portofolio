@@ -1,6 +1,6 @@
 ---
-id: "03"
-order: 3
+id: "04"
+order: 4
 slug: pukat
 year: "2026"
 title: "PUKAT: Business Networking Platform"
@@ -11,7 +11,7 @@ kind: Professional
 category: "Platform · Network"
 description: "A site where Indonesian business owners, professionals and investors find each other by category and send messages."
 image: "/images/projects/pukat/cover.png"
-tech: [React, TypeScript, Node.js, PostgreSQL, RAG, Docker]
+tech: [TypeScript, React, Next.js, PostgreSQL, RAG, Docker]
 productUrl: "NDA"
 repoUrl: ""
 ---

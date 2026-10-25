@@ -1,6 +1,6 @@
 ---
-id: "01"
-order: 1
+id: "02"
+order: 2
 slug: sensio-notes
 year: "2026"
 title: "Sensio Notes: Meeting Intelligence Platform"

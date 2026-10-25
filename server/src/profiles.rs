@@ -38,7 +38,6 @@ pub struct LayoutPolicy {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct MinimumItems {
-    pub projects: usize,
     pub experiences: usize,
     pub certifications: usize,
 }

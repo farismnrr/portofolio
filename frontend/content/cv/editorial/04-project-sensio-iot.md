@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 4
 kind: project
 sourceId: sensio-iot
 cvTitle: "Sensio IoT"

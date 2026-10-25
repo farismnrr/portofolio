@@ -92,6 +92,7 @@ const [profileFiles, projectFiles, blogFiles, experienceFiles, educationFiles, s
   markdownFiles('publications'),
   markdownFiles('pages')
 ]);
+projectFiles.sort((left, right) => Number(left.values.get('order')) - Number(right.values.get('order')));
 
 const profile = profileFiles.find((file) => file.name === 'about.md') ?? profileFiles[0];
 const projects = projectFiles.map((file) => ({

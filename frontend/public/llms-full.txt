@@ -291,6 +291,206 @@ items: [Arduino, ESP32, EMQX, Grafana, Node-RED]
 Devices on Arduino and ESP32, messaging through MQTT with EMQX, and flows built in Node-RED. Includes firmware updates over the air (OTA).
 ## Projects
 
+### Personal Portfolio Website
+Source file: frontend/content/projects/portfolio-website.md
+---
+id: "01"
+order: 1
+slug: portfolio-website
+year: "2026"
+title: "Personal Portfolio Website"
+cardTitle: "Portfolio"
+subtitle: "Markdown-driven portfolio"
+role: "Solo Developer"
+kind: Personal
+category: "Web · Portfolio"
+description: "My portfolio brings my projects, experience, certifications, and writing together in one place for visitors to explore."
+image: "/images/projects/portfolio/cover.png"
+imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
+techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
+productUrl: "https://farismnrr.com"
+repoUrl: "https://github.com/farismnrr/portofolio"
+---
+## What it is
+
+This site.
+Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives the project cards, project modal, and homepage selections.
+Adding a project means writing a file, not editing a component.
+
+## How it is built
+
+```mermaid
+flowchart TD
+    M[Markdown collections] --> B[Build process]
+    S[Svelte UI] --> B
+    B --> P[Prerendered route HTML]
+    B --> A[Static assets]
+    P --> R[Rust + Axum runtime]
+    A --> R
+    R --> U[Visitor]
+```
+
+Public routes are prerendered at build time, so crawlers and browsers get real HTML right away.
+Svelte then hydrates the page for client-side navigation.
+A small Rust and Axum server embeds the generated pages and assets for production.
+
+The site keeps ordinary web behavior: normal link handling, lazy route loading, hash links that wait for the page before scrolling, separate desktop and mobile navigation, and a skip link to the main content.
+
+## Tradeoffs
+
+Markdown is comfortable for me and works well with Git history, but it is harder for non-technical editors.
+Content changes are versioned and reviewable, but they still need a build and a deployment.
+Every project can tell a different story, so a writing check in the build keeps the copy consistent.
+
+## Stack
+
+Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build time, Rust with Axum in production, and GitHub Actions for validation, build, and deployment.
+
+## What I Did
+
+- Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
+- Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
+- Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
+- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
+- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
+- Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
+
+## Links
+
+- Site: [farismnrr.com](https://farismnrr.com)
+- Source: [github.com/farismnrr/portofolio](https://github.com/farismnrr/portofolio)
+
+---
+
+### Sensio Notes: Meeting Intelligence Platform
+Source file: frontend/content/projects/sensio-notes.md
+---
+id: "02"
+order: 2
+slug: sensio-notes
+year: "2026"
+title: "Sensio Notes: Meeting Intelligence Platform"
+cardTitle: "Sensio Notes"
+subtitle: "Meeting assistant"
+role: "Fullstack"
+kind: Professional
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
+image: "/images/projects/sensio-notes/cover.png"
+imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
+techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
+productUrl: "https://sensio.id"
+repoUrl: ""
+---
+## What it is
+
+Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
+I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
+
+```mermaid
+flowchart LR
+    R[Record or upload a meeting] --> P[Follow progress]
+    P --> V[Review meeting results]
+    V --> F[Find decisions and follow-up work]
+```
+
+## What I Did
+
+- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
+- Built cross-platform meeting recording capabilities and browser-based meeting integrations.
+- Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
+- Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.
+- Built meeting intelligence features including interactive knowledge graphs, mind maps, searchable transcripts, and AI chat with source references.
+- Implemented background processing, reliable audio uploads, real-time status updates, and containerized deployment.
+
+## Links
+
+- Product: [sensio.id](https://sensio.id)
+
+---
+
+### Sensio IoT: Smart-Space Platform
+Source file: frontend/content/projects/sensio-iot.md
+---
+id: "03"
+order: 3
+slug: sensio-iot
+year: "2026"
+title: "Sensio IoT: Smart-Space Platform"
+cardTitle: "Sensio IoT"
+subtitle: "Smart-room controls"
+role: "Backend"
+kind: Professional
+category: "PT Perkasa Pilar Utama · Product Development"
+description: "Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change."
+image: "/images/projects/sensio-iot/cover.png"
+imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
+techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
+productUrl: "https://sensio.id"
+repoUrl: ""
+---
+## What it is
+
+Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. I work on it with AI, IoT, infrastructure, and UI/UX engineers.
+
+```mermaid
+flowchart LR
+    R[Choose a room] --> V[Review controls and readings]
+    V --> A[Request an action]
+    A --> F[Follow the feedback]
+```
+
+## What I Did
+
+- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
+- Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
+- Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
+- Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.
+- Integrated an AI assistant using LangGraph and tool calling for natural-language device monitoring, control, and automation management.
+- Built a responsive dashboard, voice assistant features, and Android application integration using Tauri.
+- Implemented secure authentication, site-based access control, HMI device pairing, and automated deployment using Docker and GitHub Actions.
+
+## Links
+
+- Product: [sensio.id](https://sensio.id)
+
+---
+
+### PUKAT: Business Networking Platform
+Source file: frontend/content/projects/pukat.md
+---
+id: "04"
+order: 4
+slug: pukat
+year: "2026"
+title: "PUKAT: Business Networking Platform"
+cardTitle: "PUKAT"
+subtitle: "Business networking platform"
+role: ""
+kind: Professional
+category: "Platform · Network"
+description: "A site where Indonesian business owners, professionals and investors find each other by category and send messages."
+image: "/images/projects/pukat/cover.png"
+tech: [TypeScript, React, Next.js, PostgreSQL, RAG, Docker]
+productUrl: "NDA"
+repoUrl: ""
+---
+## What I Did
+
+- Built PUKAT as a full-stack platform, from the frontend and backend to the database and infrastructure.
+- Created business and professional directories with search and category filters.
+- Added sign-up, login, profile pages, and access control.
+- Built connections, invitations, and direct messages between members.
+- Added an AI assistant that uses RAG to answer questions from the platform's information.
+- Built responsive screens for browsing profiles, networking, and account settings.
+- Wrote the database operations and backend APIs behind the core features.
+
+## Links
+
+- Product: NDA
+
+---
+
 ### Masih Awam Workspace
 Source file: frontend/content/projects/ai-workspace.md
 ---
@@ -445,123 +645,6 @@ A team costs more time and tokens than a single agent, which is why the lead siz
 
 ---
 
-### AskIn: AI Workspace
-Source file: frontend/content/projects/askin.md
----
-id: "08"
-order: 8
-slug: askin
-year: "2024"
-title: "AskIn: AI Workspace"
-cardTitle: "AskIn"
-subtitle: "AI chat workspace"
-role: "Backend · Integration"
-kind: Personal
-category: "Ruangguru Academy · Learning Project"
-description: "AskIn lets users choose an AI model, chat, add files as context, and get answers for each conversation in one workspace."
-image: "/images/projects/askin/showcase.png"
-tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
-productUrl: ""
-repoUrl: "https://github.com/farismnrr/askin"
----
-## What it is
-
-AskIn is an AI chat app I worked on during Ruangguru Academy.
-It lets a user pick a model, start a conversation, add files or other context, and get an answer, without knowing which service is behind it.
-
-```mermaid
-flowchart LR
-    U[User] --> UI[AskIn workspace]
-    UI --> CHAT[Conversation request]
-    CHAT --> CONTEXT[Optional files and retrieved context]
-    CONTEXT --> ROUTER[Model integration layer]
-    ROUTER --> MODEL[AI model provider]
-    MODEL --> RESPONSE[Generated response]
-    RESPONSE --> UI
-```
-
-## How it works
-
-The app is a customized version of an open-source chat interface (Open WebUI), with a Svelte frontend and a Python backend on FastAPI. I did not write the interface from scratch.
-
-The backend sits between the web app and the models.
-It exposes the APIs, handles authenticated requests, discovers the available models, and routes chat requests to Ollama-compatible or OpenAI-compatible endpoints, so the experience stays the same when the model changes.
-
-It also has a retrieval step.
-Files and knowledge sources can be processed into context, and relevant parts are attached to a conversation before the request reaches the model.
-Requests that do not need context go through the same flow without it.
-
-## What I worked on
-
-My focus was the backend and the integration: understanding the architecture well enough to adapt it, run it, and reason about where the app ends and the AI services begin.
-I also worked on how the app is presented, such as the new-chat screen and model selection.
-Docker packaging lets the frontend and backend run as one application.
-
-## Links
-
-- Source: [github.com/farismnrr/askin](https://github.com/farismnrr/askin)
-
----
-
-### GiziLens: A Team Capstone Around Food Recognition
-Source file: frontend/content/projects/gizilens.md
----
-id: "07"
-order: 7
-slug: gizilens
-year: "2025"
-title: "GiziLens: A Team Capstone Around Food Recognition"
-cardTitle: "GiziLens"
-subtitle: "Team capstone: food recognition"
-role: "Web & Backend Engineering · Team Capstone"
-kind: Personal
-category: "DBS Foundation · Capstone Project"
-description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
-image: "/images/projects/gizi-lens/GiziLens-showcase.png"
-tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
-productUrl: ""
-repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"
----
-## What it was
-
-GiziLens was a team capstone in the DBS Foundation program. The idea: a nutrition app that starts from something users already have, a photo of food or an ingredient.
-
-The team split in two.
-One side built the food-image recognition, and the other built the web application around it: accounts, sessions, data, and deployment.
-They lived in separate repositories and were not fully connected end to end, so I describe each part for what it is.
-
-```mermaid
-flowchart LR
-    IDEA[GiziLens idea]
-    IDEA --> ML[Food recognition]
-    IDEA --> APP[Web application]
-    ML --> CLASSIFY[Ingredient classification]
-    APP --> AUTH[Accounts and sessions]
-    APP --> DATA[Persistence]
-    APP --> RUNTIME[Deployment]
-```
-
-## What another team member built
-
-The classifier recognizes 32 food and ingredient classes using TensorFlow and EfficientNetV2L. The repository history attributes that work to another team member, not to me.
-
-## What I built
-
-I built the web application and its runtime, in a Nuxt frontend and a Bun and TypeScript backend on Hapi.
-
-- **Authentication as a full lifecycle.** Registration for different roles, login, reading and updating the user, logout, account deletion and restore, and token refresh. JWTs protect routes, and persisted sessions let the server validate and revoke access.
-- **Storage.** PostgreSQL for users and sessions, Redis as a fast-access layer, both behind repository layers instead of being called from every handler.
-- **Running as a service.** Separate container builds for frontend and backend, composed with PostgreSQL, Redis, and Nginx on one Docker network, plus HTTPS setup and update scripts.
-- **The logo.** I designed the original vector identity: a G, a circular lens or plate, and a leaf, with variants and usage rules.
-
-The frontend covers registration, login, token refresh, logout, and a dashboard. It does not include the image-upload-to-classification flow, so I do not describe it as done.
-
-## Links
-
-- Source: [GiziLens repositories](https://github.com/orgs/Group-CC25-CF047/repositories)
-
----
-
 ### IoTNet: IoT Operations Platform
 Source file: frontend/content/projects/iotnet.md
 ---
@@ -630,6 +713,123 @@ Nuxt and Vue on the front end. A TypeScript backend on Hapi and Bun, PostgreSQL 
 
 ---
 
+### GiziLens: A Team Capstone Around Food Recognition
+Source file: frontend/content/projects/gizilens.md
+---
+id: "07"
+order: 7
+slug: gizilens
+year: "2025"
+title: "GiziLens: A Team Capstone Around Food Recognition"
+cardTitle: "GiziLens"
+subtitle: "Team capstone: food recognition"
+role: "Web & Backend Engineering · Team Capstone"
+kind: Personal
+category: "DBS Foundation · Capstone Project"
+description: "GiziLens was a DBS Foundation capstone with a food classifier and a separate web app for accounts and sessions."
+image: "/images/projects/gizi-lens/GiziLens-showcase.png"
+tech: [TypeScript, Bun, Hapi, Nuxt, PostgreSQL, Redis, Docker, Nginx, TensorFlow]
+productUrl: ""
+repoUrl: "https://github.com/orgs/Group-CC25-CF047/repositories"
+---
+## What it was
+
+GiziLens was a team capstone in the DBS Foundation program. The idea: a nutrition app that starts from something users already have, a photo of food or an ingredient.
+
+The team split in two.
+One side built the food-image recognition, and the other built the web application around it: accounts, sessions, data, and deployment.
+They lived in separate repositories and were not fully connected end to end, so I describe each part for what it is.
+
+```mermaid
+flowchart LR
+    IDEA[GiziLens idea]
+    IDEA --> ML[Food recognition]
+    IDEA --> APP[Web application]
+    ML --> CLASSIFY[Ingredient classification]
+    APP --> AUTH[Accounts and sessions]
+    APP --> DATA[Persistence]
+    APP --> RUNTIME[Deployment]
+```
+
+## What another team member built
+
+The classifier recognizes 32 food and ingredient classes using TensorFlow and EfficientNetV2L. The repository history attributes that work to another team member, not to me.
+
+## What I built
+
+I built the web application and its runtime, in a Nuxt frontend and a Bun and TypeScript backend on Hapi.
+
+- **Authentication as a full lifecycle.** Registration for different roles, login, reading and updating the user, logout, account deletion and restore, and token refresh. JWTs protect routes, and persisted sessions let the server validate and revoke access.
+- **Storage.** PostgreSQL for users and sessions, Redis as a fast-access layer, both behind repository layers instead of being called from every handler.
+- **Running as a service.** Separate container builds for frontend and backend, composed with PostgreSQL, Redis, and Nginx on one Docker network, plus HTTPS setup and update scripts.
+- **The logo.** I designed the original vector identity: a G, a circular lens or plate, and a leaf, with variants and usage rules.
+
+The frontend covers registration, login, token refresh, logout, and a dashboard. It does not include the image-upload-to-classification flow, so I do not describe it as done.
+
+## Links
+
+- Source: [GiziLens repositories](https://github.com/orgs/Group-CC25-CF047/repositories)
+
+---
+
+### AskIn: AI Workspace
+Source file: frontend/content/projects/askin.md
+---
+id: "08"
+order: 8
+slug: askin
+year: "2024"
+title: "AskIn: AI Workspace"
+cardTitle: "AskIn"
+subtitle: "AI chat workspace"
+role: "Backend · Integration"
+kind: Personal
+category: "Ruangguru Academy · Learning Project"
+description: "AskIn lets users choose an AI model, chat, add files as context, and get answers for each conversation in one workspace."
+image: "/images/projects/askin/showcase.png"
+tech: [Python, FastAPI, Svelte, TypeScript, Ollama, OpenAI API, RAG, Docker]
+productUrl: ""
+repoUrl: "https://github.com/farismnrr/askin"
+---
+## What it is
+
+AskIn is an AI chat app I worked on during Ruangguru Academy.
+It lets a user pick a model, start a conversation, add files or other context, and get an answer, without knowing which service is behind it.
+
+```mermaid
+flowchart LR
+    U[User] --> UI[AskIn workspace]
+    UI --> CHAT[Conversation request]
+    CHAT --> CONTEXT[Optional files and retrieved context]
+    CONTEXT --> ROUTER[Model integration layer]
+    ROUTER --> MODEL[AI model provider]
+    MODEL --> RESPONSE[Generated response]
+    RESPONSE --> UI
+```
+
+## How it works
+
+The app is a customized version of an open-source chat interface (Open WebUI), with a Svelte frontend and a Python backend on FastAPI. I did not write the interface from scratch.
+
+The backend sits between the web app and the models.
+It exposes the APIs, handles authenticated requests, discovers the available models, and routes chat requests to Ollama-compatible or OpenAI-compatible endpoints, so the experience stays the same when the model changes.
+
+It also has a retrieval step.
+Files and knowledge sources can be processed into context, and relevant parts are attached to a conversation before the request reaches the model.
+Requests that do not need context go through the same flow without it.
+
+## What I worked on
+
+My focus was the backend and the integration: understanding the architecture well enough to adapt it, run it, and reason about where the app ends and the AI services begin.
+I also worked on how the app is presented, such as the new-chat screen and model selection.
+Docker packaging lets the frontend and backend run as one application.
+
+## Links
+
+- Source: [github.com/farismnrr/askin](https://github.com/farismnrr/askin)
+
+---
+
 ### Parentify: Parenting Companion
 Source file: frontend/content/projects/parentify.md
 ---
@@ -686,206 +886,6 @@ That contract mattered most: each team could work on its own only because names,
 - [Cloud Computing](https://github.com/Parentify/Parentify-Cloud-Computing): backend API, data, and cloud setup.
 - [Mobile Development](https://github.com/Parentify/Parentify-Mobile-Development): the Android app.
 - [Machine Learning](https://github.com/Parentify/Parentify-Machine-Learning): dataset workflow and model training.
-
----
-
-### Personal Portfolio Website
-Source file: frontend/content/projects/portfolio-website.md
----
-id: "04"
-order: 4
-slug: portfolio-website
-year: "2026"
-title: "Personal Portfolio Website"
-cardTitle: "Portfolio"
-subtitle: "Markdown-driven portfolio"
-role: "Solo Developer"
-kind: Personal
-category: "Web · Portfolio"
-description: "Faris's portfolio brings his projects, experience, certifications, and writing together in one place for visitors to explore."
-image: "/images/projects/portfolio/cover.png"
-imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
-techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
-productUrl: "https://farismnrr.com"
-repoUrl: "https://github.com/farismnrr/portofolio"
----
-## What it is
-
-This site.
-Projects, experience, certifications, and blog posts are Markdown files, and one content collection drives the project cards, project modal, and homepage selections.
-Adding a project means writing a file, not editing a component.
-
-## How it is built
-
-```mermaid
-flowchart TD
-    M[Markdown collections] --> B[Build process]
-    S[Svelte UI] --> B
-    B --> P[Prerendered route HTML]
-    B --> A[Static assets]
-    P --> R[Rust + Axum runtime]
-    A --> R
-    R --> U[Visitor]
-```
-
-Public routes are prerendered at build time, so crawlers and browsers get real HTML right away.
-Svelte then hydrates the page for client-side navigation.
-A small Rust and Axum server embeds the generated pages and assets for production.
-
-The site keeps ordinary web behavior: normal link handling, lazy route loading, hash links that wait for the page before scrolling, separate desktop and mobile navigation, and a skip link to the main content.
-
-## Tradeoffs
-
-Markdown is comfortable for me and works well with Git history, but it is harder for non-technical editors.
-Content changes are versioned and reviewable, but they still need a build and a deployment.
-Every project can tell a different story, so a writing check in the build keeps the copy consistent.
-
-## Stack
-
-Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build time, Rust with Axum in production, and GitHub Actions for validation, build, and deployment.
-
-## What I Did
-
-- Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
-- Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
-- Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
-- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
-- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
-- Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
-
-## Links
-
-- Site: [farismnrr.com](https://farismnrr.com)
-- Source: [github.com/farismnrr/portofolio](https://github.com/farismnrr/portofolio)
-
----
-
-### PUKAT: Business Networking Platform
-Source file: frontend/content/projects/pukat.md
----
-id: "03"
-order: 3
-slug: pukat
-year: "2026"
-title: "PUKAT: Business Networking Platform"
-cardTitle: "PUKAT"
-subtitle: "Business networking platform"
-role: ""
-kind: Professional
-category: "Platform · Network"
-description: "A site where Indonesian business owners, professionals and investors find each other by category and send messages."
-image: "/images/projects/pukat/cover.png"
-tech: [React, TypeScript, Node.js, PostgreSQL, RAG, Docker]
-productUrl: "NDA"
-repoUrl: ""
----
-## What I Did
-
-- Built PUKAT as a full-stack platform, from the frontend and backend to the database and infrastructure.
-- Created business and professional directories with search and category filters.
-- Added sign-up, login, profile pages, and access control.
-- Built connections, invitations, and direct messages between members.
-- Added an AI assistant that uses RAG to answer questions from the platform's information.
-- Built responsive screens for browsing profiles, networking, and account settings.
-- Wrote the database operations and backend APIs behind the core features.
-
-## Links
-
-- Product: NDA
-
----
-
-### Sensio IoT: Smart-Space Platform
-Source file: frontend/content/projects/sensio-iot.md
----
-id: "02"
-order: 2
-slug: sensio-iot
-year: "2026"
-title: "Sensio IoT: Smart-Space Platform"
-cardTitle: "Sensio IoT"
-subtitle: "Smart-room controls"
-role: "Backend"
-kind: Professional
-category: "PT Perkasa Pilar Utama · Product Development"
-description: "Sensio IoT lets users control room lights and equipment, check sensor readings, and run rules when readings change."
-image: "/images/projects/sensio-iot/cover.png"
-imageAlt: "Sensio IoT dashboard showing rooms, devices, online status and an automation rule."
-techGroups: [Languages & Runtime::Rust|JavaScript|Node.js, Frontend::Vanilla JavaScript|HTML|SCSS, Backend::Rust|Axum, AI & RAG::LangGraph|LLM Tool Calling|SQL AI Agent|Speech-to-Text|Text-to-Speech, Database & Infrastructure::PostgreSQL|TimescaleDB|Docker|GitHub Actions|OpenTelemetry, Mobile::Tauri 2|Android, IoT & Communication::MQTT|Mosquitto|Zigbee2MQTT|WebSocket|HTTP]
-productUrl: "https://sensio.id"
-repoUrl: ""
----
-## What it is
-
-Sensio IoT lets people control a room: lights, temperature, and equipment, with sensor readings and automation in one view. I work on it with AI, IoT, infrastructure, and UI/UX engineers.
-
-```mermaid
-flowchart LR
-    R[Choose a room] --> V[Review controls and readings]
-    V --> A[Request an action]
-    A --> F[Follow the feedback]
-```
-
-## What I Did
-
-- Developed and maintained Sensio IoT end-to-end, covering frontend, Rust backend, device integrations, AI orchestration, and infrastructure.
-- Built a smart device management platform supporting MQTT, HTTP, Zigbee2MQTT, and Tuya Cloud integrations.
-- Implemented real-time device monitoring, telemetry collection, remote control, and device availability tracking.
-- Developed an automation engine with scheduled and device-state triggers, conditional rules, and scene execution.
-- Integrated an AI assistant using LangGraph and tool calling for natural-language device monitoring, control, and automation management.
-- Built a responsive dashboard, voice assistant features, and Android application integration using Tauri.
-- Implemented secure authentication, site-based access control, HMI device pairing, and automated deployment using Docker and GitHub Actions.
-
-## Links
-
-- Product: [sensio.id](https://sensio.id)
-
----
-
-### Sensio Notes: Meeting Intelligence Platform
-Source file: frontend/content/projects/sensio-notes.md
----
-id: "01"
-order: 1
-slug: sensio-notes
-year: "2026"
-title: "Sensio Notes: Meeting Intelligence Platform"
-cardTitle: "Sensio Notes"
-subtitle: "Meeting assistant"
-role: "Fullstack"
-kind: Professional
-category: "PT Perkasa Pilar Utama · Product Development"
-description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
-image: "/images/projects/sensio-notes/cover.png"
-imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
-techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
-productUrl: "https://sensio.id"
-repoUrl: ""
----
-## What it is
-
-Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
-I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
-
-```mermaid
-flowchart LR
-    R[Record or upload a meeting] --> P[Follow progress]
-    P --> V[Review meeting results]
-    V --> F[Find decisions and follow-up work]
-```
-
-## What I Did
-
-- Developed and maintained Sensio Notes end-to-end, covering frontend, backend, AI integration, and infrastructure.
-- Built cross-platform meeting recording capabilities and browser-based meeting integrations.
-- Implemented AI-powered transcription, speaker identification, meeting summaries, action items, and decision extraction.
-- Developed agentic AI chat with tool calling and retrieval-augmented generation to enable contextual search across meeting data.
-- Built meeting intelligence features including interactive knowledge graphs, mind maps, searchable transcripts, and AI chat with source references.
-- Implemented background processing, reliable audio uploads, real-time status updates, and containerized deployment.
-
-## Links
-
-- Product: [sensio.id](https://sensio.id)
 ## Writing
 
 ### Building IoTNet: What Changed When Devices Became a Fleet

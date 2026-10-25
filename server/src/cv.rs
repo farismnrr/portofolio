@@ -476,6 +476,7 @@ fn validate_pdf_contents(
     }
     for project in &document.projects {
         ensure_text_present(&normalized, &project.title, "project")?;
+        ensure_text_present(&normalized, &project.tech_stack, "project tech stack")?;
     }
     for certification in &document.certifications {
         ensure_text_present(&normalized, &certification.title, "certification")?;
@@ -535,10 +536,6 @@ fn parse_attribute(source: &str, attribute: &str) -> Option<f64> {
 fn trim_lowest_priority_optional_item(document: &mut CvRenderRequest, profile: &CvProfile) -> bool {
     if document.certifications.len() > profile.layout_policy.minimum_items.certifications {
         document.certifications.pop();
-        return true;
-    }
-    if document.projects.len() > profile.layout_policy.minimum_items.projects {
-        document.projects.pop();
         return true;
     }
     if document.experiences.len() > profile.layout_policy.minimum_items.experiences {
@@ -1132,6 +1129,46 @@ mod tests {
 
         let ratio = last_page_fill_ratio(bbox).expect("fill ratio");
         assert!((ratio - (650.0 / 792.0)).abs() < 0.0001);
+    }
+
+    #[test]
+    fn validates_project_tech_stack_in_pdf_text() {
+        let document = CvRenderRequest {
+            contract_version: None,
+            profile_id: None,
+            name: "Faris Munir Mahdi".to_string(),
+            headline: "Software Engineer".to_string(),
+            contact: "farismnrr.com".to_string(),
+            profile_summary: "Software engineer".to_string(),
+            technical_scope: vec![],
+            projects: vec![super::ProjectSection {
+                title: "PUKAT".to_string(),
+                kind: "Professional".to_string(),
+                meta: "Under NDA".to_string(),
+                narrative: "Business networking platform".to_string(),
+                tech_stack: "TypeScript, React, Next.js, PostgreSQL, RAG, Docker".to_string(),
+            }],
+            experiences: vec![],
+            certifications: vec![],
+            education_lines: vec![],
+            max_pages: 2,
+        };
+        let inspection = super::PdfInspection {
+            pages: 2,
+            fill_ratio: 0.5,
+            text: "SUMMARY SKILLS EXPERIENCE PROJECTS CERTIFICATIONS EDUCATION PUKAT \
+                TypeScript, React, Next.js, PostgreSQL, RAG, Docker"
+                .to_string(),
+        };
+
+        assert!(super::validate_pdf_contents(&document, &inspection).is_ok());
+
+        let missing_stack = super::PdfInspection {
+            text: "SUMMARY SKILLS EXPERIENCE PROJECTS CERTIFICATIONS EDUCATION PUKAT".to_string(),
+            ..inspection
+        };
+        let error = super::validate_pdf_contents(&document, &missing_stack).unwrap_err();
+        assert!(error.contains("project tech stack content missing"));
     }
 
     #[test]

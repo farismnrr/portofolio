@@ -757,14 +757,13 @@ The classifier recognizes 32 food and ingredient classes using TensorFlow and Ef
 
 ## What I built
 
-I built the web application and its runtime, in a Nuxt frontend and a Bun and TypeScript backend on Hapi.
+Built the web application and runtime with a Nuxt frontend and a Bun and TypeScript backend on Hapi.
 
-- **Authentication as a full lifecycle.** Registration for different roles, login, reading and updating the user, logout, account deletion and restore, and token refresh. JWTs protect routes, and persisted sessions let the server validate and revoke access.
-- **Storage.** PostgreSQL for users and sessions, Redis as a fast-access layer, both behind repository layers instead of being called from every handler.
-- **Running as a service.** Separate container builds for frontend and backend, composed with PostgreSQL, Redis, and Nginx on one Docker network, plus HTTPS setup and update scripts.
-- **The logo.** I designed the original vector identity: a G, a circular lens or plate, and a leaf, with variants and usage rules.
+- Implemented registration for different roles, login, user reading and updates, logout, account deletion and restore, and token refresh. Protected routes with JWTs and persisted sessions so the server could validate and revoke access.
+- Set up PostgreSQL for users and sessions and Redis as a fast-access layer, with both behind repository layers instead of being called from every handler.
+- Containerised the frontend and backend separately, composed them with PostgreSQL, Redis, and Nginx on one Docker network, and set up HTTPS and update scripts.
 
-The frontend covers registration, login, token refresh, logout, and a dashboard. It does not include the image-upload-to-classification flow, so I do not describe it as done.
+The frontend covers registration, login, token refresh, logout, and a dashboard. Not included: an image-upload-to-classification flow.
 
 ## Links
 

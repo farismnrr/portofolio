@@ -603,6 +603,15 @@ fn linkify_meta(meta: &str) -> String {
 }
 
 fn experience_html(experience: &ExperienceSection) -> String {
+    let title = if experience.kind == "employment" {
+        if let Some((company, role)) = experience.title.split_once(" | ") {
+            format!("<strong>{}</strong> | {}", escape(company), escape(role))
+        } else {
+            escape(&experience.title)
+        }
+    } else {
+        escape(&experience.title)
+    };
     let related_projects = if experience.related_projects.is_empty() || experience.kind == "program"
     {
         String::new()
@@ -634,7 +643,12 @@ fn experience_html(experience: &ExperienceSection) -> String {
             experience
                 .bullets
                 .iter()
-                .map(|bullet| format!(r#"<div class="bullet">• {}</div>"#, escape(bullet)))
+                .map(|bullet| {
+                    format!(
+                        r#"<div class="bullet"><span class="bullet-marker" aria-hidden="true">•</span><span>{}</span></div>"#,
+                        escape(bullet)
+                    )
+                })
                 .collect::<Vec<_>>()
                 .join("")
         )
@@ -652,7 +666,7 @@ fn experience_html(experience: &ExperienceSection) -> String {
           {bullets}
         </article>
         "#,
-        title = escape(&experience.title),
+        title = title,
         meta = escape(&experience.meta),
         summary = if experience.summary.trim().is_empty() {
             String::new()
@@ -902,14 +916,18 @@ fn render_html(document: &CvRenderRequest, profile: DensityProfile) -> String {
   .bullets {{ margin: 3px 0 0; }}
 
   .bullet {{
+    display: grid;
+    grid-template-columns: 1em minmax(0, 1fr);
+    column-gap: 0.2em;
     margin: 0 0 {bullet_gap}px;
-    padding-left: 1em;
-    text-indent: -1em;
     text-align: justify;
-    text-align-last: start;
     hyphens: none;
     orphans: 3;
     widows: 3;
+  }}
+
+  .bullet-marker {{
+    text-align: center;
   }}
 
   .related-projects {{
@@ -1107,6 +1125,25 @@ mod tests {
         assert!(parsed.bullets.is_empty());
         let rendered = super::experience_html(&parsed);
         assert!(!rendered.contains("class=\"bullets\""));
+    }
+
+    #[test]
+    fn experience_bullets_use_a_fixed_marker_column_and_employment_role_is_not_italic() {
+        let experience = super::ExperienceSection {
+            kind: "employment".to_string(),
+            title: "PT Perkasa Pilar Utama | Software Engineer".to_string(),
+            meta: "Jul 2025 – Present".to_string(),
+            summary: String::new(),
+            related_projects: Vec::new(),
+            bullets: vec!["A long bullet that wraps onto another line".to_string()],
+        };
+
+        let rendered = super::experience_html(&experience);
+        assert!(rendered.contains("<strong>PT Perkasa Pilar Utama</strong> | Software Engineer"));
+        assert!(!rendered.contains("<em>"));
+        assert!(rendered.contains(
+            r#"<span class="bullet-marker" aria-hidden="true">•</span><span>A long bullet that wraps onto another line</span>"#
+        ));
     }
 
     #[test]

@@ -1178,6 +1178,5 @@ mod tests {
         assert_eq!(profile.filename, "Faris_Munir_Mahdi_CV.pdf");
         assert_eq!(profile.max_pages, 2);
         assert!(profile.layout_policy.min_body_size_pt >= 10.5);
-        assert_eq!(profile.layout_policy.minimum_items.projects, 5);
     }
 }

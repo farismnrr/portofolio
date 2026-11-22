@@ -14,7 +14,6 @@ env:
   RUST_TARGET_AMD64: x86_64-unknown-linux-musl
   RUST_TARGET_ARM64: aarch64-unknown-linux-musl
   RUSTFLAGS: -D warnings
-  VITE_ROLE_MATCH_ENABLED: "false"
 
 concurrency:
   group: portfolio-production-release
@@ -333,43 +332,55 @@ jobs:
         run: |
           set -euo pipefail
           ssh -o BatchMode=yes -o ConnectTimeout=10 "$ORANGEPI_SSH_HOST" \
-            'test "$(uname -m)" = aarch64 && test -d /opt/portfolio && test -f /opt/portfolio/.env'
+            'test "$(uname -m)" = aarch64 && test -d /opt/portfolio && test -f /opt/portfolio/.env && test -f /opt/portfolio/compose.yaml'
 
       - name: Transfer production deployment definition
         shell: bash
         run: |
           set -euo pipefail
-          scp -q \
+          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "mkdir -p '$ORANGEPI_ROOT/backup' '$ORANGEPI_ROOT/state' && cp --preserve=mode '$ORANGEPI_ROOT/compose.yaml' '$ORANGEPI_ROOT/backup/compose-before-${MAIN_SHA}.yaml' && printf '%s\\n' 'backup/compose-before-${MAIN_SHA}.yaml' > '$ORANGEPI_ROOT/state/previous-compose' && chmod 600 '$ORANGEPI_ROOT/state/previous-compose'"
+          if ! scp -q \
             deploy/orangepi/compose.yaml \
             deploy/orangepi/deploy.sh \
             deploy/orangepi/verify.sh \
             deploy/orangepi/rollback.sh \
-            "$ORANGEPI_SSH_HOST:$ORANGEPI_ROOT/"
-          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
-            "chmod 750 '$ORANGEPI_ROOT/deploy.sh' '$ORANGEPI_ROOT/verify.sh' '$ORANGEPI_ROOT/rollback.sh'"
+            "$ORANGEPI_SSH_HOST:$ORANGEPI_ROOT/"; then
+            ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+              "cp --preserve=mode '$ORANGEPI_ROOT/backup/compose-before-${MAIN_SHA}.yaml' '$ORANGEPI_ROOT/compose.yaml'"
+            exit 1
+          fi
+          if ! ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "chmod 750 '$ORANGEPI_ROOT/deploy.sh' '$ORANGEPI_ROOT/verify.sh' '$ORANGEPI_ROOT/rollback.sh'"; then
+            ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+              "cp --preserve=mode '$ORANGEPI_ROOT/backup/compose-before-${MAIN_SHA}.yaml' '$ORANGEPI_ROOT/compose.yaml'"
+            exit 1
+          fi
 
-      - name: Deploy exact immutable main SHA
-        shell: bash
-        run: |
-          set -euo pipefail
-          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
-            "'$ORANGEPI_ROOT/deploy.sh' '$IMAGE'"
-
-      - name: Verify production and roll back on failure
+      - name: Deploy, verify, and roll back on failure
         shell: bash
         run: |
           set -euo pipefail
           if ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
-            "'$ORANGEPI_ROOT/verify.sh' '$MAIN_SHA'"; then
-            exit 0
+            "'$ORANGEPI_ROOT/deploy.sh' '$IMAGE'"; then
+            if ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+              "'$ORANGEPI_ROOT/verify.sh' '$MAIN_SHA'"; then
+              exit 0
+            fi
           fi
 
-          echo "Orange Pi verification failed; restoring the previous known-good application SHA." >&2
-          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
-            "'$ORANGEPI_ROOT/rollback.sh'"
+          echo "Orange Pi deployment or verification failed; restoring the previous known-good application and Compose definition." >&2
+          if ! ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/rollback.sh'"; then
+            echo "Orange Pi rollback command failed." >&2
+            exit 1
+          fi
           previous_sha="$(ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
             "cat '$ORANGEPI_ROOT/state/deployed-sha'")"
-          ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
-            "'$ORANGEPI_ROOT/verify.sh' '$previous_sha'"
+          if ! ssh -o BatchMode=yes "$ORANGEPI_SSH_HOST" \
+            "'$ORANGEPI_ROOT/verify.sh' '$previous_sha'"; then
+            echo "Orange Pi rollback verification failed for ${previous_sha}." >&2
+            exit 1
+          fi
           echo "Rollback verification passed for ${previous_sha}." >&2
           exit 1

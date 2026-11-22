@@ -12,6 +12,13 @@ fi
 cd "$ROOT"
 test -f compose.yaml
 test -f .env
+test -f state/previous-compose
+previous_compose="$(<state/previous-compose)"
+if [[ ! "$previous_compose" =~ ^backup/compose-before-[0-9a-fA-F]{40}\.yaml$ ]]; then
+  echo "a known-good Compose backup is required before deployment" >&2
+  exit 2
+fi
+test -f "$ROOT/$previous_compose"
 
 compose() {
   docker compose --env-file "$ROOT/.env" -f "$ROOT/compose.yaml" "$@"
@@ -55,7 +62,7 @@ mv -f "$tmp_env" "$ROOT/.env"
 echo "previous_sha=${previous_sha:-none}"
 echo "pulling=${IMAGE}"
 compose pull portfolio
-compose up -d --no-deps portfolio
+compose up -d --remove-orphans --no-deps portfolio
 
 container="$(compose ps -q portfolio)"
 test -n "$container"

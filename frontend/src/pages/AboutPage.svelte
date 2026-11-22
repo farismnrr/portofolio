@@ -6,12 +6,10 @@
   import MediaImage from '../lib/ui/MediaImage.svelte';
   import MarkdownArticle from '../lib/ui/MarkdownArticle.svelte';
   import TimelineEntry from '../lib/ui/TimelineEntry.svelte';
-  import RoleMatchPanel from '../lib/ui/RoleMatchPanel.svelte';
   import { siteAssetUrl } from '../lib/router';
 
   const page = pageCopy.about;
   const rendered = renderMarkdown(page.body);
-  const roleMatchEnabled = import.meta.env.VITE_ROLE_MATCH_ENABLED === 'true';
   $: cvHref = siteAssetUrl('/downloads/Faris_Munir_Mahdi_CV.pdf');
 </script>
 
@@ -38,11 +36,6 @@
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={profile.email}><AppIcon name="mail" size={16}/>Email</a>
           <a class="flex min-h-10 items-center gap-2.5 hover:text-[var(--accent)]" href={cvHref} target="_blank" rel="noopener noreferrer" aria-label="Download CV (opens in a new tab)"><AppIcon name="file-text" size={16}/>Download CV</a>
         </div>
-        {#if roleMatchEnabled}
-          <div class="col-span-2 mt-3 border-t border-black/14 pt-3 lg:mt-4">
-            <RoleMatchPanel/>
-          </div>
-        {/if}
       </aside>
 
       <section class="min-w-0">

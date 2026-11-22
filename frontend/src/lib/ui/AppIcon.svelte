@@ -46,6 +46,7 @@
   export let brandPath: string | undefined = undefined;
   export let brandPaths: string[] | undefined = undefined;
   export let brandStroke = false;
+  export let brandViewBox = '0 0 24 24';
 </script>
 
 {#if brandPaths}
@@ -64,7 +65,7 @@
     {/each}
   </svg>
 {:else if brandPath}
-  <svg aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} class={`shrink-0 ${brandStroke ? 'fill-none stroke-current' : 'fill-current'}`} stroke-width={brandStroke ? 1.8 : undefined} stroke-linecap={brandStroke ? 'round' : undefined} stroke-linejoin={brandStroke ? 'round' : undefined}>
+  <svg aria-hidden="true" viewBox={brandViewBox} width={size} height={size} class={`shrink-0 ${brandStroke ? 'fill-none stroke-current' : 'fill-current'}`} stroke-width={brandStroke ? 1.8 : undefined} stroke-linecap={brandStroke ? 'round' : undefined} stroke-linejoin={brandStroke ? 'round' : undefined}>
     <path d={brandPath}/>
   </svg>
 {:else if name === 'close'}

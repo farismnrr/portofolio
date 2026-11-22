@@ -303,19 +303,6 @@ async fn render_candidate(
     render_pdf_html(&render_html(document, profile)).await
 }
 
-#[cfg(feature = "role-match")]
-pub(crate) async fn render_report_pdf(html: &str, required: &[String]) -> Result<Vec<u8>, String> {
-    let (bytes, inspection) = render_pdf_html(html).await?;
-    if inspection.pages > 12 {
-        return Err("report exceeds the 12-page limit".into());
-    }
-    let normalized = normalize_text(&inspection.text);
-    for value in required {
-        ensure_text_present(&normalized, value, "report content")?;
-    }
-    Ok(bytes)
-}
-
 struct PdfTempFiles {
     html: String,
     pdf: String,

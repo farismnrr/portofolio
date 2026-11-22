@@ -24,33 +24,6 @@ services:
         max-size: 10m
         max-file: "5"
 
-  nine-router:
-    image: decolua/9router:0.5.95
-    restart: unless-stopped
-    environment:
-      DATA_DIR: /app/data
-      HOSTNAME: 0.0.0.0
-      PORT: "20128"
-    volumes:
-      - ./9router-data:/app/data
-    ports:
-      - "127.0.0.1:${NINE_ROUTER_PORT:-20128}:20128"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:20128/v1/models').then(r => process.exit(r.status === 401 || r.ok ? 0 : 1)).catch(() => process.exit(1))\"",
-        ]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 15s
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
-        max-file: "5"
-
   portfolio:
     image: ${PORTFOLIO_IMAGE:?PORTFOLIO_IMAGE must be an immutable GHCR SHA tag}
     restart: unless-stopped
@@ -59,16 +32,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      nine-router:
-        condition: service_started
     environment:
       PORT: "${PORTFOLIO_PORT:-3001}"
-      NINE_ROUTER_URL: ${NINE_ROUTER_URL:?NINE_ROUTER_URL is required}
-      NINE_ROUTER_MODEL: ${NINE_ROUTER_MODEL:?NINE_ROUTER_MODEL is required}
-      NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${NINE_ROUTER_CONNECT_TIMEOUT_SECONDS:?NINE_ROUTER_CONNECT_TIMEOUT_SECONDS is required}
-      NINE_ROUTER_TIMEOUT_SECONDS: ${NINE_ROUTER_TIMEOUT_SECONDS:?NINE_ROUTER_TIMEOUT_SECONDS is required}
-      NINE_ROUTER_API_KEY: ${NINE_ROUTER_API_KEY:?NINE_ROUTER_API_KEY is required}
-      AI_EMBEDDING_MODEL: ${AI_EMBEDDING_MODEL:-}
       DATABASE_URL: ${PORTFOLIO_DATABASE_URL:?PORTFOLIO_DATABASE_URL is required}
     logging:
       driver: json-file

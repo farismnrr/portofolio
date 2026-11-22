@@ -6,12 +6,21 @@ cd "$ROOT"
 test -f compose.yaml
 test -f .env
 test -f state/previous-sha
+test -f state/previous-compose
 
 previous_sha="$(<state/previous-sha)"
 if [[ ! "$previous_sha" =~ ^[0-9a-fA-F]{40}$ ]]; then
   echo "no known-good immutable SHA is available for rollback" >&2
   exit 2
 fi
+
+previous_compose="$(<state/previous-compose)"
+if [[ ! "$previous_compose" =~ ^backup/compose-before-[0-9a-fA-F]{40}\.yaml$ ]]; then
+  echo "no known-good Compose definition is available for rollback" >&2
+  exit 2
+fi
+test -f "$ROOT/$previous_compose"
+cp --preserve=mode "$ROOT/$previous_compose" "$ROOT/compose.yaml"
 
 image="ghcr.io/farismnrr/portofolio/portfolio-app:${previous_sha}"
 compose() {
@@ -48,7 +57,7 @@ mv -f "$tmp_env" "$ROOT/.env"
 
 echo "rolling_back_to=${previous_sha}"
 compose pull portfolio
-compose up -d --no-deps portfolio
+compose up -d portfolio
 container="$(compose ps -q portfolio)"
 test -n "$container"
 actual_ref="$(docker inspect --format '{{.Config.Image}}' "$container")"

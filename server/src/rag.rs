@@ -15,19 +15,16 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use sqlx::{postgres::PgPoolOptions, PgPool, Row};
 
-use crate::{
-    ai::AiState,
-    profiles::{self, CvProfile},
-};
+use crate::profiles::{self, CvProfile};
 
 const VECTOR_DIM: usize = 256;
+const EMBEDDING_VERSION: &str = "local-hash-v1";
 const MAX_SEMANTIC_EVIDENCE: usize = 10;
 const MAX_TOTAL_EVIDENCE: usize = 25;
 
 #[derive(Clone)]
 pub struct RagState {
     pool: PgPool,
-    ai: AiState,
     corpus: Arc<Vec<CorpusChunk>>,
 }
 
@@ -72,7 +69,7 @@ pub struct RetrieveResponse {
 }
 
 impl RagState {
-    pub fn from_env(ai: AiState, corpus_json: &[u8]) -> Result<Self, String> {
+    pub fn from_env(corpus_json: &[u8]) -> Result<Self, String> {
         let database_url =
             env::var("DATABASE_URL").map_err(|_| "DATABASE_URL is required".to_string())?;
         let pool = PgPoolOptions::new()
@@ -84,7 +81,6 @@ impl RagState {
 
         Ok(Self {
             pool,
-            ai,
             corpus: Arc::new(corpus),
         })
     }
@@ -173,27 +169,8 @@ impl RagState {
             return Ok(());
         }
 
-        let inputs = changed
-            .iter()
-            .map(|(chunk, _)| chunk.content.clone())
-            .collect::<Vec<_>>();
-        let vectors = match self.ai.embeddings(&inputs).await {
-            Some(values) if values.len() == inputs.len() => values
-                .iter()
-                .map(|value| fold_embedding(value))
-                .collect::<Vec<_>>(),
-            _ => {
-                tracing::warn!(
-                    "9router embedding provider unavailable; using deterministic local fallback"
-                );
-                inputs
-                    .iter()
-                    .map(|value| fallback_embedding(value))
-                    .collect::<Vec<_>>()
-            }
-        };
-
-        for ((chunk, hash), vector) in changed.into_iter().zip(vectors) {
+        for (chunk, hash) in changed {
+            let vector = fallback_embedding(&chunk.content);
             let vector = vector_literal(&vector);
             sqlx::query(
                 r#"
@@ -238,10 +215,7 @@ impl RagState {
     ) -> Result<Vec<Evidence>, sqlx::Error> {
         self.sync_index().await?;
 
-        let query_vector = match self.ai.embeddings(&[query.to_string()]).await {
-            Some(mut values) if values.len() == 1 => fold_embedding(&values.remove(0)),
-            _ => fallback_embedding(query),
-        };
+        let query_vector = fallback_embedding(query);
         let vector = vector_literal(&query_vector);
 
         let rows = sqlx::query(
@@ -560,7 +534,8 @@ fn evidence_from_chunk(chunk: &CorpusChunk, score: f64) -> Evidence {
 
 fn chunk_fingerprint(chunk: &CorpusChunk) -> String {
     content_hash(&format!(
-        "{}|{}|{}|{}|{}|{:?}|{:?}|{}",
+        "{}|{}|{}|{}|{}|{}|{:?}|{:?}|{}",
+        EMBEDDING_VERSION,
         chunk.source_type,
         chunk.source_id,
         chunk.section,
@@ -574,18 +549,6 @@ fn chunk_fingerprint(chunk: &CorpusChunk) -> String {
 
 fn content_hash(content: &str) -> String {
     format!("{:x}", Sha256::digest(content.as_bytes()))
-}
-
-fn fold_embedding(input: &[f32]) -> Vec<f32> {
-    if input.is_empty() {
-        return vec![0.0; VECTOR_DIM];
-    }
-
-    let mut output = vec![0.0_f32; VECTOR_DIM];
-    for (index, value) in input.iter().enumerate() {
-        output[index % VECTOR_DIM] += *value;
-    }
-    normalize(output)
 }
 
 fn fallback_embedding(content: &str) -> Vec<f32> {

@@ -21,7 +21,6 @@ env:
   RUSTUP_TOOLCHAIN: stable
   RUSTFLAGS: -D warnings
   DEV_IMAGE: portfolio-app:dev
-  VITE_ROLE_MATCH_ENABLED: "true"
 
 concurrency:
   group: fast-dev-${{ github.ref }}
@@ -118,9 +117,9 @@ jobs:
           (
             cd server
             cargo fmt --check
-            cargo clippy --release --all-targets --features role-match -- -D warnings
-            cargo test --release --all-targets --features role-match
-            cargo zigbuild --release --target "$RUST_TARGET_AMD64" --features role-match
+            cargo clippy --release --all-targets -- -D warnings
+            cargo test --release --all-targets
+            cargo zigbuild --release --target "$RUST_TARGET_AMD64"
           )
 
           mkdir -p release/amd64
@@ -137,11 +136,6 @@ jobs:
           PORTFOLIO_IMAGE: ${{ env.DEV_IMAGE }}
           PORTFOLIO_PORT: "3001"
           PORTFOLIO_DATABASE_URL: ${{ secrets.PORTFOLIO_DATABASE_URL }}
-          NINE_ROUTER_URL: ${{ vars.NINE_ROUTER_URL }}
-          NINE_ROUTER_MODEL: ${{ vars.NINE_ROUTER_MODEL }}
-          NINE_ROUTER_CONNECT_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_CONNECT_TIMEOUT_SECONDS }}
-          NINE_ROUTER_TIMEOUT_SECONDS: ${{ vars.NINE_ROUTER_TIMEOUT_SECONDS }}
-          NINE_ROUTER_API_KEY: ${{ secrets.NINE_ROUTER_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail
@@ -303,31 +297,14 @@ jobs:
             --data '{"target":"general","query":"backend PostgreSQL Rust Docker","limit":6}')"
           printf '%s\n' "$retrieve" | python3 -c 'import json,sys; d=json.load(sys.stdin); backend=d.get("backend"); evidence=d.get("evidence") or []; count=len(evidence); print("retrieval_backend=" + str(backend)); print("retrieval_evidence_count=" + str(count)); fail=lambda message: (print("::error title=CV retrieval database evidence::" + message), sys.exit(1)); backend == "pgvector+postgres-fts" or fail("Expected backend pgvector+postgres-fts; observed " + str(backend)); count > 0 or fail("Expected nonempty evidence; observed count 0")'
 
-          deploy_check="AI chat response"
-          ai_response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
-            -X POST http://127.0.0.1:3001/api/ai/chat \
-            -H 'Content-Type: application/json' \
-            --data '{"message":"Reply with exactly one word: OK","reasoning_effort":"low"}')"
-          printf '%s\n' "$ai_response" | python3 -c 'import json,sys; d=json.load(sys.stdin); size=len(d.get("message", "").strip()); print("ai_response_chars=" + str(size)); size > 0 or (print("::error title=AI chat response::Expected a nonempty answer; observed 0 characters"), sys.exit(1))'
-
-          deploy_check="Role Match development UI"
-          about_html="$(mktemp)"
-          curl --fail --silent --show-error --retry 5 --retry-delay 2 \
-            http://127.0.0.1:3001/about > "$about_html"
-          if ! grep -Fq 'Match a role' "$about_html"; then
-            echo "::error title=Role Match development UI::Expected 'Match a role' in /about HTML; observed no matching text"
-            exit 1
-          fi
-          rm -f "$about_html"
-          printf 'role_match_dev_ui_present=true\n'
-
-          deploy_check="Role Match development endpoint"
-          role_match_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
-            -X POST http://127.0.0.1:3001/api/role-match/report \
-            -H 'Content-Type: application/json' \
-            --data '{"jobDescription":"short"}')"
-          if [[ "$role_match_status" != 400 ]]; then
-            echo "::error title=Role Match development endpoint::Expected HTTP 400 for an invalid short request; observed ${role_match_status}"
-            exit 1
-          fi
-          printf 'role_match_dev_endpoint_status=%s\n' "$role_match_status"
+          for retired_endpoint in /api/ai/chat /api/role-match/report; do
+            status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+              -X POST "http://127.0.0.1:3001${retired_endpoint}" \
+              -H 'Content-Type: application/json' \
+              --data '{}')"
+            if [[ "$status" != "404" ]]; then
+              echo "::error title=Retired AI endpoint::Expected ${retired_endpoint} to return 404; observed ${status}"
+              exit 1
+            fi
+            printf 'retired_endpoint=%s status=%s\n' "$retired_endpoint" "$status"
+          done

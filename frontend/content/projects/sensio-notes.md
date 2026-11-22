@@ -12,13 +12,14 @@ category: "PT Perkasa Pilar Utama · Product Development"
 description: "Sensio Notes records or imports meetings, then turns the audio into searchable summaries, decisions, and follow-up tasks."
 image: "/images/projects/sensio-notes/cover.png"
 imageAlt: "Sensio Notes cover with the meetings list and the AI processing stages."
-techGroups: [Languages & Runtime::TypeScript|Node.js, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::NestJS|Drizzle ORM|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
+techGroups: [Languages & Runtime::TypeScript|Node.js|Go, Frontend::React|Vite|Tailwind CSS|Zustand|Capacitor, Backend::Fiber|pgx|REST API, AI & RAG::LangGraph|LLM Tool Calling|Voyage AI Embeddings|Graph RAG|Hybrid Search, Database & Infrastructure::PostgreSQL|TimescaleDB|pgvector|Redis|S3-compatible Object Storage|Docker|OpenTelemetry]
 productUrl: "https://sensio.id"
 repoUrl: ""
 ---
 ## What it is
 
 Sensio Notes records or imports a meeting and turns it into a summary, decisions, and action items you can search later.
+The team rewrote its backend from NestJS to Go with Fiber.
 I work on it as part of a team with AI, infrastructure, and UI/UX engineers.
 
 ```mermaid

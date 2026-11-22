@@ -12,7 +12,7 @@ category: "Web · Portfolio"
 description: "My portfolio brings my projects, experience, certifications, and writing together in one place for visitors to explore."
 image: "/images/projects/portfolio/cover.png"
 imageAlt: "Personal Portfolio cover showing the home page of the site in a browser window."
-techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, AI & RAG::LLM Tool Calling|Hybrid Search|pgvector|RAG, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
+techGroups: [Languages::TypeScript|JavaScript|Rust, Frontend::Svelte 5|Vite|Tailwind CSS|DaisyUI, Backend::Rust|Axum, Database::PostgreSQL, Content & SEO::Markdown|Mermaid, Infrastructure::Docker|GitHub Actions]
 productUrl: "https://farismnrr.com"
 repoUrl: "https://github.com/farismnrr/portofolio"
 ---
@@ -56,8 +56,6 @@ Svelte 5 and Vite, Markdown with Mermaid for diagrams, prerendering at build tim
 - Developed a personal portfolio website end-to-end using Svelte 5 and Rust, covering frontend, backend, and infrastructure.
 - Built a Markdown-driven content system to manage projects, work experience, certifications, and blog posts.
 - Implemented prerendered pages, client-side navigation, responsive layouts, and SEO optimization.
-- Developed AI-powered portfolio retrieval using PostgreSQL, pgvector, and full-text search.
-- Built an AI-assisted job matching feature that compares job requirements against portfolio evidence and generates PDF reports.
 - Implemented automated CI/CD pipelines, cross-platform Docker builds, and deployment to an ARM64 Orange Pi server.
 
 ## Links
